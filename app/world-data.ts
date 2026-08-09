@@ -4,7 +4,7 @@
 export type WorldExit = { command: string; targetId: string; target: string };
 export type WorldRoom = { id: string; name: string; exits: Record<string, WorldExit> };
 
-export type WorldObject = { id: string; name: string; initialLocation: string | null; flags: string[] };
+export type WorldObject = { id: string; name: string; initialLocation: string | null; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null };
 
 export const WORLD_ROOMS: WorldRoom[] = [
   {
@@ -3047,7 +3047,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "ACTORBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "computer"
+    ],
+    "adjectives": [
+      "national",
+      "natl",
+      "weather",
+      "center"
+    ],
+    "commandNoun": "national computer"
   },
   {
     "id": "OUTLETS",
@@ -3057,7 +3067,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "READBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "list",
+      "outlet",
+      "outlets",
+      "location",
+      "locations"
+    ],
+    "adjectives": [
+      "communica",
+      "comm"
+    ],
+    "commandNoun": "communication outlets"
   },
   {
     "id": "TRAFFIC-COMPUTER",
@@ -3067,7 +3089,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "ACTORBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "computer"
+    ],
+    "adjectives": [
+      "metropoli",
+      "metro",
+      "traffic"
+    ],
+    "commandNoun": "metropolitan computer"
   },
   {
     "id": "RACKS",
@@ -3077,7 +3108,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "rack",
+      "racks",
+      "fashion",
+      "fashions"
+    ],
+    "adjectives": [
+      "fashionable"
+    ],
+    "commandNoun": "fashionable"
   },
   {
     "id": "CC-STAFFER",
@@ -3086,7 +3127,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "technician",
+      "chief",
+      "shift",
+      "member"
+    ],
+    "adjectives": [
+      "head",
+      "night",
+      "staff",
+      "prism",
+      "project"
+    ],
+    "commandNoun": "project member"
   },
   {
     "id": "CULTURAL-CENTER",
@@ -3094,7 +3149,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "SKYCAB",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "center"
+    ],
+    "adjectives": [
+      "riverside",
+      "cultural"
+    ],
+    "commandNoun": "riverside center"
   },
   {
     "id": "BORDELLO-AD",
@@ -3105,7 +3168,27 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKEBIT",
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "ad",
+      "ads",
+      "flyers",
+      "leaflets",
+      "advertise",
+      "flyer",
+      "photocopi",
+      "photocopy",
+      "leaflet"
+    ],
+    "adjectives": [
+      "strip",
+      "joint",
+      "bordello",
+      "cheap",
+      "cheap-looking",
+      "photocopi"
+    ],
+    "commandNoun": "strip advertisement"
   },
   {
     "id": "EVENING-START",
@@ -3115,7 +3198,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "start"
+    ],
+    "adjectives": [
+      "evening",
+      "rush",
+      "hour"
+    ],
+    "commandNoun": "evening start"
   },
   {
     "id": "MORNING-START",
@@ -3125,7 +3217,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "start"
+    ],
+    "adjectives": [
+      "morning",
+      "rush",
+      "hour"
+    ],
+    "commandNoun": "morning start"
   },
   {
     "id": "FORMULA",
@@ -3133,7 +3234,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "bottle",
+      "bottles",
+      "formula"
+    ],
+    "adjectives": [
+      "baby"
+    ],
+    "commandNoun": "baby formula"
   },
   {
     "id": "SCOTCH",
@@ -3143,7 +3253,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKEBIT",
       "TRYTAKEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "bottle",
+      "bottles",
+      "scotch",
+      "brand"
+    ],
+    "adjectives": [
+      "cheap"
+    ],
+    "commandNoun": "cheap bottle"
   },
   {
     "id": "TRANSMITTER",
@@ -3154,7 +3274,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LIGHTBIT",
       "ONBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "transmitt"
+    ],
+    "adjectives": [
+      "world",
+      "news",
+      "network",
+      "feeder",
+      "wnn"
+    ],
+    "commandNoun": "feeder transmitter"
   },
   {
     "id": "AIR-CONDITIONING-UNIT",
@@ -3162,7 +3293,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CORE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "unit",
+      "condition"
+    ],
+    "adjectives": [
+      "air",
+      "condition",
+      "cooling"
+    ],
+    "commandNoun": "conditioning"
   },
   {
     "id": "LOGIC-GAME",
@@ -3171,7 +3312,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "game"
+    ],
+    "adjectives": [
+      "new",
+      "electronic",
+      "logic",
+      "mitchell",
+      "favorite"
+    ],
+    "commandNoun": "electronic game"
   },
   {
     "id": "EVENING-END",
@@ -3181,7 +3333,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "end"
+    ],
+    "adjectives": [
+      "evening",
+      "rush",
+      "hour"
+    ],
+    "commandNoun": "evening end"
   },
   {
     "id": "JANITORIAL-CONTROLLER",
@@ -3191,7 +3352,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "ACTORBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "controlle"
+    ],
+    "adjectives": [
+      "janitoria"
+    ],
+    "commandNoun": "janitorial controller"
   },
   {
     "id": "JANITORIAL-INSTRUCTIONS",
@@ -3199,7 +3367,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PRISM-INTERFACES-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "MORNING-END",
@@ -3209,7 +3380,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "end"
+    ],
+    "adjectives": [
+      "morning",
+      "rush",
+      "hour"
+    ],
+    "commandNoun": "morning end"
   },
   {
     "id": "RYDER",
@@ -3218,7 +3398,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "ryder",
+      "senator"
+    ],
+    "adjectives": [
+      "senator",
+      "richard"
+    ],
+    "commandNoun": "ryder"
   },
   {
     "id": "SIMULATION-CONTROLLER",
@@ -3228,7 +3417,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "ACTORBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "controlle",
+      "processor"
+    ],
+    "adjectives": [
+      "simulatio",
+      "sim"
+    ],
+    "commandNoun": "simulation controller"
   },
   {
     "id": "SIMULATION-INSTRUCTIONS",
@@ -3236,7 +3434,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PRISM-INTERFACES-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "REPORT-BUFFER",
@@ -3245,7 +3446,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "BUFFERBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "buffer"
+    ],
+    "adjectives": [
+      "report",
+      "special"
+    ],
+    "commandNoun": "special buffer"
   },
   {
     "id": "ENTERTAINMENT-CENTER",
@@ -3254,7 +3463,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "center",
+      "ec"
+    ],
+    "adjectives": [
+      "entertainment",
+      "wall-mounted"
+    ],
+    "commandNoun": "entertainment center"
   },
   {
     "id": "PORT-LIST",
@@ -3264,7 +3482,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READBIT",
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "list",
+      "port",
+      "ports"
+    ],
+    "adjectives": [
+      "active"
+    ],
+    "commandNoun": "active ports"
   },
   {
     "id": "AUDIT-PERCENT",
@@ -3274,7 +3501,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "VOWELBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "percent",
+      "percentag"
+    ],
+    "adjectives": [
+      "audit",
+      "auditing"
+    ],
+    "commandNoun": "auditing percentage"
   },
   {
     "id": "BROWN-TUBECAR-DOOR",
@@ -3284,7 +3520,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DOORBIT",
       "NDESCBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "door",
+      "doors"
+    ],
+    "adjectives": [
+      "tubecar",
+      "brown"
+    ],
+    "commandNoun": "tubecar doors"
   },
   {
     "id": "COMM-MODE",
@@ -3293,7 +3538,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "mode"
+    ],
+    "adjectives": [
+      "communica",
+      "comm"
+    ],
+    "commandNoun": "communications mode"
   },
   {
     "id": "GOVERNMENT-OFFICIAL",
@@ -3301,7 +3554,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "official"
+    ],
+    "adjectives": [
+      "government",
+      "govt"
+    ],
+    "commandNoun": "government official"
   },
   {
     "id": "AUDITING-SYSTEM",
@@ -3311,7 +3572,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "ACTORBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "system"
+    ],
+    "adjectives": [
+      "irs",
+      "internal",
+      "revenue",
+      "service",
+      "auditing"
+    ],
+    "commandNoun": "auditing system"
   },
   {
     "id": "SABOTEURS",
@@ -3321,13 +3593,34 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ACTORBIT",
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "workers",
+      "saboteurs",
+      "worker",
+      "saboteur",
+      "man",
+      "men"
+    ],
+    "adjectives": [
+      "maintenan",
+      "furtive"
+    ],
+    "commandNoun": "maintenance workers"
   },
   {
     "id": "NEWSPAPER-DISPENSER",
     "name": "newspaper dispenser",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "dispenser",
+      "box"
+    ],
+    "adjectives": [
+      "newspaper"
+    ],
+    "commandNoun": "newspaper dispenser"
   },
   {
     "id": "PARKVIEW-APARTMENTS-OBJECT",
@@ -3335,7 +3628,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "apartment"
+    ],
+    "adjectives": [
+      "parkview"
+    ],
+    "commandNoun": "parkview apartments"
   },
   {
     "id": "COUNTRYSIDE",
@@ -3343,7 +3643,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "ROOFTOP",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "countrysi"
+    ],
+    "adjectives": [
+      "rolling"
+    ],
+    "commandNoun": "rolling countryside"
   },
   {
     "id": "MEMORY-BANKS",
@@ -3351,7 +3658,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CORE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "banks",
+      "row",
+      "rows",
+      "bank"
+    ],
+    "adjectives": [
+      "memory"
+    ],
+    "commandNoun": "memory banks"
   },
   {
     "id": "SPARE-PARTS",
@@ -3359,13 +3676,40 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CORE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "part",
+      "parts",
+      "bin"
+    ],
+    "adjectives": [
+      "neatly",
+      "organized",
+      "spare"
+    ],
+    "commandNoun": "spare parts"
   },
   {
     "id": "CHURCH-STREET-CITY-OBJECT",
     "name": "Church Street City",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "city",
+      "structure",
+      "ic"
+    ],
+    "adjectives": [
+      "church",
+      "street",
+      "indoor",
+      "fairly",
+      "recent",
+      "low-quality",
+      "low",
+      "quality"
+    ],
+    "commandNoun": "church city"
   },
   {
     "id": "HIGHWAY",
@@ -3373,7 +3717,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "highway",
+      "roadway",
+      "interstate"
+    ],
+    "adjectives": [
+      "interstate",
+      "old",
+      "elevated"
+    ],
+    "commandNoun": "interstate"
   },
   {
     "id": "NATIONAL-GUARDSMAN",
@@ -3382,7 +3737,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "guard",
+      "guards",
+      "guardsman",
+      "guardsmen"
+    ],
+    "adjectives": [
+      "national",
+      "natl",
+      "rifle-bearing"
+    ],
+    "commandNoun": "national guardsman"
   },
   {
     "id": "RESIGNATION-LETTER",
@@ -3390,7 +3757,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PERELMAN-PERSONAL-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "ROTATING",
@@ -3400,7 +3770,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "functions"
+    ],
+    "adjectives": [
+      "rotating"
+    ],
+    "commandNoun": "rotating functions"
   },
   {
     "id": "UNIVERSITY-HEIGHTS-OBJECT",
@@ -3409,7 +3786,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "VOWELBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "heights",
+      "complex"
+    ],
+    "adjectives": [
+      "tall",
+      "apartment",
+      "universit"
+    ],
+    "commandNoun": "university heights"
   },
   {
     "id": "TIMBERS",
@@ -3417,19 +3804,48 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "timber",
+      "timbers",
+      "beam",
+      "beams"
+    ],
+    "adjectives": [
+      "blackened",
+      "burned"
+    ],
+    "commandNoun": "blackened timbers"
   },
   {
     "id": "BOARDING-PLATFORM",
     "name": "boarding platform",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "platform"
+    ],
+    "adjectives": [
+      "boarding"
+    ],
+    "commandNoun": "boarding platform"
   },
   {
     "id": "CONSTRUCTION-OBJECT",
     "name": "construction site",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "construction",
+      "site",
+      "project"
+    ],
+    "adjectives": [
+      "construction",
+      "huge",
+      "abandoned"
+    ],
+    "commandNoun": "construction"
   },
   {
     "id": "FOUNTAIN",
@@ -3437,7 +3853,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "fountain"
+    ],
+    "adjectives": [
+      "ornate",
+      "dried-up",
+      "dirty"
+    ],
+    "commandNoun": "fountain"
   },
   {
     "id": "INFOTECH-BUILDING",
@@ -3446,7 +3871,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "building",
+      "bldg",
+      "landmark",
+      "tower",
+      "skyscraper"
+    ],
+    "adjectives": [
+      "infotech",
+      "info",
+      "tech",
+      "tall",
+      "office",
+      "famous"
+    ],
+    "commandNoun": "infotech building"
   },
   {
     "id": "PERELMAN-PERSONAL-DIRECTORY",
@@ -3454,7 +3895,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LIBRARY",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "RED-TUBECAR-DOOR",
@@ -3464,7 +3908,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DOORBIT",
       "NDESCBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "door",
+      "doors"
+    ],
+    "adjectives": [
+      "tubecar",
+      "red"
+    ],
+    "commandNoun": "tubecar doors"
   },
   {
     "id": "SILICORP-BUILDING",
@@ -3472,7 +3925,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "MAIN-AND-KENNEDY",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "building",
+      "bldg",
+      "high-rise",
+      "tower",
+      "skyscraper"
+    ],
+    "adjectives": [
+      "tall",
+      "office",
+      "silicorp"
+    ],
+    "commandNoun": "silicorp building"
   },
   {
     "id": "NEWS-BUFFER",
@@ -3481,7 +3947,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "BUFFERBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "buffer"
+    ],
+    "adjectives": [
+      "world",
+      "news"
+    ],
+    "commandNoun": "world buffer"
   },
   {
     "id": "FOURTH-FLOOR",
@@ -3492,7 +3966,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "VOWELBIT",
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "office",
+      "offices"
+    ],
+    "adjectives": [
+      "student",
+      "activity",
+      "activitie"
+    ],
+    "commandNoun": "activity offices"
   },
   {
     "id": "GROCERIES",
@@ -3500,7 +3984,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "bag",
+      "groceries",
+      "food"
+    ],
+    "adjectives": [],
+    "commandNoun": "groceries"
   },
   {
     "id": "DRIVERS-LICENSE",
@@ -3509,7 +4000,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "READBIT",
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "license"
+    ],
+    "adjectives": [
+      "your",
+      "my",
+      "driver's",
+      "drivers"
+    ],
+    "commandNoun": "driver's license"
   },
   {
     "id": "FORTZMAN",
@@ -3519,7 +4020,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "VOWELBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "eleanor",
+      "fortzman"
+    ],
+    "adjectives": [
+      "eleanor"
+    ],
+    "commandNoun": "fortzman"
   },
   {
     "id": "GARBAGE",
@@ -3529,7 +4038,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "disposal"
+    ],
+    "adjectives": [
+      "garbage"
+    ],
+    "commandNoun": "garbage disposal"
   },
   {
     "id": "MAGAZINE-ARTICLE",
@@ -3538,13 +4054,34 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "printout",
+      "article",
+      "excerpt"
+    ],
+    "adjectives": [
+      "magazine",
+      "mag"
+    ],
+    "commandNoun": "magazine article"
   },
   {
     "id": "PICKFORD-THEATRE-OBJECT",
     "name": "Pickford Theatre",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "theatre",
+      "theater"
+    ],
+    "adjectives": [
+      "pickford",
+      "fine",
+      "old",
+      "older"
+    ],
+    "commandNoun": "pickford theatre"
   },
   {
     "id": "BEAMS",
@@ -3554,7 +4091,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "PLURALBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "beam",
+      "beams",
+      "bundle",
+      "bundles"
+    ],
+    "adjectives": [
+      "plastallo"
+    ],
+    "commandNoun": "plastalloy beams"
   },
   {
     "id": "PRISM-INTERFACES-DIRECTORY",
@@ -3562,7 +4109,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LIBRARY",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "RECEIVER-STATION",
@@ -3570,7 +4120,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "SKYCAB",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "station"
+    ],
+    "adjectives": [
+      "receiver",
+      "gleaming"
+    ],
+    "commandNoun": "receiver station"
   },
   {
     "id": "TRAFFIC-INSTRUCTIONS",
@@ -3578,7 +4136,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PRISM-INTERFACES-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "WEATHER-INSTRUCTIONS",
@@ -3586,7 +4147,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PRISM-INTERFACES-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "AUDITING-INSTRUCTIONS",
@@ -3594,7 +4158,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": null,
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "ESTHER",
@@ -3604,7 +4171,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ACTORBIT",
       "VOWELBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "esther",
+      "perelman",
+      "daughter"
+    ],
+    "adjectives": [
+      "esther",
+      "your",
+      "only"
+    ],
+    "commandNoun": "perelman"
   },
   {
     "id": "PAMPHLET",
@@ -3613,7 +4191,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "literatur",
+      "pamphlet",
+      "booklet",
+      "leaflet",
+      "flyer"
+    ],
+    "adjectives": [
+      "glossy"
+    ],
+    "commandNoun": "glossy pamphlet"
   },
   {
     "id": "GRANOLA-CLUSTER",
@@ -3622,7 +4211,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "EATBIT"
-    ]
+    ],
+    "synonyms": [
+      "cluster",
+      "food"
+    ],
+    "adjectives": [
+      "granola"
+    ],
+    "commandNoun": "granola cluster"
   },
   {
     "id": "HVAC-CONTROLLER",
@@ -3632,7 +4229,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "ACTORBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "controlle",
+      "computer"
+    ],
+    "adjectives": [
+      "hvac",
+      "heating",
+      "ventilati",
+      "air",
+      "condition"
+    ],
+    "commandNoun": "hvac controller"
   },
   {
     "id": "HVAC-INSTRUCTIONS",
@@ -3640,7 +4249,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PRISM-INTERFACES-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "INDUSTRIAL-PARK-OBJECT",
@@ -3648,13 +4260,28 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "park"
+    ],
+    "adjectives": [
+      "industrial",
+      "rockvil"
+    ],
+    "commandNoun": "industrial park"
   },
   {
     "id": "LIBRARY-ACCOUNT",
     "name": "library account",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "account"
+    ],
+    "adjectives": [
+      "library"
+    ],
+    "commandNoun": "library account"
   },
   {
     "id": "CHUN-BUILDING",
@@ -3663,7 +4290,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "VOWELBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "building",
+      "bldg"
+    ],
+    "adjectives": [
+      "chun",
+      "small",
+      "office"
+    ],
+    "commandNoun": "office building"
   },
   {
     "id": "ROY",
@@ -3672,7 +4309,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "chinaman",
+      "man",
+      "roy"
+    ],
+    "adjectives": [
+      "old",
+      "chinese"
+    ],
+    "commandNoun": "chinese man"
   },
   {
     "id": "PLAN-POPULARITY",
@@ -3680,19 +4327,45 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PLAN-DATA-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "RAILROAD-BRIDGE",
     "name": "railroad bridge",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "bridge",
+      "trestle"
+    ],
+    "adjectives": [
+      "old",
+      "unused",
+      "rail",
+      "railroad",
+      "rr"
+    ],
+    "commandNoun": "railroad bridge"
   },
   {
     "id": "SERVICE-STATION-OBJECT",
     "name": "service station",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "station",
+      "center"
+    ],
+    "adjectives": [
+      "unusually",
+      "large",
+      "skycar",
+      "service"
+    ],
+    "commandNoun": "service station"
   },
   {
     "id": "SIMULATION-MODE",
@@ -3701,7 +4374,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "mode"
+    ],
+    "adjectives": [
+      "simulatio",
+      "sim"
+    ],
+    "commandNoun": "simulation mode"
   },
   {
     "id": "STACKS-OF-PAPERS",
@@ -3709,7 +4390,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "OFFICE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "stack",
+      "stacks",
+      "paper",
+      "papers",
+      "paperwork"
+    ],
+    "adjectives": [],
+    "commandNoun": "papers"
   },
   {
     "id": "TURKEY-SANDWICH",
@@ -3718,7 +4408,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "EATBIT"
-    ]
+    ],
+    "synonyms": [
+      "sandwich",
+      "sandwiches",
+      "food"
+    ],
+    "adjectives": [
+      "turkey"
+    ],
+    "commandNoun": "turkey sandwich"
   },
   {
     "id": "SALAD",
@@ -3726,7 +4425,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "salad",
+      "food"
+    ],
+    "adjectives": [
+      "vegetable"
+    ],
+    "commandNoun": "vegetable salad"
   },
   {
     "id": "CONTROL-CENTER-OBJECT",
@@ -3734,7 +4441,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CONTROL-CENTER",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "center"
+    ],
+    "adjectives": [
+      "control",
+      "prism",
+      "project"
+    ],
+    "commandNoun": "control center"
   },
   {
     "id": "CURRENT-EVENTS-DIRECTORY",
@@ -3742,7 +4458,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LIBRARY",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "HALLEY-ESTATES-OBJECT",
@@ -3750,19 +4469,75 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "estate",
+      "estates"
+    ],
+    "adjectives": [
+      "halley",
+      "wealthy",
+      "affluent"
+    ],
+    "commandNoun": "halley estates"
   },
   {
     "id": "HARDWARE-STORE-OBJECT",
     "name": "hardware store",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "store",
+      "stores",
+      "shop",
+      "shops"
+    ],
+    "adjectives": [
+      "hardware",
+      "large",
+      "well-stocked"
+    ],
+    "commandNoun": "hardware store"
   },
   {
     "id": "HEIMAN-VILLAGE-OBJECT",
     "name": "Heiman Village",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "village",
+      "city",
+      "building",
+      "bldg",
+      "walls",
+      "complex",
+      "microcosm",
+      "cocoon",
+      "ghetto",
+      "landmark",
+      "ic"
+    ],
+    "adjectives": [
+      "heiman",
+      "older",
+      "first",
+      "vast",
+      "massive",
+      "village",
+      "urban",
+      "indoor",
+      "revolutionary",
+      "controversial",
+      "sterile",
+      "isolated",
+      "popular",
+      "most",
+      "famous",
+      "ill-maintained",
+      "extremely",
+      "roofed-in"
+    ],
+    "commandNoun": "village"
   },
   {
     "id": "INTERFACE-MODE",
@@ -3771,7 +4546,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "mode"
+    ],
+    "adjectives": [
+      "interface"
+    ],
+    "commandNoun": "interface mode"
   },
   {
     "id": "LIBYAN-ECONOMY",
@@ -3779,7 +4561,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CURRENT-EVENTS-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "BANNED-TITLES-LIST",
@@ -3788,7 +4573,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "list",
+      "titles",
+      "tapes",
+      "programs"
+    ],
+    "adjectives": [
+      "banned",
+      "latest",
+      "comprehensive"
+    ],
+    "commandNoun": "titles"
   },
   {
     "id": "MOUNT-TAKEOVER",
@@ -3796,7 +4593,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CURRENT-EVENTS-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "POLICEMAN",
@@ -3805,13 +4605,35 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "ACTORBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "officer",
+      "police",
+      "policeman",
+      "policemen",
+      "cop",
+      "cops"
+    ],
+    "adjectives": [
+      "police",
+      "desk"
+    ],
+    "commandNoun": "police officer"
   },
   {
     "id": "POLICE-STATION-OBJECT",
     "name": "police station",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "station",
+      "headquarters",
+      "hq"
+    ],
+    "adjectives": [
+      "police"
+    ],
+    "commandNoun": "police station"
   },
   {
     "id": "RYDER-SPEECHES",
@@ -3819,7 +4641,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PLAN-DATA-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "SPACEPORT-GATE",
@@ -3827,13 +4652,34 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "TERMINAL",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "gate",
+      "gates"
+    ],
+    "adjectives": [
+      "spaceport"
+    ],
+    "commandNoun": "spaceport gate"
   },
   {
     "id": "STOCK-EXCHANGE-OBJECT",
     "name": "Stock Exchange",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "exchange",
+      "building",
+      "bldg"
+    ],
+    "adjectives": [
+      "stock",
+      "exchange",
+      "aging",
+      "impressiv",
+      "old"
+    ],
+    "commandNoun": "exchange"
   },
   {
     "id": "WORD-PROCESSOR",
@@ -3843,13 +4689,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LIGHTBIT",
       "TRYTAKEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "processor",
+      "typewriter",
+      "wp"
+    ],
+    "adjectives": [
+      "word",
+      "old"
+    ],
+    "commandNoun": "word processor"
   },
   {
     "id": "BAMBOO-SCREEN",
     "name": "bamboo screen",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "screen",
+      "curtain"
+    ],
+    "adjectives": [
+      "bamboo"
+    ],
+    "commandNoun": "bamboo screen"
   },
   {
     "id": "BROWN-TUBECAR-OBJECT",
@@ -3858,7 +4722,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VEHBIT"
-    ]
+    ],
+    "synonyms": [
+      "tubecar",
+      "car",
+      "train",
+      "subway"
+    ],
+    "adjectives": [
+      "brown",
+      "tube",
+      "airport",
+      "rockvil",
+      "universit"
+    ],
+    "commandNoun": "tubecar"
   },
   {
     "id": "BSF-FORMATION",
@@ -3866,7 +4744,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CURRENT-EVENTS-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "COFFEE",
@@ -3874,19 +4755,55 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "cup",
+      "coffee",
+      "steam",
+      "mug"
+    ],
+    "adjectives": [
+      "steaming",
+      "hot",
+      "coffee"
+    ],
+    "commandNoun": "coffee"
   },
   {
     "id": "HEALTH-CENTER-OBJECT",
     "name": "health center",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "center",
+      "hmo",
+      "facility"
+    ],
+    "adjectives": [
+      "health",
+      "anderson"
+    ],
+    "commandNoun": "health center"
   },
   {
     "id": "MOVIE-THEATRE-OBJECT",
     "name": "movie theatre",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "theater",
+      "theatre",
+      "cinema",
+      "complex"
+    ],
+    "adjectives": [
+      "movie",
+      "downtown",
+      "quad",
+      "huge",
+      "four-theatre"
+    ],
+    "commandNoun": "movie theatre"
   },
   {
     "id": "PLAN-ELEMENTS",
@@ -3894,19 +4811,41 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PLAN-DATA-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "POWER-STATION-OBJECT",
     "name": "power station",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "station"
+    ],
+    "adjectives": [
+      "power",
+      "utility",
+      "central"
+    ],
+    "commandNoun": "power station"
   },
   {
     "id": "RAILROAD-YARD",
     "name": "railroad yard",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "yard",
+      "yards"
+    ],
+    "adjectives": [
+      "old",
+      "abandoned",
+      "railroad"
+    ],
+    "commandNoun": "railroad yard"
   },
   {
     "id": "RAV",
@@ -3915,7 +4854,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "ACTORBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "rav",
+      "frita"
+    ],
+    "adjectives": [],
+    "commandNoun": "frita"
   },
   {
     "id": "RECORD-BUFFER",
@@ -3924,7 +4869,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "BUFFERBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "buffer",
+      "recording",
+      "record"
+    ],
+    "adjectives": [
+      "my",
+      "record"
+    ],
+    "commandNoun": "record buffer"
   },
   {
     "id": "JILL-BOOK",
@@ -3932,25 +4887,68 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LIVING-ROOM",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "novel",
+      "book"
+    ],
+    "adjectives": [
+      "gothic",
+      "romance",
+      "jill's",
+      "her"
+    ],
+    "commandNoun": "romance novel"
   },
   {
     "id": "STREET-BRIDGE",
     "name": "street bridge",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "bridge"
+    ],
+    "adjectives": [
+      "main",
+      "river",
+      "river-bank",
+      "street",
+      "rusted",
+      "neglected",
+      "once-proud"
+    ],
+    "commandNoun": "street bridge"
   },
   {
     "id": "STUDENT-UNION-OBJECT",
     "name": "student union",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "union",
+      "center"
+    ],
+    "adjectives": [
+      "student",
+      "wide",
+      "sprawling"
+    ],
+    "commandNoun": "student union"
   },
   {
     "id": "SYMPHONY-HALL-OBJECT",
     "name": "Symphony Hall",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "hall",
+      "symphony"
+    ],
+    "adjectives": [
+      "symphony",
+      "ornate"
+    ],
+    "commandNoun": "symphony"
   },
   {
     "id": "TICKET-SELLER",
@@ -3958,19 +4956,55 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CINEMA",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "seller",
+      "dispenser",
+      "window",
+      "windows"
+    ],
+    "adjectives": [
+      "ticket"
+    ],
+    "commandNoun": "ticket seller"
   },
   {
     "id": "TRAIN-STATION-OBJECT",
     "name": "train station",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "station",
+      "landmark"
+    ],
+    "adjectives": [
+      "train",
+      "old",
+      "north",
+      "central",
+      "former",
+      "magnifice",
+      "restored",
+      "national",
+      "natl"
+    ],
+    "commandNoun": "train station"
   },
   {
     "id": "WELLS-THEATRE-OBJECT",
     "name": "Wells Theatre",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "theatre",
+      "theater"
+    ],
+    "adjectives": [
+      "wells",
+      "modern",
+      "well-maintained"
+    ],
+    "commandNoun": "wells theatre"
   },
   {
     "id": "AIRPORT-GATE",
@@ -3979,7 +5013,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "gate",
+      "gates"
+    ],
+    "adjectives": [
+      "airport"
+    ],
+    "commandNoun": "airport gate"
   },
   {
     "id": "ALI-BUILDING",
@@ -3988,7 +5030,26 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "building",
+      "bldg",
+      "hq",
+      "headquarters",
+      "skyscraper",
+      "group"
+    ],
+    "adjectives": [
+      "ali",
+      "american",
+      "life",
+      "insurance",
+      "fairly",
+      "typical",
+      "twenty-first",
+      "century"
+    ],
+    "commandNoun": "ali building"
   },
   {
     "id": "ALPHA-SECTOR",
@@ -3997,7 +5058,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "sector",
+      "sectors",
+      "alpha"
+    ],
+    "adjectives": [
+      "alpha"
+    ],
+    "commandNoun": "alpha sector"
   },
   {
     "id": "PRICE",
@@ -4007,7 +5077,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ACTORBIT",
       "NARTICLEBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "alyson",
+      "price"
+    ],
+    "adjectives": [
+      "alyson"
+    ],
+    "commandNoun": "price"
   },
   {
     "id": "RANDU",
@@ -4017,7 +5095,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLE",
       "VOWELBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "randu",
+      "aseejh"
+    ],
+    "adjectives": [
+      "aseejh"
+    ],
+    "commandNoun": "randu"
   },
   {
     "id": "CARD-CATALOG",
@@ -4025,7 +5111,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "MAIN-LIBRARY",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "catalog",
+      "file"
+    ],
+    "adjectives": [
+      "card",
+      "computeri"
+    ],
+    "commandNoun": "card catalog"
   },
   {
     "id": "CHURCH-OFFICIAL",
@@ -4033,7 +5128,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "official",
+      "elder"
+    ],
+    "adjectives": [
+      "church"
+    ],
+    "commandNoun": "church elder"
   },
   {
     "id": "CONVERSATION",
@@ -4041,7 +5144,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "buzz",
+      "conversat"
+    ],
+    "adjectives": [],
+    "commandNoun": "conversation"
   },
   {
     "id": "CURRENT-FEED",
@@ -4050,7 +5159,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "feed",
+      "news"
+    ],
+    "adjectives": [
+      "current"
+    ],
+    "commandNoun": "current feed"
   },
   {
     "id": "DELTA-SECTOR",
@@ -4059,7 +5176,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "sector",
+      "sectors",
+      "delta"
+    ],
+    "adjectives": [
+      "delta"
+    ],
+    "commandNoun": "delta sector"
   },
   {
     "id": "DISHES",
@@ -4068,7 +5194,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "dish",
+      "dishes"
+    ],
+    "adjectives": [
+      "dirty"
+    ],
+    "commandNoun": "dirty dishes"
   },
   {
     "id": "GRIMWOLD",
@@ -4077,7 +5211,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "ACTORBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "dr",
+      "doctor",
+      "psychiatr",
+      "shrink",
+      "ernest",
+      "grimwold",
+      "man"
+    ],
+    "adjectives": [
+      "dr",
+      "doctor",
+      "ernest",
+      "well-groomed",
+      "stereotypical",
+      "old"
+    ],
+    "commandNoun": "grimwold"
   },
   {
     "id": "PERELMAN",
@@ -4086,7 +5238,24 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "doctor",
+      "dr",
+      "perelman",
+      "abraham",
+      "abe",
+      "doc"
+    ],
+    "adjectives": [
+      "abraham",
+      "abe",
+      "doctor",
+      "dr",
+      "mr",
+      "mister"
+    ],
+    "commandNoun": "perelman"
   },
   {
     "id": "WARREN",
@@ -4096,13 +5265,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ACTORBIT",
       "NARTICLEBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "emily",
+      "warren"
+    ],
+    "adjectives": [
+      "emily"
+    ],
+    "commandNoun": "warren"
   },
   {
     "id": "FIREHOUSE-OBJECT",
     "name": "fire station",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "firehouse",
+      "house",
+      "station"
+    ],
+    "adjectives": [
+      "fire",
+      "old"
+    ],
+    "commandNoun": "fire station"
   },
   {
     "id": "GAMMA-SECTOR",
@@ -4111,13 +5298,41 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "sector",
+      "sectors",
+      "gamma"
+    ],
+    "adjectives": [
+      "gamma"
+    ],
+    "commandNoun": "gamma sector"
   },
   {
     "id": "DUMP-OBJECT",
     "name": "garbage dump",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "dump",
+      "facility",
+      "site"
+    ],
+    "adjectives": [
+      "sprawling",
+      "city",
+      "city's",
+      "rockvil",
+      "rockvil's",
+      "primary",
+      "waste",
+      "disposal",
+      "garbage",
+      "multiple",
+      "unit"
+    ],
+    "commandNoun": "garbage dump"
   },
   {
     "id": "HAM-SANDWICH",
@@ -4126,19 +5341,49 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "EATBIT"
-    ]
+    ],
+    "synonyms": [
+      "sandwich",
+      "sandwiches",
+      "food"
+    ],
+    "adjectives": [
+      "ham"
+    ],
+    "commandNoun": "ham sandwich"
   },
   {
     "id": "HEIMAN-WORLD-OBJECT",
     "name": "Heiman World",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "world",
+      "slum",
+      "city",
+      "ic"
+    ],
+    "adjectives": [
+      "heiman",
+      "run-down",
+      "second",
+      "vast",
+      "indoor"
+    ],
+    "commandNoun": "heiman world"
   },
   {
     "id": "LECTURE-HALL-OBJECT",
     "name": "lecture hall",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "hall"
+    ],
+    "adjectives": [
+      "lecture"
+    ],
+    "commandNoun": "lecture hall"
   },
   {
     "id": "LIBRARY-MODE",
@@ -4147,7 +5392,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "mode"
+    ],
+    "adjectives": [
+      "library"
+    ],
+    "commandNoun": "library mode"
   },
   {
     "id": "LIBRARY-UNIT",
@@ -4155,22 +5407,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CORE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "unit"
+    ],
+    "adjectives": [
+      "library"
+    ],
+    "commandNoun": "library unit"
   },
   {
     "id": "LIQUOR-STORE-OBJECT",
     "name": "liquor store",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
-  },
-  {
-    "id": "ROOF-SHADOWS",
-    "name": "long shadows",
-    "initialLocation": "ROOFTOP",
-    "flags": [
-      "NARTICLEBIT",
-      "NDESCBIT"
-    ]
+    "flags": [],
+    "synonyms": [
+      "store",
+      "stores",
+      "shop",
+      "shops"
+    ],
+    "adjectives": [
+      "liquor",
+      "package"
+    ],
+    "commandNoun": "liquor store"
   },
   {
     "id": "DUCKS",
@@ -4179,7 +5440,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "duck",
+      "ducks",
+      "mallard",
+      "mallards"
+    ],
+    "adjectives": [
+      "mallard",
+      "common"
+    ],
+    "commandNoun": "mallard"
   },
   {
     "id": "PEREZ-TOWERS",
@@ -4188,13 +5460,34 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "towers",
+      "tower",
+      "building",
+      "bldg"
+    ],
+    "adjectives": [
+      "perez",
+      "luxury",
+      "apartment"
+    ],
+    "commandNoun": "perez towers"
   },
   {
     "id": "PICTUREPHONE",
     "name": "picturephone",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "phone",
+      "telephone",
+      "pictureph"
+    ],
+    "adjectives": [
+      "picture"
+    ],
+    "commandNoun": "picturephone"
   },
   {
     "id": "MOLD",
@@ -4203,7 +5496,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TRYTAKEBIT",
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "pile",
+      "mold"
+    ],
+    "adjectives": [
+      "disgustin",
+      "putrid",
+      "putrid-smelling"
+    ],
+    "commandNoun": "pile"
   },
   {
     "id": "REFRIGERATOR",
@@ -4213,7 +5516,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "CONTBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "refrigera",
+      "fridge",
+      "frige",
+      "frig",
+      "icebox"
+    ],
+    "adjectives": [
+      "small"
+    ],
+    "commandNoun": "refrigerator"
   },
   {
     "id": "SHOWER",
@@ -4223,13 +5537,32 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "VEHBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "shower",
+      "stall"
+    ],
+    "adjectives": [
+      "shower"
+    ],
+    "commandNoun": "shower"
   },
   {
     "id": "SOUP-KITCHEN",
     "name": "soup kitchen",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "kitchen"
+    ],
+    "adjectives": [
+      "soup",
+      "boarded-up",
+      "closed",
+      "dirty",
+      "crowded"
+    ],
+    "commandNoun": "soup kitchen"
   },
   {
     "id": "RAILROAD-TRACKS",
@@ -4238,13 +5571,39 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "set",
+      "pair",
+      "track",
+      "tracks"
+    ],
+    "adjectives": [
+      "railroad",
+      "rr",
+      "train",
+      "tube",
+      "subway",
+      "rusting",
+      "overgrown"
+    ],
+    "commandNoun": "train tracks"
   },
   {
     "id": "TUBE-STATION",
     "name": "Tube station",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "tubes",
+      "station",
+      "system"
+    ],
+    "adjectives": [
+      "tube",
+      "tubes"
+    ],
+    "commandNoun": "tube station"
   },
   {
     "id": "UNSHAVEN-MAN",
@@ -4256,7 +5615,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPENBIT",
       "CONTBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "man"
+    ],
+    "adjectives": [
+      "bored",
+      "unshaven"
+    ],
+    "commandNoun": "unshaven man"
   },
   {
     "id": "MY-MAILBOX",
@@ -4266,7 +5633,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "MYBIT"
-    ]
+    ],
+    "synonyms": [
+      "mailbox",
+      "box"
+    ],
+    "adjectives": [
+      "my",
+      "mail"
+    ],
+    "commandNoun": "mailbox"
   },
   {
     "id": "PARENTS",
@@ -4276,7 +5652,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "PLURALBIT",
       "MYBIT"
-    ]
+    ],
+    "synonyms": [
+      "parents",
+      "parent",
+      "mother",
+      "father",
+      "mom",
+      "dad"
+    ],
+    "adjectives": [
+      "my"
+    ],
+    "commandNoun": "parents"
   },
   {
     "id": "BETA-SECTOR",
@@ -4285,7 +5673,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "sector",
+      "sectors",
+      "beta"
+    ],
+    "adjectives": [
+      "beta"
+    ],
+    "commandNoun": "beta sector"
   },
   {
     "id": "SODA",
@@ -4294,7 +5691,24 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "DRINKBIT"
-    ]
+    ],
+    "synonyms": [
+      "can",
+      "soda",
+      "coke",
+      "pepsi",
+      "cola",
+      "pepsi-cola",
+      "coca-cola",
+      "pop",
+      "tonic"
+    ],
+    "adjectives": [
+      "coca",
+      "pepsi",
+      "soda"
+    ],
+    "commandNoun": "soda"
   },
   {
     "id": "CREDIT-CARD",
@@ -4303,7 +5717,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "READBIT",
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "card"
+    ],
+    "adjectives": [
+      "your",
+      "my",
+      "credit"
+    ],
+    "commandNoun": "credit card"
   },
   {
     "id": "DERRICOPTERS",
@@ -4311,7 +5734,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CONSTRUCTION-SITE-1",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "derricopt"
+    ],
+    "adjectives": [],
+    "commandNoun": "derricopter"
   },
   {
     "id": "DINETTE-SET",
@@ -4323,13 +5751,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SURFACEBIT",
       "VEHBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "set",
+      "table",
+      "chair",
+      "chairs"
+    ],
+    "adjectives": [
+      "dinette"
+    ],
+    "commandNoun": "dinette set"
   },
   {
     "id": "DINING-ROOM-OBJECT",
     "name": "dining room",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "room"
+    ],
+    "adjectives": [
+      "spacious",
+      "dining"
+    ],
+    "commandNoun": "dining room"
   },
   {
     "id": "INTERCHANGE-OBJECT",
@@ -4337,13 +5783,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "interchange",
+      "cloverleaf"
+    ],
+    "adjectives": [
+      "huge",
+      "cloverleaf"
+    ],
+    "commandNoun": "interchange"
   },
   {
     "id": "LIVING-ROOM-OBJECT",
     "name": "living room",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "room"
+    ],
+    "adjectives": [
+      "living",
+      "large",
+      "sprawling"
+    ],
+    "commandNoun": "living room"
   },
   {
     "id": "BEER",
@@ -4351,19 +5815,50 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "drink",
+      "beer",
+      "ale",
+      "glass",
+      "mug",
+      "brew"
+    ],
+    "adjectives": [
+      "tall",
+      "foamy",
+      "my"
+    ],
+    "commandNoun": "beer"
   },
   {
     "id": "CARLOT",
     "name": "parking lot",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "lot"
+    ],
+    "adjectives": [
+      "parking",
+      "skycar",
+      "sky",
+      "car"
+    ],
+    "commandNoun": "parking lot"
   },
   {
     "id": "POST-OFFICE-OBJECT",
     "name": "post office",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "office"
+    ],
+    "adjectives": [
+      "post"
+    ],
+    "commandNoun": "post office"
   },
   {
     "id": "PROTRUSIONS",
@@ -4373,7 +5868,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "protrusio",
+      "pipe",
+      "pipes",
+      "vent",
+      "vents",
+      "antenna",
+      "antennae",
+      "antennas"
+    ],
+    "adjectives": [],
+    "commandNoun": "protrusions"
   },
   {
     "id": "RATION-CARD",
@@ -4382,7 +5889,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "READBIT",
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "card"
+    ],
+    "adjectives": [
+      "your",
+      "my",
+      "ration"
+    ],
+    "commandNoun": "ration card"
   },
   {
     "id": "RED-TUBECAR-OBJECT",
@@ -4391,13 +5907,37 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VEHBIT"
-    ]
+    ],
+    "synonyms": [
+      "tubecar",
+      "car",
+      "train",
+      "subway"
+    ],
+    "adjectives": [
+      "red",
+      "tube",
+      "omni-fabb",
+      "plant",
+      "rockvil",
+      "stadium"
+    ],
+    "commandNoun": "tubecar"
   },
   {
     "id": "RESIGNATION",
     "name": "resignation",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "resignation",
+      "letter"
+    ],
+    "adjectives": [
+      "resignation",
+      "your"
+    ],
+    "commandNoun": "resignation"
   },
   {
     "id": "RUSTY-CROSS",
@@ -4406,19 +5946,48 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TRYTAKEBIT",
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "cross",
+      "object"
+    ],
+    "adjectives": [
+      "rusty",
+      "rusting",
+      "metal"
+    ],
+    "commandNoun": "rusty cross"
   },
   {
     "id": "SILVER-DOVE",
     "name": "Silver Dove",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "dove"
+    ],
+    "adjectives": [
+      "silver"
+    ],
+    "commandNoun": "silver dove"
   },
   {
     "id": "SUPERMARKET",
     "name": "supermarket",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "foodville",
+      "supermark",
+      "store",
+      "grocery",
+      "market"
+    ],
+    "adjectives": [
+      "grocery",
+      "food"
+    ],
+    "commandNoun": "supermarket"
   },
   {
     "id": "VENTILATION",
@@ -4427,7 +5996,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "ventilati"
+    ],
+    "adjectives": [
+      "alpha",
+      "beta",
+      "gamma",
+      "delta"
+    ],
+    "commandNoun": "ventilation"
   },
   {
     "id": "WATER-TOWER-OBJECT",
@@ -4435,7 +6014,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "WATER-TOWER",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "tower",
+      "tank"
+    ],
+    "adjectives": [
+      "water",
+      "shiny",
+      "corroding",
+      "decrepit",
+      "plastallo"
+    ],
+    "commandNoun": "water tower"
   },
   {
     "id": "MY-BUZZER",
@@ -4445,7 +6036,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "MYBIT"
-    ]
+    ],
+    "synonyms": [
+      "buzzer",
+      "bell"
+    ],
+    "adjectives": [
+      "my"
+    ],
+    "commandNoun": "buzzer"
   },
   {
     "id": "AUDITORIUM",
@@ -4453,25 +6052,56 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "STUDENT-UNION",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "auditorium"
+    ],
+    "adjectives": [
+      "kresge"
+    ],
+    "commandNoun": "auditorium"
   },
   {
     "id": "CLERKMATON",
     "name": "clerkmaton",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "clerkmato"
+    ],
+    "adjectives": [],
+    "commandNoun": "clerkmaton"
   },
   {
     "id": "COURTHOUSE-OBJECT",
     "name": "courthouse",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "courthouse",
+      "house"
+    ],
+    "adjectives": [
+      "court"
+    ],
+    "commandNoun": "courthouse"
   },
   {
     "id": "DRUG-STORE-OBJECT",
     "name": "drug store",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "store",
+      "stores",
+      "shop",
+      "shops",
+      "pharmacy"
+    ],
+    "adjectives": [
+      "drug"
+    ],
+    "commandNoun": "drug store"
   },
   {
     "id": "FIRECOPTER",
@@ -4480,13 +6110,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "VEHBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "firecopte",
+      "copter"
+    ],
+    "adjectives": [
+      "fire",
+      "yellow"
+    ],
+    "commandNoun": "firecopter"
   },
   {
     "id": "FLOODLIGHT",
     "name": "floodlight",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "spotlight",
+      "floodlight"
+    ],
+    "adjectives": [
+      "harsh",
+      "powerful"
+    ],
+    "commandNoun": "floodlight"
   },
   {
     "id": "HEADSTONES",
@@ -4496,13 +6144,42 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READBIT",
       "NDESCBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "headstone",
+      "graveston",
+      "tombstone",
+      "stone",
+      "stones"
+    ],
+    "adjectives": [
+      "head",
+      "grave",
+      "tomb",
+      "toppled",
+      "vandalize"
+    ],
+    "commandNoun": "headstones"
   },
   {
     "id": "HUANG-HALL-OBJECT",
     "name": "Huang Hall",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "hall",
+      "center",
+      "facade"
+    ],
+    "adjectives": [
+      "huang",
+      "convention",
+      "austere",
+      "boxy",
+      "multi-purpose",
+      "plain"
+    ],
+    "commandNoun": "huang hall"
   },
   {
     "id": "POOL-TABLE",
@@ -4510,7 +6187,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "POOL-HALL",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "table",
+      "tables"
+    ],
+    "adjectives": [
+      "pool",
+      "billiard"
+    ],
+    "commandNoun": "pool table"
   },
   {
     "id": "PRISM-NAME",
@@ -4518,7 +6204,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "PERELMAN-PERSONAL-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "PROSTITUTE",
@@ -4526,7 +6215,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "prostitute",
+      "whore",
+      "harlot",
+      "hooker",
+      "streetwalker",
+      "paramour",
+      "concubine",
+      "nightwalker",
+      "cocotte",
+      "slut"
+    ],
+    "adjectives": [],
+    "commandNoun": "prostitute"
   },
   {
     "id": "JOYBOOTH-BUTTON",
@@ -4534,19 +6237,63 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "button"
+    ],
+    "adjectives": [
+      "red"
+    ],
+    "commandNoun": "red button"
   },
   {
     "id": "RESTAURANT-OBJECT",
     "name": "restaurant",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "restaurant",
+      "pagoda",
+      "coachman",
+      "meister",
+      "world",
+      "burgerwor",
+      "simon's"
+    ],
+    "adjectives": [
+      "small",
+      "large",
+      "chinese",
+      "famous",
+      "expensive",
+      "well-known",
+      "fast",
+      "food",
+      "fast-food",
+      "four",
+      "star",
+      "four-star",
+      "well",
+      "known",
+      "roy's",
+      "roys"
+    ],
+    "commandNoun": "restaurant"
   },
   {
     "id": "RIVER-BANK",
     "name": "river bank",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "bank",
+      "riverbank",
+      "river-bank"
+    ],
+    "adjectives": [
+      "river"
+    ],
+    "commandNoun": "river bank"
   },
   {
     "id": "SLEEP-MODE",
@@ -4555,7 +6302,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "mode"
+    ],
+    "adjectives": [
+      "sleep"
+    ],
+    "commandNoun": "sleep mode"
   },
   {
     "id": "STADIUM-STANDS",
@@ -4567,13 +6321,37 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "PLURALBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "stands",
+      "seat",
+      "seats",
+      "deck",
+      "bleachers",
+      "bleacher"
+    ],
+    "adjectives": [
+      "bleacher",
+      "upper",
+      "lower",
+      "stadium"
+    ],
+    "commandNoun": "stands"
   },
   {
     "id": "VACANT-LOT",
     "name": "vacant lot",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "lot"
+    ],
+    "adjectives": [
+      "vacant",
+      "empty",
+      "large"
+    ],
+    "commandNoun": "vacant lot"
   },
   {
     "id": "VIEWSCREEN",
@@ -4581,7 +6359,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "SKYCAB",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "viewscreen",
+      "screen"
+    ],
+    "adjectives": [
+      "two-meter"
+    ],
+    "commandNoun": "viewscreen"
   },
   {
     "id": "WNN-FEEDER",
@@ -4591,7 +6377,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "ACTORBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "feeder"
+    ],
+    "adjectives": [
+      "wnn",
+      "world",
+      "news",
+      "network"
+    ],
+    "commandNoun": "feeder"
   },
   {
     "id": "WNN-INSTRUCTIONS",
@@ -4599,7 +6395,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": null,
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "HANDS",
@@ -4611,17 +6410,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "PLURALBIT",
       "MYBIT"
-    ]
-  },
-  {
-    "id": "TEETH",
-    "name": "your teeth",
-    "initialLocation": "GLOBAL-OBJECTS",
-    "flags": [
-      "NARTICLEBIT",
-      "PLURALBIT",
-      "MYBIT"
-    ]
+    ],
+    "synonyms": [
+      "hands",
+      "hand"
+    ],
+    "adjectives": [
+      "bare",
+      "my",
+      "your"
+    ],
+    "commandNoun": "your hands"
   },
   {
     "id": "APARTMENT-OBJECT",
@@ -4629,7 +6428,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "apartment",
+      "flat",
+      "pad"
+    ],
+    "adjectives": [],
+    "commandNoun": "apartment"
   },
   {
     "id": "BATHROOMS",
@@ -4639,7 +6445,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "bathrooms"
+    ],
+    "adjectives": [],
+    "commandNoun": "bathrooms"
   },
   {
     "id": "POOL",
@@ -4647,7 +6458,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "pool",
+      "billiards"
+    ],
+    "adjectives": [],
+    "commandNoun": "billiards"
   },
   {
     "id": "BLEACHERS",
@@ -4657,7 +6474,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "VEHBIT",
       "FURNITUREBIT"
-    ]
+    ],
+    "synonyms": [
+      "bleacher",
+      "bleachers"
+    ],
+    "adjectives": [],
+    "commandNoun": "bleachers"
   },
   {
     "id": "SCHOOL-BOOKSTORE",
@@ -4665,13 +6488,34 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "STUDENT-UNION",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "store",
+      "bookstore",
+      "shop",
+      "bookshop"
+    ],
+    "adjectives": [
+      "book"
+    ],
+    "commandNoun": "bookstore"
   },
   {
     "id": "BOOKSTORE-OBJECT",
     "name": "bookstore",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "store",
+      "stores",
+      "shop",
+      "shops",
+      "bookstore"
+    ],
+    "adjectives": [
+      "book"
+    ],
+    "commandNoun": "bookstore"
   },
   {
     "id": "BSF-GUARDS",
@@ -4680,7 +6524,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "guard",
+      "guards"
+    ],
+    "adjectives": [
+      "bsf",
+      "border",
+      "security",
+      "force"
+    ],
+    "commandNoun": "bsf guard"
   },
   {
     "id": "CAFETERIA-OBJECT",
@@ -4688,7 +6543,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CAFETERIA",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "cafeteria",
+      "cafe",
+      "hall"
+    ],
+    "adjectives": [
+      "dining"
+    ],
+    "commandNoun": "cafeteria"
   },
   {
     "id": "UNIVERSITY-CAFETERIA",
@@ -4696,7 +6560,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "STUDENT-UNION",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "cafeteria",
+      "cafe"
+    ],
+    "adjectives": [],
+    "commandNoun": "cafeteria"
   },
   {
     "id": "CITY-HALL-OBJECT",
@@ -4704,7 +6574,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "hall"
+    ],
+    "adjectives": [
+      "city"
+    ],
+    "commandNoun": "city hall"
   },
   {
     "id": "CLASSROOMS",
@@ -4712,7 +6589,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LECTURE-HALL",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "classroom",
+      "room",
+      "rooms"
+    ],
+    "adjectives": [
+      "small",
+      "smaller",
+      "class"
+    ],
+    "commandNoun": "classroom"
   },
   {
     "id": "ANDERSON-DIRECTORY",
@@ -4720,13 +6608,28 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "directory"
+    ],
+    "adjectives": [],
+    "commandNoun": "directory"
   },
   {
     "id": "DORM-OBJECT",
     "name": "dormitory",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "dorm",
+      "dormitory",
+      "complex"
+    ],
+    "adjectives": [
+      "dorm",
+      "dormitory"
+    ],
+    "commandNoun": "dormitory"
   },
   {
     "id": "DUCK-POND",
@@ -4734,13 +6637,37 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "HALLEY-PARK-WEST",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "pond",
+      "bed"
+    ],
+    "adjectives": [
+      "small",
+      "duck",
+      "dried-out"
+    ],
+    "commandNoun": "duck pond"
   },
   {
     "id": "FIREPLACE",
     "name": "fireplace",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "fireplace",
+      "hearth",
+      "brick",
+      "chimney"
+    ],
+    "adjectives": [
+      "central",
+      "circular",
+      "deep",
+      "red",
+      "brick"
+    ],
+    "commandNoun": "fireplace"
   },
   {
     "id": "FIRETRUCK",
@@ -4749,15 +6676,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "VEHBIT",
       "NDESCBIT"
-    ]
-  },
-  {
-    "id": "HAZE",
-    "name": "gray haze",
-    "initialLocation": "ROOFTOP",
-    "flags": [
-      "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "firetruck",
+      "truck"
+    ],
+    "adjectives": [
+      "fire",
+      "yellow"
+    ],
+    "commandNoun": "firetruck"
   },
   {
     "id": "LAMP-POST",
@@ -4765,7 +6693,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "BODANSKI-SQUARE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "post"
+    ],
+    "adjectives": [
+      "lamp"
+    ],
+    "commandNoun": "lamp post"
   },
   {
     "id": "MACHINERY",
@@ -4773,7 +6708,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CORE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "machinery"
+    ],
+    "adjectives": [],
+    "commandNoun": "machinery"
   },
   {
     "id": "MANTA-RAY",
@@ -4781,7 +6721,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "ray"
+    ],
+    "adjectives": [
+      "manta"
+    ],
+    "commandNoun": "manta ray"
   },
   {
     "id": "MILKSHAKE",
@@ -4789,7 +6736,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "DRUG-STORE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "milkshake",
+      "frappe",
+      "soda",
+      "shake",
+      "float",
+      "cream"
+    ],
+    "adjectives": [
+      "milk",
+      "ice",
+      "cream"
+    ],
+    "commandNoun": "milkshake"
   },
   {
     "id": "NEWSPAPER",
@@ -4800,13 +6761,35 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKEBIT",
       "TRYTAKEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "newspaper",
+      "paper",
+      "times",
+      "article",
+      "story",
+      "section"
+    ],
+    "adjectives": [
+      "news",
+      "rockie",
+      "headline",
+      "newspaper"
+    ],
+    "commandNoun": "newspaper"
   },
   {
     "id": "PARTITION",
     "name": "partition",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "partition"
+    ],
+    "adjectives": [
+      "thin"
+    ],
+    "commandNoun": "partition"
   },
   {
     "id": "PLAN-DATA-DIRECTORY",
@@ -4814,25 +6797,53 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LIBRARY",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "POOL-HALL-OBJECT",
     "name": "pool hall",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "hall",
+      "establishment"
+    ],
+    "adjectives": [
+      "pool",
+      "classless"
+    ],
+    "commandNoun": "pool hall"
   },
   {
     "id": "RESERVOIR",
     "name": "reservoir",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "reservoir"
+    ],
+    "adjectives": [],
+    "commandNoun": "reservoir"
   },
   {
     "id": "CHURCH-SKYCOPTER",
     "name": "skycopter",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "skycopter",
+      "announcem",
+      "loudspeak",
+      "speaker",
+      "copter"
+    ],
+    "adjectives": [
+      "sky"
+    ],
+    "commandNoun": "skycopter"
   },
   {
     "id": "SOY-PATTY",
@@ -4840,7 +6851,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "patty",
+      "package",
+      "food"
+    ],
+    "adjectives": [
+      "soy",
+      "smelly"
+    ],
+    "commandNoun": "soy patty"
   },
   {
     "id": "SPACEPORT",
@@ -4848,7 +6869,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "TERMINAL",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "spaceport"
+    ],
+    "adjectives": [
+      "once",
+      "thriving",
+      "once-thriving"
+    ],
+    "commandNoun": "spaceport"
   },
   {
     "id": "TAX-STUDY",
@@ -4856,7 +6886,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CURRENT-EVENTS-DIRECTORY",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [],
+    "adjectives": [],
+    "commandNoun": null
   },
   {
     "id": "TERMINAL-BANKS",
@@ -4865,13 +6898,32 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "bank",
+      "banks",
+      "terminal",
+      "terminals",
+      "equipment"
+    ],
+    "adjectives": [],
+    "commandNoun": "terminals"
   },
   {
     "id": "TOWNHOUSE",
     "name": "townhouse",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "townhouse",
+      "complex",
+      "cluster"
+    ],
+    "adjectives": [
+      "luxury",
+      "high-security"
+    ],
+    "commandNoun": "townhouse"
   },
   {
     "id": "GOLD",
@@ -4880,13 +6932,33 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "ACTORBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "vera",
+      "gold",
+      "administr"
+    ],
+    "adjectives": [
+      "vera",
+      "chief"
+    ],
+    "commandNoun": "gold"
   },
   {
     "id": "WAREHOUSE-OBJECT",
     "name": "warehouse",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "warehouse"
+    ],
+    "adjectives": [
+      "gray",
+      "grey",
+      "old",
+      "dingy"
+    ],
+    "commandNoun": "warehouse"
   },
   {
     "id": "WATERPOOL",
@@ -4894,27 +6966,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
-  },
-  {
-    "id": "EARS",
-    "name": "your ears",
-    "initialLocation": "GLOBAL-OBJECTS",
-    "flags": [
-      "NARTICLEBIT",
-      "PLURALBIT",
-      "MYBIT"
-    ]
-  },
-  {
-    "id": "EYES",
-    "name": "your eyes",
-    "initialLocation": "GLOBAL-OBJECTS",
-    "flags": [
-      "NARTICLEBIT",
-      "PLURALBIT",
-      "MYBIT"
-    ]
+    ],
+    "synonyms": [
+      "waterpool",
+      "pool",
+      "fountain"
+    ],
+    "adjectives": [
+      "sprawling",
+      "free-form",
+      "water"
+    ],
+    "commandNoun": "waterpool"
   },
   {
     "id": "HEAD",
@@ -4923,7 +6986,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "MYBIT"
-    ]
+    ],
+    "synonyms": [
+      "head",
+      "face"
+    ],
+    "adjectives": [
+      "your",
+      "my"
+    ],
+    "commandNoun": "your head"
   },
   {
     "id": "MY-NAME",
@@ -4932,37 +7004,99 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "MYBIT"
-    ]
+    ],
+    "synonyms": [
+      "name"
+    ],
+    "adjectives": [
+      "my",
+      "your"
+    ],
+    "commandNoun": "your name"
   },
   {
     "id": "AQUARIUM-OBJECT",
     "name": "Aquarium",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "aquarium"
+    ],
+    "adjectives": [],
+    "commandNoun": "aquarium"
   },
   {
     "id": "BATHROOM-OBJECT",
     "name": "bathroom",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "bath",
+      "bathroom",
+      "room",
+      "restroom"
+    ],
+    "adjectives": [
+      "large",
+      "plain",
+      "rest",
+      "bath"
+    ],
+    "commandNoun": "bathroom"
   },
   {
     "id": "BSF-BASE",
     "name": "BSF base",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "base",
+      "monument"
+    ],
+    "adjectives": [
+      "manville",
+      "border",
+      "security",
+      "force",
+      "bsf",
+      "military",
+      "sobering"
+    ],
+    "commandNoun": "bsf base"
   },
   {
     "id": "BUILDING",
     "name": "building",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "building",
+      "apartment",
+      "bldg",
+      "buildings",
+      "bldgs",
+      "structure",
+      "edifice",
+      "edifices"
+    ],
+    "adjectives": [
+      "apartment"
+    ],
+    "commandNoun": "building"
   },
   {
     "id": "CEMETERY-OBJECT",
     "name": "cemetery",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "cemetery",
+      "graveyard"
+    ],
+    "adjectives": [
+      "midland"
+    ],
+    "commandNoun": "cemetery"
   },
   {
     "id": "CHILDREN",
@@ -4971,13 +7105,32 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "child",
+      "children",
+      "schoolchild",
+      "kid",
+      "kids"
+    ],
+    "adjectives": [
+      "school"
+    ],
+    "commandNoun": "children"
   },
   {
     "id": "CRIMINAL",
     "name": "criminal",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "criminal",
+      "thief",
+      "murderer",
+      "mugger"
+    ],
+    "adjectives": [],
+    "commandNoun": "criminal"
   },
   {
     "id": "DUNBARS-OBJECT",
@@ -4985,7 +7138,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "dunbar's",
+      "dunbars",
+      "store",
+      "shop",
+      "boutique"
+    ],
+    "adjectives": [
+      "venerable",
+      "departmen",
+      "dept",
+      "swank",
+      "elegant",
+      "upscale"
+    ],
+    "commandNoun": "dunbar's"
   },
   {
     "id": "DOORWAY",
@@ -4993,7 +7162,26 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "door",
+      "doors",
+      "entrance",
+      "opening",
+      "doorway",
+      "arch",
+      "archway",
+      "portal",
+      "portals"
+    ],
+    "adjectives": [
+      "wide",
+      "steel",
+      "impressiv",
+      "tall",
+      "arched"
+    ],
+    "commandNoun": "entrance"
   },
   {
     "id": "EXHIBITS",
@@ -5003,7 +7191,37 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "VOWELBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "exhibit",
+      "exhibits",
+      "life",
+      "art",
+      "science",
+      "engineeri",
+      "history",
+      "travel"
+    ],
+    "adjectives": [
+      "smaller",
+      "marine",
+      "life",
+      "modern",
+      "classical",
+      "natural",
+      "human",
+      "art",
+      "history",
+      "science",
+      "engineeri",
+      "railroad",
+      "rr",
+      "rail",
+      "travel",
+      "visually",
+      "interesti"
+    ],
+    "commandNoun": "exhibits"
   },
   {
     "id": "GRAFFITI",
@@ -5012,13 +7230,26 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "graffiti"
+    ],
+    "adjectives": [],
+    "commandNoun": "graffiti"
   },
   {
     "id": "GUN-SHOP-OBJECT",
     "name": "gun shop",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "shop",
+      "store"
+    ],
+    "adjectives": [
+      "gun"
+    ],
+    "commandNoun": "gun shop"
   },
   {
     "id": "HARDWARE",
@@ -5028,7 +7259,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "hardware",
+      "tool",
+      "tools"
+    ],
+    "adjectives": [],
+    "commandNoun": "hardware"
   },
   {
     "id": "HOMEWORK",
@@ -5038,19 +7276,50 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "READBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "homework",
+      "coursework"
+    ],
+    "adjectives": [
+      "typical",
+      "sixth-grade"
+    ],
+    "commandNoun": "homework"
   },
   {
     "id": "HOSPITAL-OBJECT",
     "name": "hospital",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "hospital",
+      "facility"
+    ],
+    "adjectives": [
+      "rockvil",
+      "general",
+      "old",
+      "prestigious"
+    ],
+    "commandNoun": "hospital"
   },
   {
     "id": "JOYBOOTH-OBJECT",
     "name": "joybooth",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "joybooth",
+      "joybooths",
+      "booth",
+      "booths"
+    ],
+    "adjectives": [
+      "joy",
+      "dizzard"
+    ],
+    "commandNoun": "joybooth"
   },
   {
     "id": "MAGAZINE",
@@ -5060,7 +7329,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "READBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "magazine",
+      "magazines",
+      "mag",
+      "mags",
+      "publicati",
+      "periodica",
+      "article"
+    ],
+    "adjectives": [
+      "magazine"
+    ],
+    "commandNoun": "magazine"
   },
   {
     "id": "MIDNIGHT",
@@ -5068,7 +7350,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "midnight"
+    ],
+    "adjectives": [],
+    "commandNoun": "midnight"
   },
   {
     "id": "MITCHELL",
@@ -5079,7 +7366,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NARTICLEBIT",
       "CONTBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "mitchell",
+      "simm",
+      "mitch",
+      "rav",
+      "son",
+      "boy",
+      "lad"
+    ],
+    "adjectives": [
+      "mitchell",
+      "mitch",
+      "rav",
+      "my"
+    ],
+    "commandNoun": "mitchell"
   },
   {
     "id": "OVERCOAT",
@@ -5088,7 +7391,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "overcoat"
+    ],
+    "adjectives": [
+      "white"
+    ],
+    "commandNoun": "overcoat"
   },
   {
     "id": "PAINTING",
@@ -5097,7 +7407,28 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "painting",
+      "art",
+      "artwork",
+      "canvas",
+      "sketch",
+      "watercolor",
+      "endeavor",
+      "picture"
+    ],
+    "adjectives": [
+      "watercolor",
+      "bright",
+      "artistic",
+      "vibrant",
+      "acrylide",
+      "brooding",
+      "dark",
+      "pencil"
+    ],
+    "commandNoun": "painting"
   },
   {
     "id": "PEDESTAL",
@@ -5106,7 +7437,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "base",
+      "pedestal",
+      "inscripti"
+    ],
+    "adjectives": [
+      "defaced",
+      "inscribed"
+    ],
+    "commandNoun": "pedestal"
   },
   {
     "id": "AIRPORT-SIGN",
@@ -5115,7 +7456,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "sign"
+    ],
+    "adjectives": [
+      "red"
+    ],
+    "commandNoun": "red sign"
   },
   {
     "id": "SKYLIGHT",
@@ -5124,7 +7472,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRANSBIT"
-    ]
+    ],
+    "synonyms": [
+      "skylight"
+    ],
+    "adjectives": [
+      "wide"
+    ],
+    "commandNoun": "skylight"
   },
   {
     "id": "SOUVENIR",
@@ -5132,13 +7487,55 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "souvenir",
+      "souvenirs",
+      "trinket",
+      "trinkets",
+      "junk"
+    ],
+    "adjectives": [
+      "typically",
+      "cheap",
+      "overpriced",
+      "over-priced",
+      "train-related"
+    ],
+    "commandNoun": "souvenir"
   },
   {
     "id": "TENEMENT-OBJECT",
     "name": "tenement",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "tenement",
+      "tenements",
+      "slum",
+      "slums",
+      "row",
+      "unit"
+    ],
+    "adjectives": [
+      "old",
+      "dirty",
+      "filthy",
+      "run-down",
+      "ugly",
+      "deserted",
+      "residence",
+      "disease",
+      "ridden",
+      "disease-ridden",
+      "malodorous",
+      "substandard",
+      "sub-standard",
+      "rat-infested",
+      "rat",
+      "infested"
+    ],
+    "commandNoun": "tenement"
   },
   {
     "id": "PERELMAN-TERMINAL",
@@ -5146,19 +7543,43 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "OFFICE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "terminal"
+    ],
+    "adjectives": [
+      "computer"
+    ],
+    "commandNoun": "terminal"
   },
   {
     "id": "SKYBUS-TERMINAL-OBJECT",
     "name": "terminal",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "terminal",
+      "station"
+    ],
+    "adjectives": [
+      "skybus",
+      "run-down"
+    ],
+    "commandNoun": "terminal"
   },
   {
     "id": "AIRPORT-TERMINAL-OBJECT",
     "name": "terminal",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "terminal",
+      "airport"
+    ],
+    "adjectives": [
+      "airport"
+    ],
+    "commandNoun": "terminal"
   },
   {
     "id": "PLAN",
@@ -5166,7 +7587,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "plan"
+    ],
+    "adjectives": [],
+    "commandNoun": "plan"
   },
   {
     "id": "TOTE-BAGS",
@@ -5174,7 +7600,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "bag",
+      "bags"
+    ],
+    "adjectives": [
+      "tote",
+      "small"
+    ],
+    "commandNoun": "tote bag"
   },
   {
     "id": "TOY",
@@ -5182,7 +7617,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CRIB",
     "flags": [
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "toy",
+      "duck",
+      "ducks",
+      "duckie"
+    ],
+    "adjectives": [
+      "toy",
+      "rubber",
+      "yellow"
+    ],
+    "commandNoun": "toy duck"
   },
   {
     "id": "VIBRAMAT",
@@ -5190,7 +7637,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LAUNDROMAT",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "vibramat"
+    ],
+    "adjectives": [],
+    "commandNoun": "vibramat"
   },
   {
     "id": "ME",
@@ -5200,7 +7652,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ACTORBIT",
       "TOUCHBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "myself",
+      "perry",
+      "prism",
+      "self",
+      "simm",
+      "me",
+      "i"
+    ],
+    "adjectives": [
+      "perry"
+    ],
+    "commandNoun": "myself"
   },
   {
     "id": "BARKING",
@@ -5209,13 +7674,34 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "barking"
+    ],
+    "adjectives": [
+      "distant"
+    ],
+    "commandNoun": "barking"
   },
   {
     "id": "BEDROOM-OBJECT",
     "name": "bedroom",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "bedroom",
+      "room"
+    ],
+    "adjectives": [
+      "bed",
+      "guest",
+      "master",
+      "huge",
+      "round",
+      "sunny",
+      "cozy"
+    ],
+    "commandNoun": "bedroom"
   },
   {
     "id": "BLANKET",
@@ -5223,7 +7709,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "JAIL-CELL",
     "flags": [
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "blanket"
+    ],
+    "adjectives": [
+      "ratty",
+      "torn",
+      "bug-infested"
+    ],
+    "commandNoun": "blanket"
   },
   {
     "id": "CEILING",
@@ -5232,7 +7727,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TOUCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "ceiling",
+      "roof"
+    ],
+    "adjectives": [],
+    "commandNoun": "ceiling"
   },
   {
     "id": "CLOTHES",
@@ -5243,7 +7744,29 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TRYTAKEBIT",
       "NDESCBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "clothes",
+      "clothing",
+      "garment",
+      "garments",
+      "pants",
+      "shirt",
+      "shirts"
+    ],
+    "adjectives": [
+      "my",
+      "pair",
+      "pairs",
+      "fashionable",
+      "drab",
+      "brown",
+      "olive",
+      "stylish",
+      "violet",
+      "gold"
+    ],
+    "commandNoun": "clothes"
   },
   {
     "id": "COOLING",
@@ -5252,7 +7775,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "cooling"
+    ],
+    "adjectives": [
+      "alpha",
+      "beta",
+      "gamma",
+      "delta"
+    ],
+    "commandNoun": "cooling"
   },
   {
     "id": "COUNTER",
@@ -5263,7 +7796,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPENBIT",
       "CONTBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "counter",
+      "counters"
+    ],
+    "adjectives": [],
+    "commandNoun": "counter"
   },
   {
     "id": "DECODER",
@@ -5272,13 +7811,38 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "decoder"
+    ],
+    "adjectives": [],
+    "commandNoun": "decoder"
   },
   {
     "id": "FACTORY-OBJECT",
     "name": "factory",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "factory",
+      "factories",
+      "complex",
+      "plant"
+    ],
+    "adjectives": [
+      "factory",
+      "large",
+      "huge",
+      "skycar",
+      "omni",
+      "fabb",
+      "omni-fabb",
+      "closed",
+      "crumbling",
+      "chip",
+      "once-booming"
+    ],
+    "commandNoun": "factory"
   },
   {
     "id": "GUN",
@@ -5287,13 +7851,84 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "firearm",
+      "firearms",
+      "gun",
+      "guns",
+      "rifle",
+      "rifles",
+      "pistol",
+      "pistols",
+      "weapon",
+      "weapons",
+      "gat",
+      "gats",
+      "heater",
+      "heaters",
+      "rod",
+      "rods",
+      "piece",
+      "pieces",
+      "automatic",
+      "revolver",
+      "revolvers",
+      "special",
+      "specials",
+      "colt",
+      "colts",
+      "forty-five",
+      "shotgun",
+      "shotguns",
+      "flintlock",
+      "six-shooter",
+      "biogun"
+    ],
+    "adjectives": [
+      "snub",
+      "nosed",
+      "snub-nosed",
+      "colt",
+      "saturday",
+      "night",
+      "sawed-off",
+      "bb",
+      "machine",
+      "sub-machine",
+      "submachine",
+      "forty-five",
+      "caliber",
+      "thirty-two",
+      "thirty-eight",
+      "twenty-two",
+      "zip",
+      "pellet",
+      "silenced",
+      "poorly",
+      "concealed",
+      "your"
+    ],
+    "commandNoun": "firearm"
   },
   {
     "id": "HALLWAY",
     "name": "hallway",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "hall",
+      "hallway",
+      "corridor",
+      "foyer",
+      "breezeway"
+    ],
+    "adjectives": [
+      "dark",
+      "bright",
+      "airy"
+    ],
+    "commandNoun": "hallway"
   },
   {
     "id": "HEADSET",
@@ -5302,7 +7937,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "WEARBIT"
-    ]
+    ],
+    "synonyms": [
+      "headset",
+      "headphone",
+      "set"
+    ],
+    "adjectives": [
+      "head"
+    ],
+    "commandNoun": "headset"
   },
   {
     "id": "HEATING",
@@ -5311,15 +7955,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "UNSEENBIT"
-    ]
-  },
-  {
-    "id": "HORIZON",
-    "name": "horizon",
-    "initialLocation": "ROOFTOP",
-    "flags": [
-      "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "heating",
+      "heat"
+    ],
+    "adjectives": [
+      "alpha",
+      "beta",
+      "gamma",
+      "delta"
+    ],
+    "commandNoun": "heating"
   },
   {
     "id": "JUKEBOX",
@@ -5327,25 +7974,66 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "BAR",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "jukebox",
+      "box"
+    ],
+    "adjectives": [
+      "juke",
+      "old"
+    ],
+    "commandNoun": "jukebox"
   },
   {
     "id": "KITCHEN-OBJECT",
     "name": "kitchen",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "kitchen"
+    ],
+    "adjectives": [
+      "tiny",
+      "lovely"
+    ],
+    "commandNoun": "kitchen"
   },
   {
     "id": "MAIN-LIBRARY-OBJECT",
     "name": "library",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "library",
+      "branch",
+      "system"
+    ],
+    "adjectives": [
+      "main",
+      "rockvil",
+      "public",
+      "library"
+    ],
+    "commandNoun": "library"
   },
   {
     "id": "MAILBOXES",
     "name": "mailbox",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "mailbox",
+      "mailboxes",
+      "box",
+      "boxes"
+    ],
+    "adjectives": [
+      "vandalize",
+      "tiny",
+      "mail"
+    ],
+    "commandNoun": "mailbox"
   },
   {
     "id": "MARQUEE",
@@ -5354,13 +8042,29 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "marquee"
+    ],
+    "adjectives": [],
+    "commandNoun": "marquee"
   },
   {
     "id": "RECTORY-OBJECT",
     "name": "rectory",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "rectory",
+      "parsonage",
+      "pastorage",
+      "building"
+    ],
+    "adjectives": [
+      "old",
+      "church"
+    ],
+    "commandNoun": "rectory"
   },
   {
     "id": "ROCKVIL-OBJECT",
@@ -5368,7 +8072,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "rockvil",
+      "city"
+    ],
+    "adjectives": [],
+    "commandNoun": "rockvil"
   },
   {
     "id": "SHELVES",
@@ -5376,7 +8086,28 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "bookshelf",
+      "bookshelves",
+      "shelf",
+      "shelves"
+    ],
+    "adjectives": [
+      "overstuffed",
+      "over-stuffed",
+      "book",
+      "bare",
+      "closely",
+      "placed",
+      "heaping",
+      "closely-placed",
+      "sparsely",
+      "filled",
+      "adequately",
+      "stocked"
+    ],
+    "commandNoun": "shelves"
   },
   {
     "id": "SKYCAR",
@@ -5385,19 +8116,61 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "skycar",
+      "skycars",
+      "car",
+      "cars"
+    ],
+    "adjectives": [
+      "sky"
+    ],
+    "commandNoun": "skycars"
   },
   {
     "id": "STADIUM-OBJECT",
     "name": "stadium",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "stadium",
+      "park",
+      "facility"
+    ],
+    "adjectives": [
+      "rockvil",
+      "municipal",
+      "monolithic",
+      "plasticrete",
+      "dark",
+      "deserted",
+      "multi-purpose",
+      "multi",
+      "purpose",
+      "packed",
+      "sporting",
+      "sports",
+      "event"
+    ],
+    "commandNoun": "stadium"
   },
   {
     "id": "SOLARIUM-OBJECT",
     "name": "sunroom",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "solarium",
+      "sunroom",
+      "porch",
+      "sunporch"
+    ],
+    "adjectives": [
+      "enclosed",
+      "glass-walled"
+    ],
+    "commandNoun": "sunroom"
   },
   {
     "id": "SWEATER",
@@ -5408,13 +8181,33 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WEARBIT",
       "TRYTAKEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "sweater",
+      "sweaters"
+    ],
+    "adjectives": [
+      "brightly",
+      "colored",
+      "myalon",
+      "my"
+    ],
+    "commandNoun": "sweater"
   },
   {
     "id": "PATIO-OBJECT",
     "name": "terrace",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "patio",
+      "terrace"
+    ],
+    "adjectives": [
+      "wide",
+      "outdoor"
+    ],
+    "commandNoun": "terrace"
   },
   {
     "id": "WASHERS",
@@ -5424,7 +8217,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "washer",
+      "washers"
+    ],
+    "adjectives": [
+      "tradition",
+      "clothes"
+    ],
+    "commandNoun": "washers"
   },
   {
     "id": "ANIMAL",
@@ -5432,7 +8234,24 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "animal",
+      "animals",
+      "ape",
+      "apes",
+      "monkey",
+      "monkeys",
+      "ape",
+      "apes"
+    ],
+    "adjectives": [
+      "small",
+      "whimpering",
+      "various",
+      "wild"
+    ],
+    "commandNoun": "animal"
   },
   {
     "id": "ATRIUM",
@@ -5441,7 +8260,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "VOWELBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "atrium"
+    ],
+    "adjectives": [
+      "tremendou",
+      "huge",
+      "multi",
+      "story",
+      "multi-story"
+    ],
+    "commandNoun": "atrium"
   },
   {
     "id": "BANNER",
@@ -5449,7 +8279,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "banner"
+    ],
+    "adjectives": [],
+    "commandNoun": "banner"
   },
   {
     "id": "BUREAU",
@@ -5461,7 +8296,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPENBIT",
       "SURFACEBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "bureau",
+      "dresser",
+      "chest",
+      "drawer",
+      "drawers"
+    ],
+    "adjectives": [
+      "flimsy"
+    ],
+    "commandNoun": "bureau"
   },
   {
     "id": "BUZZERS",
@@ -5469,19 +8315,69 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "buzzer",
+      "buzzers",
+      "doorbell",
+      "doorbells"
+    ],
+    "adjectives": [
+      "labelled"
+    ],
+    "commandNoun": "buzzer"
   },
   {
     "id": "CAMPUS",
     "name": "campus",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "campus",
+      "universit"
+    ],
+    "adjectives": [
+      "rockvil",
+      "universit",
+      "bustling",
+      "quiet",
+      "nearly",
+      "deserted",
+      "urban",
+      "closed"
+    ],
+    "commandNoun": "campus"
   },
   {
     "id": "CHURCH-OBJECT",
     "name": "church",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "church",
+      "word",
+      "michael's",
+      "headquarters"
+    ],
+    "adjectives": [
+      "large",
+      "opulent",
+      "protestant",
+      "catholic",
+      "closed",
+      "boarded",
+      "boarded-up",
+      "old",
+      "new",
+      "first",
+      "methodist",
+      "regional",
+      "central",
+      "michael's",
+      "god's",
+      "st"
+    ],
+    "commandNoun": "church"
   },
   {
     "id": "DRYERS",
@@ -5491,7 +8387,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "dryer",
+      "dryers"
+    ],
+    "adjectives": [
+      "tradition",
+      "clothes"
+    ],
+    "commandNoun": "dryers"
   },
   {
     "id": "FLOORS",
@@ -5501,13 +8406,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "UNSEENBIT"
-    ]
+    ],
+    "synonyms": [
+      "floors"
+    ],
+    "adjectives": [],
+    "commandNoun": "floors"
   },
   {
     "id": "GROUND",
     "name": "ground",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "floor",
+      "ground",
+      "mud"
+    ],
+    "adjectives": [],
+    "commandNoun": "ground"
   },
   {
     "id": "LIQUOR",
@@ -5516,7 +8433,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "drink",
+      "liquor",
+      "booze",
+      "alcohol"
+    ],
+    "adjectives": [],
+    "commandNoun": "liquor"
   },
   {
     "id": "OTHER-LIQUOR",
@@ -5524,7 +8449,28 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "champagne",
+      "schnapps",
+      "amaretto",
+      "burgundy",
+      "whiskey",
+      "liqueur",
+      "tequila",
+      "whisky",
+      "kahlua",
+      "cognac",
+      "sherry",
+      "glass",
+      "vodka",
+      "wine",
+      "port",
+      "rum",
+      "ale"
+    ],
+    "adjectives": [],
+    "commandNoun": "champagne"
   },
   {
     "id": "LOUNGE",
@@ -5532,7 +8478,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "DORM",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "lounge"
+    ],
+    "adjectives": [],
+    "commandNoun": "lounge"
   },
   {
     "id": "MINDEX",
@@ -5541,19 +8492,39 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "mindex"
+    ],
+    "adjectives": [],
+    "commandNoun": "mindex"
   },
   {
     "id": "MUSEUM-OBJECT",
     "name": "museum",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "museum"
+    ],
+    "adjectives": [
+      "halley",
+      "railroad"
+    ],
+    "commandNoun": "museum"
   },
   {
     "id": "INTNUM",
     "name": "number",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "intnum"
+    ],
+    "adjectives": [
+      "number"
+    ],
+    "commandNoun": "number intnum"
   },
   {
     "id": "OFFICE-OBJECT",
@@ -5562,7 +8533,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "VOWELBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "office"
+    ],
+    "adjectives": [],
+    "commandNoun": "office"
   },
   {
     "id": "PROFESSOR-OFFICES",
@@ -5571,7 +8547,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "office",
+      "offices"
+    ],
+    "adjectives": [
+      "professor",
+      "prof",
+      "prof's"
+    ],
+    "commandNoun": "office"
   },
   {
     "id": "PEOPLE",
@@ -5580,7 +8566,27 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "people",
+      "men",
+      "women",
+      "crowd",
+      "crowds",
+      "mob",
+      "mobs",
+      "diners",
+      "serfs",
+      "marketeer",
+      "students"
+    ],
+    "adjectives": [
+      "frenzied",
+      "bloodthirsty",
+      "mealtime",
+      "black"
+    ],
+    "commandNoun": "people"
   },
   {
     "id": "PLAQUE",
@@ -5589,19 +8595,37 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "plaque"
+    ],
+    "adjectives": [
+      "small",
+      "bronze"
+    ],
+    "commandNoun": "plaque"
   },
   {
     "id": "JAIL-OBJECT",
     "name": "prison",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
-  },
-  {
-    "id": "PSEUDO-OBJECT",
-    "name": "pseudo",
-    "initialLocation": null,
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "jail",
+      "prison",
+      "cell",
+      "cells",
+      "reformato"
+    ],
+    "adjectives": [
+      "rockvil",
+      "jail",
+      "river",
+      "street",
+      "empty",
+      "crowded"
+    ],
+    "commandNoun": "prison"
   },
   {
     "id": "CC-PRINTOUT",
@@ -5609,13 +8633,43 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CONTROL-CENTER",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "report",
+      "printout"
+    ],
+    "adjectives": [
+      "hefty",
+      "long",
+      "thick"
+    ],
+    "commandNoun": "report"
   },
   {
     "id": "SCHOOL-OBJECT",
     "name": "school",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "school"
+    ],
+    "adjectives": [
+      "vincent",
+      "rockvil",
+      "high",
+      "public",
+      "private",
+      "old",
+      "oldest",
+      "secondary",
+      "mortimer",
+      "dental",
+      "fairly",
+      "new",
+      "small",
+      "church-owned"
+    ],
+    "commandNoun": "school"
   },
   {
     "id": "SKYBUS",
@@ -5623,7 +8677,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "SKYBUS-TERMINAL",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "skybus"
+    ],
+    "adjectives": [],
+    "commandNoun": "skybus"
   },
   {
     "id": "SKYCAB-OBJECT",
@@ -5631,7 +8690,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "SKYCAB",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "skycab",
+      "cab",
+      "skytaxi",
+      "taxi",
+      "hack",
+      "limousine",
+      "limo"
+    ],
+    "adjectives": [
+      "sky",
+      "luxurious",
+      "top-of-the-line"
+    ],
+    "commandNoun": "skycab"
   },
   {
     "id": "STAIRS",
@@ -5640,7 +8714,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "step",
+      "steps",
+      "stair",
+      "stairs",
+      "stairway",
+      "staircase",
+      "stairwell"
+    ],
+    "adjectives": [
+      "sealed-off",
+      "covered"
+    ],
+    "commandNoun": "stairs"
   },
   {
     "id": "STATUE",
@@ -5648,7 +8736,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "statue",
+      "kennedy",
+      "john",
+      "jfk"
+    ],
+    "adjectives": [
+      "john",
+      "fitzgeral"
+    ],
+    "commandNoun": "statue"
   },
   {
     "id": "HALLEY-STATUE",
@@ -5657,7 +8756,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "statue",
+      "francisco",
+      "halley"
+    ],
+    "adjectives": [
+      "francisco",
+      "halley"
+    ],
+    "commandNoun": "statue"
   },
   {
     "id": "TICKET",
@@ -5667,7 +8776,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKEBIT",
       "TRYTAKEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "ticket",
+      "pass"
+    ],
+    "adjectives": [
+      "boarding"
+    ],
+    "commandNoun": "ticket"
   },
   {
     "id": "TOILET",
@@ -5677,13 +8794,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "VEHBIT",
       "FURNITUREBIT"
-    ]
+    ],
+    "synonyms": [
+      "toilet",
+      "potty",
+      "john"
+    ],
+    "adjectives": [],
+    "commandNoun": "toilet"
   },
   {
     "id": "TUNNEL",
     "name": "tunnel",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "tunnel"
+    ],
+    "adjectives": [],
+    "commandNoun": "tunnel"
   },
   {
     "id": "TURTLE",
@@ -5691,7 +8820,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "turtle"
+    ],
+    "adjectives": [
+      "sea"
+    ],
+    "commandNoun": "turtle"
   },
   {
     "id": "WALLET",
@@ -5701,7 +8837,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CONTBIT",
       "TAKEBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "wallet"
+    ],
+    "adjectives": [
+      "your",
+      "my"
+    ],
+    "commandNoun": "wallet"
   },
   {
     "id": "APARTMENT-WINDOW",
@@ -5709,7 +8853,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "TRANSBIT"
-    ]
+    ],
+    "synonyms": [
+      "window",
+      "windows"
+    ],
+    "adjectives": [
+      "huge"
+    ],
+    "commandNoun": "window"
   },
   {
     "id": "GLOBAL-WINDOW",
@@ -5717,7 +8869,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "TRANSBIT"
-    ]
+    ],
+    "synonyms": [
+      "window",
+      "windows"
+    ],
+    "adjectives": [
+      "broken",
+      "tall",
+      "large",
+      "huge",
+      "plate",
+      "glass",
+      "shattered",
+      "tinted",
+      "zero-glare"
+    ],
+    "commandNoun": "window"
   },
   {
     "id": "ALARM",
@@ -5726,7 +8894,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "alarm"
+    ],
+    "adjectives": [
+      "loud"
+    ],
+    "commandNoun": "alarm"
   },
   {
     "id": "ALLEY-OBJECT",
@@ -5734,13 +8909,36 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "VOWELBIT"
-    ]
+    ],
+    "synonyms": [
+      "alley"
+    ],
+    "adjectives": [
+      "long",
+      "narrow",
+      "dim"
+    ],
+    "commandNoun": "alley"
   },
   {
     "id": "ANNEX-OBJECT",
     "name": "annex",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "annex",
+      "wing"
+    ],
+    "adjectives": [
+      "hospital",
+      "new",
+      "modern",
+      "fairly",
+      "well",
+      "maintained",
+      "well-maintained"
+    ],
+    "commandNoun": "annex"
   },
   {
     "id": "APPLE",
@@ -5750,7 +8948,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "VOWELBIT",
       "TAKEBIT",
       "EATBIT"
-    ]
+    ],
+    "synonyms": [
+      "apple",
+      "food"
+    ],
+    "adjectives": [],
+    "commandNoun": "apple"
   },
   {
     "id": "BENCH",
@@ -5762,7 +8966,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CONTBIT",
       "FURNITUREBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "bench"
+    ],
+    "adjectives": [],
+    "commandNoun": "bench"
   },
   {
     "id": "BOOKS",
@@ -5773,7 +8982,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PLURALBIT",
       "TRYTAKEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "book",
+      "books",
+      "novel",
+      "novels"
+    ],
+    "adjectives": [
+      "old",
+      "used",
+      "library"
+    ],
+    "commandNoun": "books"
   },
   {
     "id": "CAGES",
@@ -5783,7 +9004,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "NARTICLEBIT",
       "PLURALBIT"
-    ]
+    ],
+    "synonyms": [
+      "cage",
+      "cages"
+    ],
+    "adjectives": [],
+    "commandNoun": "cages"
   },
   {
     "id": "CHAIR",
@@ -5794,7 +9021,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "VEHBIT",
       "FURNITUREBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "chair",
+      "chairs",
+      "seat",
+      "seats"
+    ],
+    "adjectives": [
+      "desk",
+      "swivel"
+    ],
+    "commandNoun": "chair"
   },
   {
     "id": "CLAVE",
@@ -5803,7 +9041,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "clave",
+      "clavius",
+      "simm",
+      "brother"
+    ],
+    "adjectives": [
+      "my",
+      "clave",
+      "clavius"
+    ],
+    "commandNoun": "clave"
   },
   {
     "id": "COUCH",
@@ -5814,7 +9064,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "VEHBIT",
       "FURNITUREBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "couch",
+      "sofa"
+    ],
+    "adjectives": [],
+    "commandNoun": "couch"
   },
   {
     "id": "CRATE",
@@ -5824,13 +9080,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "CONTBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "crate",
+      "crates"
+    ],
+    "adjectives": [
+      "dusty"
+    ],
+    "commandNoun": "crate"
   },
   {
     "id": "CRIME",
     "name": "crime",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "crime",
+      "mugging",
+      "robbery",
+      "murder",
+      "shooting",
+      "theft"
+    ],
+    "adjectives": [],
+    "commandNoun": "crime"
   },
   {
     "id": "DRUGS",
@@ -5840,7 +9114,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "PLURALBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "drug",
+      "drugs",
+      "pill",
+      "pills",
+      "pharmaceu",
+      "medicine",
+      "medicines"
+    ],
+    "adjectives": [],
+    "commandNoun": "drugs"
   },
   {
     "id": "EASEL",
@@ -5849,19 +9134,46 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "VOWELBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "easel",
+      "easle"
+    ],
+    "adjectives": [
+      "jill's"
+    ],
+    "commandNoun": "easel"
   },
   {
     "id": "FENCE",
     "name": "fence",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "fence"
+    ],
+    "adjectives": [
+      "tall",
+      "high",
+      "perimeter",
+      "wooden",
+      "temporary"
+    ],
+    "commandNoun": "fence"
   },
   {
     "id": "FIELD",
     "name": "field",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "field"
+    ],
+    "adjectives": [
+      "athletic",
+      "outdoor"
+    ],
+    "commandNoun": "field"
   },
   {
     "id": "GLASS",
@@ -5869,25 +9181,60 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "glass"
+    ],
+    "adjectives": [
+      "broken",
+      "shattered"
+    ],
+    "commandNoun": "glass"
   },
   {
     "id": "HOTEL-OBJECT",
     "name": "hotel",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "hotel"
+    ],
+    "adjectives": [
+      "veldran",
+      "colonial",
+      "fairly",
+      "old",
+      "opulent",
+      "luxury",
+      "high-rise"
+    ],
+    "commandNoun": "hotel"
   },
   {
     "id": "LABEL",
     "name": "label",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "label",
+      "labels"
+    ],
+    "adjectives": [
+      "my"
+    ],
+    "commandNoun": "label"
   },
   {
     "id": "MOVIE",
     "name": "movie",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "movie",
+      "film"
+    ],
+    "adjectives": [],
+    "commandNoun": "movie"
   },
   {
     "id": "MUSIC",
@@ -5895,19 +9242,48 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "music"
+    ],
+    "adjectives": [
+      "loud",
+      "raucous",
+      "distorted",
+      "muffled"
+    ],
+    "commandNoun": "music"
   },
   {
     "id": "NIGHT",
     "name": "night",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "night",
+      "nighttime",
+      "nightime",
+      "dark",
+      "darkness"
+    ],
+    "adjectives": [],
+    "commandNoun": "night"
   },
   {
     "id": "RIVER",
     "name": "river",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "river"
+    ],
+    "adjectives": [
+      "little",
+      "missouri",
+      "wide",
+      "polluted"
+    ],
+    "commandNoun": "river"
   },
   {
     "id": "SCARF",
@@ -5916,7 +9292,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "WEARBIT"
-    ]
+    ],
+    "synonyms": [
+      "scarf"
+    ],
+    "adjectives": [
+      "conservative",
+      "male"
+    ],
+    "commandNoun": "scarf"
   },
   {
     "id": "SLEEP",
@@ -5924,7 +9308,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "sleep",
+      "nap"
+    ],
+    "adjectives": [],
+    "commandNoun": "sleep"
   },
   {
     "id": "SMOKE",
@@ -5932,7 +9322,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "smoke",
+      "billow",
+      "billows",
+      "pillar",
+      "pillars"
+    ],
+    "adjectives": [
+      "black",
+      "ashy",
+      "tobacco",
+      "tremendou",
+      "thick"
+    ],
+    "commandNoun": "smoke"
   },
   {
     "id": "OFFICIAL-SNACK",
@@ -5940,7 +9345,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "snack",
+      "cupcake",
+      "donut",
+      "doughnut",
+      "cake"
+    ],
+    "adjectives": [
+      "cup",
+      "large"
+    ],
+    "commandNoun": "snack"
   },
   {
     "id": "STONES",
@@ -5949,7 +9366,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "stone",
+      "stones",
+      "rock",
+      "rocks"
+    ],
+    "adjectives": [],
+    "commandNoun": "stone"
   },
   {
     "id": "BAR-STOOL",
@@ -5959,13 +9384,30 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "VEHBIT",
       "FURNITUREBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "stool",
+      "stools"
+    ],
+    "adjectives": [
+      "battered",
+      "wooden"
+    ],
+    "commandNoun": "stool"
   },
   {
     "id": "STORE-OBJECT",
     "name": "store",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "store",
+      "stores",
+      "shop",
+      "shops"
+    ],
+    "adjectives": [],
+    "commandNoun": "store"
   },
   {
     "id": "GLOBAL-TABLE",
@@ -5974,7 +9416,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "SURFACEBIT",
       "VEHBIT"
-    ]
+    ],
+    "synonyms": [
+      "table",
+      "tables"
+    ],
+    "adjectives": [
+      "tiny",
+      "old",
+      "wooden"
+    ],
+    "commandNoun": "table"
   },
   {
     "id": "RESTAURANT-TABLE",
@@ -5985,7 +9437,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SURFACEBIT",
       "OPENBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "table"
+    ],
+    "adjectives": [],
+    "commandNoun": "table"
   },
   {
     "id": "WASTE",
@@ -5994,13 +9451,38 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "waste",
+      "wastes",
+      "garbage",
+      "landfill"
+    ],
+    "adjectives": [
+      "liquid",
+      "processed",
+      "dechemified",
+      "radioactive",
+      "radio-active"
+    ],
+    "commandNoun": "waste"
   },
   {
     "id": "WATER",
     "name": "water",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "water"
+    ],
+    "adjectives": [
+      "placid",
+      "hot",
+      "cold",
+      "ice",
+      "murky"
+    ],
+    "commandNoun": "water"
   },
   {
     "id": "WOMAN",
@@ -6009,7 +9491,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "woman",
+      "beggar"
+    ],
+    "adjectives": [
+      "beggar"
+    ],
+    "commandNoun": "woman"
   },
   {
     "id": "BABY",
@@ -6018,19 +9508,47 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "ACTORBIT"
-    ]
+    ],
+    "synonyms": [
+      "baby",
+      "mitchell",
+      "mitch",
+      "rav",
+      "simm",
+      "son"
+    ],
+    "adjectives": [
+      "mitchell",
+      "mitch",
+      "rav",
+      "my"
+    ],
+    "commandNoun": "baby"
   },
   {
     "id": "BANK-OBJECT",
     "name": "bank",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "bank"
+    ],
+    "adjectives": [
+      "first",
+      "continent"
+    ],
+    "commandNoun": "bank"
   },
   {
     "id": "CARD-CATALOG-CARD",
     "name": "card",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "card"
+    ],
+    "adjectives": [],
+    "commandNoun": "card"
   },
   {
     "id": "CRIB",
@@ -6041,7 +9559,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CONTBIT",
       "OPENBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "crib"
+    ],
+    "adjectives": [
+      "baby's",
+      "mitch's",
+      "mitchell"
+    ],
+    "commandNoun": "crib"
   },
   {
     "id": "DAWN",
@@ -6049,13 +9576,30 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "dawn",
+      "sunrise",
+      "sunup"
+    ],
+    "adjectives": [
+      "morning"
+    ],
+    "commandNoun": "dawn"
   },
   {
     "id": "DESK",
     "name": "desk",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "desk"
+    ],
+    "adjectives": [
+      "receiving",
+      "admitting"
+    ],
+    "commandNoun": "desk"
   },
   {
     "id": "PERELMAN-DESK",
@@ -6067,7 +9611,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CONTBIT",
       "SEARCHBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "desk"
+    ],
+    "adjectives": [
+      "perelman",
+      "abe's"
+    ],
+    "commandNoun": "desk"
   },
   {
     "id": "PARKVIEW-DOOR",
@@ -6076,7 +9628,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "DOORBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "door",
+      "doors"
+    ],
+    "adjectives": [],
+    "commandNoun": "door"
   },
   {
     "id": "APARTMENT-DOOR",
@@ -6084,7 +9642,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "DOORBIT"
-    ]
+    ],
+    "synonyms": [
+      "door"
+    ],
+    "adjectives": [],
+    "commandNoun": "door"
   },
   {
     "id": "UNOPENABLE-DOOR",
@@ -6092,7 +9655,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "DOORBIT"
-    ]
+    ],
+    "synonyms": [
+      "door",
+      "doors"
+    ],
+    "adjectives": [
+      "shattered",
+      "glass"
+    ],
+    "commandNoun": "door"
   },
   {
     "id": "WAREHOUSE-DOOR",
@@ -6100,7 +9672,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "WAREHOUSE-1",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "door"
+    ],
+    "adjectives": [],
+    "commandNoun": "door"
   },
   {
     "id": "DUSK",
@@ -6108,7 +9685,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "dusk",
+      "sunset",
+      "sundown"
+    ],
+    "adjectives": [
+      "evening"
+    ],
+    "commandNoun": "dusk"
   },
   {
     "id": "FISH",
@@ -6116,7 +9702,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "AQUARIUM",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "fish"
+    ],
+    "adjectives": [
+      "large",
+      "graceful"
+    ],
+    "commandNoun": "fish"
   },
   {
     "id": "MEAL",
@@ -6124,7 +9718,30 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "food",
+      "meal",
+      "lunch",
+      "dinner",
+      "breakfast",
+      "snack",
+      "burger",
+      "hamburger",
+      "beefburge",
+      "soyburger",
+      "kelpburge",
+      "tins"
+    ],
+    "adjectives": [
+      "soy",
+      "kelp",
+      "beef",
+      "plain",
+      "badly",
+      "labelled"
+    ],
+    "commandNoun": "food"
   },
   {
     "id": "FYLA",
@@ -6133,7 +9750,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "ACTORBIT",
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "fyla"
+    ],
+    "adjectives": [],
+    "commandNoun": "fyla"
   },
   {
     "id": "GATE",
@@ -6141,7 +9763,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "gates",
+      "gate"
+    ],
+    "adjectives": [
+      "base",
+      "boarding"
+    ],
+    "commandNoun": "gate"
   },
   {
     "id": "JILL",
@@ -6153,7 +9784,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPENBIT",
       "CONTBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "jill",
+      "wife"
+    ],
+    "adjectives": [
+      "my"
+    ],
+    "commandNoun": "jill"
   },
   {
     "id": "LAWN",
@@ -6161,13 +9800,34 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CAFETERIA",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "lawn",
+      "lawns",
+      "grass"
+    ],
+    "adjectives": [
+      "lush",
+      "green",
+      "well-manicured"
+    ],
+    "commandNoun": "lawn"
   },
   {
     "id": "MALL-OBJECT",
     "name": "mall",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "mall"
+    ],
+    "adjectives": [
+      "busy",
+      "deserted",
+      "shopping",
+      "rockvil"
+    ],
+    "commandNoun": "mall"
   },
   {
     "id": "MENU",
@@ -6175,7 +9835,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "menu",
+      "menuboard",
+      "board"
+    ],
+    "adjectives": [
+      "menu"
+    ],
+    "commandNoun": "menu"
   },
   {
     "id": "NOON",
@@ -6183,7 +9852,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "GLOBAL-OBJECTS",
     "flags": [
       "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "noon",
+      "midday",
+      "mid-day"
+    ],
+    "adjectives": [],
+    "commandNoun": "noon"
   },
   {
     "id": "NOTE",
@@ -6191,25 +9867,71 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "note"
+    ],
+    "adjectives": [],
+    "commandNoun": "note"
   },
   {
     "id": "PARK-OBJECT",
     "name": "park",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "park",
+      "garden",
+      "gardens",
+      "common",
+      "commons"
+    ],
+    "adjectives": [
+      "kennedy",
+      "riverside",
+      "halley",
+      "church",
+      "street",
+      "small",
+      "downtown",
+      "old",
+      "popular",
+      "public"
+    ],
+    "commandNoun": "park"
   },
   {
     "id": "PIER-OBJECT",
     "name": "pier",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "pier",
+      "wharf",
+      "dock",
+      "quay"
+    ],
+    "adjectives": [
+      "aging",
+      "riverfront",
+      "short",
+      "wooden",
+      "rockvil"
+    ],
+    "commandNoun": "pier"
   },
   {
     "id": "PLAY",
     "name": "play",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "play",
+      "production",
+      "musical"
+    ],
+    "adjectives": [],
+    "commandNoun": "play"
   },
   {
     "id": "PAMPHLET-RACK",
@@ -6217,7 +9939,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "TRAIN-STATION",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "rack"
+    ],
+    "adjectives": [
+      "wooden"
+    ],
+    "commandNoun": "rack"
   },
   {
     "id": "RAMP",
@@ -6225,13 +9954,30 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "AQUARIUM",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "ramp"
+    ],
+    "adjectives": [],
+    "commandNoun": "ramp"
   },
   {
     "id": "STREET",
     "name": "road",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "street",
+      "road",
+      "avenue",
+      "boulevard",
+      "blvd",
+      "drive"
+    ],
+    "adjectives": [
+      "wide"
+    ],
+    "commandNoun": "road"
   },
   {
     "id": "ROOF",
@@ -6239,13 +9985,29 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "ROOFTOP",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "roof",
+      "rooftop"
+    ],
+    "adjectives": [],
+    "commandNoun": "roof"
   },
   {
     "id": "GLOBAL-ROOM",
     "name": "room",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "room",
+      "chamber",
+      "place",
+      "hall"
+    ],
+    "adjectives": [
+      "area"
+    ],
+    "commandNoun": "room"
   },
   {
     "id": "SACK",
@@ -6255,7 +10017,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKEBIT",
       "CONTBIT",
       "SEARCHBIT"
-    ]
+    ],
+    "synonyms": [
+      "sack"
+    ],
+    "adjectives": [
+      "blood-soaked"
+    ],
+    "commandNoun": "sack"
   },
   {
     "id": "SEAT",
@@ -6266,7 +10035,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "VEHBIT",
       "OPENBIT",
       "FURNITUREBIT"
-    ]
+    ],
+    "synonyms": [
+      "seat",
+      "seats",
+      "pillowseat",
+      "chair",
+      "chairs"
+    ],
+    "adjectives": [
+      "plain",
+      "built-in"
+    ],
+    "commandNoun": "seat"
   },
   {
     "id": "GLOBAL-SIGN",
@@ -6274,7 +10055,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "sign",
+      "signs",
+      "billboard"
+    ],
+    "adjectives": [
+      "large"
+    ],
+    "commandNoun": "sign"
   },
   {
     "id": "TUBE-SIGN",
@@ -6282,7 +10072,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "READBIT"
-    ]
+    ],
+    "synonyms": [
+      "sign"
+    ],
+    "adjectives": [
+      "red",
+      "brown"
+    ],
+    "commandNoun": "sign"
   },
   {
     "id": "SINK",
@@ -6290,13 +10088,33 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "LOCAL-GLOBALS",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "sink",
+      "basin",
+      "washbasin",
+      "faucet",
+      "spigot"
+    ],
+    "adjectives": [
+      "kitchen",
+      "bathroom"
+    ],
+    "commandNoun": "sink"
   },
   {
     "id": "SLOT",
     "name": "slot",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "slot"
+    ],
+    "adjectives": [
+      "credit",
+      "card"
+    ],
+    "commandNoun": "slot"
   },
   {
     "id": "STEW",
@@ -6305,7 +10123,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NARTICLEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "soup",
+      "stew",
+      "food",
+      "meal"
+    ],
+    "adjectives": [
+      "thin"
+    ],
+    "commandNoun": "soup"
   },
   {
     "id": "TANK",
@@ -6314,13 +10142,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRANSBIT"
-    ]
+    ],
+    "synonyms": [
+      "tank"
+    ],
+    "adjectives": [
+      "large",
+      "central"
+    ],
+    "commandNoun": "tank"
   },
   {
     "id": "TOOL",
     "name": "tool",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "screwdriver",
+      "crowbar",
+      "hacksaw",
+      "wrench",
+      "hammer",
+      "saw"
+    ],
+    "adjectives": [],
+    "commandNoun": "screwdriver"
   },
   {
     "id": "VENT",
@@ -6328,7 +10174,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "initialLocation": "CORE",
     "flags": [
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "vent",
+      "vents"
+    ],
+    "adjectives": [
+      "noisy",
+      "silent"
+    ],
+    "commandNoun": "vent"
   },
   {
     "id": "VEST",
@@ -6339,7 +10194,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WEARBIT",
       "TRYTAKEBIT",
       "NDESCBIT"
-    ]
+    ],
+    "synonyms": [
+      "vest",
+      "vests"
+    ],
+    "adjectives": [
+      "thin",
+      "imitation",
+      "wool"
+    ],
+    "commandNoun": "vest"
   },
   {
     "id": "WALLS",
@@ -6348,22 +10213,41 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TOUCHBIT"
-    ]
-  },
-  {
-    "id": "AIR",
-    "name": "air",
-    "initialLocation": "GLOBAL-OBJECTS",
-    "flags": [
-      "VOWELBIT",
-      "NARTICLEBIT"
-    ]
+    ],
+    "synonyms": [
+      "wall",
+      "walls"
+    ],
+    "adjectives": [],
+    "commandNoun": "wall"
   },
   {
     "id": "BAR-OBJECT",
     "name": "bar",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "bar",
+      "lounge",
+      "club",
+      "spot"
+    ],
+    "adjectives": [
+      "noisy",
+      "tiny",
+      "favorite",
+      "hangout",
+      "dingy",
+      "dingy-looking",
+      "looking",
+      "smoky",
+      "smoke-filled",
+      "smoke",
+      "filled",
+      "ezzis",
+      "ezzi's"
+    ],
+    "commandNoun": "bar"
   },
   {
     "id": "BED",
@@ -6374,28 +10258,45 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "VEHBIT",
       "FURNITUREBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "bed"
+    ],
+    "adjectives": [
+      "your",
+      "my"
+    ],
+    "commandNoun": "bed"
   },
   {
     "id": "DAY",
     "name": "day",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "day",
+      "daytime",
+      "daylight",
+      "lightness",
+      "light",
+      "sunshine"
+    ],
+    "adjectives": [],
+    "commandNoun": "day"
   },
   {
     "id": "DEN-OBJECT",
     "name": "den",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
-  },
-  {
-    "id": "DEW",
-    "name": "dew",
-    "initialLocation": "ROOFTOP",
-    "flags": [
-      "NDESCBIT",
-      "NARTICLEBIT"
-    ]
+    "flags": [],
+    "synonyms": [
+      "den",
+      "space"
+    ],
+    "adjectives": [
+      "homey"
+    ],
+    "commandNoun": "den"
   },
   {
     "id": "KEY",
@@ -6404,7 +10305,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "TAKEBIT",
       "KEYBIT"
-    ]
+    ],
+    "synonyms": [
+      "key"
+    ],
+    "adjectives": [
+      "your",
+      "my"
+    ],
+    "commandNoun": "key"
   },
   {
     "id": "MAP",
@@ -6413,7 +10322,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "map",
+      "city",
+      "rockvil"
+    ],
+    "adjectives": [
+      "rockvil",
+      "city"
+    ],
+    "commandNoun": "map"
   },
   {
     "id": "PEN",
@@ -6422,13 +10341,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "flags": [
       "NDESCBIT",
       "TRYTAKEBIT"
-    ]
+    ],
+    "synonyms": [
+      "pen"
+    ],
+    "adjectives": [
+      "ball",
+      "point",
+      "ball-point"
+    ],
+    "commandNoun": "pen"
   },
   {
     "id": "SKY",
     "name": "sky",
     "initialLocation": "GLOBAL-OBJECTS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "sky"
+    ],
+    "adjectives": [
+      "darkening",
+      "smoggy",
+      "gray"
+    ],
+    "commandNoun": "sky"
   },
   {
     "id": "TUB",
@@ -6438,12 +10375,33 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NDESCBIT",
       "VEHBIT",
       "OPENBIT"
-    ]
+    ],
+    "synonyms": [
+      "tub",
+      "jacuzzi"
+    ],
+    "adjectives": [
+      "large",
+      "whirlpool",
+      "bath"
+    ],
+    "commandNoun": "tub"
   },
   {
     "id": "ZOO-OBJECT",
     "name": "zoo",
     "initialLocation": "LOCAL-GLOBALS",
-    "flags": []
+    "flags": [],
+    "synonyms": [
+      "zoo",
+      "garden"
+    ],
+    "adjectives": [
+      "rockvil",
+      "zoologica",
+      "moderatel",
+      "sized"
+    ],
+    "commandNoun": "zoo"
   }
 ];

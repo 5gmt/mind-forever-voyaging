@@ -14,8 +14,45 @@ const files = (await readdir(sourcePath))
 const rooms = [];
 const objects = [];
 
+const stripLineComments = (text) => text.split(/\r?\n/).map((line) => {
+  let quoted = false;
+  for (let index = 0; index < line.length; index += 1) {
+    const character = line[index];
+    if (character === '"' && line[index - 1] !== "\\") quoted = !quoted;
+    if (character === ";" && !quoted) return line.slice(0, index);
+  }
+  return line;
+}).join("\n");
+
+const parserWords = (body, property) => {
+  const raw = new RegExp(`\\(${property}\\s+([^)]+)\\)`).exec(body)?.[1] ?? "";
+  return raw.split(/\s+/)
+    .map((word) => word.replace(/\\'/g, "'").toLowerCase())
+    .filter((word) => /^[a-z0-9][a-z0-9'-]*$/.test(word) && !word.startsWith("zz"));
+};
+
+const commandNounFor = (name, synonyms, adjectives, flags) => {
+  const displayWords = name.toLowerCase().match(/[a-z0-9']+/g) ?? [];
+  const lastDisplayWord = displayWords.at(-1);
+  const genericActorNouns = new Set(["baby", "computer", "controller", "elder", "guard", "guardsman", "man", "member", "official", "officer", "system", "woman", "worker", "workers"]);
+  let base = null;
+  if (flags.includes("ACTORBIT") && lastDisplayWord && synonyms.some((synonym) => lastDisplayWord === synonym || lastDisplayWord.startsWith(synonym))) base = lastDisplayWord;
+  const candidates = synonyms.flatMap((synonym) => {
+    const displayWord = displayWords.find((word) => word === synonym || word.startsWith(synonym));
+    return displayWord ? [displayWord] : [];
+  });
+  base ??= [...new Set(candidates)].sort((a, b) => b.length - a.length)[0] ?? synonyms.sort((a, b) => b.length - a.length)[0] ?? null;
+  if (!base) return null;
+  const adjective = adjectives.flatMap((candidate) => {
+    const displayWord = displayWords.find((word) => word === candidate || word.startsWith(candidate));
+    return displayWord ? [displayWord] : [];
+  }).sort((a, b) => b.length - a.length)[0];
+  if (adjective && adjective !== base && (!flags.includes("ACTORBIT") || genericActorNouns.has(base))) return `${adjective} ${base}`;
+  return base;
+};
+
 for (const file of files) {
-  const source = await readFile(join(sourcePath, file), "utf8");
+  const source = stripLineComments(await readFile(join(sourcePath, file), "utf8"));
   const roomPattern = /<ROOM\s+([A-Z0-9-]+)([\s\S]*?)>\r?\n(?=\r?\n|\f)/g;
   for (const match of source.matchAll(roomPattern)) {
     const [, id, body] = match;
@@ -38,7 +75,10 @@ for (const file of files) {
     if (!name || name === "it" || name === "(undefined)" || name.length < 2) continue;
     const initialLocation = /\(LOC\s+([A-Z0-9-]+)\)/.exec(body)?.[1] ?? null;
     const flags = /\(FLAGS\s+([^)]+)\)/.exec(body)?.[1].trim().split(/\s+/).filter(Boolean) ?? [];
-    objects.push({ id, name, initialLocation, flags });
+    const synonyms = parserWords(body, "SYNONYM");
+    const adjectives = parserWords(body, "ADJECTIVE");
+    const commandNoun = commandNounFor(name, synonyms, adjectives, flags);
+    objects.push({ id, name, initialLocation, flags, synonyms, adjectives, commandNoun });
   }
 }
 
@@ -63,7 +103,7 @@ const output = `// Generated from the preserved ZIL source by scripts/extract-wo
   `// Do not edit by hand; the original game remains canonical.\n\n` +
   `export type WorldExit = { command: string; targetId: string; target: string };\n` +
   `export type WorldRoom = { id: string; name: string; exits: Record<string, WorldExit> };\n\n` +
-  `export type WorldObject = { id: string; name: string; initialLocation: string | null; flags: string[] };\n\n` +
+  `export type WorldObject = { id: string; name: string; initialLocation: string | null; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null };\n\n` +
   `export const WORLD_ROOMS: WorldRoom[] = ${JSON.stringify(normalized, null, 2)};\n\n` +
   `export const WORLD_OBJECTS: WorldObject[] = ${JSON.stringify(normalizedObjects, null, 2)};\n`;
 

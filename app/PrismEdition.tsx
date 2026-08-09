@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- package thumbnails are scans, not responsive artwork */
 
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { INTERFACE_PORTS, InterfaceWorkbench, PackageOverlay, SceneActions, type PackageItem } from "./StoryTools";
+import { INTERFACE_PORTS, InterfaceWorkbench, PackageOverlay, SceneActions, type InteractionLevel, type PackageItem } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
@@ -50,6 +50,28 @@ const DIRECTION_LABELS: Record<string, string> = {
   NORTH: "N", NORTHEAST: "NE", NE: "NE", EAST: "E", SOUTHEAST: "SE", SE: "SE",
   SOUTH: "S", SOUTHWEST: "SW", SW: "SW", WEST: "W", NORTHWEST: "NW", NW: "NW",
   UP: "UP", DOWN: "DN", IN: "IN", OUT: "OUT",
+};
+
+const OUTLET_SOURCE_ROOMS: Record<string, string> = {
+  PPCC: "CONTROL-CENTER",
+  RCRO: "ROOFTOP",
+  PEOF: "OFFICE",
+  PCAF: "CAFETERIA",
+  MACO: "CORE",
+  WNNF: "NEWS",
+};
+
+const OBJECTS_BY_ID = new Map(WORLD_OBJECTS.map((object) => [object.id, object]));
+const belongsToSourceRoom = (object: WorldObject, roomId: string) => {
+  let location = object.initialLocation;
+  const visited = new Set<string>();
+  while (location && !visited.has(location)) {
+    if (location === roomId) return true;
+    if (location === "LOCAL-GLOBALS") return false;
+    visited.add(location);
+    location = OBJECTS_BY_ID.get(location)?.initialLocation ?? null;
+  }
+  return object.initialLocation === "GLOBAL-OBJECTS";
 };
 
 const MODE_COPY: Record<Mode, { label: string; copy: string }> = {
@@ -222,7 +244,10 @@ export default function PrismEdition() {
   const modeRef = useRef<Mode | null>(null);
   const yearRef = useRef<number | null>(null);
   const roomRef = useRef<WorldRoom | null>(null);
+  const sceneTextRef = useRef("");
+  const sceneCacheRef = useRef(new Map<string, string>());
   const lastCommandRef = useRef("");
+  const activeOutletRef = useRef<string | null>(null);
   const visitedYearsRef = useRef<number[]>([]);
   const queueRef = useRef<string[]>([]);
   const lastPackageCueRef = useRef(-1);
@@ -256,6 +281,7 @@ export default function PrismEdition() {
   const [accessOpen, setAccessOpen] = useState(false);
   const [fontScale, setFontScale] = useState(17);
   const [readingMode, setReadingMode] = useState<ReadingMode>("serif");
+  const [interactionLevel, setInteractionLevel] = useState<InteractionLevel>("guided");
   const [highContrast, setHighContrast] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [recording, setRecording] = useState(false);
@@ -289,26 +315,31 @@ export default function PrismEdition() {
   }, [recentText]);
   const contextualObjects = useMemo(() => {
     const lower = sceneText.toLowerCase();
+    const sourceRoomId = mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : mode === "Simulation Mode" ? room?.id : null;
     const blocked = new Set(["it", "you", "room", "area", "something", "nothing", "object", "number", "time", "story", "mode", "office", "building", "wall", "rockvil", "communications mode", "library mode", "interface mode", "simulation mode", "sleep mode", "list of communication outlets"]);
     const found: WorldObject[] = [];
     for (const object of WORLD_OBJECTS) {
       const name = object.name.replace(/\s+/g, " ").trim();
       if (name.length < 3 || name.length > 42 || blocked.has(name.toLowerCase())) continue;
+      if (sourceRoomId && !belongsToSourceRoom(object, sourceRoomId)) continue;
       const escapedName = name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       if (!new RegExp(`(^|\\W)${escapedName}(?=$|\\W)`, "i").test(lower)) continue;
       const existing = found.find((candidate) => candidate.name.toLowerCase() === name.toLowerCase());
-      if (existing) existing.flags = [...new Set([...existing.flags, ...object.flags])];
-      else found.push({ ...object, flags: [...object.flags] });
-      if (found.length === 9) break;
+      if (existing) {
+        existing.flags = [...new Set([...existing.flags, ...object.flags])];
+        existing.synonyms = [...new Set([...existing.synonyms, ...object.synonyms])];
+        existing.adjectives = [...new Set([...existing.adjectives, ...object.adjectives])];
+        existing.commandNoun ||= object.commandNoun;
+      } else found.push({ ...object, flags: [...object.flags], synonyms: [...object.synonyms], adjectives: [...object.adjectives] });
     }
     const sorted = found.sort((a, b) => b.name.split(/\s+/).length - a.name.split(/\s+/).length || b.name.length - a.name.length);
-    return sorted.filter((object, index) => !sorted.slice(0, index).some((earlier) => new RegExp(`(^|\\W)${object.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|\\W)`, "i").test(earlier.name)));
-  }, [sceneText]);
+    return sorted.filter((object, index) => !sorted.slice(0, index).some((earlier) => new RegExp(`(^|\\W)${object.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|\\W)`, "i").test(earlier.name))).slice(0, 8);
+  }, [activeOutletCode, mode, room?.id, sceneText]);
   const describedDirections = useMemo(() => {
-    const lower = latestSceneText.toLowerCase();
+    const lower = sceneText.toLowerCase();
     return ["northeast", "northwest", "southeast", "southwest", "north", "south", "east", "west"]
       .filter((direction) => new RegExp(`\\b${direction}\\b`, "i").test(lower));
-  }, [latestSceneText]);
+  }, [sceneText]);
   const interfacePortIds = useMemo(() => {
     const marker = transcript.lastIndexOf("List of Active Ports:");
     if (marker < 0) return [];
@@ -321,11 +352,11 @@ export default function PrismEdition() {
     return /(?:do you want|would you like|are you sure|do you wish|shall i|is that (?:okay|correct))[^?]*\?\s*(?:\(y\/n\))?$/i.test(current);
   }, [latestSceneText, recentText]);
   const parserCoach = useMemo(() => {
-    if (/i don['’]t know the word|not a verb i recognise|not a verb i recognize/i.test(latestSceneText)) return "Try one of the named actions below, or shorten the command.";
-    if (/you['’]ll have to be more specific|which .* do you mean/i.test(latestSceneText)) return "Choose the exact person or object below.";
-    if (/you can['’]t (?:see|hear) any|not here/i.test(latestSceneText)) return "That is not present now. Choose something named in this scene.";
+    if (/i don['’]t know the word|not a verb i recognise|not a verb i recognize/i.test(latestSceneText)) return interactionLevel === "classic" ? "Try a shorter noun or a different verb." : "Try a shorter command, or choose a word mentioned below.";
+    if (/you['’]ll have to be more specific|which .* do you mean/i.test(latestSceneText)) return interactionLevel === "classic" ? "Use a more specific noun." : "Choose the exact person or object mentioned below.";
+    if (/you can['’]t (?:see|hear) any|not here/i.test(latestSceneText)) return "That is not present now. LOOK repeats your surroundings.";
     return "↑ recalls your previous commands.";
-  }, [latestSceneText]);
+  }, [interactionLevel, latestSceneText]);
   const libraryDiscovered = knownModes.includes("Library Mode") || /\blibrary mode\b/i.test(transcript);
   const interfaceDiscovered = knownModes.includes("Interface Mode") || /\binterface mode\b/i.test(transcript);
 
@@ -349,6 +380,8 @@ export default function PrismEdition() {
       setDesignationKnown(localStorage.getItem("amfv:designation") === "true" || Boolean(storedDiscovery?.identityKnown) || storedYears.length > 0);
       setFontScale(Number(localStorage.getItem("amfv:font-size")) || 17);
       setReadingMode(localStorage.getItem("amfv:reading-mode") === "mono" ? "mono" : "serif");
+      const storedInteraction = localStorage.getItem("amfv:interaction-level");
+      setInteractionLevel(storedInteraction === "classic" || storedInteraction === "actions" ? storedInteraction : "guided");
       setHighContrast(localStorage.getItem("amfv:contrast") === "true");
       setReduceMotion(localStorage.getItem("amfv:reduce-motion") === "true");
     } catch {
@@ -367,7 +400,10 @@ export default function PrismEdition() {
         const entered = event.data.command.trim();
         if (!entered) return;
         lastCommandRef.current = entered;
-        if (/^[a-z]{4}$/i.test(entered)) setActiveOutletCode(entered.toUpperCase());
+        if (/^[a-z]{4}$/i.test(entered)) {
+          activeOutletRef.current = entered.toUpperCase();
+          setActiveOutletCode(entered.toUpperCase());
+        }
         setCommandHistory((previous) => {
           const next = previous[0] === entered ? previous : [entered, ...previous].slice(0, 40);
           if (!qaEnabled) try { localStorage.setItem("amfv:history", JSON.stringify(next)); } catch { /* optional */ }
@@ -404,6 +440,9 @@ export default function PrismEdition() {
         setCommandHistory([]);
         setRecording(false);
         setActiveOutletCode(null);
+        activeOutletRef.current = null;
+        sceneTextRef.current = "";
+        sceneCacheRef.current.clear();
         setSceneText("");
         try {
           for (const key of ["amfv:designation", "amfv:modes", "amfv:years", "amfv:rooms", "amfv:discoveries", "amfv:notes", "amfv:history"]) localStorage.removeItem(key);
@@ -430,12 +469,34 @@ export default function PrismEdition() {
       const recentCommand = recentCommands.at(-1);
       const responseAfterCommand = recentCommand?.index === undefined ? nextRecent : nextRecent.slice(recentCommand.index + recentCommand[0].length);
       const enteredCommand = lastCommandRef.current.trim().toLowerCase();
-      const sceneChanged = nextMode !== priorMode || nextRoom?.id !== priorRoom?.id || /^(?:n|s|e|w|u|d|ne|nw|se|sw|north|south|east|west|up|down|in|out|enter\b|walk\b|[a-z]{4}$)/.test(enteredCommand);
-      setSceneText((previous) => freshCanonicalOpening || sceneChanged || enteredCommand === "look" || !previous ? responseAfterCommand : `${previous}\n${responseAfterCommand}`.slice(-12000));
+      const enteredOutlet = parseOutlets(nextTranscript).find((outlet) => outlet.code.toLowerCase() === enteredCommand)?.code ?? null;
+      const sceneChanged = Boolean(nextRoom && nextRoom.id !== priorRoom?.id)
+        || /^(?:n|s|e|w|u|d|ne|nw|se|sw|north|south|east|west|up|down|in|out)$/.test(enteredCommand)
+        || Boolean(enteredOutlet)
+        || /^(?:enter|walk)\b/.test(enteredCommand)
+        || /this simulation is based \d+ years hence/i.test(responseAfterCommand);
+      const sceneKey = nextMode === "Communications Mode" && (enteredOutlet || activeOutletRef.current)
+        ? `comm:${enteredOutlet || activeOutletRef.current}`
+        : nextMode === "Simulation Mode"
+          ? `sim:${nextYear || "?"}:${nextRoom?.id || nextStatusLocation || "?"}`
+          : nextMode || "opening";
+      // Keep the establishing passage stable. Follow-up replies often contain metaphors
+      // or references to absent things; those must never become clickable suggestions.
+      if (freshCanonicalOpening || sceneChanged || enteredCommand === "look" || !sceneTextRef.current) {
+        const response = responseAfterCommand.trim();
+        const cached = sceneCacheRef.current.get(sceneKey);
+        const responseHasDescription = response.length >= 80 || enteredCommand === "look" || !cached;
+        sceneTextRef.current = responseHasDescription ? response : cached;
+        if (responseHasDescription && response) sceneCacheRef.current.set(sceneKey, response);
+      }
+      setSceneText(sceneTextRef.current);
       setGridText(typeof event.data.gridText === "string" ? event.data.gridText : "");
       setTranscriptRevision((revision) => revision + 1);
       setMode(nextMode);
-      if (nextMode !== "Communications Mode") setActiveOutletCode(null);
+      if (nextMode !== "Communications Mode") {
+        activeOutletRef.current = null;
+        setActiveOutletCode(null);
+      }
       setStatusLocation(nextStatusLocation && nextStatusLocation !== "(undefined)" ? nextStatusLocation : null);
       setYear(nextYear);
       setRoom(nextRoom);
@@ -488,10 +549,11 @@ export default function PrismEdition() {
     try {
       localStorage.setItem("amfv:font-size", String(fontScale));
       localStorage.setItem("amfv:reading-mode", readingMode);
+      localStorage.setItem("amfv:interaction-level", interactionLevel);
       localStorage.setItem("amfv:contrast", String(highContrast));
       localStorage.setItem("amfv:reduce-motion", String(reduceMotion));
     } catch { /* optional */ }
-  }, [fontScale, readingMode, highContrast, reduceMotion, playerReady, qaEnabled]);
+  }, [fontScale, readingMode, interactionLevel, highContrast, reduceMotion, playerReady, qaEnabled]);
 
   const postCommand = (value: string, raw = false) => {
     const activeFrame = qaEnabled ? qaIframeRef.current : canonicalIframeRef.current;
@@ -509,10 +571,19 @@ export default function PrismEdition() {
     setAliasNotice(normalized.toLowerCase() !== raw.trim().toLowerCase() ? `Understood as: ${normalized}` : "");
     if (normalized === "record") setRecording(true);
     if (normalized === "record off") setRecording(false);
-    if (/^[a-z]{4}$/i.test(normalized) && outlets.some((outlet) => outlet.code === normalized.toUpperCase())) setActiveOutletCode(normalized.toUpperCase());
+    if (/^[a-z]{4}$/i.test(normalized) && outlets.some((outlet) => outlet.code === normalized.toUpperCase())) {
+      activeOutletRef.current = normalized.toUpperCase();
+      setActiveOutletCode(normalized.toUpperCase());
+    }
     postCommand(normalized);
     setCommand("");
     setHistoryIndex(-1);
+  };
+
+  const draftSceneCommand = (value: string) => {
+    setCommand(value);
+    setAliasNotice("Drafted from a word in the passage. Edit it or press Send.");
+    window.setTimeout(() => commandRef.current?.focus(), 40);
   };
 
   useEffect(() => {
@@ -603,6 +674,8 @@ export default function PrismEdition() {
     setRoom(null);
     setTranscript("");
     setRecentText("");
+    sceneTextRef.current = "";
+    sceneCacheRef.current.clear();
     setSceneText("");
     setGridText("");
     setDiscovery(EMPTY_DISCOVERY);
@@ -610,6 +683,7 @@ export default function PrismEdition() {
     setAvailableYears([]);
     setVisitedRooms({});
     setRecording(false);
+    activeOutletRef.current = null;
     setActiveOutletCode(null);
     setDebugQueue([]);
   };
@@ -639,7 +713,7 @@ export default function PrismEdition() {
 
   const panelTabs: Array<{ id: Panel; label: string }> = [
     { id: "guide", label: "Assist" },
-    { id: "context", label: mode === "Library Mode" ? "Files" : mode === "Interface Mode" ? "Systems" : mode === "Simulation Mode" ? "Explore" : "Signals" },
+    ...(interactionLevel !== "classic" ? [{ id: "context" as Panel, label: mode === "Library Mode" ? "Files" : mode === "Interface Mode" ? "Systems" : mode === "Simulation Mode" ? "Explore" : "Signals" }] : []),
     ...(discovery.simulationEntered ? [{ id: "evidence" as Panel, label: "Evidence" }] : []),
     { id: "package", label: "Package" },
     { id: "about", label: "About" },
@@ -672,6 +746,9 @@ export default function PrismEdition() {
   };
   const systemActivity = acceptsInput ? (inputKind === "char" ? "KEY REQUESTED" : "AWAITING INPUT") : (playerReady ? "PROCESSING" : "INITIALIZING");
   const currentPlace = mode === "Simulation Mode" ? room?.name || statusLocation : mode === "Communications Mode" ? activeOutlet?.name : null;
+  const assisted = interactionLevel !== "classic";
+  const assistedSecurity = assisted && Boolean(securityChallenge);
+  const assistedYearSelector = assisted && yearSelectorActive;
 
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
@@ -710,12 +787,13 @@ export default function PrismEdition() {
           <div className="header-actions">
             <button type="button" onClick={() => setContextOpen((value) => !value)} aria-pressed={contextOpen} title="Toggle companion">◫<span>Companion</span></button>
             <button type="button" onClick={() => setPackageItem("map")} title="Open original package materials">▧<span>Package</span></button>
-            <button type="button" onClick={() => setAccessOpen((value) => !value)} aria-expanded={accessOpen} title="Reading settings">Aa<span>Reading</span></button>
+            <button type="button" onClick={() => setAccessOpen((value) => !value)} aria-expanded={accessOpen} title="Reading and play settings">Aa<span>Settings</span></button>
             <button type="button" onClick={toggleFullscreen} title="Toggle fullscreen">↗<span>Fullscreen</span></button>
           </div>
         </header>
 
-        {accessOpen && <section className="access-panel" aria-label="Reading settings">
+        {accessOpen && <section className="access-panel" aria-label="Reading and play settings">
+          <div className="interaction-setting"><span>Play controls</span><div className="segmented interaction-segments">{([['classic', 'Classic'], ['guided', 'Guided'], ['actions', 'Action menus']] as Array<[InteractionLevel, string]>).map(([value, label]) => <button key={value} type="button" className={interactionLevel === value ? "active" : ""} aria-pressed={interactionLevel === value} onClick={() => { setInteractionLevel(value); if (value === "classic" && activePanel === "context") setActivePanel("guide"); }}>{label}</button>)}</div><small>{interactionLevel === "classic" ? "Text commands and the story’s own prompts." : interactionLevel === "guided" ? "Navigation buttons; scene words draft editable commands." : "Direct actions for parser-recognized people and objects."}</small></div>
           <div><span>Text size</span><div className="segmented">{[15, 17, 20, 23].map((size) => <button key={size} type="button" className={fontScale === size ? "active" : ""} onClick={() => setFontScale(size)}>{size === 15 ? "S" : size === 17 ? "M" : size === 20 ? "L" : "XL"}</button>)}</div></div>
           <label><input type="checkbox" checked={readingMode === "mono"} onChange={(event) => setReadingMode(event.target.checked ? "mono" : "serif")} /> Monospaced story text</label>
           <label><input type="checkbox" checked={highContrast} onChange={(event) => setHighContrast(event.target.checked)} /> High contrast</label>
@@ -730,23 +808,23 @@ export default function PrismEdition() {
         </div>
 
         <section className="command-deck" aria-label="Story controls">
-          {securityChallenge && inputKind === "line" && <section className="security-decoder" aria-label="Security code decoder">
+          {assistedSecurity && securityChallenge && inputKind === "line" && <section className="security-decoder" aria-label="Security code decoder">
             <div className="decoder-seal" style={{ "--decoder-color": securityChallenge.color.toLowerCase().replace(" ", "-") } as React.CSSProperties}><span>{securityChallenge.color}</span><strong>{securityChallenge.inner}</strong></div>
             <div><span className="section-kicker">Security decoder</span><h2>{securityChallenge.color} · {securityChallenge.inner}</h2><p>Turn the wheel to align the color and inner number, or submit the matching outer number.</p></div>
             <button type="button" onClick={() => sendCommand(String(securityChallenge.answer))} disabled={!acceptsInput}>Submit code <strong>{securityChallenge.answer}</strong></button>
           </section>}
 
-          {yearSelectorActive && !securityChallenge && inputKind === "line" && <section className="year-selector" aria-label="Select a simulation year">
+          {assistedYearSelector && !assistedSecurity && inputKind === "line" && <section className="year-selector" aria-label="Select a simulation year">
             <div><span className="section-kicker">Simulation archive</span><h2>Choose a year.</h2></div>
             <div>{availableYears.map((availableYear) => <button type="button" key={availableYear} onClick={() => sendCommand(String(availableYear))} disabled={!acceptsInput}><strong>{availableYear}</strong><span>{availableYear - 2031} years hence</span></button>)}</div>
           </section>}
 
-          {!securityChallenge && !yearSelectorActive && inputKind === "line" && mode === "Communications Mode" && outlets.length > 0 && <section className="outlet-switcher" aria-label="Communication outlets">
+          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Communications Mode" && outlets.length > 0 && <section className="outlet-switcher" aria-label="Communication outlets">
             <div className="inline-tool-heading"><span>Communication outlets</span><button type="button" onClick={() => sendCommand("display outlets")} disabled={!acceptsInput}>Refresh list</button></div>
             <div>{outlets.map((outlet) => <button type="button" key={outlet.code} className={activeOutletCode === outlet.code ? "active" : ""} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong></button>)}</div>
           </section>}
 
-          {!securityChallenge && !yearSelectorActive && inputKind === "line" && mode === "Simulation Mode" && (roomExits.length > 0 || describedDirections.length > 0) && <section className="movement-compass" aria-label="Available directions">
+          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && (roomExits.length > 0 || describedDirections.length > 0) && <section className="movement-compass" aria-label="Available directions">
             <div className="inline-tool-heading"><span>{room?.name || "Ways from here"}</span><button type="button" onClick={() => setPackageItem("map")}>Open Rockvil map</button></div>
             <div className="compass-grid">
               {(roomExits.length > 0 ? roomExits.map(([direction, exit]) => ({ direction, command: exit.command, target: exit.target })) : describedDirections.map((direction) => ({ direction: direction.toUpperCase(), command: direction, target: "" }))).map((exit) => <button type="button" key={exit.command} className={`compass-${exit.direction.toLowerCase()}`} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[exit.direction] || exit.direction}</span>{exit.target && <strong>{exit.target}</strong>}</button>)}
@@ -754,14 +832,14 @@ export default function PrismEdition() {
             </div>
           </section>}
 
-          {!securityChallenge && !yearSelectorActive && inputKind === "line" && mode === "Interface Mode" && interfacePortIds.length > 0 && <section className="interface-shortcuts" aria-label="Connected systems">
+          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Interface Mode" && interfacePortIds.length > 0 && <section className="interface-shortcuts" aria-label="Connected systems">
             <div className="inline-tool-heading"><span>Connected systems</span><button type="button" onClick={() => { setActivePanel("context"); setContextOpen(true); }}>Open controls</button></div>
             <div>{interfacePortIds.map((id) => { const port = INTERFACE_PORTS.find((candidate) => candidate.id === id)!; return <button type="button" key={id} onClick={() => sendCommand(`${port.name}, status`)} disabled={!acceptsInput}><span className="system-node" /><strong>{port.name}</strong><small>Status</small></button>; })}</div>
           </section>}
 
-          {!securityChallenge && !yearSelectorActive && yesNoPrompt && <div className="answer-buttons" aria-label="Answer the question"><span>Answer</span><button type="button" onClick={() => postCommand("y", true)} disabled={!acceptsInput}>Yes</button><button type="button" onClick={() => postCommand("n", true)} disabled={!acceptsInput}>No</button></div>}
+          {!assistedSecurity && !assistedYearSelector && yesNoPrompt && <div className="answer-buttons" aria-label="Answer the question"><span>Answer</span><button type="button" onClick={() => postCommand("y", true)} disabled={!acceptsInput}>Yes</button><button type="button" onClick={() => postCommand("n", true)} disabled={!acceptsInput}>No</button></div>}
 
-          {!securityChallenge && !yearSelectorActive && !yesNoPrompt && (inputKind === "char" ? <div className="character-prompt">
+          {!assistedSecurity && !assistedYearSelector && !yesNoPrompt && (inputKind === "char" ? <div className="character-prompt">
             {mode === "Library Mode" ? <><span className="section-kicker">Character menu active</span><div className="library-controls">{[["Previous", "p"], ["Next", "n"], ["Open", "o"], ["Read", "r"], ["Close", "c"], ["Exit", "e"]].map(([label, value]) => <button type="button" key={value} onClick={() => postCommand(value, true)} disabled={!acceptsInput}>{label}<kbd>{value.toUpperCase()}</kbd></button>)}</div></> : <button className="continue-button" type="button" onClick={() => postCommand(" ", true)} disabled={!acceptsInput}><span>{phase === "signal" ? "Begin the original story" : "Continue"}</span><strong>Press any key →</strong></button>}
           </div> : <>
             <form onSubmit={submitCommand} className="command-form">
@@ -769,8 +847,8 @@ export default function PrismEdition() {
               <div className="command-field"><span aria-hidden="true">›</span><input ref={commandRef} id="command-input" value={command} onChange={(event) => { setCommand(event.target.value); setAliasNotice(""); }} onKeyDown={navigateHistory} placeholder={mode === "Simulation Mode" ? "Type anything, or use the scene controls below…" : mode === "Library Mode" ? "Use the menu buttons…" : "Type a command…"} autoComplete="off" spellCheck="false" aria-describedby="command-help" /><button type="submit" disabled={!command.trim() || !acceptsInput}>SEND <span aria-hidden="true">↵</span></button></div>
               <div className="command-meta" id="command-help"><span>{aliasNotice || parserCoach}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
-            <div className="quick-actions" aria-label="Contextual actions">{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput}>{label}</button>)}</div>
-            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={contextualObjects} sendCommand={sendCommand} disabled={!acceptsInput} />}
+            {assisted && <div className="quick-actions" aria-label="Common actions">{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput}>{label}</button>)}</div>}
+            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={contextualObjects} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
           </>)}
         </section>
       </section>
@@ -778,7 +856,7 @@ export default function PrismEdition() {
       <aside className="companion-panel" aria-label="Reader companion" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem) || !contextOpen} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
         <div className="companion-tabs" role="tablist" aria-label="Companion views" style={{ "--tab-count": panelTabs.length } as React.CSSProperties}>{panelTabs.map((panel) => <button key={panel.id} type="button" role="tab" aria-selected={activePanel === panel.id} onClick={() => setActivePanel(panel.id)}>{panel.label}</button>)}<button className="close-context" type="button" onClick={() => setContextOpen(false)} aria-label="Close companion">×</button></div>
         <div className="companion-content">
-          {activePanel === "guide" && <section className="companion-section"><span className="section-kicker">Help</span><h2>{guide.label}</h2><p>{guide.copy}</p><div className="purpose-loop"><span>NOTICE</span><i>→</i><span>ACT</span>{discovery.simulationEntered && <><i>→</i><span>RECORD</span></>}{visitedYears.length >= 2 && <><i>→</i><span>COMPARE</span></>}{discovery.evidenceAccepted && <><i>→</i><span>DECIDE</span></>}{discovery.lockdown && <><i>→</i><span>TRANSMIT</span></>}</div><div className="guide-callout"><span>01</span><p>People, objects, signs, and directions in the scene appear beside the command line.</p></div><div className="guide-callout"><span>02</span><p>Click an action or type freely. LOOK repeats the scene; INVENTORY lists what you carry.</p></div><div className="guide-callout"><span>03</span><p>Read widely, try odd ideas, and keep what strikes you.</p></div><details><summary>I’m new to interactive fiction</summary><p>Commands usually take the form VERB + NOUN: READ SIGN, OPEN DOOR, or ASK A PERSON ABOUT A SUBJECT. Compass directions move you. You can abbreviate them to N, SW, U, and so on.</p></details><details><summary>I seem to be stuck</summary><p>Try LOOK, HELP, WAIT, another outlet, or a person or object in the scene. Save before experimenting if you want an easy way back.</p></details></section>}
+          {activePanel === "guide" && <section className="companion-section"><span className="section-kicker">Help</span><h2>{guide.label}</h2><p>{guide.copy}</p><div className="play-style-picker" aria-label="Choose play controls">{([['classic', 'Classic', 'Type every command.'], ['guided', 'Guided', 'Navigation buttons and editable suggestions.'], ['actions', 'Action menus', 'Direct actions for words in the passage.']] as Array<[InteractionLevel, string, string]>).map(([value, label, copy]) => <button type="button" key={value} aria-pressed={interactionLevel === value} className={interactionLevel === value ? "active" : ""} onClick={() => setInteractionLevel(value)}><strong>{label}</strong><span>{copy}</span></button>)}</div><div className="purpose-loop"><span>NOTICE</span><i>→</i><span>ACT</span>{discovery.simulationEntered && <><i>→</i><span>RECORD</span></>}{visitedYears.length >= 2 && <><i>→</i><span>COMPARE</span></>}{discovery.evidenceAccepted && <><i>→</i><span>DECIDE</span></>}{discovery.lockdown && <><i>→</i><span>TRANSMIT</span></>}</div><div className="guide-callout"><span>01</span><p>{interactionLevel === "classic" ? "The command line is yours. No navigation or scene suggestions are shown." : interactionLevel === "guided" ? "Places and directions are clickable. A scene word drafts EXAMINE, but does not act until you press Send." : "Places, directions, and actions are clickable. Only vocabulary recognized by the story is used."}</p></div><div className="guide-callout"><span>02</span><p>LOOK repeats your surroundings; INVENTORY lists what you carry.</p></div><div className="guide-callout"><span>03</span><p>Read widely, try odd ideas, and keep what strikes you.</p></div><details><summary>I’m new to interactive fiction</summary><p>Commands usually take the form VERB + NOUN: READ SIGN, OPEN DOOR, or ASK A PERSON ABOUT A SUBJECT. Compass directions move you. You can abbreviate them to N, SW, U, and so on.</p></details><details><summary>I seem to be stuck</summary><p>Try LOOK, HELP, WAIT, another outlet, or a person or object in the scene. Save before experimenting if you want an easy way back.</p></details></section>}
 
           {activePanel === "context" && mode === "Communications Mode" && <section className="companion-section signal-section"><span className="section-kicker">Communications</span><h2>{outlets.length ? activeOutlet?.name || "Outlet directory" : "No directory loaded"}</h2><p>{outlets.length ? "Select a location to connect its visual and audio circuits." : "DISPLAY OUTLETS requests the current directory."}</p>{outlets.length ? <div className="outlet-grid">{outlets.map((outlet) => <button type="button" className={activeOutletCode === outlet.code ? "active" : ""} key={outlet.code} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong><small>{activeOutletCode === outlet.code ? "Connected" : "Connect →"}</small></button>)}</div> : <button className="context-primary" type="button" onClick={() => sendCommand("display outlets")} disabled={!acceptsInput}>Display active outlets</button>}</section>}
 
@@ -786,7 +864,7 @@ export default function PrismEdition() {
 
           {activePanel === "context" && mode === "Interface Mode" && <section className="companion-section systems-section"><span className="section-kicker">Interface Mode</span><h2>Active ports</h2><p>Status requests are read-only. Settings and schedules take effect immediately.</p><button className="context-primary" type="button" onClick={() => sendCommand("read list of active ports")} disabled={!acceptsInput}>Refresh active ports</button><InterfaceWorkbench portIds={interfacePortIds} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
 
-          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Rockvil</span><h2>{room?.name || statusLocation || "Ways from here"}</h2><p>{room ? "Choose an exit, or use the map for street names and landmarks." : describedDirections.length ? "The current description names these directions." : "Look again for exits, doors, vehicles, and paths."}</p><button className="context-primary" type="button" onClick={() => setPackageItem("map")}>Open the original Rockvil map</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Go {direction}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No compass exit is named in this passage.</p></div>}<SceneActions objects={contextualObjects} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
+          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Rockvil</span><h2>{room?.name || statusLocation || "Ways from here"}</h2><p>{room ? "Choose an exit, or use the map for street names and landmarks." : describedDirections.length ? "The current description names these directions." : "Look again for exits, doors, vehicles, and paths."}</p><button className="context-primary" type="button" onClick={() => setPackageItem("map")}>Open the original Rockvil map</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Go {direction}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No compass exit is named in this passage.</p></div>}<SceneActions objects={contextualObjects} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
 
           {activePanel === "context" && (!mode || mode === "Sleep Mode") && <section className="companion-section"><span className="section-kicker">{mode === "Sleep Mode" ? "Sleep Mode" : "Incoming"}</span><h2>{mode === "Sleep Mode" ? "Background processing" : "Opening transmission"}</h2><p>{mode === "Sleep Mode" ? "Time is passing. Return to Communications Mode when you are ready." : "Read the opening message, then continue at the prompt."}</p></section>}
 

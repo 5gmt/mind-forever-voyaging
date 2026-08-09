@@ -6,6 +6,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
+export type InteractionLevel = "classic" | "guided" | "actions";
 
 export const INTERFACE_PORTS = [
   { id: "simulation", name: "Simulation Controller", match: /Simulation Controller/i },
@@ -22,32 +23,40 @@ type InterfacePortId = (typeof INTERFACE_PORTS)[number]["id"];
 const hasFlag = (object: WorldObject, flag: string) => object.flags.includes(flag);
 
 const actionsFor = (object: WorldObject) => {
-  const lower = object.name.toLowerCase();
   const actions: Array<{ label: string; verb: string }> = [];
-  if (hasFlag(object, "ACTORBIT")) return [{ label: "Greet", verb: "hello" }, { label: "Look", verb: "examine" }];
-  if (hasFlag(object, "READBIT") || /article|book|directory|display|graffiti|label|letter|magazine|map|menu|newspaper|notice|paper|screen|sign/.test(lower)) actions.push({ label: "Read", verb: "read" });
-  if (hasFlag(object, "DOORBIT") || hasFlag(object, "CONTBIT") || /box|cabinet|door|drawer|gate|mailbox|refrigerator|window/.test(lower)) actions.push({ label: "Open", verb: "open" });
-  if (hasFlag(object, "VEHBIT") || /bus|car|elevator|skycar|train|tube/.test(lower)) actions.push({ label: "Enter", verb: "enter" });
-  if (/button|buzzer|key|switch/.test(lower)) actions.push({ label: "Press", verb: "push" });
-  if (hasFlag(object, "TAKEBIT") || hasFlag(object, "TRYTAKEBIT")) actions.push({ label: "Take", verb: "take" });
+  if (hasFlag(object, "ACTORBIT")) return [{ label: "Greet", verb: "greet" }, { label: "Look", verb: "examine" }];
+  if (hasFlag(object, "READBIT") || ["MAP", "DECODER", "MAGAZINE-ARTICLE"].includes(object.id)) actions.push({ label: "Read", verb: "read" });
+  if ((hasFlag(object, "DOORBIT") || hasFlag(object, "CONTBIT")) && !hasFlag(object, "OPENBIT")) actions.push({ label: "Open", verb: "open" });
+  if (hasFlag(object, "VEHBIT")) actions.push({ label: "Enter", verb: "enter" });
+  if (hasFlag(object, "TAKEBIT")) actions.push({ label: "Take", verb: "take" });
   actions.push({ label: "Look", verb: "examine" });
   return [...new Map(actions.map((action) => [action.verb, action])).values()].slice(0, 3);
 };
 
-export function SceneActions({ objects, sendCommand, disabled }: { objects: WorldObject[]; sendCommand: (command: string) => void; disabled: boolean }) {
-  const topics = useMemo(() => objects.filter((object) => !hasFlag(object, "ACTORBIT")).slice(0, 4), [objects]);
-  if (!objects.length) return null;
+const actionCommand = (object: WorldObject, verb: string) => verb === "greet"
+  ? `${object.commandNoun}, hello`
+  : `${verb} ${object.commandNoun}`;
+
+export function SceneActions({ objects, level, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; level: InteractionLevel; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
+  const usableObjects = useMemo(() => objects.filter((object) => object.commandNoun), [objects]);
+  const topics = useMemo(() => usableObjects.filter((object) => !hasFlag(object, "ACTORBIT")).slice(0, 4), [usableObjects]);
+  if (!usableObjects.length || level === "classic") return null;
+
+  if (level === "guided") return <section className="scene-actions scene-words" aria-label="Words mentioned here">
+    <div className="scene-actions-heading"><span>Mentioned here</span><small>Choose a word to draft a command</small></div>
+    <div className="scene-word-list">{usableObjects.map((object) => <button type="button" key={object.id} onClick={() => draftCommand(`examine ${object.commandNoun}`)} disabled={disabled}>{object.name}</button>)}</div>
+  </section>;
 
   return (
-    <section className="scene-actions" aria-label="Things mentioned in the current scene">
-      <div className="scene-actions-heading"><span>In this scene</span><small>Choose an action</small></div>
+    <section className="scene-actions" aria-label="Actions for things mentioned here">
+      <div className="scene-actions-heading"><span>Mentioned here</span><small>Choose an action</small></div>
       <div className="scene-object-grid">
-        {objects.map((object) => {
+        {usableObjects.map((object) => {
           const actor = hasFlag(object, "ACTORBIT");
           return <article className="scene-object" key={object.id}>
             <strong>{object.name}</strong>
-            <div>{actionsFor(object).map((action) => <button type="button" key={action.verb} onClick={() => sendCommand(`${action.verb} ${object.name}`)} disabled={disabled}>{action.label}</button>)}</div>
-            {actor && topics.length > 0 && <details><summary>Ask about…</summary><div className="topic-buttons">{topics.map((topic) => <button type="button" key={topic.id} onClick={() => sendCommand(`ask ${object.name} about ${topic.name}`)} disabled={disabled}>{topic.name}</button>)}</div></details>}
+            <div>{actionsFor(object).map((action) => <button type="button" key={action.verb} onClick={() => sendCommand(actionCommand(object, action.verb))} disabled={disabled}>{action.label}</button>)}</div>
+            {actor && topics.length > 0 && <details><summary>Ask about…</summary><div className="topic-buttons">{topics.map((topic) => <button type="button" key={topic.id} onClick={() => sendCommand(`ask ${object.commandNoun} about ${topic.commandNoun}`)} disabled={disabled}>{topic.name}</button>)}</div></details>}
           </article>;
         })}
       </div>

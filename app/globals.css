@@ -2882,6 +2882,93 @@ summary:focus-visible {
   margin-top: 6px;
 }
 
+.scene-word-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.scene-word-list button {
+  min-height: 36px;
+  padding: 7px 11px;
+  border: 1px solid var(--line-strong);
+  background: #081410;
+  color: var(--paper-muted);
+  cursor: pointer;
+  font-family: Georgia, serif;
+  font-size: 12px;
+}
+
+.scene-word-list button:hover,
+.scene-word-list button:focus-visible {
+  border-color: var(--era-accent);
+  color: var(--paper);
+}
+
+.access-panel > .interaction-setting {
+  align-items: stretch;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.interaction-setting > span,
+.interaction-setting > small {
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.interaction-setting > small {
+  max-width: 310px;
+  color: #829188;
+  font-size: 9px;
+  line-height: 1.45;
+}
+
+.interaction-segments button {
+  width: auto;
+  min-width: 72px;
+  padding-inline: 10px;
+}
+
+.play-style-picker {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 15px 0 18px;
+}
+
+.play-style-picker button {
+  display: grid;
+  min-height: 76px;
+  align-content: start;
+  gap: 5px;
+  padding: 9px;
+  border: 1px solid var(--line);
+  background: rgba(255,255,255,0.014);
+  color: var(--paper-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.play-style-picker button.active,
+.play-style-picker button[aria-pressed="true"] {
+  border-color: var(--era-accent);
+  background: color-mix(in srgb, var(--era-accent) 7%, transparent);
+}
+
+.play-style-picker strong {
+  color: var(--paper);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.play-style-picker span {
+  color: #829188;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
 /* Source-defined Interface Mode controls */
 
 .interface-workbench {
@@ -3263,6 +3350,7 @@ summary:focus-visible {
   }
 
   .scene-object button,
+  .scene-word-list button,
   .answer-buttons button,
   .inline-tool-heading button {
     min-height: 44px;
@@ -3270,6 +3358,14 @@ summary:focus-visible {
 
   .scene-actions-heading small {
     display: none;
+  }
+
+  .play-style-picker {
+    grid-template-columns: 1fr;
+  }
+
+  .play-style-picker button {
+    min-height: 54px;
   }
 
   .compass-grid > button {

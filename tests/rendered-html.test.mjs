@@ -45,11 +45,24 @@ test("preserves the historical source and derives modern context from it", async
   assert.equal(sourceFiles.length, 10);
   assert.match(world, /export const WORLD_ROOMS/);
   assert.match(world, /"flags": \[/);
+  assert.match(world, /"synonyms": \[/);
+  assert.match(world, /"name": "Dr\. Perelman"[\s\S]{0,500}"commandNoun": "perelman"/);
+  assert.doesNotMatch(world, /"id": "HORIZON"/);
   assert.match(world, /"name": "Rockvil Centre"/);
+  const objects = JSON.parse(world.split("export const WORLD_OBJECTS: WorldObject[] = ")[1].replace(/;\s*$/, ""));
+  for (const object of objects.filter((candidate) => candidate.commandNoun)) {
+    const words = object.commandNoun.split(" ");
+    const noun = words.at(-1);
+    assert.ok(object.synonyms.some((synonym) => noun === synonym || noun.startsWith(synonym)), `${object.id} must use a parser noun`);
+    for (const adjective of words.slice(0, -1)) assert.ok(object.adjectives.some((word) => adjective === word || adjective.startsWith(word)), `${object.id} must use parser adjectives`);
+  }
   assert.match(shell, /Open the original Rockvil map/);
   assert.match(shell, /Communication outlets/);
   assert.match(shell, /InterfaceWorkbench/);
   assert.match(shell, /SceneActions/);
+  assert.match(shell, /Classic/);
+  assert.match(shell, /Guided/);
+  assert.match(shell, /Action menus/);
   assert.match(shell, /Turn the wheel to align the color and inner number/);
   assert.match(shell, /Fast-forward console/);
   assert.match(shell, /canonicalIframeRef/);
@@ -70,4 +83,8 @@ test("ships the physical package materials beside the story", async () => {
   assert.match(tools, /Dakota Online/);
   assert.match(tools, /HVAC Controller/);
   assert.match(tools, /traffic computer, set/);
+  assert.match(tools, /\$\{object\.commandNoun\}, hello/);
+  assert.match(tools, /hasFlag\(object, "READBIT"\)/);
+  assert.doesNotMatch(tools, /article\|book\|directory/);
+  assert.doesNotMatch(tools, /hasFlag\(object, "TRYTAKEBIT"\)/);
 });

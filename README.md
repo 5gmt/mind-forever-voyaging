@@ -12,16 +12,22 @@ Steve Meretzky’s 1985 interactive novel, presented in a contemporary browser i
 
 ## How it plays
 
-The interface turns details named by the story into direct controls:
+The interface offers three player-selected control levels:
+
+- **Classic** keeps the command line and the story’s own prompts.
+- **Guided** is the default: places and exits are clickable, while a word from the current passage only drafts an editable command.
+- **Action menus** add direct actions for people and objects whose vocabulary is defined by the original source.
+
+Across the assisted levels:
 
 - Communications outlets are a clickable location switcher.
 - Library Mode has large Previous, Next, Open, Read, Close, and Exit controls.
 - Interface Mode exposes working panels for HVAC, janitorial schedules, traffic timing, auditing, and the WNN feed as each port becomes available.
-- Simulation locations show usable exits and actions for the people and objects in the current scene.
+- Simulation locations show usable exits and conservative suggestions drawn from the establishing passage.
 - The package map opens automatically when the story refers to it; the security prompt opens a usable decoder.
 - A private notebook keeps the player’s own observations across visited years.
 
-Every control sends an ordinary command to the story. Free typing remains available throughout.
+Every submitted control uses nouns, adjectives, and grammar from the original parser. Commented-out ZIL definitions are excluded from the generated index, and room suggestions remain stable until the player moves or uses LOOK. Free typing remains available throughout.
 
 Spoiler/debug tools live under **About**. After explicit confirmation they load `public/amfv-modern-debug.z4`, a separate Release 900 QA build with the dormant `$CHEAT` routines restored. The untouched Release 79 session remains mounted and resumes where it was left.
 
