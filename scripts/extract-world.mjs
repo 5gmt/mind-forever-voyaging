@@ -70,6 +70,13 @@ const handledVerbsFor = (action) => {
   return verbs;
 };
 
+const verbGroupsFor = (action) => {
+  if (!action) return [];
+  const body = routineBodies.get(action) ?? "";
+  return [...body.matchAll(/<VERB\?\s+([^>]+)>/g)].map((match) => match[1].split(/\s+/)
+    .filter((word) => /^[A-Z][A-Z0-9-]*$/.test(word)));
+};
+
 const actionRoomsFor = (action) => {
   if (!action) return [];
   const body = routineBodies.get(action) ?? "";
@@ -142,6 +149,20 @@ const guaranteedVerbsFor = (action) => {
   return [...guaranteed];
 };
 
+const refusalOnlyVerbsFor = (action) => {
+  const body = action ? routineBodies.get(action) ?? "" : "";
+  const refused = new Set();
+  const refusal = /\b(?:can(?:no|')?t|cannot|couldn(?:'|’)t|won(?:'|’)t|wouldn(?:'|’)t|don(?:'|’)t|doesn(?:'|’)t|isn(?:'|’)t|aren(?:'|’)t|not yours|no way|nothing (?:special|interesting)|unable|impossible|locked|closed|too [^.!?]{0,40} to|change your mind|refuses?|huh)\b/i;
+  const stateChange = /<(?:MOVE|FSET|FCLEAR|SETG|PUTP?|QUEUE|GOTO|DO-WALK|PERFORM)\b/;
+  for (const match of body.matchAll(/<VERB\?\s+([^>]+)>/g)) {
+    const branch = enclosingBranch(body, match.index ?? 0);
+    const prose = [...branch.matchAll(/"((?:\\"|[^"])*)"/g)].map((entry) => entry[1].replace(/\\"/g, '"').trim()).filter(Boolean);
+    if (!prose.length || stateChange.test(branch) || !prose.every((line) => refusal.test(line))) continue;
+    for (const verb of match[1].split(/\s+/).filter((word) => /^[A-Z][A-Z0-9-]*$/.test(word))) refused.add(verb);
+  }
+  return [...refused];
+};
+
 function actionRoomsForBranch(branch) {
   const rooms = [];
   for (const match of branch.matchAll(/<EQUAL\?\s+,HERE\s+([^>]+)>/g)) {
@@ -210,11 +231,13 @@ for (const { source } of sourceFiles) {
     const commandNoun = commandNounFor(name, synonyms, adjectives, flags);
     const action = /\(ACTION\s+([A-Z0-9-]+)\)/.exec(body)?.[1] ?? null;
     const handledVerbs = handledVerbsFor(action);
+    const verbGroups = verbGroupsFor(action);
     const actionRooms = actionRoomsFor(action);
     const { globalVerbs, verbRooms } = verbContextsFor(action);
     const guaranteedVerbs = guaranteedVerbsFor(action);
+    const refusalOnlyVerbs = refusalOnlyVerbsFor(action);
     const hasText = /\(TEXT\s+(?:"|<)/.test(body);
-    objects.push({ id, name, initialLocation, flags, synonyms, adjectives, commandNoun, action, handledVerbs, actionRooms, globalVerbs, guaranteedVerbs, verbRooms, hasText });
+    objects.push({ id, name, initialLocation, flags, synonyms, adjectives, commandNoun, action, handledVerbs, verbGroups, actionRooms, globalVerbs, guaranteedVerbs, refusalOnlyVerbs, verbRooms, hasText });
   }
 }
 
@@ -265,11 +288,25 @@ const normalized = rooms
   }))
   .sort((a, b) => b.name.length - a.name.length || a.name.localeCompare(b.name));
 
-const normalizedObjects = [...new Map(objects.map((object) => [object.id, object])).values()]
+const uniqueObjects = [...new Map(objects.map((object) => [object.id, object])).values()];
+const objectIds = new Set(uniqueObjects.map((object) => object.id));
+const relatedObjectsFor = (object) => {
+  const body = object.action ? routineBodies.get(object.action) ?? "" : "";
+  return [...new Set([...body.matchAll(/,([A-Z][A-Z0-9-]+)/g)].map((match) => match[1])
+    .filter((id) => id !== object.id && objectIds.has(id)))];
+};
+const removedObjectsFor = (object) => {
+  const body = object.action ? routineBodies.get(object.action) ?? "" : "";
+  return [...new Set([...body.matchAll(/<MOVE\s+,([A-Z][A-Z0-9-]+)\s+,(?:LOCAL-GLOBALS|GLOBAL-OBJECTS)>/g)]
+    .map((match) => match[1]).filter((id) => objectIds.has(id)))];
+};
+const normalizedObjects = uniqueObjects
   .map((object) => ({
     ...object,
     dynamicLocations: (moveTargets.get(object.id) ?? []).filter((target) => roomIds.has(target)),
     movesToCurrentRoom: movesToCurrentRoom.has(object.id),
+    relatedObjectIds: relatedObjectsFor(object),
+    removedObjectIds: removedObjectsFor(object),
   }))
   .sort((a, b) => b.name.length - a.name.length || a.name.localeCompare(b.name));
 
@@ -277,7 +314,7 @@ const output = `// Generated from the preserved ZIL source by scripts/extract-wo
   `// Do not edit by hand; the original game remains canonical.\n\n` +
   `export type WorldExit = { command: string; targetId: string; target: string };\n` +
   `export type WorldRoom = { id: string; name: string; aliases: string[]; yearNames: Record<string, string>; globals: string[]; exits: Record<string, WorldExit> };\n\n` +
-  `export type WorldObject = { id: string; name: string; initialLocation: string | null; dynamicLocations: string[]; movesToCurrentRoom: boolean; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null; action: string | null; handledVerbs: string[]; actionRooms: string[]; globalVerbs: string[]; guaranteedVerbs: string[]; verbRooms: Record<string, string[]>; hasText: boolean };\n\n` +
+  `export type WorldObject = { id: string; name: string; initialLocation: string | null; dynamicLocations: string[]; movesToCurrentRoom: boolean; relatedObjectIds: string[]; removedObjectIds: string[]; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null; action: string | null; handledVerbs: string[]; verbGroups: string[][]; actionRooms: string[]; globalVerbs: string[]; guaranteedVerbs: string[]; refusalOnlyVerbs: string[]; verbRooms: Record<string, string[]>; hasText: boolean };\n\n` +
   `export const WORLD_ROOMS: WorldRoom[] = ${JSON.stringify(normalized, null, 2)};\n\n` +
   `export const WORLD_OBJECTS: WorldObject[] = ${JSON.stringify(normalizedObjects, null, 2)};\n`;
 

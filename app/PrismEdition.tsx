@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- package thumbnails are scans, not responsive artwork */
 
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
+import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
@@ -307,6 +307,34 @@ const concisePassage = (recentText: string) => {
   return lines.filter((line) => !line.startsWith(">") && !/awaiting input/i.test(line)).slice(-3).join(" ").slice(0, 440);
 };
 
+const recordedPassages = (transcript: string) => {
+  const commands = [...transcript.matchAll(/^>\s*([^\r\n]*)/gm)];
+  let active = false;
+  let cursor = 0;
+  const passages: string[] = [];
+  for (const command of commands) {
+    if (active) passages.push(transcript.slice(cursor, command.index));
+    const normalized = command[1].trim().toLowerCase();
+    if (normalized === "record" || normalized === "ron") active = true;
+    if (normalized === "record off" || normalized === "roff") active = false;
+    cursor = (command.index ?? 0) + command[0].length;
+  }
+  if (active) passages.push(transcript.slice(cursor));
+  return passages.join("\n");
+};
+
+const FIELD_COMPLETION_PATTERNS = [
+  /you order a bowl of hot and sour soup|decide to splurge and buy a beef burger|the waiter places/i,
+  /cheerily comments on how well things in the city are running|grumpily complains that most of his department has been laid off/i,
+  /central power station for all of rockvil/i,
+  /headline story in the news section|newspaper is extremely thin/i,
+  /tubecar glides into a station/i,
+  /the court is in session/i,
+  /comments on how happy he is about the recent increase in church attendance|complains about the growth of the church of god's word/i,
+  /you begin watching/i,
+  /\b(?:living room|kitchen|bedroom|bathroom)\b/i,
+] as const;
+
 export default function PrismEdition() {
   const canonicalIframeRef = useRef<HTMLIFrameElement>(null);
   const qaIframeRef = useRef<HTMLIFrameElement>(null);
@@ -385,37 +413,50 @@ export default function PrismEdition() {
     return lastCommand?.index === undefined ? recentText : recentText.slice(lastCommand.index + lastCommand[0].length);
   }, [recentText]);
   const contextualObjects = useMemo(() => {
-    const lower = sceneText.toLowerCase();
+    const passage = `${sceneText}\n${latestSceneText}`;
+    const lower = passage.toLowerCase();
     const sourceRoomId = mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : mode === "Simulation Mode" ? room?.id : null;
     if ((mode === "Simulation Mode" || mode === "Communications Mode") && !sourceRoomId) return [];
     const blocked = new Set(["it", "you", "room", "area", "something", "nothing", "object", "number", "time", "story", "mode", "office", "building", "wall", "rockvil", "communications mode", "library mode", "interface mode", "simulation mode", "sleep mode", "list of communication outlets"]);
+    const genericSynonyms = new Set(["area", "building", "door", "hall", "man", "office", "people", "person", "room", "street", "thing", "woman"]);
+    const mentioned = (object: WorldObject) => {
+      const terms = [object.name, ...object.synonyms.filter((word) => word.length >= 4 && !genericSynonyms.has(word))];
+      return terms.some((term) => new RegExp(`(^|\\W)${term.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|\\W)`, "i").test(lower));
+    };
+    const directlyAvailable = sourceRoomId ? WORLD_OBJECTS.filter((object) => belongsToSourceRoom(object, sourceRoomId)) : [];
+    const directIds = new Set(directlyAvailable.map((object) => object.id));
+    const relatedIds = new Set(directlyAvailable.filter(mentioned).flatMap((object) => object.relatedObjectIds));
     const found: WorldObject[] = [];
     for (const object of WORLD_OBJECTS) {
       const name = object.name.replace(/\s+/g, " ").trim();
       if (name.length < 3 || name.length > 42 || blocked.has(name.toLowerCase()) || ROOM_NAMES.has(name.toLowerCase()) || !hasUsefulSceneAction(object, sourceRoomId)) continue;
-      if (sourceRoomId && !belongsToSourceRoom(object, sourceRoomId)) continue;
-      const escapedName = name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-      if (!new RegExp(`(^|\\W)${escapedName}(?=$|\\W)`, "i").test(lower)) continue;
-      if (!actorAppearsPresent(object, sceneText)) continue;
+      if (sourceRoomId && !directIds.has(object.id) && !relatedIds.has(object.id)) continue;
+      if (!mentioned(object)) continue;
+      if (!actorAppearsPresent(object, passage)) continue;
       if (actorHasDeparted(object, recentText)) continue;
+      if (WORLD_OBJECTS.some((candidate) => candidate.flags.includes("ACTORBIT") && candidate.removedObjectIds.includes(object.id) && actorHasDeparted(candidate, recentText))) continue;
       const existing = found.find((candidate) => candidate.name.toLowerCase() === name.toLowerCase());
       if (existing) {
         existing.flags = [...new Set([...existing.flags, ...object.flags])];
         existing.synonyms = [...new Set([...existing.synonyms, ...object.synonyms])];
         existing.adjectives = [...new Set([...existing.adjectives, ...object.adjectives])];
         existing.handledVerbs = [...new Set([...existing.handledVerbs, ...object.handledVerbs])];
+        existing.verbGroups = [...existing.verbGroups, ...object.verbGroups].filter((group, index, groups) => groups.findIndex((candidate) => candidate.join("|") === group.join("|")) === index);
         existing.actionRooms = [...new Set([...existing.actionRooms, ...object.actionRooms])];
         existing.globalVerbs = [...new Set([...existing.globalVerbs, ...object.globalVerbs])];
         existing.guaranteedVerbs = [...new Set([...existing.guaranteedVerbs, ...object.guaranteedVerbs])];
+        existing.refusalOnlyVerbs = [...new Set([...existing.refusalOnlyVerbs, ...object.refusalOnlyVerbs])];
+        existing.relatedObjectIds = [...new Set([...existing.relatedObjectIds, ...object.relatedObjectIds])];
+        existing.removedObjectIds = [...new Set([...existing.removedObjectIds, ...object.removedObjectIds])];
         for (const [verb, rooms] of Object.entries(object.verbRooms)) existing.verbRooms[verb] = [...new Set([...(existing.verbRooms[verb] ?? []), ...rooms])];
         existing.commandNoun ||= object.commandNoun;
         existing.action ||= object.action;
         existing.hasText ||= object.hasText;
-      } else found.push({ ...object, flags: [...object.flags], synonyms: [...object.synonyms], adjectives: [...object.adjectives], handledVerbs: [...object.handledVerbs], actionRooms: [...object.actionRooms], globalVerbs: [...object.globalVerbs], guaranteedVerbs: [...object.guaranteedVerbs], verbRooms: Object.fromEntries(Object.entries(object.verbRooms).map(([verb, rooms]) => [verb, [...rooms]])) });
+      } else found.push({ ...object, flags: [...object.flags], synonyms: [...object.synonyms], adjectives: [...object.adjectives], handledVerbs: [...object.handledVerbs], verbGroups: object.verbGroups.map((group) => [...group]), actionRooms: [...object.actionRooms], globalVerbs: [...object.globalVerbs], guaranteedVerbs: [...object.guaranteedVerbs], refusalOnlyVerbs: [...object.refusalOnlyVerbs], relatedObjectIds: [...object.relatedObjectIds], removedObjectIds: [...object.removedObjectIds], verbRooms: Object.fromEntries(Object.entries(object.verbRooms).map(([verb, rooms]) => [verb, [...rooms]])) });
     }
     const sorted = found.sort((a, b) => b.name.split(/\s+/).length - a.name.split(/\s+/).length || b.name.length - a.name.length);
-    return sorted.filter((object, index) => !sorted.slice(0, index).some((earlier) => new RegExp(`(^|\\W)${object.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|\\W)`, "i").test(earlier.name))).slice(0, 8);
-  }, [activeOutletCode, mode, recentText, room?.id, sceneText]);
+    return sorted.filter((object, index) => !sorted.slice(0, index).some((earlier) => new RegExp(`(^|\\W)${object.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|\\W)`, "i").test(earlier.name))).slice(0, 14);
+  }, [activeOutletCode, latestSceneText, mode, recentText, room?.id, sceneText]);
   const describedDirections = useMemo(() => {
     const lower = sceneText.toLowerCase();
     return ["northeast", "northwest", "southeast", "southwest", "north", "south", "east", "west"]
@@ -436,6 +477,10 @@ export default function PrismEdition() {
     const next = route[0];
     return { destination, nextCommand: next?.command ?? null, nextPlace: next?.target ?? null, steps: route.length, arrived: route.length === 0 };
   }, [displayYear, mapDestinationId, room?.id]);
+  const fieldProgress = useMemo(() => {
+    const passages = recordedPassages(transcript);
+    return FIELD_COMPLETION_PATTERNS.map((pattern) => pattern.test(passages));
+  }, [transcript]);
   const yesNoPrompt = useMemo(() => {
     const current = `${latestSceneText}\n${recentText.slice(-1200)}`.replace(/\s+/g, " ").replace(/[>\s]+$/g, "");
     return /(?:do you want|would you like|are you sure|do you wish|shall i|is that (?:okay|correct))[^?]*\?\s*(?:\(y\/n\))?$/i.test(current);
@@ -938,13 +983,18 @@ export default function PrismEdition() {
             <div>{outlets.map((outlet) => <button type="button" key={outlet.code} className={activeOutletCode === outlet.code ? "active" : ""} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong></button>)}</div>
           </section>}
 
+          {!assistedSecurity && !assistedYearSelector && inputKind === "line" && mode === "Simulation Mode" && interactionLevel === "actions" && discovery.simulationEntered && <section className="fieldwork-console" aria-label="Rockvil fieldwork">
+            <RockvilNavigator currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} onSelect={selectMapLandmark} onStep={useMapRouteStep} disabled={!acceptsInput} />
+            <section className="fieldwork-checklist" aria-label="Fieldwork checklist"><div className="checklist-heading"><div><span>Perelman’s brief</span><strong>{fieldProgress.filter(Boolean).length} of {FIELD_ASSIGNMENTS.length} recorded</strong></div><small>Switch RECORD on before the experience. A check appears only when the original story counts it.</small></div><ol>{FIELD_ASSIGNMENTS.map((assignment, index) => { const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment === index); const complete = fieldProgress[index]; return <li key={assignment} className={complete ? "complete" : ""}><span aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>{assignment}</strong>{destination && <small>{destination.label}</small>}</div>{destination && <button type="button" onClick={() => selectMapLandmark(destination)} aria-label={`Plot route for ${assignment}`}>{mapDestinationId === destination.id ? "Route plotted" : "Show on map"}</button>}</li>; })}</ol></section>
+          </section>}
+
           {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && (roomExits.length > 0 || describedDirections.length > 0) && <section className="movement-compass" aria-label="Available directions">
             <div className="inline-tool-heading"><span>{currentRoomName || "Ways from here"}</span><button type="button" onClick={() => setPackageItem("map")}>Open Rockvil map</button></div>
             <div className="compass-grid">
               {(roomExits.length > 0 ? roomExits.map(([direction, exit]) => ({ direction, command: exit.command, target: roomNameForYear(exit.targetId, displayYear) || exit.target })) : describedDirections.map((direction) => ({ direction: direction.toUpperCase(), command: direction, target: "" }))).map((exit) => <button type="button" key={exit.command} className={`compass-${exit.direction.toLowerCase()}`} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[exit.direction] || exit.direction}</span>{exit.target && <strong>{exit.target}</strong>}</button>)}
               <div className="compass-here"><span>YOU ARE HERE</span><strong>{currentRoomName || "Current scene"}</strong></div>
             </div>
-            {mapRoutePreview && <div className="active-map-route"><span>Map route</span><strong>{mapRoutePreview.destination.label}</strong>{mapRoutePreview.arrived ? <small>Mapped approach reached</small> : mapRoutePreview.nextCommand ? <><small>{mapRoutePreview.steps} {mapRoutePreview.steps === 1 ? "step" : "steps"} · next {mapRoutePreview.nextCommand.toUpperCase()}</small><button type="button" onClick={useMapRouteStep} disabled={!acceptsInput}>{interactionLevel === "guided" ? "Draft next step" : "Take next step"}</button></> : <small>Move to a named street to begin this route.</small>}<button type="button" className="clear-route" onClick={() => setMapDestinationId(null)}>Clear</button></div>}
+            {mapRoutePreview && interactionLevel !== "actions" && <div className="active-map-route"><span>Map route</span><strong>{mapRoutePreview.destination.label}</strong>{mapRoutePreview.arrived ? <small>Mapped approach reached</small> : mapRoutePreview.nextCommand ? <><small>{mapRoutePreview.steps} {mapRoutePreview.steps === 1 ? "step" : "steps"} · next {mapRoutePreview.nextCommand.toUpperCase()}</small><button type="button" onClick={useMapRouteStep} disabled={!acceptsInput}>{interactionLevel === "guided" ? "Draft next step" : "Take next step"}</button></> : <small>Move to a named street to begin this route.</small>}<button type="button" className="clear-route" onClick={() => setMapDestinationId(null)}>Clear</button></div>}
           </section>}
 
           {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Interface Mode" && interfacePortIds.length > 0 && <section className="interface-shortcuts" aria-label="Connected systems">

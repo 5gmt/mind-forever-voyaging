@@ -4,7 +4,7 @@
 export type WorldExit = { command: string; targetId: string; target: string };
 export type WorldRoom = { id: string; name: string; aliases: string[]; yearNames: Record<string, string>; globals: string[]; exits: Record<string, WorldExit> };
 
-export type WorldObject = { id: string; name: string; initialLocation: string | null; dynamicLocations: string[]; movesToCurrentRoom: boolean; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null; action: string | null; handledVerbs: string[]; actionRooms: string[]; globalVerbs: string[]; guaranteedVerbs: string[]; verbRooms: Record<string, string[]>; hasText: boolean };
+export type WorldObject = { id: string; name: string; initialLocation: string | null; dynamicLocations: string[]; movesToCurrentRoom: boolean; relatedObjectIds: string[]; removedObjectIds: string[]; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null; action: string | null; handledVerbs: string[]; verbGroups: string[][]; actionRooms: string[]; globalVerbs: string[]; guaranteedVerbs: string[]; refusalOnlyVerbs: string[]; verbRooms: Record<string, string[]>; hasText: boolean };
 
 export const WORLD_ROOMS: WorldRoom[] = [
   {
@@ -5782,6 +5782,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "verbGroups": [
+      [
+        "STATUS"
+      ],
+      [
+        "HELLO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "STATUS",
@@ -5791,10 +5799,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "OUTLETS",
@@ -5823,6 +5834,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "WHAT"
     ],
+    "verbGroups": [
+      [
+        "DISPLAY",
+        "READ",
+        "WHAT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "DISPLAY",
@@ -5834,10 +5852,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "WHAT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TRAFFIC-COMPUTER",
@@ -5863,6 +5884,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SET",
       "HELLO"
     ],
+    "verbGroups": [
+      [
+        "STATUS"
+      ],
+      [
+        "SET"
+      ],
+      [
+        "HELLO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "STATUS",
@@ -5873,10 +5905,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MORNING-START",
+      "MORNING-END",
+      "EVENING-START",
+      "EVENING-END",
+      "INTNUM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "RACKS",
@@ -5901,6 +5942,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -5908,10 +5954,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CC-STAFFER",
@@ -5937,13 +5986,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "project member",
     "action": "CC-STAFFER-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CULTURAL-CENTER",
@@ -5964,6 +6017,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -5971,10 +6029,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "RECEIVER-STATION"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BORDELLO-AD",
@@ -6012,6 +6075,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ],
+      [
+        "READ",
+        "EXAMINE"
+      ],
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -6023,10 +6099,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "UNSHAVEN-MAN"
+    ],
+    "removedObjectIds": [
+      "UNSHAVEN-MAN"
+    ]
   },
   {
     "id": "EVENING-START",
@@ -6048,13 +6131,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "evening start",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MORNING-START",
@@ -6076,13 +6163,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "morning start",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FORMULA",
@@ -6106,6 +6197,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DRINK",
       "EAT"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "DRINK",
+        "EAT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -6117,10 +6217,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DRINK",
       "EAT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SCOTCH",
@@ -6150,6 +6253,26 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE",
+        "OPEN",
+        "DRINK"
+      ],
+      [
+        "OPEN",
+        "DRINK"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [
       "LIQUOR-STORE",
       "EZZIS-BAR",
@@ -6170,6 +6293,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "LIQUOR-STORE",
@@ -6182,7 +6306,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "LIQUOR-STORE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "OTHER-LIQUOR",
+      "LIQUOR"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "TRANSMITTER",
@@ -6207,13 +6336,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "feeder transmitter",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "AIR-CONDITIONING-UNIT",
@@ -6236,15 +6369,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SABOTEURS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "LOGIC-GAME",
@@ -6272,6 +6415,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PLAY",
       "PLAY-WITH"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "TAKE",
+        "PLAY",
+        "PLAY-WITH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -6285,10 +6438,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PLAY",
       "PLAY-WITH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "EVENING-END",
@@ -6310,13 +6466,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "evening end",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "JANITORIAL-CONTROLLER",
@@ -6340,6 +6500,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SET",
       "HELLO"
     ],
+    "verbGroups": [
+      [
+        "STATUS"
+      ],
+      [
+        "SET"
+      ],
+      [
+        "HELLO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "STATUS",
@@ -6350,10 +6521,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "FLOORS",
+      "BATHROOMS",
+      "GARBAGE",
+      "ROTATING",
+      "INTNUM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "JANITORIAL-INSTRUCTIONS",
@@ -6367,13 +6547,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MORNING-END",
@@ -6395,13 +6579,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "morning end",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RYDER",
@@ -6427,6 +6615,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "CALL"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "LISTEN"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TELL",
@@ -6439,12 +6641,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CALL",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "OFFICE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PERELMAN",
+      "COFFEE"
+    ],
+    "removedObjectIds": [
+      "RYDER",
+      "PERELMAN",
+      "COFFEE"
+    ]
   },
   {
     "id": "SIMULATION-CONTROLLER",
@@ -6469,6 +6681,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "verbGroups": [
+      [
+        "STATUS"
+      ],
+      [
+        "HELLO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "STATUS",
@@ -6478,10 +6698,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "RECORD-BUFFER",
+      "INTERFACE-MODE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SIMULATION-INSTRUCTIONS",
@@ -6495,13 +6721,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "REPORT-BUFFER",
@@ -6521,13 +6751,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "special buffer",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ENTERTAINMENT-CENTER",
@@ -6551,6 +6785,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ON"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "ON"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -6560,10 +6802,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ON"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PORT-LIST",
@@ -6590,6 +6835,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WHAT",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "DISPLAY",
+        "WHAT",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ",
@@ -6603,10 +6856,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WHAT",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SIMULATION-CONTROLLER",
+      "HVAC-CONTROLLER",
+      "JANITORIAL-CONTROLLER",
+      "TRAFFIC-COMPUTER",
+      "WEATHER-COMPUTER",
+      "WNN-FEEDER",
+      "AUDITING-SYSTEM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "AUDIT-PERCENT",
@@ -6628,13 +6892,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "auditing percentage",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BROWN-TUBECAR-DOOR",
@@ -6660,6 +6928,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH"
+      ],
+      [
+        "OPEN",
+        "CLOSE"
+      ]
+    ],
     "actionRooms": [
       "BROWN-TUBECAR"
     ],
@@ -6672,6 +6949,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "BROWN-TUBECAR"
@@ -6681,7 +6959,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "BROWN-TUBECAR"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BROWN-TUBECAR-OBJECT",
+      "RED-TUBECAR-DOOR"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "COMM-MODE",
@@ -6704,6 +6987,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -6713,10 +7002,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GOVERNMENT-OFFICIAL",
@@ -6738,6 +7030,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL",
       "SIT-NEXT-TO"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "SIT-NEXT-TO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TELL",
@@ -6747,12 +7047,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL",
       "SIT-NEXT-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "CITY-HALL"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "OFFICIAL-SNACK",
+      "BENCH"
+    ],
+    "removedObjectIds": [
+      "OFFICIAL-SNACK"
+    ]
   },
   {
     "id": "AUDITING-SYSTEM",
@@ -6780,6 +7088,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SET",
       "HELLO"
     ],
+    "verbGroups": [
+      [
+        "STATUS"
+      ],
+      [
+        "SET"
+      ],
+      [
+        "HELLO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "STATUS",
@@ -6791,10 +7110,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SET",
       "HELLO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "AUDIT-PERCENT",
+      "INTNUM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SABOTEURS",
@@ -6826,6 +7151,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ASK-FOR",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "TELL-ABOUT",
+        "ASK-ABOUT",
+        "ASK-FOR"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TELL",
@@ -6841,12 +7179,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ASK-FOR",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "CORE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "NEWSPAPER-DISPENSER",
@@ -6867,6 +7208,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "PUT"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "OPEN"
+      ],
+      [
+        "PUT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -6878,12 +7230,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "PUT"
     ],
+    "refusalOnlyVerbs": [
+      "OPEN"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "BODANSKI-SQUARE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CREDIT-CARD",
+      "SLOT"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "PARKVIEW-APARTMENTS-OBJECT",
@@ -6908,6 +7268,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "EXIT",
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SOUTHWAY-AND-PARK",
       "PARKVIEW-APARTMENTS"
@@ -6919,6 +7293,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "SOUTHWAY-AND-PARK"
@@ -6944,7 +7319,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "COUNTRYSIDE",
@@ -6962,13 +7339,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "rolling countryside",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MEMORY-BANKS",
@@ -6989,13 +7370,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "memory banks",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SPARE-PARTS",
@@ -7017,13 +7402,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "spare parts",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CHURCH-STREET-CITY-OBJECT",
@@ -7054,6 +7443,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "MAIN-AND-CHURCH",
       "HEIMAN-VILLAGE",
@@ -7065,6 +7467,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-AND-CHURCH",
@@ -7086,7 +7489,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HIGHWAY",
@@ -7108,13 +7513,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "interstate",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "NATIONAL-GUARDSMAN",
@@ -7138,15 +7547,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "national guardsman",
     "action": "BSF-GUARDS-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "CONTROL-CENTER"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BSF-GUARDS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "RESIGNATION-LETTER",
@@ -7160,13 +7575,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ROTATING",
@@ -7186,13 +7605,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "rotating functions",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "UNIVERSITY-HEIGHTS-OBJECT",
@@ -7220,6 +7643,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ELM-AND-UNIVERSITY",
       "UNIVERSITY-HEIGHTS"
@@ -7235,6 +7671,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "LEAVE": [
         "ELM-AND-UNIVERSITY"
@@ -7248,7 +7685,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TIMBERS",
@@ -7273,18 +7712,27 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MOVE",
       "TOUCH"
     ],
+    "verbGroups": [
+      [
+        "MOVE",
+        "TOUCH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "MOVE",
       "TOUCH"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "THE-COACHMAN"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BOARDING-PLATFORM",
@@ -7306,11 +7754,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "EXIT",
+        "LEAVE",
+        "DISEMBARK"
+      ]
+    ],
     "actionRooms": [
       "SKYBUS-TERMINAL"
     ],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "SKYBUS-TERMINAL"
@@ -7330,7 +7790,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CONSTRUCTION-OBJECT",
@@ -7356,6 +7818,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "KENNEDY-PARK",
       "MAIN-AND-KENNEDY",
@@ -7380,6 +7855,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "BEND",
@@ -7433,7 +7909,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FOUNTAIN",
@@ -7455,6 +7933,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -7462,12 +7945,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "CHURCH-STREET-PARK"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "INFOTECH-BUILDING",
@@ -7501,6 +7987,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "MAIN-AND-KENNEDY"
     ],
@@ -7516,6 +8015,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-KENNEDY"
@@ -7526,7 +8026,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PERELMAN-PERSONAL-DIRECTORY",
@@ -7540,13 +8042,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RED-TUBECAR-DOOR",
@@ -7572,6 +8078,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH"
+      ],
+      [
+        "OPEN",
+        "CLOSE"
+      ]
+    ],
     "actionRooms": [
       "RED-TUBECAR"
     ],
@@ -7584,6 +8099,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "refusalOnlyVerbs": [
+      "OPEN",
+      "CLOSE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "RED-TUBECAR"
@@ -7593,7 +8112,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "RED-TUBECAR"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "RED-TUBECAR-OBJECT"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SILICORP-BUILDING",
@@ -7623,6 +8146,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "MAIN-AND-KENNEDY"
     ],
@@ -7638,6 +8174,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-KENNEDY"
@@ -7648,7 +8185,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "NEWS-BUFFER",
@@ -7668,13 +8207,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "world buffer",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FOURTH-FLOOR",
@@ -7701,6 +8244,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "STUDENT-UNION"
     ],
@@ -7709,6 +8258,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -7719,7 +8269,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GROCERIES",
@@ -7745,6 +8297,30 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT-AWAY",
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "LOOK-INSIDE",
+        "EXAMINE"
+      ],
+      [
+        "OPEN"
+      ],
+      [
+        "EAT"
+      ],
+      [
+        "PUT"
+      ],
+      [
+        "PUT-AWAY"
+      ],
+      [
+        "PUT"
+      ],
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "KITCHEN"
     ],
@@ -7764,6 +8340,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT-AWAY",
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EAT": [
         "KITCHEN"
@@ -7774,7 +8351,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "KITCHEN-OBJECT",
+      "MEAL"
+    ],
+    "removedObjectIds": [
+      "GROCERIES"
+    ]
   },
   {
     "id": "DRIVERS-LICENSE",
@@ -7796,13 +8380,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "driver's license",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FORTZMAN",
@@ -7823,13 +8411,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "fortzman",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GARBAGE",
@@ -7849,13 +8441,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "garbage disposal",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MAGAZINE-ARTICLE",
@@ -7880,6 +8476,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE",
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -7889,10 +8491,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PICKFORD-THEATRE-OBJECT",
@@ -7918,6 +8523,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "PICKFORD-THEATRE"
     ],
@@ -7927,6 +8545,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "PICKFORD-THEATRE"
@@ -7946,7 +8565,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BEAMS",
@@ -7969,13 +8590,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "plastalloy beams",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PRISM-INTERFACES-DIRECTORY",
@@ -7989,13 +8614,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RECEIVER-STATION",
@@ -8016,6 +8645,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -8023,10 +8657,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TRAFFIC-INSTRUCTIONS",
@@ -8040,13 +8677,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WEATHER-INSTRUCTIONS",
@@ -8060,13 +8701,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "AUDITING-INSTRUCTIONS",
@@ -8080,13 +8725,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ESTHER",
@@ -8110,13 +8759,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "perelman",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PAMPHLET",
@@ -8141,6 +8794,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "READ"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ"
@@ -8148,12 +8806,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "TRAIN-STATION"
     ],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GRANOLA-CLUSTER",
@@ -8175,6 +8836,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "BUY"
@@ -8182,10 +8848,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MEAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "HVAC-CONTROLLER",
@@ -8219,6 +8890,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OFF",
       "HELLO"
     ],
+    "verbGroups": [
+      [
+        "SSHUT-OFF"
+      ],
+      [
+        "STURN-ON"
+      ],
+      [
+        "STATUS"
+      ],
+      [
+        "SHUT-OFF",
+        "TURN-ON"
+      ],
+      [
+        "SHUT-OFF"
+      ],
+      [
+        "ON",
+        "OFF"
+      ],
+      [
+        "HELLO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "SSHUT-OFF",
@@ -8238,10 +8934,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OFF",
       "HELLO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "ALPHA-SECTOR",
+      "BETA-SECTOR",
+      "GAMMA-SECTOR",
+      "DELTA-SECTOR",
+      "HEATING",
+      "COOLING",
+      "VENTILATION",
+      "SABOTEURS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "HVAC-INSTRUCTIONS",
@@ -8255,13 +8963,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "INDUSTRIAL-PARK-OBJECT",
@@ -8286,6 +8998,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "INDUSTRIAL-PARK-ENTRANCE",
       "SKYCAR-LOT-1",
@@ -8297,6 +9022,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "INDUSTRIAL-PARK-ENTRANCE",
@@ -8318,7 +9044,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LIBRARY-ACCOUNT",
@@ -8336,6 +9064,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "ASK-FOR"
     ],
+    "verbGroups": [
+      [
+        "ASK-FOR"
+      ]
+    ],
     "actionRooms": [
       "MAIN-LIBRARY"
     ],
@@ -8343,6 +9076,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "ASK-FOR"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "ASK-FOR": [
         "MAIN-LIBRARY"
@@ -8350,7 +9084,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CHUN-BUILDING",
@@ -8376,6 +9112,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "WALK-TO",
@@ -8387,10 +9132,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ROY",
@@ -8412,15 +9160,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "chinese man",
     "action": "ROY-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "ELM-UNDERPASS"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PLAN-POPULARITY",
@@ -8434,13 +9186,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RAILROAD-BRIDGE",
@@ -8464,6 +9220,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CROSS",
       "WALK-UNDER"
     ],
+    "verbGroups": [
+      [
+        "CROSS",
+        "WALK-UNDER"
+      ]
+    ],
     "actionRooms": [
       "MAIN-AND-WICKER",
       "BEND",
@@ -8474,6 +9236,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CROSS",
       "WALK-UNDER"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "CROSS": [
         "MAIN-AND-WICKER",
@@ -8488,7 +9251,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SERVICE-STATION-OBJECT",
@@ -8514,6 +9279,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "AQUARIUM-AND-PARK",
       "SERVICE-STATION"
@@ -8524,6 +9302,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "AQUARIUM-AND-PARK"
@@ -8543,7 +9322,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SIMULATION-MODE",
@@ -8568,6 +9349,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -8579,10 +9370,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "COMM-MODE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "STACKS-OF-PAPERS",
@@ -8605,6 +9401,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ",
@@ -8614,10 +9416,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TURKEY-SANDWICH",
@@ -8640,6 +9448,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-1",
       "FOODVILLE-2"
@@ -8648,6 +9461,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "FOODVILLE-1",
@@ -8656,7 +9470,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MEAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SALAD",
@@ -8678,6 +9496,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "verbGroups": [
+      [
+        "TAKE",
+        "EAT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -8687,12 +9511,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "KITCHEN"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CONTROL-CENTER-OBJECT",
@@ -8714,6 +9541,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -8721,10 +9553,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CURRENT-EVENTS-DIRECTORY",
@@ -8738,13 +9573,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HALLEY-ESTATES-OBJECT",
@@ -8771,6 +9610,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "PARK-ENTRANCE",
       "HALLEY-AND-PARK",
@@ -8784,6 +9636,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LEAVE",
       "DISEMBARK",
+      "EXAMINE"
+    ],
+    "refusalOnlyVerbs": [
       "EXAMINE"
     ],
     "verbRooms": {
@@ -8800,7 +9655,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HARDWARE-STORE-OBJECT",
@@ -8827,6 +9684,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "HARDWARE-STORE"
     ],
@@ -8836,6 +9706,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "DISEMBARK": [
         "HARDWARE-STORE"
@@ -8855,7 +9726,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HEIMAN-VILLAGE-OBJECT",
@@ -8904,6 +9777,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "HEIMAN-VILLAGE",
       "CHURCH-STREET-PARK"
@@ -8914,6 +9800,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "HEIMAN-VILLAGE",
@@ -8935,7 +9822,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "INTERFACE-MODE",
@@ -8957,6 +9846,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -8966,10 +9861,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CURRENT-FEED",
+      "PORT-LIST"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "LIBYAN-ECONOMY",
@@ -8983,13 +9884,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BANNED-TITLES-LIST",
@@ -9016,6 +9921,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ",
@@ -9025,12 +9936,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "MAIN-LIBRARY"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MOUNT-TAKEOVER",
@@ -9044,13 +9958,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "POLICEMAN",
@@ -9077,6 +9995,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "TELL-ABOUT"
     ],
+    "verbGroups": [
+      [
+        "TELL-ABOUT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TELL-ABOUT"
@@ -9084,10 +10007,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "TELL-ABOUT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CRIME",
+      "CRIMINAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "POLICE-STATION-OBJECT",
@@ -9111,6 +10040,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ELM-AND-PARK",
       "POLICE-STATION"
@@ -9121,6 +10063,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "ELM-AND-PARK"
@@ -9140,7 +10083,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RYDER-SPEECHES",
@@ -9154,13 +10099,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SPACEPORT-GATE",
@@ -9184,6 +10133,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -9197,10 +10160,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "AIRPORT-GATE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "STOCK-EXCHANGE-OBJECT",
@@ -9228,6 +10196,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "STOCK-EXCHANGE",
       "ELM-AND-RIVER"
@@ -9238,6 +10219,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "STOCK-EXCHANGE",
@@ -9259,7 +10241,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WORD-PROCESSOR",
@@ -9289,6 +10273,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "MOVE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "WRITE",
+        "SIT",
+        "BOARD"
+      ],
+      [
+        "TAKE",
+        "MOVE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -9306,10 +10304,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "MOVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BAMBOO-SCREEN",
@@ -9326,13 +10327,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "bamboo screen",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BROWN-TUBECAR-OBJECT",
@@ -9364,6 +10369,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "WAIT-FOR"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "BOARD"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "WAIT-FOR"
+      ]
+    ],
     "actionRooms": [
       "BROWN-TUBECAR"
     ],
@@ -9376,6 +10394,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "BROWN-TUBECAR"
@@ -9394,7 +10413,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "BROWN-TUBECAR"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BSF-FORMATION",
@@ -9408,13 +10429,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "COFFEE",
@@ -9439,17 +10464,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "BUY"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "OFFICE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HEALTH-CENTER-OBJECT",
@@ -9474,6 +10507,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "HEALTH-CENTER",
       "MAIN-AND-RIVER"
@@ -9484,6 +10530,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "HEALTH-CENTER",
@@ -9505,7 +10552,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MOVIE-THEATRE-OBJECT",
@@ -9535,6 +10584,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "MUSEUM-ENTRANCE",
       "CINEMA",
@@ -9547,6 +10612,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "MUSEUM-ENTRANCE",
@@ -9573,7 +10639,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PLAN-ELEMENTS",
@@ -9587,13 +10655,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "POWER-STATION-OBJECT",
@@ -9617,6 +10689,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "POWER-STATION"
     ],
@@ -9625,6 +10710,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "POWER-STATION"
@@ -9644,7 +10730,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RAILROAD-YARD",
@@ -9668,6 +10756,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ]
+    ],
     "actionRooms": [
       "MIDLAND-AND-CHURCH"
     ],
@@ -9679,6 +10777,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "MIDLAND-AND-CHURCH"
@@ -9689,7 +10788,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RAV",
@@ -9707,13 +10808,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "frita",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RECORD-BUFFER",
@@ -9738,16 +10843,27 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "OFF"
     ],
+    "verbGroups": [
+      [
+        "ON"
+      ],
+      [
+        "OFF"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "ON",
       "OFF"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "JILL-BOOK",
@@ -9776,6 +10892,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ],
+      [
+        "READ",
+        "EXAMINE",
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -9793,13 +10925,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "BEDROOM",
       "LIVING-ROOM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BOOKS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "STREET-BRIDGE",
@@ -9828,6 +10965,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CROSS",
       "LOOK-UNDER"
     ],
+    "verbGroups": [
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "THROUGH",
+        "WALK-TO",
+        "CROSS"
+      ],
+      [
+        "CROSS"
+      ],
+      [
+        "LOOK-UNDER"
+      ]
+    ],
     "actionRooms": [
       "RIVER-STREET-BRIDGE",
       "MAIN-STREET-BRIDGE",
@@ -9845,6 +10999,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CROSS",
       "LOOK-UNDER"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "DISEMBARK": [
         "RIVER-STREET-BRIDGE",
@@ -9872,7 +11027,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "STUDENT-UNION-OBJECT",
@@ -9897,6 +11054,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "STUDENT-UNION"
     ],
@@ -9905,6 +11075,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "STUDENT-UNION"
@@ -9924,7 +11095,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SYMPHONY-HALL-OBJECT",
@@ -9948,6 +11121,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SYMPHONY-HALL",
       "SYMPHONY-ENTRANCE",
@@ -9959,6 +11145,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "SYMPHONY-HALL",
@@ -9982,7 +11169,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TICKET-SELLER",
@@ -10005,6 +11194,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -10012,10 +11206,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CREDIT-CARD"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "TRAIN-STATION-OBJECT",
@@ -10046,6 +11245,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "BODANSKI-SQUARE",
       "MIDLAND-AND-RIVER",
@@ -10057,6 +11269,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "BODANSKI-SQUARE",
@@ -10078,7 +11291,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WELLS-THEATRE-OBJECT",
@@ -10103,6 +11318,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "AIRPORTWAY-AND-RIVER",
       "AQUARIUM-AND-RIVER",
@@ -10114,6 +11342,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "AIRPORTWAY-AND-RIVER",
@@ -10135,7 +11364,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "AIRPORT-GATE",
@@ -10160,6 +11391,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -10173,10 +11418,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "CLOSE"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ALI-BUILDING",
@@ -10209,6 +11459,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -10216,10 +11471,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ALPHA-SECTOR",
@@ -10240,13 +11498,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "alpha sector",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PRICE",
@@ -10267,13 +11529,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "price",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RANDU",
@@ -10294,13 +11560,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "randu",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CARD-CATALOG",
@@ -10324,6 +11594,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -10335,10 +11616,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CHURCH-OFFICIAL",
@@ -10359,6 +11643,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "TELL"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TELL"
@@ -10366,10 +11655,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "TELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CONVERSATION",
@@ -10388,6 +11680,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "LISTEN"
+      ]
+    ],
     "actionRooms": [
       "DORM",
       "CONTROL-CENTER"
@@ -10396,6 +11693,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LISTEN"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "LISTEN": [
         "CONTROL-CENTER"
@@ -10403,7 +11701,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CURRENT-FEED",
@@ -10425,6 +11725,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "NEWS"
     ],
@@ -10432,6 +11737,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "NEWS"
@@ -10441,7 +11747,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "NEWS"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DELTA-SECTOR",
@@ -10462,13 +11770,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "delta sector",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DISHES",
@@ -10491,6 +11803,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -10500,10 +11820,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "JILL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "GRIMWOLD",
@@ -10537,6 +11862,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NO",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "YES"
+      ],
+      [
+        "NO"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "YES",
@@ -10546,12 +11882,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "OFFICE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PERELMAN",
@@ -10592,6 +11931,47 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHOW",
       "GIVE"
     ],
+    "verbGroups": [
+      [
+        "YES"
+      ],
+      [
+        "NO"
+      ],
+      [
+        "EXAMINE",
+        "READ"
+      ],
+      [
+        "WHO",
+        "WHAT"
+      ],
+      [
+        "TELL-ABOUT"
+      ],
+      [
+        "YES"
+      ],
+      [
+        "NO"
+      ],
+      [
+        "THANK"
+      ],
+      [
+        "CALL"
+      ],
+      [
+        "SHOW",
+        "GIVE"
+      ],
+      [
+        "TELL-ABOUT"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "YES",
@@ -10617,13 +11997,44 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHOW",
       "GIVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "CONTROL-CENTER",
       "OFFICE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "RYDER",
+      "GRIMWOLD",
+      "RECORD-BUFFER",
+      "ME",
+      "MY-NAME",
+      "LIBRARY-MODE",
+      "ESTHER",
+      "PLAN",
+      "RANDU",
+      "GOLD",
+      "PRICE",
+      "FORTZMAN",
+      "WARREN",
+      "RESIGNATION",
+      "MINDEX",
+      "CLERKMATON",
+      "PARENTS",
+      "CLAVE",
+      "RAV",
+      "FYLA",
+      "CC-PRINTOUT",
+      "SILVER-DOVE",
+      "SIMULATION-MODE",
+      "COFFEE"
+    ],
+    "removedObjectIds": [
+      "PERELMAN",
+      "COFFEE"
+    ]
   },
   {
     "id": "WARREN",
@@ -10644,13 +12055,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "warren",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FIREHOUSE-OBJECT",
@@ -10674,6 +12089,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ]
+    ],
     "actionRooms": [
       "FIREHOUSE"
     ],
@@ -10682,6 +12107,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "FIREHOUSE"
@@ -10698,7 +12124,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GAMMA-SECTOR",
@@ -10719,13 +12147,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "gamma sector",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DUMP-OBJECT",
@@ -10759,6 +12191,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CITY-DUMP"
     ],
@@ -10767,6 +12212,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "CITY-DUMP"
@@ -10786,7 +12232,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HAM-SANDWICH",
@@ -10809,6 +12257,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-1",
       "FOODVILLE-2"
@@ -10817,6 +12270,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "FOODVILLE-1",
@@ -10825,7 +12279,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MEAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "HEIMAN-WORLD-OBJECT",
@@ -10854,6 +12312,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SOUTHWAY-AND-RIVER",
       "BEND",
@@ -10865,6 +12336,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "SOUTHWAY-AND-RIVER",
@@ -10886,7 +12358,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LECTURE-HALL-OBJECT",
@@ -10908,6 +12382,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ROCKVIL-UNIVERSITY",
       "LECTURE-HALL"
@@ -10917,6 +12404,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "ROCKVIL-UNIVERSITY"
@@ -10936,7 +12424,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LIBRARY-MODE",
@@ -10958,16 +12448,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
       "WALK-TO"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LIBRARY-UNIT",
@@ -10985,13 +12484,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "library unit",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LIQUOR-STORE-OBJECT",
@@ -11017,6 +12520,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "LIQUOR-STORE"
     ],
@@ -11026,6 +12542,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "LEAVE": [
         "LIQUOR-STORE"
@@ -11045,7 +12562,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DUCKS",
@@ -11072,6 +12591,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "KICK"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "TAKE",
+        "KICK"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -11083,12 +12611,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "KICK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "HALLEY-PARK-WEST"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PEREZ-TOWERS",
@@ -11116,6 +12647,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "MAIN-AND-RIVER"
     ],
@@ -11127,6 +12667,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-RIVER"
@@ -11137,7 +12678,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PICTUREPHONE",
@@ -11155,13 +12698,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "picturephone",
     "action": "PICTUREPHONE-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MOLD",
@@ -11187,6 +12734,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "TAKE"
     ],
+    "verbGroups": [
+      [
+        "EAT"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "TAKE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EAT",
@@ -11198,12 +12756,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "TAKE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "FOODVILLE-2"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "REFRIGERATOR",
@@ -11227,15 +12788,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "refrigerator",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "EPILOGUE-KITCHEN"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SHOWER",
@@ -11261,6 +12826,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "ON"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "CLOSE"
+      ],
+      [
+        "TAKE",
+        "ON"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -11274,10 +12849,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "ON"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BABY"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SOUP-KITCHEN",
@@ -11303,6 +12883,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "WICKER-AND-RIVER",
       "CLOSED-FACTORY"
@@ -11313,6 +12906,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER"
@@ -11332,7 +12926,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RAILROAD-TRACKS",
@@ -11362,6 +12958,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "CROSS"
     ],
+    "verbGroups": [
+      [
+        "CROSS"
+      ]
+    ],
     "actionRooms": [
       "CHURCH-STREET-PARK",
       "WAREHOUSE-1",
@@ -11374,6 +12975,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "CROSS"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "CROSS": [
         "WICKER-AND-PIER",
@@ -11386,7 +12988,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TUBE-STATION",
@@ -11412,6 +13016,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "RED-TUBECAR",
       "BROWN-TUBECAR",
@@ -11425,6 +13045,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "RED-TUBECAR",
@@ -11448,7 +13069,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "STAIRS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "UNSHAVEN-MAN",
@@ -11475,6 +13100,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SGIVE",
       "ASK-FOR"
     ],
+    "verbGroups": [
+      [
+        "GIVE"
+      ],
+      [
+        "SGIVE"
+      ],
+      [
+        "ASK-FOR"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "GIVE",
@@ -11486,10 +13122,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SGIVE",
       "ASK-FOR"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [
+      "BORDELLO-AD"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MY-MAILBOX",
@@ -11517,6 +13158,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "CLOSE"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "EXAMINE",
+        "LOOK-INSIDE",
+        "UNLOCK"
+      ],
+      [
+        "CLOSE"
+      ]
+    ],
     "actionRooms": [
       "PARKVIEW-APARTMENTS"
     ],
@@ -11534,10 +13186,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "CLOSE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PARENTS",
@@ -11562,13 +13217,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "parents",
     "action": "PARENTS-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "JILL",
+      "ME"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BETA-SECTOR",
@@ -11589,13 +13251,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "beta sector",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SODA",
@@ -11630,6 +13296,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "DRINK"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "BUY"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "DRINK"
+      ]
+    ],
     "actionRooms": [
       "EZZIS-BAR",
       "BAR",
@@ -11651,6 +13334,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "DRINK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "EZZIS-BAR",
@@ -11663,7 +13347,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MILKSHAKE"
+    ],
+    "removedObjectIds": [
+      "SODA"
+    ]
   },
   {
     "id": "CREDIT-CARD",
@@ -11684,13 +13374,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "credit card",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DERRICOPTERS",
@@ -11709,6 +13403,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "LISTEN"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -11718,10 +13420,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LISTEN"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DINETTE-SET",
@@ -11746,13 +13451,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "dinette set",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DINING-ROOM-OBJECT",
@@ -11775,6 +13484,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "EPILOGUE-KITCHEN",
       "EPILOGUE-LIVING-ROOM",
@@ -11786,6 +13508,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "EPILOGUE-KITCHEN",
@@ -11807,7 +13530,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "INTERCHANGE-OBJECT",
@@ -11833,6 +13558,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "INTERCHANGE"
     ],
@@ -11842,6 +13580,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "INTERCHANGE"
@@ -11861,7 +13600,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LIVING-ROOM-OBJECT",
@@ -11886,6 +13627,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [
       "KITCHEN",
       "PARKVIEW-HALL",
@@ -11906,6 +13663,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "KITCHEN",
@@ -11940,7 +13698,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "GLOBAL-ROOM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BEER",
@@ -11969,6 +13731,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROW",
       "DRINK"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "THROW"
+      ],
+      [
+        "DRINK"
+      ]
+    ],
     "actionRooms": [
       "EZZIS-BAR",
       "BAR",
@@ -11984,6 +13757,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROW",
       "DRINK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "EZZIS-BAR",
@@ -11995,7 +13769,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [
+      "LIQUOR"
+    ],
+    "removedObjectIds": [
+      "BEER"
+    ]
   },
   {
     "id": "CARLOT",
@@ -12021,6 +13801,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE",
+        "LOOK-INSIDE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SKYCAR-LOT-1",
       "SKYCAR-LOT-2",
@@ -12044,6 +13841,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "SKYCAR-FACTORY"
@@ -12054,7 +13852,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SKYCAR"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "POST-OFFICE-OBJECT",
@@ -12076,6 +13878,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "POST-OFFICE"
     ],
@@ -12085,6 +13900,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "POST-OFFICE"
@@ -12104,7 +13920,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PROTRUSIONS",
@@ -12131,6 +13949,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -12138,10 +13961,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RATION-CARD",
@@ -12165,6 +13991,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "GIVE",
       "SHOW"
     ],
+    "verbGroups": [
+      [
+        "GIVE",
+        "SHOW"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-1",
       "FOODVILLE-2"
@@ -12174,6 +14006,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "GIVE",
       "SHOW"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "GIVE": [
         "FOODVILLE-1",
@@ -12186,7 +14019,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SOY-PATTY"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "RED-TUBECAR-OBJECT",
@@ -12219,6 +14056,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "WAIT-FOR"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "BOARD"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "WAIT-FOR"
+      ]
+    ],
     "actionRooms": [
       "RED-TUBECAR"
     ],
@@ -12231,6 +14081,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "RED-TUBECAR"
@@ -12249,7 +14100,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "RED-TUBECAR"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RESIGNATION",
@@ -12267,13 +14120,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "resignation",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RUSTY-CROSS",
@@ -12298,6 +14155,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -12307,10 +14172,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SILVER-DOVE",
@@ -12326,13 +14194,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "silver dove",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SUPERMARKET",
@@ -12361,6 +14233,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-1",
       "FOODVILLE-2",
@@ -12377,6 +14268,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "FOODVILLE-1",
@@ -12405,7 +14297,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BUILDING",
+      "GLOBAL-ROOM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "VENTILATION",
@@ -12427,13 +14324,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "ventilation",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WATER-TOWER-OBJECT",
@@ -12460,6 +14361,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-FOO",
       "CLIMB-UP"
     ],
+    "verbGroups": [
+      [
+        "THROUGH"
+      ],
+      [
+        "CLIMB-FOO",
+        "CLIMB-UP"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -12471,10 +14381,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-FOO",
       "CLIMB-UP"
     ],
+    "refusalOnlyVerbs": [
+      "CLIMB-FOO",
+      "CLIMB-UP"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MY-BUZZER",
@@ -12498,6 +14414,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUSH",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "PUSH"
+      ],
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [
       "PARKVIEW-APARTMENTS"
     ],
@@ -12509,10 +14433,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUSH",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PARKVIEW-DOOR"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "AUDITORIUM",
@@ -12533,6 +14462,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "STUDENT-UNION"
     ],
@@ -12541,6 +14476,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -12551,7 +14487,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CLERKMATON",
@@ -12565,13 +14503,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "clerkmaton",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "COURTHOUSE-OBJECT",
@@ -12594,6 +14536,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "COURTHOUSE"
     ],
@@ -12603,6 +14558,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "COURTHOUSE"
@@ -12622,7 +14578,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DRUG-STORE-OBJECT",
@@ -12648,6 +14606,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "DRUG-STORE"
     ],
@@ -12657,6 +14628,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "DISEMBARK": [
         "DRUG-STORE"
@@ -12676,7 +14648,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FIRECOPTER",
@@ -12701,6 +14675,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "THROUGH"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "BOARD",
+        "THROUGH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -12712,10 +14695,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "THROUGH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FLOODLIGHT",
@@ -12733,13 +14719,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "floodlight",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HEADSTONES",
@@ -12770,6 +14760,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE",
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -12779,10 +14775,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "GRAFFITI"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "HUANG-HALL-OBJECT",
@@ -12811,6 +14812,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CENTRE-AND-KENNEDY",
       "HALLEY-AND-PARK",
@@ -12823,6 +14837,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "CENTRE-AND-KENNEDY",
@@ -12846,7 +14861,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "POOL-TABLE",
@@ -12868,6 +14885,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -12875,10 +14897,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PRISM-NAME",
@@ -12892,13 +14917,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PROSTITUTE",
@@ -12923,13 +14952,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "prostitute",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "JOYBOOTH-BUTTON",
@@ -12949,6 +14982,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "PUSH"
     ],
+    "verbGroups": [
+      [
+        "PUSH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "PUSH"
@@ -12956,12 +14994,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "PUSH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "JOYBOOTH"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "HEADSET",
+      "SEAT"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "RESTAURANT-OBJECT",
@@ -13004,6 +15048,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "BURGER-MEISTER",
       "AQUARIUM-AND-PARK",
@@ -13017,6 +15074,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-WICKER",
@@ -13049,7 +15107,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BUILDING"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "RIVER-BANK",
@@ -13067,13 +15129,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "river bank",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SLEEP-MODE",
@@ -13095,16 +15161,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
       "WALK-TO"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "STADIUM-STANDS",
@@ -13134,13 +15209,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "stands",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "VACANT-LOT",
@@ -13163,6 +15242,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ]
+    ],
     "actionRooms": [
       "WAREHOUSE-1",
       "WICKER-AND-RIVER",
@@ -13177,6 +15266,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "AQUARIUM-AND-RIVER",
@@ -13203,7 +15293,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "VIEWSCREEN",
@@ -13225,6 +15317,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ON"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "ON"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -13234,10 +15334,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ON"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WNN-FEEDER",
@@ -13267,6 +15370,26 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TRANSMIT",
       "HELLO"
     ],
+    "verbGroups": [
+      [
+        "STATUS"
+      ],
+      [
+        "ON"
+      ],
+      [
+        "OFF"
+      ],
+      [
+        "SET"
+      ],
+      [
+        "TRANSMIT"
+      ],
+      [
+        "HELLO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "STATUS",
@@ -13284,10 +15407,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TRANSMIT",
       "HELLO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "TRANSMITTER",
+      "RECORD-BUFFER",
+      "CURRENT-FEED",
+      "REPORT-BUFFER",
+      "NEWS-BUFFER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "WNN-INSTRUCTIONS",
@@ -13301,13 +15433,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HANDS",
@@ -13336,6 +15472,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHAKE",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "WAVE"
+      ],
+      [
+        "SHAKE"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "WAVE",
@@ -13347,10 +15494,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHAKE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SINK"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "APARTMENT-OBJECT",
@@ -13374,6 +15526,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [
       "LIVING-ROOM"
     ],
@@ -13387,6 +15552,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "DISEMBARK": [
         "LIVING-ROOM"
@@ -13397,7 +15563,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "GLOBAL-ROOM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BATHROOMS",
@@ -13415,13 +15585,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "bathrooms",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "POOL",
@@ -13441,6 +15615,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PLAY",
       "SHOOT"
     ],
+    "verbGroups": [
+      [
+        "PLAY",
+        "SHOOT"
+      ]
+    ],
     "actionRooms": [
       "POOL-HALL"
     ],
@@ -13449,6 +15629,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PLAY",
       "SHOOT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "PLAY": [
         "POOL-HALL"
@@ -13459,7 +15640,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BLEACHERS",
@@ -13478,13 +15661,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "bleachers",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SCHOOL-BOOKSTORE",
@@ -13508,6 +15695,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "STUDENT-UNION"
     ],
@@ -13516,6 +15709,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -13526,7 +15720,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BOOKSTORE-OBJECT",
@@ -13554,6 +15750,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SEARCH",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SEARCH"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "BOOKSTORE"
     ],
@@ -13565,6 +15780,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SEARCH",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "BOOKSTORE"
@@ -13590,7 +15806,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BOOKS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BSF-GUARDS",
@@ -13613,13 +15833,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "bsf guard",
     "action": "BSF-GUARDS-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "NATIONAL-GUARDSMAN"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "CAFETERIA-OBJECT",
@@ -13641,6 +15867,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -13648,10 +15879,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "UNIVERSITY-CAFETERIA",
@@ -13671,6 +15905,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "STUDENT-UNION"
     ],
@@ -13679,6 +15919,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -13689,7 +15930,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CITY-HALL-OBJECT",
@@ -13712,6 +15955,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ]
+    ],
     "actionRooms": [
       "CITY-HALL",
       "ROCKVIL-CENTRE"
@@ -13721,6 +15974,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "CITY-HALL"
@@ -13737,7 +15991,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CLASSROOMS",
@@ -13762,6 +16018,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "LECTURE-HALL"
     ],
@@ -13770,6 +16032,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "LECTURE-HALL"
@@ -13780,7 +16043,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ANDERSON-DIRECTORY",
@@ -13799,6 +16064,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ",
@@ -13808,12 +16079,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "HEALTH-CENTER"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "HEALTH-CENTER-OBJECT"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "DORM-OBJECT",
@@ -13839,6 +16115,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "DORM"
     ],
@@ -13850,6 +16142,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "DORM"
@@ -13869,7 +16162,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MINDEX"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "DUCK-POND",
@@ -13898,6 +16195,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "SWIM"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "PUT",
+        "THROW"
+      ],
+      [
+        "BOARD",
+        "THROUGH",
+        "SWIM"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -13917,10 +16231,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "SWIM"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FIREPLACE",
@@ -13945,6 +16262,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -13952,10 +16274,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FIRETRUCK",
@@ -13980,6 +16305,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "THROUGH"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "BOARD",
+        "THROUGH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -13991,12 +16325,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "THROUGH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "FIREHOUSE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LAMP-POST",
@@ -14018,6 +16355,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-UP",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "CLIMB-FOO",
+        "CLIMB-UP"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "CLIMB-FOO",
@@ -14029,10 +16375,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-UP",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "CLIMB-FOO",
+      "CLIMB-UP"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "NEWSPAPER-DISPENSER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MACHINERY",
@@ -14048,13 +16402,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "machinery",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MANTA-RAY",
@@ -14072,15 +16430,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "manta ray",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "AQUARIUM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MILKSHAKE",
@@ -14109,6 +16471,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY",
+        "TAKE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "DRUG-STORE"
     ],
@@ -14120,6 +16491,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "DRUG-STORE"
@@ -14130,7 +16502,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "NEWSPAPER",
@@ -14164,6 +16538,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "PUT"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "TAKE"
+      ],
+      [
+        "READ"
+      ],
+      [
+        "BUY"
+      ],
+      [
+        "PUT"
+      ]
+    ],
     "actionRooms": [
       "BODANSKI-SQUARE",
       "DRUG-STORE"
@@ -14179,6 +16568,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "PUT"
     ],
+    "refusalOnlyVerbs": [
+      "PUT"
+    ],
     "verbRooms": {
       "BUY": [
         "BODANSKI-SQUARE",
@@ -14190,7 +16582,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EPILOGUE-LIVING-ROOM",
       "BODANSKI-SQUARE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "NEWSPAPER-DISPENSER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "PARTITION",
@@ -14210,6 +16606,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-AROUND",
       "LOOK"
     ],
+    "verbGroups": [
+      [
+        "LOOK-BEHIND",
+        "WALK-AROUND",
+        "LOOK"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LOOK-BEHIND",
@@ -14221,12 +16624,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-AROUND",
       "LOOK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "LIVING-ROOM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PLAN-DATA-DIRECTORY",
@@ -14240,13 +16646,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "POOL-HALL-OBJECT",
@@ -14271,6 +16681,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "POOL-HALL"
     ],
@@ -14281,6 +16707,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "POOL-HALL"
@@ -14303,7 +16730,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RESERVOIR",
@@ -14322,6 +16751,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SWIM",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BOARD",
+        "THROUGH",
+        "SWIM"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "BOARD",
@@ -14335,10 +16774,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SWIM",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CHURCH-SKYCOPTER",
@@ -14361,6 +16803,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LISTEN",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "LISTEN"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LISTEN",
@@ -14370,10 +16820,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LISTEN",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": [
+      "CHURCH-SKYCOPTER"
+    ]
   },
   {
     "id": "SOY-PATTY",
@@ -14398,6 +16853,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "EAT"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-1",
       "FOODVILLE-2"
@@ -14410,6 +16876,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EAT",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "BUY"
+    ],
     "verbRooms": {
       "BUY": [
         "FOODVILLE-1",
@@ -14418,7 +16887,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": [
+      "SOY-PATTY"
+    ]
   },
   {
     "id": "SPACEPORT",
@@ -14441,6 +16914,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ]
+    ],
     "actionRooms": [
       "TERMINAL"
     ],
@@ -14449,6 +16928,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "TERMINAL"
@@ -14459,7 +16939,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TAX-STUDY",
@@ -14473,13 +16955,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": null,
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TERMINAL-BANKS",
@@ -14502,6 +16988,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "READ"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ"
@@ -14509,10 +17000,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "STACKS-OF-PAPERS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "TOWNHOUSE",
@@ -14534,6 +17030,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ]
+    ],
     "actionRooms": [
       "MAIN-AND-KENNEDY",
       "ELM-AND-KENNEDY",
@@ -14541,6 +17043,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     ],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-AND-KENNEDY",
@@ -14555,7 +17058,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GOLD",
@@ -14577,13 +17082,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "gold",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WAREHOUSE-OBJECT",
@@ -14608,6 +17117,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "WAREHOUSE-1",
       "WICKER-AND-RIVER",
@@ -14623,6 +17145,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER",
@@ -14645,7 +17168,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "FACTORY-OBJECT"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "WATERPOOL",
@@ -14673,6 +17200,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "BOARD",
+        "SWIM"
+      ],
+      [
+        "LOOK-INSIDE",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -14688,12 +17226,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "KENNEDY-PARK"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HEAD",
@@ -14717,6 +17258,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -14726,10 +17275,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "refusalOnlyVerbs": [
+      "CLOSE"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MY-NAME",
@@ -14751,6 +17305,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "WHAT"
     ],
+    "verbGroups": [
+      [
+        "WHAT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "WHAT"
@@ -14758,10 +17317,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "WHAT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "ME"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "AQUARIUM-OBJECT",
@@ -14782,6 +17346,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "HALLEY-PARK-EAST",
       "SKYCAR-LOT-4",
@@ -14796,6 +17376,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "HALLEY-PARK-EAST",
@@ -14824,7 +17405,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BATHROOM-OBJECT",
@@ -14854,6 +17437,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "TAKE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [
       "BEDROOM",
       "FOYER",
@@ -14870,6 +17472,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "BEDROOM",
@@ -14899,7 +17502,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "TUB",
+      "GLOBAL-ROOM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BSF-BASE",
@@ -14928,6 +17536,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SKYCAB",
       "BASE-GATE",
@@ -14940,6 +17564,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LEAVE",
       "DISEMBARK"
+    ],
+    "refusalOnlyVerbs": [
+      "EXAMINE"
     ],
     "verbRooms": {
       "LEAVE": [
@@ -14959,7 +17586,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BUILDING",
@@ -14988,6 +17617,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO",
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "BURNED-OUT-AREA",
       "CHURCH-ENTRANCE",
@@ -15001,6 +17641,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "BURNED-OUT-AREA",
@@ -15011,7 +17652,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CEMETERY-OBJECT",
@@ -15034,6 +17677,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CEMETERY",
       "MAIN-AND-WICKER",
@@ -15045,6 +17701,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "CEMETERY",
@@ -15070,7 +17727,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CHILDREN",
@@ -15096,6 +17755,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "LIVING-ROOM",
       "ZOO"
@@ -15108,10 +17778,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MITCHELL",
+      "PAINTING"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "CRIMINAL",
@@ -15128,13 +17804,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "criminal",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DUNBARS-OBJECT",
@@ -15167,6 +17847,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "DUNBARS",
       "ROCKVIL-CENTRE"
@@ -15177,6 +17870,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "DUNBARS"
@@ -15196,7 +17890,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DOORWAY",
@@ -15232,6 +17928,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH"
+      ],
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [
       "WICKER-AND-RIVER"
     ],
@@ -15247,6 +17960,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "LOOK-INSIDE"
     ],
+    "refusalOnlyVerbs": [
+      "CLOSE",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {
       "SMELL": [
         "WICKER-AND-RIVER"
@@ -15254,7 +17971,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "STAIRS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "EXHIBITS",
@@ -15299,6 +18020,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "AQUARIUM",
       "RAILROAD-MUSEUM"
@@ -15307,6 +18033,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "AQUARIUM",
@@ -15315,7 +18042,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GRAFFITI",
@@ -15334,6 +18063,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "READ"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [
       "RED-TUBECAR",
       "BROWN-TUBECAR",
@@ -15347,6 +18081,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "READ": [
         "CEMETERY",
@@ -15358,7 +18093,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PICTUREPHONE",
+      "HEADSTONES"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "GUN-SHOP-OBJECT",
@@ -15382,6 +18122,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "EXIT",
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "FACTORY-ENTRANCE",
       "GUN-SHOP"
@@ -15393,6 +18147,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "FACTORY-ENTRANCE"
@@ -15415,7 +18170,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HARDWARE",
@@ -15438,6 +18195,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "TAKE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE"
+      ]
+    ],
     "actionRooms": [
       "HARDWARE-STORE"
     ],
@@ -15447,6 +18212,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "TAKE"
     ],
+    "refusalOnlyVerbs": [
+      "BUY"
+    ],
     "verbRooms": {
       "BUY": [
         "HARDWARE-STORE"
@@ -15454,7 +18222,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HOMEWORK",
@@ -15480,6 +18250,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ],
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -15491,12 +18270,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "LIVING-ROOM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HOSPITAL-OBJECT",
@@ -15522,6 +18304,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "HOSPITAL",
       "ELM-AND-KENNEDY",
@@ -15533,6 +18328,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "HOSPITAL",
@@ -15557,7 +18353,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "JOYBOOTH-OBJECT",
@@ -15583,6 +18381,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "JOYBOOTH",
       "ROCKVIL-MALL"
@@ -15595,6 +18410,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "JOYBOOTH"
@@ -15614,7 +18430,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MAGAZINE",
@@ -15645,6 +18463,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "TAKE",
+        "READ",
+        "EXAMINE"
+      ],
+      [
+        "BUY",
+        "TAKE",
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SKYCAB",
       "DRUG-STORE"
@@ -15656,6 +18487,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "TAKE": [
         "SKYCAB",
@@ -15675,7 +18507,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MIDNIGHT",
@@ -15691,13 +18525,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "midnight",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MITCHELL",
@@ -15735,6 +18573,29 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "TOUCH"
     ],
+    "verbGroups": [
+      [
+        "HELLO"
+      ],
+      [
+        "KISS"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "PLAY-WITH"
+      ],
+      [
+        "FOLLOW"
+      ],
+      [
+        "WALK-TO"
+      ],
+      [
+        "TOUCH"
+      ]
+    ],
     "actionRooms": [
       "KITCHEN",
       "BEDROOM",
@@ -15758,12 +18619,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "TOUCH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "LIVING-ROOM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PARTITION",
+      "BED"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "OVERCOAT",
@@ -15782,13 +18649,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "overcoat",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PAINTING",
@@ -15825,6 +18696,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MOVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TAKE",
+        "MOVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -15836,10 +18716,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MOVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "EASEL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "PEDESTAL",
@@ -15861,13 +18746,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "pedestal",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "AIRPORT-SIGN",
@@ -15888,6 +18777,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "READ"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ"
@@ -15895,10 +18789,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SKYLIGHT",
@@ -15919,6 +18816,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LOOK-INSIDE"
@@ -15926,10 +18828,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LOOK-INSIDE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SOUVENIR",
@@ -15958,6 +18863,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "TRAIN-STATION"
     ],
@@ -15968,6 +18881,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "TRAIN-STATION"
@@ -15977,7 +18891,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "TRAIN-STATION"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TENEMENT-OBJECT",
@@ -16020,6 +18936,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "WICKER-AND-RIVER",
       "POWER-STATION-ENTRANCE",
@@ -16038,6 +18970,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER",
@@ -16075,7 +19008,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PERELMAN-TERMINAL",
@@ -16095,6 +19030,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "READ"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ"
@@ -16102,10 +19042,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "STACKS-OF-PAPERS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SKYBUS-TERMINAL-OBJECT",
@@ -16128,6 +19073,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ]
+    ],
     "actionRooms": [
       "SKYBUS-TERMINAL",
       "MAIN-AND-KENNEDY"
@@ -16137,6 +19092,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "SKYBUS-TERMINAL",
@@ -16155,7 +19111,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "AIRPORT-TERMINAL-OBJECT",
@@ -16178,6 +19136,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "TERMINAL",
       "AIRPORT-ENTRANCE"
@@ -16187,6 +19158,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "TERMINAL",
@@ -16208,7 +19180,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PLAN",
@@ -16224,13 +19198,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "plan",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TOTE-BAGS",
@@ -16250,15 +19228,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "tote bag",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "CORE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TOY",
@@ -16285,6 +19267,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SQUEEZE",
       "PLAY-WITH"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "SQUEEZE",
+        "PLAY-WITH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -16296,10 +19287,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SQUEEZE",
       "PLAY-WITH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "VIBRAMAT",
@@ -16319,6 +19313,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "ON"
+      ],
+      [
+        "PUT"
+      ],
+      [
+        "PUT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -16330,10 +19336,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "refusalOnlyVerbs": [
+      "OPEN",
+      "ON"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "WASHERS",
+      "DRYERS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "ME",
@@ -16375,6 +19390,49 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WASH",
       "CALL"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "LISTEN"
+      ],
+      [
+        "ALARM"
+      ],
+      [
+        "GIVE"
+      ],
+      [
+        "MOVE"
+      ],
+      [
+        "SEARCH"
+      ],
+      [
+        "KILL",
+        "MUNG"
+      ],
+      [
+        "FIND",
+        "WHERE"
+      ],
+      [
+        "WHO"
+      ],
+      [
+        "FOLLOW"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "WASH"
+      ],
+      [
+        "CALL"
+      ]
+    ],
     "actionRooms": [
       "MAIN-STREET-BRIDGE",
       "RIVER-STREET-BRIDGE",
@@ -16414,6 +19472,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "FIND": [
         "MAIN-STREET-BRIDGE",
@@ -16438,7 +19497,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SLEEP-MODE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BARKING",
@@ -16459,6 +19522,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "LISTEN"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LISTEN"
@@ -16466,10 +19534,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LISTEN"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BEDROOM-OBJECT",
@@ -16499,6 +19570,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [
       "BEDROOM",
       "MASTER-BEDROOM",
@@ -16516,6 +19603,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "BEDROOM",
@@ -16551,7 +19639,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "GLOBAL-ROOM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BLANKET",
@@ -16578,6 +19670,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-ON",
       "WEAR"
     ],
+    "verbGroups": [
+      [
+        "PUT-ON"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "BOARD",
+        "LIE-DOWN",
+        "CLIMB-ON",
+        "WEAR"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "PUT-ON",
@@ -16595,12 +19701,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-ON",
       "WEAR"
     ],
+    "refusalOnlyVerbs": [
+      "BOARD",
+      "LIE-DOWN",
+      "CLIMB-ON",
+      "WEAR"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "JAIL-CELL"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "ME"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "CEILING",
@@ -16620,6 +19736,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "LOOK-UNDER"
     ],
+    "verbGroups": [
+      [
+        "LOOK-UNDER"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LOOK-UNDER"
@@ -16627,10 +19748,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LOOK-UNDER"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CLOTHES",
@@ -16673,6 +19797,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE-OFF",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE",
+        "WEAR"
+      ],
+      [
+        "REMOVE",
+        "TAKE-OFF"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "DUNBARS",
       "HEIMAN-VILLAGE",
@@ -16690,6 +19830,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE-OFF",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "DUNBARS",
@@ -16708,7 +19849,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SWEATER",
+      "SCARF",
+      "VEST",
+      "RACKS",
+      "ME"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "COOLING",
@@ -16730,13 +19879,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "cooling",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "COUNTER",
@@ -16759,12 +19912,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT",
       "PUT-ON"
     ],
+    "verbGroups": [
+      [
+        "PUT",
+        "PUT-ON"
+      ]
+    ],
     "actionRooms": [
       "KITCHEN",
       "EPILOGUE-KITCHEN"
     ],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "PUT": [
         "KITCHEN",
@@ -16779,7 +19939,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "EPILOGUE-KITCHEN"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BEER",
+      "GLOBAL-TABLE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "DECODER",
@@ -16799,6 +19964,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE",
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -16808,10 +19979,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FACTORY-OBJECT",
@@ -16846,6 +20020,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CLOSED-FACTORY",
       "WICKER-AND-RIVER",
@@ -16861,6 +20048,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER",
@@ -16890,7 +20078,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GUN",
@@ -16965,6 +20155,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHOOT",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE",
+        "SHOOT"
+      ],
+      [
+        "SHOOT"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CORE",
       "CONTROL-CENTER",
@@ -16978,6 +20183,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHOOT",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "GUN-SHOP"
@@ -16994,7 +20200,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SABOTEURS",
+      "CREDIT-CARD"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "HALLWAY",
@@ -17023,6 +20234,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE",
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [
       "EPILOGUE-LIVING-ROOM",
       "HOSPITAL-ANNEX",
@@ -17040,6 +20265,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "EPILOGUE-LIVING-ROOM",
@@ -17082,7 +20308,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HEADSET",
@@ -17106,6 +20334,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "PUT-ON"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ],
+      [
+        "PUT-ON"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -17115,12 +20351,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "PUT-ON"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "JOYBOOTH"
     ],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [
+      "HEAD"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "HEATING",
@@ -17143,13 +20384,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "heating",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "JUKEBOX",
@@ -17173,6 +20418,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PLAY"
     ],
+    "verbGroups": [
+      [
+        "LISTEN"
+      ],
+      [
+        "ON",
+        "PLAY"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LISTEN",
@@ -17184,10 +20438,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PLAY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "KITCHEN-OBJECT",
@@ -17211,6 +20468,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [
       "KITCHEN",
       "EPILOGUE-KITCHEN"
@@ -17224,6 +20497,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "WASH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "KITCHEN",
@@ -17248,7 +20522,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "GLOBAL-ROOM"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MAIN-LIBRARY-OBJECT",
@@ -17276,6 +20554,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "MAIN-LIBRARY"
     ],
@@ -17286,6 +20580,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-LIBRARY"
@@ -17308,7 +20603,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "LIBRARY-MODE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MAILBOXES",
@@ -17335,6 +20634,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "COUNT",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "UNLOCK"
+      ],
+      [
+        "READ",
+        "COUNT"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -17350,10 +20664,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "COUNT",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "UNLOCK"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "KEY",
+      "BUZZERS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MARQUEE",
@@ -17372,6 +20694,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "READ"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ"
@@ -17379,10 +20706,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RECTORY-OBJECT",
@@ -17407,6 +20737,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "DISEMBARK"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CONSTRUCTION-SITE-5",
       "CHURCH-ENTRANCE"
@@ -17417,6 +20760,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "CONSTRUCTION-SITE-5",
@@ -17435,7 +20779,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ROCKVIL-OBJECT",
@@ -17456,6 +20802,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ROOFTOP",
       "SKYCAB"
@@ -17469,6 +20827,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "ROOFTOP",
@@ -17477,7 +20836,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SIMULATION-MODE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SHELVES",
@@ -17511,6 +20874,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "BOOKSTORE",
       "FOODVILLE-1",
@@ -17520,6 +20888,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "BOOKSTORE",
@@ -17529,7 +20898,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SKYCAR",
@@ -17557,6 +20928,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "COUNT",
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "WAIT-FOR"
+      ],
+      [
+        "THROUGH",
+        "BOARD"
+      ],
+      [
+        "COUNT"
+      ],
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "SERVICE-STATION",
       "SKYCAR-FACTORY"
@@ -17573,6 +20959,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "COUNT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "COUNT": [
         "SKYCAR-FACTORY"
@@ -17580,7 +20967,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "STADIUM-OBJECT",
@@ -17618,6 +21007,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "SIT"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "BOARD",
+        "SIT"
+      ]
+    ],
     "actionRooms": [
       "ROCKVIL-STADIUM",
       "STADIUM-LOT-A",
@@ -17633,6 +21039,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "SIT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "ROCKVIL-STADIUM",
@@ -17665,7 +21072,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "STADIUM-STANDS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SOLARIUM-OBJECT",
@@ -17691,6 +21102,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "PATIO",
       "EPILOGUE-LIVING-ROOM",
@@ -17702,6 +21126,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "PATIO",
@@ -17723,7 +21148,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SWEATER",
@@ -17752,6 +21179,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "BUY",
@@ -17763,12 +21201,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "DUNBARS"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CLOTHES"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "PATIO-OBJECT",
@@ -17792,6 +21235,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "PATIO"
     ],
@@ -17801,6 +21257,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "PATIO"
@@ -17820,7 +21277,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WASHERS",
@@ -17846,6 +21305,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "ON"
+      ],
+      [
+        "PUT"
+      ],
+      [
+        "PUT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -17857,10 +21328,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "refusalOnlyVerbs": [
+      "OPEN",
+      "ON"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "VIBRAMAT",
+      "DRYERS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "ANIMAL",
@@ -17893,6 +21373,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "GIVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TOUCH"
+      ],
+      [
+        "FEED"
+      ],
+      [
+        "GIVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ROCKVIL-STADIUM"
     ],
@@ -17908,10 +21402,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "GIVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "TOUCH"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ATRIUM",
@@ -17936,6 +21435,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -17943,10 +21447,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BANNER",
@@ -17965,6 +21472,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ",
@@ -17974,12 +21487,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "ZOO"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BUREAU",
@@ -18009,6 +21525,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -18020,10 +21547,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "refusalOnlyVerbs": [
+      "EXAMINE",
+      "OPEN"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BUZZERS",
@@ -18049,6 +21582,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "COUNT"
     ],
+    "verbGroups": [
+      [
+        "PUSH"
+      ],
+      [
+        "EXAMINE",
+        "READ"
+      ],
+      [
+        "COUNT"
+      ]
+    ],
     "actionRooms": [
       "PARKVIEW-APARTMENTS"
     ],
@@ -18062,6 +21607,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "COUNT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "PARKVIEW-APARTMENTS"
@@ -18072,7 +21618,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CAMPUS",
@@ -18101,6 +21649,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ]
+    ],
     "actionRooms": [
       "ELM-AND-UNIVERSITY",
       "LECTURE-HALL",
@@ -18111,6 +21669,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
     ],
     "globalVerbs": [],
     "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
+    "refusalOnlyVerbs": [
       "LEAVE",
       "DISEMBARK"
     ],
@@ -18144,7 +21706,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CHURCH-OBJECT",
@@ -18184,6 +21748,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "TRAIN-STATION",
       "BODANSKI-SQUARE",
@@ -18200,6 +21777,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "BODANSKI-SQUARE",
@@ -18236,7 +21814,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DRYERS",
@@ -18262,6 +21842,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "ON"
+      ],
+      [
+        "PUT"
+      ],
+      [
+        "PUT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -18273,10 +21865,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "refusalOnlyVerbs": [
+      "OPEN",
+      "ON"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "VIBRAMAT",
+      "WASHERS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "FLOORS",
@@ -18294,13 +21895,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "floors",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GROUND",
@@ -18325,6 +21930,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-UNDER",
       "LEAVE"
     ],
+    "verbGroups": [
+      [
+        "CLIMB-UP",
+        "CLIMB-ON",
+        "CLIMB-FOO",
+        "BOARD",
+        "LIE-DOWN",
+        "SIT"
+      ],
+      [
+        "LOOK-UNDER"
+      ],
+      [
+        "LEAVE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "CLIMB-UP",
@@ -18339,10 +21960,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LIQUOR",
@@ -18365,6 +21989,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "TAKE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE"
+      ]
+    ],
     "actionRooms": [
       "LIQUOR-STORE",
       "EZZIS-BAR",
@@ -18380,6 +22012,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "TAKE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "LIQUOR-STORE",
@@ -18393,7 +22026,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SCOTCH",
+      "BEER",
+      "OTHER-LIQUOR"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "OTHER-LIQUOR",
@@ -18427,6 +22066,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "LIQUOR-STORE",
       "EZZIS-BAR",
@@ -18438,6 +22082,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     ],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "LIQUOR-STORE",
@@ -18451,7 +22096,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SCOTCH",
+      "LIQUOR"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "LOUNGE",
@@ -18471,6 +22121,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "DORM"
     ],
@@ -18482,6 +22141,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "DORM"
@@ -18492,7 +22152,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MINDEX"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MINDEX",
@@ -18515,6 +22179,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "PUSH",
+        "MOVE",
+        "TOUCH"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "PUSH",
@@ -18529,10 +22206,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TOUCH",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MUSEUM-OBJECT",
@@ -18555,6 +22235,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SKYCAB",
       "RIVERSIDE-PARK",
@@ -18569,6 +22262,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "RIVERSIDE-PARK",
@@ -18597,7 +22291,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BSF-BASE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "INTNUM",
@@ -18613,13 +22311,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "number intnum",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "OFFICE-OBJECT",
@@ -18638,6 +22340,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -18645,10 +22352,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PROFESSOR-OFFICES",
@@ -18673,6 +22383,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "LECTURE-HALL"
     ],
@@ -18681,6 +22397,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "LECTURE-HALL"
@@ -18691,7 +22408,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PEOPLE",
@@ -18731,6 +22450,28 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "ASK-ABOUT",
+        "TELL-ABOUT"
+      ],
+      [
+        "FOLLOW"
+      ],
+      [
+        "WAIT-FOR"
+      ],
+      [
+        "EXAMINE",
+        "LISTEN"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ATHLETIC-FIELD",
       "CORE",
@@ -18751,6 +22492,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LISTEN"
     ],
+    "refusalOnlyVerbs": [
+      "TELL"
+    ],
     "verbRooms": {
       "WAIT-FOR": [
         "CORE",
@@ -18766,7 +22510,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "SABOTEURS",
+      "CHILDREN"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "PLAQUE",
@@ -18786,15 +22535,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "plaque",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [
       "KENNEDY-PARK"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "JAIL-OBJECT",
@@ -18826,6 +22579,23 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "LOOK-INSIDE",
+        "EXAMINE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "WATER-TOWER",
       "ROCKVIL-REFORMATORY",
@@ -18842,6 +22612,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "WATER-TOWER",
@@ -18870,7 +22641,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CC-PRINTOUT",
@@ -18894,6 +22667,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ",
@@ -18903,10 +22682,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "STACKS-OF-PAPERS"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SCHOOL-OBJECT",
@@ -18941,6 +22725,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "HEIMAN-VILLAGE",
       "AQUARIUM-AND-KENNEDY",
@@ -18955,6 +22752,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "AQUARIUM-AND-KENNEDY",
@@ -18982,7 +22780,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SKYBUS",
@@ -19003,6 +22803,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "FIND"
     ],
+    "verbGroups": [
+      [
+        "THROUGH"
+      ],
+      [
+        "WAIT-FOR",
+        "EXAMINE",
+        "FIND"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -19016,10 +22826,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "FIND"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SKYCAB-OBJECT",
@@ -19050,6 +22863,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXIT",
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXIT",
@@ -19063,10 +22886,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "STAIRS",
@@ -19098,6 +22924,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "CLIMB-UP",
+        "CLIMB-FOO"
+      ],
+      [
+        "CLIMB-DOWN"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "WICKER-AND-RIVER",
       "MASTER-BEDROOM"
@@ -19114,6 +22955,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "SMELL": [
         "WICKER-AND-RIVER"
@@ -19124,7 +22966,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "STATUE",
@@ -19149,6 +22993,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "READ",
@@ -19158,12 +23010,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "KENNEDY-PARK"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PLAQUE"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "HALLEY-STATUE",
@@ -19189,6 +23046,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "WHO"
+      ],
+      [
+        "EXAMINE",
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "WHO",
@@ -19200,10 +23066,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PEDESTAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "TICKET",
@@ -19229,6 +23100,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE"
+      ],
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CINEMA",
       "TRAIN-STATION",
@@ -19248,6 +23131,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "CINEMA",
@@ -19262,7 +23146,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "CINEMA"
     ],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [
+      "TICKET-SELLER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "TOILET",
@@ -19285,6 +23173,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FLUSH",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "FLUSH"
+      ],
+      [
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "FLUSH",
@@ -19294,12 +23190,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FLUSH",
       "LOOK-INSIDE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "EPILOGUE-BATHROOM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TUNNEL",
@@ -19316,6 +23215,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH"
+      ],
+      [
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [
       "CHURCH-STREET-PARK",
       "HALLEY-AND-PARK",
@@ -19328,6 +23235,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "LOOK-INSIDE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "HALLEY-AND-PARK",
@@ -19336,7 +23244,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TURTLE",
@@ -19354,15 +23264,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "turtle",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "AQUARIUM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WALLET",
@@ -19383,13 +23297,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "wallet",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "APARTMENT-WINDOW",
@@ -19413,6 +23331,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -19425,10 +23357,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GLOBAL-WINDOW",
@@ -19460,6 +23395,63 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "verbGroups": [
+      [
+        "LOOK-INSIDE",
+        "EXAMINE",
+        "OPEN"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "LOOK-INSIDE",
+        "EXAMINE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE",
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [
       "POST-OFFICE",
       "SOUTHWAY-AND-PARK",
@@ -19484,6 +23476,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "refusalOnlyVerbs": [
+      "OPEN",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {
       "LOOK-INSIDE": [
         "RAILROAD-MUSEUM",
@@ -19494,7 +23490,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "POST-OFFICE-OBJECT",
+      "RAILROAD-YARD"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "ALARM",
@@ -19515,6 +23516,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "LISTEN"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LISTEN"
@@ -19522,10 +23528,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LISTEN"
     ],
+    "refusalOnlyVerbs": [
+      "LISTEN"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ALLEY-OBJECT",
@@ -19551,6 +23562,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ALLEY",
       "FACTORY-ENTRANCE",
@@ -19562,6 +23586,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "ALLEY",
@@ -19585,7 +23610,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ANNEX-OBJECT",
@@ -19614,6 +23641,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "HOSPITAL",
       "HOSPITAL-ANNEX"
@@ -19624,6 +23664,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "HOSPITAL",
@@ -19645,7 +23686,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "APPLE",
@@ -19666,6 +23709,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "BUY"
@@ -19673,10 +23721,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MEAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BENCH",
@@ -19698,6 +23751,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -19705,10 +23763,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "GOVERNMENT-OFFICIAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BOOKS",
@@ -19742,6 +23805,27 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "SMELL"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "SEARCH"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "READ",
+        "OPEN"
+      ],
+      [
+        "TAKE"
+      ],
+      [
+        "SMELL"
+      ]
+    ],
     "actionRooms": [
       "BOOKSTORE",
       "MAIN-LIBRARY"
@@ -19755,6 +23839,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "TAKE",
       "SMELL"
+    ],
+    "refusalOnlyVerbs": [
+      "TAKE"
     ],
     "verbRooms": {
       "BUY": [
@@ -19784,7 +23871,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [
+      "CREDIT-CARD",
+      "MAIN-LIBRARY-OBJECT"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "CAGES",
@@ -19809,6 +23901,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "UNLOCK"
     ],
+    "verbGroups": [
+      [
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "OPEN",
+        "UNLOCK"
+      ]
+    ],
     "actionRooms": [
       "ZOO"
     ],
@@ -19826,10 +23933,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "UNLOCK"
     ],
+    "refusalOnlyVerbs": [
+      "THROUGH"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "ANIMAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "CHAIR",
@@ -19858,6 +23972,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-ON",
       "BOARD"
     ],
+    "verbGroups": [
+      [
+        "SIT",
+        "CLIMB-ON",
+        "BOARD"
+      ]
+    ],
     "actionRooms": [
       "SIMONS",
       "THE-COACHMAN",
@@ -19874,12 +23995,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-ON",
       "BOARD"
     ],
+    "refusalOnlyVerbs": [
+      "SIT",
+      "CLIMB-ON",
+      "BOARD"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "DINING-ROOM"
     ],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CLAVE",
@@ -19903,13 +24031,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "clave",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "COUCH",
@@ -19929,13 +24061,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "couch",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CRATE",
@@ -19959,6 +24095,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -19968,10 +24112,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CRIME",
@@ -19990,13 +24139,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "crime",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DRUGS",
@@ -20022,6 +24175,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "DRUG-STORE"
     ],
@@ -20029,6 +24187,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "BUY"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "DRUG-STORE"
@@ -20036,7 +24195,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "EASEL",
@@ -20060,6 +24221,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MOVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TAKE",
+        "MOVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
@@ -20070,10 +24240,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "MOVE"
     ],
+    "refusalOnlyVerbs": [
+      "TAKE",
+      "MOVE"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FENCE",
@@ -20098,6 +24274,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-OVER",
       "LEAP"
     ],
+    "verbGroups": [
+      [
+        "CLIMB-FOO",
+        "CLIMB-UP",
+        "CLIMB-OVER",
+        "LEAP"
+      ]
+    ],
     "actionRooms": [
       "SOUTHWAY-AND-KENNEDY",
       "SOUTHWAY-AND-RIVER",
@@ -20114,6 +24298,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-OVER",
       "LEAP"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "CLIMB-FOO": [
         "ROOFTOP"
@@ -20130,7 +24315,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FIELD",
@@ -20153,6 +24340,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "RIVER-AND-PARK",
       "RIVER-AND-KENNEDY",
@@ -20165,6 +24365,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "RIVER-AND-PARK",
@@ -20191,7 +24392,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GLASS",
@@ -20213,6 +24416,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "TAKE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "TAKE"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-2",
       "CONSTRUCTION-SITE-5",
@@ -20224,6 +24435,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [],
     "guaranteedVerbs": [
       "EXAMINE",
+      "TAKE"
+    ],
+    "refusalOnlyVerbs": [
       "TAKE"
     ],
     "verbRooms": {
@@ -20238,7 +24452,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "HOTEL-OBJECT",
@@ -20266,6 +24482,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "CENTRE-AND-KENNEDY",
       "AIRPORTWAY-AND-RIVER",
@@ -20279,6 +24508,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "CENTRE-AND-KENNEDY",
@@ -20306,7 +24536,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "LABEL",
@@ -20327,6 +24559,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "COUNT",
+        "READ",
+        "EXAMINE"
+      ],
+      [
+        "READ"
+      ],
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [
       "PARKVIEW-APARTMENTS",
       "FOODVILLE-1",
@@ -20342,10 +24587,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MY-BUZZER",
+      "BUZZERS",
+      "SCOTCH"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MOVIE",
@@ -20364,6 +24616,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "WALK-TO",
@@ -20373,10 +24634,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MOVIE-THEATRE-OBJECT"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "MUSIC",
@@ -20399,6 +24665,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "LISTEN"
+      ]
+    ],
     "actionRooms": [
       "DORM",
       "BAR"
@@ -20407,6 +24678,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LISTEN"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "LISTEN": [
         "BAR"
@@ -20414,7 +24686,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "JUKEBOX"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "NIGHT",
@@ -20434,6 +24710,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "WAIT-FOR"
     ],
+    "verbGroups": [
+      [
+        "WAIT-FOR"
+      ]
+    ],
     "actionRooms": [
       "ROOFTOP"
     ],
@@ -20443,10 +24724,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "WAIT-FOR"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "DUSK"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "RIVER",
@@ -20471,6 +24757,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAP",
       "SWIM"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "BOARD",
+        "THROUGH",
+        "LEAP",
+        "SWIM"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "PATIO",
       "SKYCAB"
@@ -20489,6 +24789,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAP",
       "SWIM"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "PATIO"
@@ -20496,7 +24797,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CULTURAL-CENTER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SCARF",
@@ -20519,6 +24824,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "BUY",
@@ -20528,10 +24841,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CLOTHES"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SLEEP",
@@ -20551,16 +24869,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "TAKE",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE",
       "WALK-TO"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SMOKE",
@@ -20590,6 +24917,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "MAIN-AND-WICKER",
       "POWER-STATION",
@@ -20600,6 +24938,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "SMELL"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-AND-WICKER"
@@ -20615,7 +24954,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "OFFICIAL-SNACK",
@@ -20642,6 +24983,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "TAKE",
+        "EAT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -20653,12 +25003,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "refusalOnlyVerbs": [
+      "TAKE",
+      "EAT"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "CITY-HALL"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "STONES",
@@ -20680,6 +25036,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "TAKE"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TAKE"
@@ -20687,12 +25048,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "TAKE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "ATHLETIC-FIELD"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BAR-STOOL",
@@ -20716,6 +25080,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "PUT"
     ],
+    "verbGroups": [
+      [
+        "PUT"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "PUT"
@@ -20723,10 +25092,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "PUT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [
+      "ME"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "STORE-OBJECT",
@@ -20748,6 +25122,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "verbGroups": [
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "WALK-TO",
+        "THROUGH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LEAVE",
@@ -20761,10 +25145,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GLOBAL-TABLE",
@@ -20790,6 +25177,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT",
       "PUT-ON"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "PUT",
+        "PUT-ON"
+      ]
+    ],
     "actionRooms": [
       "CLOSED-FACTORY",
       "DINING-ROOM",
@@ -20803,6 +25199,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT",
       "PUT-ON"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "CAFETERIA"
@@ -20810,7 +25207,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "RESTAURANT-TABLE",
@@ -20832,6 +25231,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "SIT"
     ],
+    "verbGroups": [
+      [
+        "BOARD",
+        "SIT"
+      ]
+    ],
     "actionRooms": [
       "ROYS-PAGODA"
     ],
@@ -20840,6 +25245,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "SIT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BOARD": [
         "ROYS-PAGODA"
@@ -20850,7 +25256,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WASTE",
@@ -20878,6 +25286,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -20885,10 +25298,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "WATER",
@@ -20913,6 +25329,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OFF",
       "ON"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "DRINK"
+      ],
+      [
+        "OFF"
+      ],
+      [
+        "ON"
+      ]
+    ],
     "actionRooms": [
       "KENNEDY-PARK",
       "HALLEY-PARK-WEST",
@@ -20932,6 +25362,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OFF",
       "ON"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "SIMONS",
@@ -20955,7 +25386,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "WATERPOOL",
+      "DUCK-POND",
+      "RESERVOIR",
+      "TANK",
+      "RIVER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "WOMAN",
@@ -20980,6 +25419,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL-ABOUT",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "ASK-ABOUT",
+        "TELL-ABOUT"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "LIVING-ROOM"
     ],
@@ -20995,10 +25446,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL-ABOUT",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "TELL"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PAINTING"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BABY",
@@ -21042,6 +25500,54 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROW",
       "KICK"
     ],
+    "verbGroups": [
+      [
+        "TELL"
+      ],
+      [
+        "WASH"
+      ],
+      [
+        "GIVE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "GIVE"
+      ],
+      [
+        "FEED"
+      ],
+      [
+        "GIVE",
+        "SHOW"
+      ],
+      [
+        "THANK",
+        "PLAY-WITH"
+      ],
+      [
+        "KISS"
+      ],
+      [
+        "SHAKE"
+      ],
+      [
+        "ALARM"
+      ],
+      [
+        "PUT",
+        "PUT-ON"
+      ],
+      [
+        "DROP"
+      ],
+      [
+        "THROW",
+        "KICK"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "TELL",
@@ -21076,10 +25582,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROW",
       "KICK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BATHROOM-OBJECT",
+      "SHOWER",
+      "FORMULA",
+      "CRIB",
+      "GROUND"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BANK-OBJECT",
@@ -21102,6 +25617,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "BANK"
     ],
@@ -21111,6 +25639,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "BANK"
@@ -21130,7 +25659,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "CARD-CATALOG-CARD",
@@ -21144,13 +25675,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "card",
     "action": "CARD-CATALOG-CARD-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CARD-CATALOG"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "CRIB",
@@ -21175,6 +25712,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "CLOSE"
     ],
+    "verbGroups": [
+      [
+        "CLOSE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "CLOSE"
@@ -21182,12 +25724,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "CLOSE"
     ],
+    "refusalOnlyVerbs": [
+      "CLOSE"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "BEDROOM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DAWN",
@@ -21207,13 +25754,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "dawn",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DESK",
@@ -21230,13 +25781,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "desk",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PERELMAN-DESK",
@@ -21262,6 +25817,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -21271,10 +25834,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PARKVIEW-DOOR",
@@ -21296,6 +25862,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "UNLOCK"
+      ],
+      [
+        "OPEN"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "OPEN",
@@ -21307,10 +25885,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "KEY",
+      "UNOPENABLE-DOOR"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "APARTMENT-DOOR",
@@ -21332,6 +25916,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOCK",
       "KNOCK"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "THROUGH"
+      ],
+      [
+        "UNLOCK",
+        "OPEN"
+      ],
+      [
+        "LOCK"
+      ],
+      [
+        "KNOCK"
+      ],
+      [
+        "OPEN"
+      ]
+    ],
     "actionRooms": [
       "FOYER",
       "LIVING-ROOM",
@@ -21345,6 +25948,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOCK",
       "KNOCK"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "OPEN": [
         "FOYER",
@@ -21370,7 +25974,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "FOYER"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "KEY",
+      "JILL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "UNOPENABLE-DOOR",
@@ -21394,6 +26003,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "OPEN",
+        "UNLOCK"
+      ],
+      [
+        "OPEN"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "UNIVERSITY-HEIGHTS",
       "PARKVIEW-APARTMENTS",
@@ -21408,6 +26029,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "OPEN",
+      "UNLOCK"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "UNIVERSITY-HEIGHTS",
@@ -21417,7 +26042,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "KEY"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "WAREHOUSE-DOOR",
@@ -21437,6 +26066,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "OPEN",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -21448,10 +26084,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "THROUGH",
+      "OPEN",
+      "EXAMINE"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "DUSK",
@@ -21471,13 +26114,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "dusk",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "FISH",
@@ -21500,6 +26147,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EAT",
       "TOUCH"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "EAT",
+        "TOUCH"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -21511,10 +26167,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EAT",
       "TOUCH"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MEAL",
@@ -21554,6 +26213,31 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WAIT-FOR",
       "EAT"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE",
+        "TAKE"
+      ],
+      [
+        "BUY"
+      ],
+      [
+        "WAIT-FOR"
+      ],
+      [
+        "TAKE",
+        "EAT"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "WAIT-FOR"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-2",
       "SIMONS",
@@ -21571,6 +26255,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WAIT-FOR",
       "TAKE",
       "EAT",
+      "EXAMINE"
+    ],
+    "refusalOnlyVerbs": [
       "EXAMINE"
     ],
     "verbRooms": {
@@ -21609,7 +26296,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "RESTAURANT-TABLE",
+      "CREDIT-CARD",
+      "GLOBAL-TABLE",
+      "GROCERIES",
+      "GOLD",
+      "MENU",
+      "FORTZMAN"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "FYLA",
@@ -21626,13 +26323,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "fyla",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GATE",
@@ -21656,6 +26357,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "THROUGH"
     ],
+    "verbGroups": [
+      [
+        "OPEN"
+      ],
+      [
+        "CLOSE"
+      ],
+      [
+        "THROUGH"
+      ]
+    ],
     "actionRooms": [
       "KENNEDY-PARK",
       "MAIN-AND-KENNEDY",
@@ -21678,6 +26390,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE",
       "THROUGH"
+    ],
+    "refusalOnlyVerbs": [
+      "CLOSE"
     ],
     "verbRooms": {
       "OPEN": [
@@ -21716,7 +26431,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "JILL",
@@ -21761,6 +26478,70 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "GIVE",
       "FOLLOW",
       "SIT-NEXT-TO"
+    ],
+    "verbGroups": [
+      [
+        "YES"
+      ],
+      [
+        "NO"
+      ],
+      [
+        "WHO",
+        "WHAT"
+      ],
+      [
+        "TELL-ABOUT"
+      ],
+      [
+        "HELLO"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "THANK"
+      ],
+      [
+        "CLIMB-ON",
+        "CLIMB-FOO",
+        "BOARD",
+        "LIE-DOWN"
+      ],
+      [
+        "ALARM"
+      ],
+      [
+        "PLAY-WITH"
+      ],
+      [
+        "TOUCH",
+        "SQUEEZE"
+      ],
+      [
+        "COMFORT"
+      ],
+      [
+        "KISS"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SHOW"
+      ],
+      [
+        "GIVE"
+      ],
+      [
+        "FOLLOW"
+      ],
+      [
+        "SIT-NEXT-TO"
+      ],
+      [
+        "SIT-NEXT-TO"
+      ]
     ],
     "actionRooms": [
       "SKYCAB",
@@ -21812,6 +26593,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FOLLOW",
       "SIT-NEXT-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "GIVE": [
         "BEDROOM"
@@ -21825,7 +26607,32 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "KITCHEN",
       "MASTER-BEDROOM"
     ],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [
+      "ME",
+      "CLERKMATON",
+      "BABY",
+      "MITCHELL",
+      "PAINTING",
+      "JILL-BOOK",
+      "FYLA",
+      "PERELMAN",
+      "GOLD",
+      "ESTHER",
+      "RANDU",
+      "GRIMWOLD",
+      "WARREN",
+      "PRICE",
+      "SILVER-DOVE",
+      "FORTZMAN",
+      "CRIB",
+      "RUSTY-CROSS",
+      "COUCH",
+      "DINETTE-SET"
+    ],
+    "removedObjectIds": [
+      "RUSTY-CROSS"
+    ]
   },
   {
     "id": "LAWN",
@@ -21847,13 +26654,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "lawn",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MALL-OBJECT",
@@ -21877,6 +26688,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ]
+    ],
     "actionRooms": [
       "ROCKVIL-MALL",
       "ELM-AND-KENNEDY",
@@ -21887,6 +26708,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "ROCKVIL-MALL",
@@ -21907,7 +26729,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MENU",
@@ -21931,6 +26755,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ASK-NO-ONE-FOR"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "EXAMINE"
+      ],
+      [
+        "READ",
+        "EXAMINE",
+        "ASK-NO-ONE-FOR"
+      ]
+    ],
     "actionRooms": [
       "BURGER-MEISTER"
     ],
@@ -21944,10 +26779,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ASK-NO-ONE-FOR"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MEAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "NOON",
@@ -21965,13 +26805,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "noon",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "NOTE",
@@ -21987,13 +26831,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "note",
     "action": "NOTE-F",
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": true,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PARK-OBJECT",
@@ -22028,6 +26876,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ]
+    ],
     "actionRooms": [
       "ZOO",
       "HUANG-HALL",
@@ -22057,6 +26921,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "HALLEY-PARK-EAST",
@@ -22120,7 +26985,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PIER-OBJECT",
@@ -22149,6 +27016,22 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "SKYCAB",
       "BAR",
@@ -22162,6 +27045,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "SKYCAB",
@@ -22186,7 +27070,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PLAY",
@@ -22206,6 +27092,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE",
+        "THROUGH",
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "WELLS-THEATRE",
       "PICKFORD-THEATRE"
@@ -22216,6 +27109,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "WELLS-THEATRE",
@@ -22232,7 +27126,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PAMPHLET-RACK",
@@ -22254,6 +27150,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "verbGroups": [
+      [
+        "PUT"
+      ],
+      [
+        "EXAMINE",
+        "LOOK-INSIDE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "PUT",
@@ -22265,10 +27170,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "PAMPHLET"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "RAMP",
@@ -22288,6 +27198,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-FOO",
       "CLIMB-DOWN"
     ],
+    "verbGroups": [
+      [
+        "CLIMB-UP",
+        "CLIMB-FOO",
+        "CLIMB-DOWN"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "CLIMB-UP",
@@ -22299,10 +27216,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-FOO",
       "CLIMB-DOWN"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "STREET",
@@ -22326,6 +27246,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CROSS",
       "FOLLOW"
     ],
+    "verbGroups": [
+      [
+        "CROSS"
+      ],
+      [
+        "FOLLOW"
+      ]
+    ],
     "actionRooms": [
       "ROOFTOP"
     ],
@@ -22336,10 +27264,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "CROSS"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ROOF",
@@ -22356,13 +27287,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "commandNoun": "roof",
     "action": null,
     "handledVerbs": [],
+    "verbGroups": [],
     "actionRooms": [],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GLOBAL-ROOM",
@@ -22391,6 +27326,27 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-AROUND",
       "WASH"
     ],
+    "verbGroups": [
+      [
+        "LOOK",
+        "EXAMINE",
+        "LOOK-INSIDE"
+      ],
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "WALK-AROUND"
+      ],
+      [
+        "WASH"
+      ]
+    ],
     "actionRooms": [
       "FOODVILLE-1",
       "FOODVILLE-2"
@@ -22414,10 +27370,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "WALK-AROUND"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "JILL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SACK",
@@ -22439,6 +27400,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -22446,12 +27412,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [
       "MAIN-STREET-BRIDGE"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SEAT",
@@ -22480,6 +27449,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "COUNT",
       "DISEMBARK"
     ],
+    "verbGroups": [
+      [
+        "COUNT"
+      ],
+      [
+        "DISEMBARK"
+      ]
+    ],
     "actionRooms": [
       "LECTURE-HALL",
       "SKYCAB"
@@ -22488,6 +27465,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "COUNT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "COUNT": [
         "LECTURE-HALL"
@@ -22500,7 +27478,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "SKYCAB"
     ],
-    "movesToCurrentRoom": true
+    "movesToCurrentRoom": true,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "GLOBAL-SIGN",
@@ -22523,6 +27503,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "READ",
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "KENNEDY-PARK",
       "MAIN-AND-WICKER",
@@ -22543,10 +27529,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TUBE-SIGN",
@@ -22567,6 +27556,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "READ"
     ],
+    "verbGroups": [
+      [
+        "READ"
+      ]
+    ],
     "actionRooms": [
       "RED-TUBECAR",
       "BROWN-TUBECAR"
@@ -22577,10 +27571,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SINK",
@@ -22610,6 +27607,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "OFF"
     ],
+    "verbGroups": [
+      [
+        "PUT"
+      ],
+      [
+        "EXAMINE",
+        "LOOK-INSIDE"
+      ],
+      [
+        "TURN",
+        "ON",
+        "OFF"
+      ]
+    ],
     "actionRooms": [
       "KITCHEN"
     ],
@@ -22627,6 +27638,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "OFF"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "KITCHEN"
@@ -22637,7 +27649,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "WATER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "SLOT",
@@ -22656,6 +27672,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "PUT"
     ],
+    "verbGroups": [
+      [
+        "PUT"
+      ],
+      [
+        "PUT"
+      ]
+    ],
     "actionRooms": [
       "BODANSKI-SQUARE",
       "JOYBOOTH",
@@ -22667,6 +27691,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "PUT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "PUT": [
         "JOYBOOTH",
@@ -22676,7 +27701,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CREDIT-CARD",
+      "HEADSET",
+      "SEAT",
+      "NEWSPAPER",
+      "TICKET",
+      "DRIVERS-LICENSE",
+      "RATION-CARD"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "STEW",
@@ -22703,6 +27738,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EAT",
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ],
+      [
+        "TAKE",
+        "EAT"
+      ],
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "CLOSED-FACTORY",
       "ROYS-PAGODA",
@@ -22720,6 +27767,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "CLOSED-FACTORY",
@@ -22733,7 +27781,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "CLOSED-FACTORY"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "MEAL"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "TANK",
@@ -22759,6 +27811,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "SWIM"
     ],
+    "verbGroups": [
+      [
+        "LOOK-INSIDE"
+      ],
+      [
+        "WASH"
+      ],
+      [
+        "THROUGH",
+        "BOARD",
+        "SWIM"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LOOK-INSIDE",
@@ -22774,10 +27839,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "SWIM"
     ],
+    "refusalOnlyVerbs": [
+      "WASH"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TOOL",
@@ -22798,11 +27868,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "BUY"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ]
+    ],
     "actionRooms": [
       "HARDWARE-STORE"
     ],
     "globalVerbs": [],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "BUY": [
         "HARDWARE-STORE"
@@ -22810,7 +27886,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "VENT",
@@ -22832,6 +27910,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "LISTEN"
     ],
+    "verbGroups": [
+      [
+        "LISTEN"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "LISTEN"
@@ -22839,10 +27922,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "LISTEN"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "VEST",
@@ -22870,6 +27956,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "BUY"
+      ],
+      [
+        "TAKE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "BUY",
@@ -22881,10 +27978,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "CLOTHES"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "WALLS",
@@ -22904,6 +28006,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ROCKVIL-REFORMATORY"
     ],
@@ -22911,6 +28018,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "ROCKVIL-REFORMATORY"
@@ -22918,7 +28026,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "BAR-OBJECT",
@@ -22957,6 +28067,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "PUT-ON"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ],
+      [
+        "SMELL"
+      ],
+      [
+        "PUT-ON"
+      ]
+    ],
     "actionRooms": [
       "BURGER-MEISTER",
       "AQUARIUM-AND-PARK",
@@ -22973,6 +28102,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "PUT-ON"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "BURGER-MEISTER",
@@ -23016,7 +28146,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "COUNTER"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "BED",
@@ -23043,6 +28177,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT-ON",
       "WALK-TO"
     ],
+    "verbGroups": [
+      [
+        "TAKE"
+      ],
+      [
+        "PUT",
+        "PUT-ON"
+      ],
+      [
+        "WALK-TO"
+      ]
+    ],
     "actionRooms": [
       "MASTER-BEDROOM"
     ],
@@ -23050,6 +28196,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO"
     ],
     "guaranteedVerbs": [],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "TAKE": [
         "MASTER-BEDROOM"
@@ -23065,7 +28212,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "dynamicLocations": [
       "MASTER-BEDROOM"
     ],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "BUREAU"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "DAY",
@@ -23086,6 +28237,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "WAIT-FOR"
     ],
+    "verbGroups": [
+      [
+        "WAIT-FOR"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "WAIT-FOR"
@@ -23093,10 +28249,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "WAIT-FOR"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [
+      "DAWN"
+    ],
+    "removedObjectIds": []
   },
   {
     "id": "DEN-OBJECT",
@@ -23119,6 +28280,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "WALK-TO",
+        "THROUGH"
+      ],
+      [
+        "LEAVE",
+        "DISEMBARK"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "FOYER",
       "DEN"
@@ -23129,6 +28303,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "FOYER"
@@ -23148,7 +28323,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "KEY",
@@ -23170,6 +28347,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -23177,10 +28359,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "MAP",
@@ -23205,6 +28390,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE",
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -23214,10 +28405,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "PEN",
@@ -23241,6 +28435,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE",
+        "READ"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE",
@@ -23250,10 +28450,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "SKY",
@@ -23273,6 +28476,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "EXAMINE"
@@ -23280,10 +28488,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "guaranteedVerbs": [
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "TUB",
@@ -23310,6 +28521,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "BOARD"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [],
     "globalVerbs": [
       "THROUGH",
@@ -23321,10 +28541,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "EXAMINE"
     ],
+    "refusalOnlyVerbs": [
+      "THROUGH",
+      "BOARD"
+    ],
     "verbRooms": {},
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   },
   {
     "id": "ZOO-OBJECT",
@@ -23350,6 +28576,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "verbGroups": [
+      [
+        "THROUGH",
+        "WALK-TO"
+      ],
+      [
+        "DISEMBARK",
+        "LEAVE"
+      ],
+      [
+        "EXAMINE"
+      ]
+    ],
     "actionRooms": [
       "ZOO",
       "ZOO-ENTRANCE"
@@ -23359,6 +28598,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "refusalOnlyVerbs": [],
     "verbRooms": {
       "THROUGH": [
         "ZOO",
@@ -23380,6 +28620,8 @@ export const WORLD_OBJECTS: WorldObject[] = [
     },
     "hasText": false,
     "dynamicLocations": [],
-    "movesToCurrentRoom": false
+    "movesToCurrentRoom": false,
+    "relatedObjectIds": [],
+    "removedObjectIds": []
   }
 ];

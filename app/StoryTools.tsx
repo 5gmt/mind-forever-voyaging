@@ -7,7 +7,7 @@ import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
 export type InteractionLevel = "classic" | "guided" | "actions";
-export type RockvilLandmark = { id: string; label: string; targetId: string; x: number; y: number };
+export type RockvilLandmark = { id: string; label: string; targetId: string; x: number; y: number; kind?: "landmark" | "fieldwork"; assignment?: number };
 export type MapRoutePreview = { destination: RockvilLandmark; nextCommand: string | null; nextPlace: string | null; steps: number; arrived: boolean };
 
 export const ROCKVIL_LANDMARKS: RockvilLandmark[] = [
@@ -19,9 +19,17 @@ export const ROCKVIL_LANDMARKS: RockvilLandmark[] = [
   { id: "halley", label: "Halley Museum", targetId: "HALLEY-AND-PARK", x: 24.5, y: 49.5 },
   { id: "huang", label: "Huang Hall", targetId: "HUANG-HALL", x: 32.5, y: 42.5 },
   { id: "infotech", label: "InfoTech Building", targetId: "MAIN-AND-KENNEDY", x: 44.5, y: 52.5 },
-  { id: "church", label: "St. Michael's Church", targetId: "CHURCH-ENTRANCE", x: 55.5, y: 50.5 },
+  { id: "church", label: "St. Michael's Church", targetId: "ST-MICHAELS", x: 55.5, y: 50.5, assignment: 6 },
   { id: "kennedy", label: "Kennedy Park", targetId: "KENNEDY-PARK", x: 35.5, y: 60.5 },
   { id: "library", label: "Main Library", targetId: "SOUTHWAY-AND-PARK", x: 28.5, y: 70.5 },
+  { id: "meal", label: "Restaurant", targetId: "ROYS-PAGODA", x: 19.5, y: 59.5, kind: "fieldwork", assignment: 0 },
+  { id: "official", label: "City Hall", targetId: "CITY-HALL", x: 31.5, y: 52.5, kind: "fieldwork", assignment: 1 },
+  { id: "power", label: "Power Station", targetId: "POWER-STATION", x: 58, y: 76, kind: "fieldwork", assignment: 2 },
+  { id: "newspaper", label: "Newspaper", targetId: "BODANSKI-SQUARE", x: 47, y: 41, kind: "fieldwork", assignment: 3 },
+  { id: "transit", label: "Transit", targetId: "SKYBUS-TERMINAL", x: 39.5, y: 50, kind: "fieldwork", assignment: 4 },
+  { id: "court", label: "Courthouse", targetId: "COURTHOUSE", x: 29.5, y: 57, kind: "fieldwork", assignment: 5 },
+  { id: "movie", label: "Cinema", targetId: "CINEMA", x: 53.5, y: 35, kind: "fieldwork", assignment: 7 },
+  { id: "home", label: "Your apartment", targetId: "PARKVIEW-APARTMENTS", x: 25.5, y: 69, kind: "fieldwork", assignment: 8 },
 ];
 
 export const INTERFACE_PORTS = [
@@ -38,59 +46,125 @@ type InterfacePortId = (typeof INTERFACE_PORTS)[number]["id"];
 
 const hasFlag = (object: WorldObject, flag: string) => object.flags.includes(flag);
 const handles = (object: WorldObject, roomId: string | null | undefined, ...verbs: string[]) => verbs.some((verb) => {
-  const globalBranchApplies = object.globalVerbs.includes(verb) && object.guaranteedVerbs.includes(verb) && (!object.actionRooms.length || Boolean(roomId && object.actionRooms.includes(roomId)));
+  if (object.refusalOnlyVerbs.includes(verb) || !object.guaranteedVerbs.includes(verb)) return false;
+  const globalBranchApplies = object.globalVerbs.includes(verb) && (!object.actionRooms.length || Boolean(roomId && object.actionRooms.includes(roomId)));
   return globalBranchApplies || Boolean(roomId && object.verbRooms[verb]?.includes(roomId));
 });
 
+type SceneAction = { label: string; id: string; command: (noun: string) => string };
+const canonicalActions: Array<{ verbs: string[]; action: SceneAction }> = [
+  { verbs: ["EXAMINE"], action: { label: "Examine", id: "examine", command: (noun) => `examine ${noun}` } },
+  { verbs: ["READ"], action: { label: "Read", id: "read", command: (noun) => `read ${noun}` } },
+  { verbs: ["SEARCH"], action: { label: "Search", id: "search", command: (noun) => `search ${noun}` } },
+  { verbs: ["LOOK-INSIDE"], action: { label: "Look inside", id: "look-inside", command: (noun) => `look inside ${noun}` } },
+  { verbs: ["LOOK-UNDER"], action: { label: "Look under", id: "look-under", command: (noun) => `look under ${noun}` } },
+  { verbs: ["LOOK-BEHIND"], action: { label: "Look behind", id: "look-behind", command: (noun) => `look behind ${noun}` } },
+  { verbs: ["SMELL"], action: { label: "Smell", id: "smell", command: (noun) => `smell ${noun}` } },
+  { verbs: ["LISTEN"], action: { label: "Listen", id: "listen", command: (noun) => `listen to ${noun}` } },
+  { verbs: ["TOUCH"], action: { label: "Touch", id: "touch", command: (noun) => `touch ${noun}` } },
+  { verbs: ["COUNT"], action: { label: "Count", id: "count", command: (noun) => `count ${noun}` } },
+  { verbs: ["TAKE"], action: { label: "Take", id: "take", command: (noun) => `take ${noun}` } },
+  { verbs: ["BUY"], action: { label: "Buy", id: "buy", command: (noun) => `buy ${noun}` } },
+  { verbs: ["EAT"], action: { label: "Eat", id: "eat", command: (noun) => `eat ${noun}` } },
+  { verbs: ["DRINK"], action: { label: "Drink", id: "drink", command: (noun) => `drink ${noun}` } },
+  { verbs: ["OPEN"], action: { label: "Open", id: "open", command: (noun) => `open ${noun}` } },
+  { verbs: ["CLOSE"], action: { label: "Close", id: "close", command: (noun) => `close ${noun}` } },
+  { verbs: ["SWIM"], action: { label: "Swim", id: "swim", command: (noun) => `swim in ${noun}` } },
+  { verbs: ["THROUGH", "WALK-TO"], action: { label: "Enter", id: "enter", command: (noun) => `enter ${noun}` } },
+  { verbs: ["LEAVE", "DISEMBARK"], action: { label: "Leave", id: "leave", command: (noun) => `leave ${noun}` } },
+  { verbs: ["BOARD"], action: { label: "Board", id: "board", command: (noun) => `board ${noun}` } },
+  { verbs: ["SIT"], action: { label: "Sit", id: "sit", command: (noun) => `sit on ${noun}` } },
+  { verbs: ["SIT-NEXT-TO"], action: { label: "Sit beside", id: "sit-next", command: (noun) => `sit next to ${noun}` } },
+  { verbs: ["LIE-DOWN"], action: { label: "Lie down", id: "lie", command: (noun) => `lie on ${noun}` } },
+  { verbs: ["CLIMB-FOO"], action: { label: "Climb", id: "climb", command: (noun) => `climb ${noun}` } },
+  { verbs: ["CLIMB-ON"], action: { label: "Climb on", id: "climb-on", command: (noun) => `climb on ${noun}` } },
+  { verbs: ["CLIMB-UP"], action: { label: "Climb up", id: "climb-up", command: (noun) => `climb up ${noun}` } },
+  { verbs: ["CLIMB-DOWN"], action: { label: "Climb down", id: "climb-down", command: (noun) => `climb down ${noun}` } },
+  { verbs: ["CLIMB-OVER"], action: { label: "Climb over", id: "climb-over", command: (noun) => `climb over ${noun}` } },
+  { verbs: ["CROSS"], action: { label: "Cross", id: "cross", command: (noun) => `cross ${noun}` } },
+  { verbs: ["PUSH"], action: { label: "Push", id: "push", command: (noun) => `push ${noun}` } },
+  { verbs: ["MOVE"], action: { label: "Move", id: "move", command: (noun) => `move ${noun}` } },
+  { verbs: ["TURN"], action: { label: "Turn", id: "turn", command: (noun) => `turn ${noun}` } },
+  { verbs: ["ON"], action: { label: "Switch on", id: "on", command: (noun) => `switch on ${noun}` } },
+  { verbs: ["OFF"], action: { label: "Switch off", id: "off", command: (noun) => `switch off ${noun}` } },
+  { verbs: ["WASH"], action: { label: "Wash", id: "wash", command: (noun) => `wash ${noun}` } },
+  { verbs: ["WEAR"], action: { label: "Wear", id: "wear", command: (noun) => `wear ${noun}` } },
+  { verbs: ["REMOVE", "TAKE-OFF"], action: { label: "Remove", id: "remove", command: (noun) => `remove ${noun}` } },
+  { verbs: ["PLAY", "PLAY-WITH"], action: { label: "Play", id: "play", command: (noun) => `play with ${noun}` } },
+  { verbs: ["SQUEEZE"], action: { label: "Squeeze", id: "squeeze", command: (noun) => `squeeze ${noun}` } },
+  { verbs: ["SHAKE"], action: { label: "Shake", id: "shake", command: (noun) => `shake ${noun}` } },
+  { verbs: ["KICK"], action: { label: "Kick", id: "kick", command: (noun) => `kick ${noun}` } },
+  { verbs: ["KNOCK"], action: { label: "Knock", id: "knock", command: (noun) => `knock on ${noun}` } },
+  { verbs: ["FOLLOW"], action: { label: "Follow", id: "follow", command: (noun) => `follow ${noun}` } },
+  { verbs: ["CALL"], action: { label: "Call", id: "call", command: (noun) => `call ${noun}` } },
+  { verbs: ["COMFORT"], action: { label: "Comfort", id: "comfort", command: (noun) => `comfort ${noun}` } },
+];
+
 const actionsFor = (object: WorldObject, roomId?: string | null) => {
-  const actions: Array<{ label: string; verb: string }> = [];
-  if (hasFlag(object, "ACTORBIT")) actions.push({ label: "Greet", verb: "greet" });
-  if (hasFlag(object, "READBIT") || object.hasText || handles(object, roomId, "READ") || ["MAP", "DECODER", "MAGAZINE-ARTICLE"].includes(object.id)) actions.push({ label: "Read", verb: "read" });
-  if (((hasFlag(object, "DOORBIT") || hasFlag(object, "CONTBIT")) && !hasFlag(object, "OPENBIT")) || handles(object, roomId, "OPEN")) actions.push({ label: "Open", verb: "open" });
-  if (hasFlag(object, "VEHBIT") || handles(object, roomId, "BOARD", "ENTER")) actions.push({ label: "Enter", verb: "enter" });
-  if (hasFlag(object, "TAKEBIT") || handles(object, roomId, "TAKE")) actions.push({ label: "Take", verb: "take" });
-  if (handles(object, roomId, "EXAMINE", "LOOK-INSIDE")) actions.push({ label: "Look", verb: "examine" });
-  return [...new Map(actions.map((action) => [action.verb, action])).values()].slice(0, 3);
+  const actions: SceneAction[] = [];
+  const actionFor = (verb: string) => canonicalActions.find((candidate) => candidate.verbs.includes(verb))!.action;
+  if (hasFlag(object, "ACTORBIT")) actions.push({ label: "Talk", id: "talk", command: (noun) => `${noun}, hello` });
+  if (hasFlag(object, "READBIT") || object.hasText || ["MAP", "DECODER", "MAGAZINE-ARTICLE"].includes(object.id)) actions.push(actionFor("READ"));
+  if (hasFlag(object, "TAKEBIT") && !hasFlag(object, "TRYTAKEBIT") && !object.refusalOnlyVerbs.includes("TAKE")) actions.push(actionFor("TAKE"));
+  if (hasFlag(object, "EATBIT") && !object.refusalOnlyVerbs.includes("EAT")) actions.push(actionFor("EAT"));
+  if (hasFlag(object, "DRINKBIT") && !object.refusalOnlyVerbs.includes("DRINK")) actions.push(actionFor("DRINK"));
+  if (hasFlag(object, "WEARBIT") && !object.refusalOnlyVerbs.includes("WEAR")) actions.push(actionFor("WEAR"));
+  if (hasFlag(object, "FURNITUREBIT") && !object.refusalOnlyVerbs.includes("SIT")) actions.push(actionFor("SIT"));
+  else if (hasFlag(object, "VEHBIT") && !object.refusalOnlyVerbs.includes("BOARD")) actions.push(actionFor("BOARD"));
+  const usedAuthoredVerbs = new Set<string>();
+  for (const definition of canonicalActions) {
+    if (!handles(object, roomId, ...definition.verbs)) continue;
+    const matchingGroups = object.verbGroups.filter((group) => group.some((verb) => definition.verbs.includes(verb)));
+    if (matchingGroups.some((group) => group.every((verb) => usedAuthoredVerbs.has(verb)))) continue;
+    actions.push(definition.action);
+    matchingGroups.flat().forEach((verb) => usedAuthoredVerbs.add(verb));
+  }
+  return [...new Map(actions.map((action) => [action.id, action])).values()];
 };
 
 export const hasUsefulSceneAction = (object: WorldObject, roomId?: string | null) => Boolean(object.commandNoun && actionsFor(object, roomId).length);
 
 const guidedActionFor = (object: WorldObject, roomId?: string | null) => {
   const actions = actionsFor(object, roomId);
-  if (hasFlag(object, "ACTORBIT")) return actions.find((action) => action.verb === "greet") ?? actions[0];
-  if (hasFlag(object, "READBIT") || object.hasText || ["MAP", "DECODER", "MAGAZINE-ARTICLE"].includes(object.id)) return actions.find((action) => action.verb === "read") ?? actions[0];
-  return actions.find((action) => action.verb === "examine") ?? actions[0];
+  if (hasFlag(object, "ACTORBIT")) return actions.find((action) => action.id === "talk") ?? actions[0];
+  if (hasFlag(object, "READBIT") || object.hasText || ["MAP", "DECODER", "MAGAZINE-ARTICLE"].includes(object.id)) return actions.find((action) => action.id === "read") ?? actions[0];
+  return actions.find((action) => action.id === "examine") ?? actions[0];
 };
 
-const actionCommand = (object: WorldObject, verb: string) => verb === "greet"
-  ? `${object.commandNoun}, hello`
-  : `${verb} ${object.commandNoun}`;
+const actionCommand = (object: WorldObject, action: SceneAction) => action.command(object.commandNoun!);
 
 export function SceneActions({ objects, roomId, level, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
   const usableObjects = useMemo(() => objects.filter((object) => hasUsefulSceneAction(object, roomId)), [objects, roomId]);
-  const topics = useMemo(() => usableObjects.filter((object) => !hasFlag(object, "ACTORBIT")).slice(0, 4), [usableObjects]);
   if (!usableObjects.length || level === "classic") return null;
 
   if (level === "guided") return <section className="scene-actions scene-words" aria-label="Words mentioned here">
-    <div className="scene-actions-heading"><span>Worth trying</span><small>Choose one to draft a likely command</small></div>
-    <div className="scene-word-list">{usableObjects.map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action.verb))} disabled={disabled}>{object.name}<small>{action.label}</small></button>; })}</div>
+    <div className="scene-actions-heading"><span>Worth trying</span><small>Choose one to draft a command</small></div>
+    <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{object.name}<small>{action.label}</small></button>; })}</div>
   </section>;
 
   return (
     <section className="scene-actions" aria-label="Actions for things mentioned here">
-      <div className="scene-actions-heading"><span>Mentioned here</span><small>Choose an action</small></div>
+      <div className="scene-actions-heading"><span>In this scene</span><small>Actions written into the original story</small></div>
       <div className="scene-object-grid">
         {usableObjects.map((object) => {
-          const actor = hasFlag(object, "ACTORBIT");
           return <article className="scene-object" key={object.id}>
             <strong>{object.name}</strong>
-            <div>{actionsFor(object, roomId).map((action) => <button type="button" key={action.verb} onClick={() => sendCommand(actionCommand(object, action.verb))} disabled={disabled}>{action.label}</button>)}</div>
-            {actor && topics.length > 0 && <details><summary>Ask about…</summary><div className="topic-buttons">{topics.map((topic) => <button type="button" key={topic.id} onClick={() => sendCommand(`ask ${object.commandNoun} about ${topic.commandNoun}`)} disabled={disabled}>{topic.name}</button>)}</div></details>}
+            <div>{actionsFor(object, roomId).map((action) => <button type="button" key={action.id} onClick={() => sendCommand(actionCommand(object, action))} disabled={disabled}>{action.label}</button>)}</div>
           </article>;
         })}
       </div>
     </section>
   );
+}
+
+export function RockvilNavigator({ currentRoomId, routePreview, onSelect, onStep, disabled }: { currentRoomId: string | null; routePreview: MapRoutePreview | null; onSelect: (landmark: RockvilLandmark) => void; onStep: () => void; disabled: boolean }) {
+  return <section className="rockvil-navigator" aria-label="Navigate Rockvil using the original map">
+    <div className="navigator-heading"><div><span>Rockvil street map</span><strong>Choose a destination</strong></div><small>The marked fieldwork stops come from Perelman’s brief.</small></div>
+    <div className="navigator-map-scroll"><div className="navigator-map-stage"><img src="/package/rockvil-map-back.jpg" alt="Original 1985 street map of downtown Rockvil" />
+      <div className="map-hotspots navigator-hotspots" aria-label="Map destinations">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelect(landmark)} aria-label={`${landmark.label}${landmark.kind === "fieldwork" ? ", fieldwork destination" : ""}${currentRoomId === landmark.targetId ? ", current location" : ""}`}><span>{landmark.label}</span></button>)}</div>
+    </div></div>
+    {routePreview ? <div className="navigator-route"><div><span>Route to</span><strong>{routePreview.destination.label}</strong>{routePreview.arrived ? <small>You have arrived.</small> : routePreview.nextCommand ? <small>{routePreview.steps} {routePreview.steps === 1 ? "step" : "steps"} · next {routePreview.nextCommand.toUpperCase()}{routePreview.nextPlace ? ` toward ${routePreview.nextPlace}` : ""}</small> : <small>Move to a named street to begin this route.</small>}</div>{routePreview.nextCommand && !routePreview.arrived && <button type="button" onClick={onStep} disabled={disabled}>Take next step</button>}</div> : <p className="navigator-empty">Select any dot on the map. Fieldwork destinations use the square markers.</p>}
+  </section>;
 }
 
 export function InterfaceWorkbench({ portIds, sendCommand, disabled }: { portIds: InterfacePortId[]; sendCommand: (command: string) => void; disabled: boolean }) {
@@ -163,7 +237,7 @@ export function PackageOverlay({ item, onSelect, onClose, interactiveMap = false
     <div className="package-viewer">
       <header><div><span className="section-kicker">In the original box</span><h2 id="package-title">AMFV package</h2></div><button type="button" onClick={onClose} aria-label="Close package materials">×</button></header>
       <nav aria-label="Package materials"><button type="button" aria-current={item === "map"} onClick={() => onSelect("map")}>Rockvil map</button><button type="button" aria-current={item === "decoder"} onClick={() => onSelect("decoder")}>Security decoder</button><button type="button" aria-current={item === "manual"} onClick={() => onSelect("manual")}>Magazine & manual</button></nav>
-      {item === "map" && <figure><div className={`package-image-scroll ${interactiveMap ? "interactive-rockvil-map" : ""}`}><div className="rockvil-map-stage"><img src="/package/rockvil-map-back.jpg" alt="Original 1985 promotional street map of downtown Rockvil, South Dakota, with landmarks and a visitor guide" />{interactiveMap && <div className="map-hotspots" aria-label="Rockvil landmarks">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelectLandmark?.(landmark)} aria-label={`${landmark.label}${currentRoomId === landmark.targetId ? ", current location" : ""}`}><span>{landmark.label}</span></button>)}</div>}</div></div><figcaption>{interactiveMap ? "Choose a landmark on the original map to plot a walking route." : "The 2031 street map supplied with the original game. Zoom your browser or open the image directly for fine print."} <a href="/package/rockvil-map-back.jpg" target="_blank">Open full size ↗</a></figcaption>{interactiveMap && routePreview && <div className="map-route-card"><span>Route</span><strong>{routePreview.destination.label}</strong>{routePreview.arrived ? <p>You are at the mapped approach. Follow the passage for the entrance.</p> : routePreview.nextCommand ? <><p>{routePreview.steps} {routePreview.steps === 1 ? "step" : "steps"} away. Next: <b>{routePreview.nextCommand.toUpperCase()}</b>{routePreview.nextPlace ? ` toward ${routePreview.nextPlace}` : ""}.</p><button type="button" onClick={onRouteStep} disabled={routeStepDisabled}>{routeStepLabel}</button></> : <p>No reliable walking route starts from the current location. Move to a named street and try again.</p>}</div>}</figure>}
+      {item === "map" && <figure><div className={`package-image-scroll ${interactiveMap ? "interactive-rockvil-map" : ""}`}><div className="rockvil-map-stage"><img src="/package/rockvil-map-back.jpg" alt="Original 1985 promotional street map of downtown Rockvil, South Dakota, with landmarks and a visitor guide" />{interactiveMap && <div className="map-hotspots" aria-label="Rockvil landmarks">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelectLandmark?.(landmark)} aria-label={`${landmark.label}${landmark.kind === "fieldwork" ? ", fieldwork destination" : ""}${currentRoomId === landmark.targetId ? ", current location" : ""}`}><span>{landmark.label}</span></button>)}</div>}</div></div><figcaption>{interactiveMap ? "Choose a destination on the original map to plot a walking route. Square markers correspond to Perelman’s field brief." : "The 2031 street map supplied with the original game. Zoom your browser or open the image directly for fine print."} <a href="/package/rockvil-map-back.jpg" target="_blank">Open full size ↗</a></figcaption>{interactiveMap && routePreview && <div className="map-route-card"><span>Route</span><strong>{routePreview.destination.label}</strong>{routePreview.arrived ? <p>You have reached the destination.</p> : routePreview.nextCommand ? <><p>{routePreview.steps} {routePreview.steps === 1 ? "step" : "steps"} away. Next: <b>{routePreview.nextCommand.toUpperCase()}</b>{routePreview.nextPlace ? ` toward ${routePreview.nextPlace}` : ""}.</p><button type="button" onClick={onRouteStep} disabled={routeStepDisabled}>{routeStepLabel}</button></> : <p>No reliable walking route starts from the current location. Move to a named street and try again.</p>}</div>}</figure>}
       {item === "decoder" && <figure><div className="package-image-scroll decoder-image"><img src="/package/security-decoder.jpg" alt="Original PRISM Project Facility Class One Security Mode Access Decoder wheel" /></div><figcaption>The physical decoder supplied in 1985. When the game requests a code, the command deck also offers an accessible digital equivalent.</figcaption></figure>}
       {item === "manual" && <div className="manual-card"><span aria-hidden="true">D/O</span><div><h3>Dakota Online · April 2031</h3><p>The original magazine, short story, advertising, and instruction manual are preserved together in this scan.</p><a href="/package/amfv-manual.pdf" target="_blank">Read the original PDF ↗</a></div></div>}
       <footer>Scans preserved by <a href="https://gallery.guetech.org/amfv/amfv.html" target="_blank" rel="noreferrer">The Infocom Gallery</a> and <a href="https://www.mocagh.org/loadpage.php?getgame=amfv" target="_blank" rel="noreferrer">Museum of Computer Adventure Game History</a>.</footer>

@@ -2842,6 +2842,192 @@ summary:focus-visible {
   padding-bottom: 12px;
 }
 
+.fieldwork-console {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(270px, 0.8fr);
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.rockvil-navigator,
+.fieldwork-checklist {
+  min-width: 0;
+  border: 1px solid var(--line);
+  background: #081410;
+}
+
+.navigator-heading,
+.checklist-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--line);
+}
+
+.navigator-heading > div,
+.checklist-heading > div {
+  display: grid;
+  gap: 2px;
+}
+
+.navigator-heading span,
+.checklist-heading span,
+.navigator-route span {
+  color: var(--era-accent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.navigator-heading strong,
+.checklist-heading strong {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.navigator-heading small,
+.checklist-heading small {
+  max-width: 190px;
+  color: #8f9e96;
+  font-size: 8px;
+  line-height: 1.35;
+}
+
+.navigator-map-scroll {
+  max-height: 238px;
+  overflow: auto;
+  padding: 6px;
+  background: #cfc7b2;
+}
+
+.navigator-map-stage {
+  position: relative;
+  width: 100%;
+  min-width: 510px;
+  margin: 0 auto;
+}
+
+.navigator-map-stage > img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.navigator-hotspots button.fieldwork,
+.map-hotspots button.fieldwork {
+  border-radius: 3px;
+  background: #f0a85d;
+}
+
+.navigator-hotspots button.fieldwork::after,
+.map-hotspots button.fieldwork::after {
+  border-radius: 1px;
+}
+
+.navigator-route {
+  display: flex;
+  min-height: 51px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--line);
+}
+
+.navigator-route > div {
+  display: grid;
+  gap: 2px;
+}
+
+.navigator-route strong {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.navigator-route small,
+.navigator-empty {
+  margin: 0;
+  color: #92a098;
+  font-size: 8px;
+}
+
+.navigator-route button,
+.fieldwork-checklist li button {
+  min-height: 34px;
+  padding: 6px 9px;
+  border: 1px solid var(--line-strong);
+  background: color-mix(in srgb, var(--era-accent) 8%, #081410);
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.navigator-empty {
+  padding: 10px;
+  border-top: 1px solid var(--line);
+}
+
+.fieldwork-checklist ol {
+  max-height: 302px;
+  margin: 0;
+  padding: 0;
+  overflow: auto;
+  list-style: none;
+}
+
+.fieldwork-checklist li {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 7px;
+  min-height: 48px;
+  padding: 6px 8px;
+  border-bottom: 1px solid var(--line);
+}
+
+.fieldwork-checklist li > span {
+  display: grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  color: var(--era-accent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+}
+
+.fieldwork-checklist li.complete > span {
+  border-color: var(--era-accent);
+  background: color-mix(in srgb, var(--era-accent) 14%, #081410);
+}
+
+.fieldwork-checklist li > div {
+  display: grid;
+  gap: 1px;
+}
+
+.fieldwork-checklist li strong {
+  font-family: Georgia, serif;
+  font-size: 10px;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+.fieldwork-checklist li small {
+  color: #7f9087;
+  font-size: 7px;
+}
+
 .compass-grid {
   display: grid;
   grid-template-areas:
@@ -3714,6 +3900,41 @@ summary:focus-visible {
   .interface-shortcuts,
   .scene-actions {
     margin-inline: -8px;
+  }
+
+  .fieldwork-console {
+    grid-template-columns: 1fr;
+    margin-inline: -8px;
+  }
+
+  .navigator-heading,
+  .checklist-heading {
+    align-items: stretch;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .navigator-heading small,
+  .checklist-heading small {
+    max-width: none;
+    font-size: 9px;
+  }
+
+  .navigator-map-scroll {
+    max-height: 210px;
+  }
+
+  .navigator-map-stage {
+    min-width: 560px;
+  }
+
+  .navigator-route button,
+  .fieldwork-checklist li button {
+    min-height: 44px;
+  }
+
+  .fieldwork-checklist ol {
+    max-height: 260px;
   }
 
   .outlet-switcher > div:last-child > button,
