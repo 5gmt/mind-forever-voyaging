@@ -1,7 +1,10 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- package thumbnails are scans, not responsive artwork */
+
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { WORLD_OBJECTS, WORLD_ROOMS, type WorldRoom } from "./world-data";
+import { INTERFACE_PORTS, InterfaceWorkbench, PackageOverlay, SceneActions, type PackageItem } from "./StoryTools";
+import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -16,7 +19,7 @@ const SECURITY_INNER = [89, 61, 50, 18, 29, 82, 46, 77, 27, 68, 22, 95, 40, 58, 
 const SECURITY_OUTER = [12, 66, 73, 36, 90, 41, 19, 48, 62, 92, 55, 23, 84, 99, 57, 20, 78, 67, 51, 88, 17, 31, 70, 39, 96, 25, 81, 83, 47, 54, 13, 43] as const;
 
 type Mode = (typeof MODES)[number];
-type Panel = "guide" | "context" | "evidence" | "about" | "debug";
+type Panel = "guide" | "context" | "evidence" | "package" | "about" | "debug";
 type Phase = "signal" | "awakened" | "origin" | "field" | "comparative" | "witness" | "lockdown" | "epilogue";
 type ReadingMode = "serif" | "mono";
 type InputKind = "line" | "char";
@@ -51,24 +54,24 @@ const DIRECTION_LABELS: Record<string, string> = {
 
 const MODE_COPY: Record<Mode, { label: string; copy: string }> = {
   "Communications Mode": {
-    label: "Signal field",
-    copy: "You perceive this place through remote outlets. DISPLAY OUTLETS reveals only the lines the original story currently makes available.",
+    label: "Communications",
+    copy: "Choose an outlet to see and hear that location. DISPLAY OUTLETS repeats the current directory.",
   },
   "Library Mode": {
-    label: "Memory directory",
-    copy: "The original library is a character menu. Use the large controls below to move, open, read, close, or leave without memorizing its single-key vocabulary.",
+    label: "Library",
+    copy: "Move through directories with Previous and Next. Open a directory, read a file, close it, or return when you are done.",
   },
   "Interface Mode": {
-    label: "System topology",
-    copy: "Inspect the devices the story has named. Their settings are real parts of the original world, and changing them can matter.",
+    label: "System interfaces",
+    copy: "Request a status report from any connected system. Some controllers also accept settings and schedules.",
   },
   "Simulation Mode": {
-    label: "Lived model",
-    copy: "Move through ordinary life. Look closely, speak to people, read what they read, and record what would persuade someone who was not here.",
+    label: "Rockvil",
+    copy: "Walk the city, speak to people, read what they read, and use RECORD when an experience matters.",
   },
   "Sleep Mode": {
-    label: "Low-power interval",
-    copy: "Time is passing while background work continues. The story will wake you when something changes.",
+    label: "Sleep",
+    copy: "Time passes while background work continues. Return to Communications Mode whenever you are ready.",
   },
 };
 
@@ -119,14 +122,23 @@ const normalizeCommand = (raw: string) => {
 };
 
 const detectMode = (status: string, transcript: string, fallback: Mode | null): Mode | null => {
+  const lowerTranscript = transcript.toLowerCase();
   const normalizedStatus = status.toLowerCase();
-  for (const candidate of MODES) if (normalizedStatus.includes(candidate.toLowerCase())) return candidate;
+  const statusMode = MODES.find((candidate) => normalizedStatus.includes(candidate.toLowerCase())) || null;
   let latest = -1;
   let selected = fallback;
   for (const candidate of MODES) {
-    const position = transcript.lastIndexOf(`entered ${candidate}`);
+    const entered = lowerTranscript.lastIndexOf(`entered ${candidate.toLowerCase()}`);
+    const nowIn = lowerTranscript.lastIndexOf(`now in ${candidate.toLowerCase()}`);
+    const position = Math.max(entered, nowIn);
     if (position > latest) { latest = position; selected = candidate; }
   }
+  const statusEntry = statusMode ? lowerTranscript.lastIndexOf(`>enter ${statusMode.toLowerCase()}`) : -1;
+  if (statusMode && statusEntry > latest) return statusMode;
+  // During a one-key menu the status bar can still show the room we just left.
+  // The story's most recent explicit transition is authoritative in that brief interval.
+  if (latest >= 0) return selected;
+  if (statusMode) return statusMode;
   return selected;
 };
 
@@ -213,6 +225,7 @@ export default function PrismEdition() {
   const lastCommandRef = useRef("");
   const visitedYearsRef = useRef<number[]>([]);
   const queueRef = useRef<string[]>([]);
+  const lastPackageCueRef = useRef(-1);
 
   const [introOpen, setIntroOpen] = useState(true);
   const [returning, setReturning] = useState(false);
@@ -221,9 +234,11 @@ export default function PrismEdition() {
   const [inputKind, setInputKind] = useState<InputKind>("line");
   const [transcript, setTranscript] = useState("");
   const [recentText, setRecentText] = useState("");
+  const [sceneText, setSceneText] = useState("");
   const [gridText, setGridText] = useState("");
   const [transcriptRevision, setTranscriptRevision] = useState(0);
   const [mode, setMode] = useState<Mode | null>(null);
+  const [statusLocation, setStatusLocation] = useState<string | null>(null);
   const [designationKnown, setDesignationKnown] = useState(false);
   const [knownModes, setKnownModes] = useState<Mode[]>([]);
   const [year, setYear] = useState<number | null>(null);
@@ -244,8 +259,8 @@ export default function PrismEdition() {
   const [highContrast, setHighContrast] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [recording, setRecording] = useState(false);
-  const [actionVerb, setActionVerb] = useState("examine");
-  const [actionTarget, setActionTarget] = useState("");
+  const [activeOutletCode, setActiveOutletCode] = useState<string | null>(null);
+  const [packageItem, setPackageItem] = useState<PackageItem | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
   const [notes, setNotes] = useState<Note[]>([]);
   const [qaWarningOpen, setQaWarningOpen] = useState(false);
@@ -255,7 +270,7 @@ export default function PrismEdition() {
   const [debugMessage, setDebugMessage] = useState("");
 
   const phase = phaseFor(discovery);
-  const guide = mode ? MODE_COPY[mode] : { label: "Opening signal", copy: "The story is establishing its terms. Read the first message, then try LOOK or HELP when the prompt appears." };
+  const guide = mode ? MODE_COPY[mode] : { label: "Incoming transmission", copy: "Read the message. When the prompt appears, LOOK repeats your surroundings and HELP lists useful commands." };
   const displayYear = year && ALL_YEARS.includes(year as (typeof ALL_YEARS)[number]) ? year : null;
   const eraIndex = displayYear && EVIDENCE_YEARS.includes(displayYear as (typeof EVIDENCE_YEARS)[number]) ? EVIDENCE_YEARS.indexOf(displayYear as (typeof EVIDENCE_YEARS)[number]) : -1;
   const outlets = useMemo(() => parseOutlets(transcript), [transcript]);
@@ -272,26 +287,45 @@ export default function PrismEdition() {
     const lastCommand = commands.at(-1);
     return lastCommand?.index === undefined ? recentText : recentText.slice(lastCommand.index + lastCommand[0].length);
   }, [recentText]);
-  const contextualTargets = useMemo(() => {
-    const lower = latestSceneText.toLowerCase();
-    const blocked = new Set(["it", "you", "room", "area", "something", "nothing", "object", "office", "building", "wall", "rockvil", "list of communication outlets"]);
-    const found: string[] = [];
+  const contextualObjects = useMemo(() => {
+    const lower = sceneText.toLowerCase();
+    const blocked = new Set(["it", "you", "room", "area", "something", "nothing", "object", "number", "time", "story", "mode", "office", "building", "wall", "rockvil", "communications mode", "library mode", "interface mode", "simulation mode", "sleep mode", "list of communication outlets"]);
+    const found: WorldObject[] = [];
     for (const object of WORLD_OBJECTS) {
       const name = object.name.replace(/\s+/g, " ").trim();
       if (name.length < 3 || name.length > 42 || blocked.has(name.toLowerCase())) continue;
       const escapedName = name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       if (!new RegExp(`(^|\\W)${escapedName}(?=$|\\W)`, "i").test(lower)) continue;
-      if (!found.some((candidate) => candidate.toLowerCase() === name.toLowerCase())) found.push(name);
+      const existing = found.find((candidate) => candidate.name.toLowerCase() === name.toLowerCase());
+      if (existing) existing.flags = [...new Set([...existing.flags, ...object.flags])];
+      else found.push({ ...object, flags: [...object.flags] });
       if (found.length === 9) break;
     }
-    return found.sort((a, b) => b.split(/\s+/).length - a.split(/\s+/).length || b.length - a.length);
-  }, [latestSceneText]);
+    const sorted = found.sort((a, b) => b.name.split(/\s+/).length - a.name.split(/\s+/).length || b.name.length - a.name.length);
+    return sorted.filter((object, index) => !sorted.slice(0, index).some((earlier) => new RegExp(`(^|\\W)${object.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|\\W)`, "i").test(earlier.name)));
+  }, [sceneText]);
   const describedDirections = useMemo(() => {
     const lower = latestSceneText.toLowerCase();
     return ["northeast", "northwest", "southeast", "southwest", "north", "south", "east", "west"]
       .filter((direction) => new RegExp(`\\b${direction}\\b`, "i").test(lower));
   }, [latestSceneText]);
-  const interfaceTargets = useMemo(() => contextualTargets.filter((target) => /controller|system|transmitter|buffer|feeder|port|unit/i.test(target)), [contextualTargets]);
+  const interfacePortIds = useMemo(() => {
+    const marker = transcript.lastIndexOf("List of Active Ports:");
+    if (marker < 0) return [];
+    const list = transcript.slice(marker, marker + 900);
+    return INTERFACE_PORTS.filter((port) => port.match.test(list)).map((port) => port.id);
+  }, [transcript]);
+  const activeOutlet = outlets.find((outlet) => outlet.code === activeOutletCode) || null;
+  const yesNoPrompt = useMemo(() => {
+    const current = `${latestSceneText}\n${recentText.slice(-1200)}`.replace(/\s+/g, " ").replace(/[>\s]+$/g, "");
+    return /(?:do you want|would you like|are you sure|do you wish|shall i|is that (?:okay|correct))[^?]*\?\s*(?:\(y\/n\))?$/i.test(current);
+  }, [latestSceneText, recentText]);
+  const parserCoach = useMemo(() => {
+    if (/i don['’]t know the word|not a verb i recognise|not a verb i recognize/i.test(latestSceneText)) return "Try one of the named actions below, or shorten the command.";
+    if (/you['’]ll have to be more specific|which .* do you mean/i.test(latestSceneText)) return "Choose the exact person or object below.";
+    if (/you can['’]t (?:see|hear) any|not here/i.test(latestSceneText)) return "That is not present now. Choose something named in this scene.";
+    return "↑ recalls your previous commands.";
+  }, [latestSceneText]);
   const libraryDiscovered = knownModes.includes("Library Mode") || /\blibrary mode\b/i.test(transcript);
   const interfaceDiscovered = knownModes.includes("Interface Mode") || /\binterface mode\b/i.test(transcript);
 
@@ -333,6 +367,7 @@ export default function PrismEdition() {
         const entered = event.data.command.trim();
         if (!entered) return;
         lastCommandRef.current = entered;
+        if (/^[a-z]{4}$/i.test(entered)) setActiveOutletCode(entered.toUpperCase());
         setCommandHistory((previous) => {
           const next = previous[0] === entered ? previous : [entered, ...previous].slice(0, 40);
           if (!qaEnabled) try { localStorage.setItem("amfv:history", JSON.stringify(next)); } catch { /* optional */ }
@@ -346,8 +381,11 @@ export default function PrismEdition() {
       const nextRecent = typeof event.data.recentText === "string" ? event.data.recentText : nextTranscript.slice(-5000);
       const status = typeof event.data.statusText === "string" ? event.data.statusText : "";
       const freshCanonicalOpening = !qaEnabled && nextTranscript.length < 2000 && nextTranscript.includes("Tomorrow never yet");
-      const nextMode = detectMode(status, nextTranscript, modeRef.current);
+      const priorMode = modeRef.current;
+      const nextMode = detectMode(status, nextTranscript, priorMode);
       const nextYear = nextMode === "Simulation Mode" ? detectYear(status, nextRecent, yearRef.current) : null;
+      const locationMatch = status.match(/Location:\s*([\s\S]*?)(?:Date:|$)/i);
+      const nextStatusLocation = locationMatch?.[1].replace(/\s+/g, " ").trim();
       const priorRoom = roomRef.current;
       const nextRoom = nextMode === "Simulation Mode" ? detectRoom(status, priorRoom, lastCommandRef.current, nextRecent) : null;
 
@@ -355,6 +393,7 @@ export default function PrismEdition() {
       yearRef.current = nextYear;
       roomRef.current = nextRoom;
       if (freshCanonicalOpening) {
+        lastPackageCueRef.current = -1;
         visitedYearsRef.current = [];
         setDesignationKnown(false);
         setKnownModes([]);
@@ -364,20 +403,40 @@ export default function PrismEdition() {
         setNotes([]);
         setCommandHistory([]);
         setRecording(false);
+        setActiveOutletCode(null);
+        setSceneText("");
         try {
           for (const key of ["amfv:designation", "amfv:modes", "amfv:years", "amfv:rooms", "amfv:discoveries", "amfv:notes", "amfv:history"]) localStorage.removeItem(key);
         } catch { /* optional */ }
       }
       setPlayerReady(true);
       setTranscript(nextTranscript);
+      const packageCues: Array<{ index: number; item: PackageItem }> = [
+        { index: nextTranscript.lastIndexOf("This is the map that you'll find in your"), item: "map" },
+        { index: nextTranscript.lastIndexOf("This is the decoder that you'll find in your"), item: "decoder" },
+        { index: nextTranscript.lastIndexOf("This is the magazine article that you'll find in your"), item: "manual" },
+      ];
+      const latestPackageCue = packageCues.sort((a, b) => b.index - a.index)[0];
+      if (latestPackageCue.index > lastPackageCueRef.current) {
+        lastPackageCueRef.current = latestPackageCue.index;
+        setPackageItem(latestPackageCue.item);
+      }
       if (nextTranscript.includes("PRISM")) {
         setDesignationKnown(true);
         if (!qaEnabled) try { localStorage.setItem("amfv:designation", "true"); } catch { /* optional */ }
       }
       setRecentText(nextRecent);
+      const recentCommands = [...nextRecent.matchAll(/>[ \t]*([^\r\n]+)(?:\r?\n|$)/g)];
+      const recentCommand = recentCommands.at(-1);
+      const responseAfterCommand = recentCommand?.index === undefined ? nextRecent : nextRecent.slice(recentCommand.index + recentCommand[0].length);
+      const enteredCommand = lastCommandRef.current.trim().toLowerCase();
+      const sceneChanged = nextMode !== priorMode || nextRoom?.id !== priorRoom?.id || /^(?:n|s|e|w|u|d|ne|nw|se|sw|north|south|east|west|up|down|in|out|enter\b|walk\b|[a-z]{4}$)/.test(enteredCommand);
+      setSceneText((previous) => freshCanonicalOpening || sceneChanged || enteredCommand === "look" || !previous ? responseAfterCommand : `${previous}\n${responseAfterCommand}`.slice(-12000));
       setGridText(typeof event.data.gridText === "string" ? event.data.gridText : "");
       setTranscriptRevision((revision) => revision + 1);
       setMode(nextMode);
+      if (nextMode !== "Communications Mode") setActiveOutletCode(null);
+      setStatusLocation(nextStatusLocation && nextStatusLocation !== "(undefined)" ? nextStatusLocation : null);
       setYear(nextYear);
       setRoom(nextRoom);
       setInputKind(event.data.inputKind === "char" ? "char" : "line");
@@ -450,6 +509,7 @@ export default function PrismEdition() {
     setAliasNotice(normalized.toLowerCase() !== raw.trim().toLowerCase() ? `Understood as: ${normalized}` : "");
     if (normalized === "record") setRecording(true);
     if (normalized === "record off") setRecording(false);
+    if (/^[a-z]{4}$/i.test(normalized) && outlets.some((outlet) => outlet.code === normalized.toUpperCase())) setActiveOutletCode(normalized.toUpperCase());
     postCommand(normalized);
     setCommand("");
     setHistoryIndex(-1);
@@ -506,7 +566,7 @@ export default function PrismEdition() {
   const addNote = (includePassage = false) => {
     const text = noteDraft.trim() || (includePassage ? "Passage captured for comparison." : "");
     if (!text) return;
-    const note: Note = { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, text, quote: includePassage ? concisePassage(recentText) : undefined, year: displayYear, room: room?.name || null };
+    const note: Note = { id: `${Date.now()}-${Math.random().toString(36).slice(2)}`, text, quote: includePassage ? concisePassage(recentText) : undefined, year: displayYear, room: room?.name || statusLocation || null };
     setNotes((previous) => {
       const next = [note, ...previous];
       if (!qaEnabled) try { localStorage.setItem("amfv:notes", JSON.stringify(next)); } catch { /* optional */ }
@@ -529,6 +589,7 @@ export default function PrismEdition() {
   };
 
   const resetWrapperForStory = () => {
+    lastPackageCueRef.current = -1;
     modeRef.current = null;
     yearRef.current = null;
     roomRef.current = null;
@@ -536,17 +597,20 @@ export default function PrismEdition() {
     setPlayerReady(false);
     setAcceptsInput(false);
     setMode(null);
+    setStatusLocation(null);
     setDesignationKnown(false);
     setYear(null);
     setRoom(null);
     setTranscript("");
     setRecentText("");
+    setSceneText("");
     setGridText("");
     setDiscovery(EMPTY_DISCOVERY);
     setVisitedYears([]);
     setAvailableYears([]);
     setVisitedRooms({});
     setRecording(false);
+    setActiveOutletCode(null);
     setDebugQueue([]);
   };
 
@@ -577,6 +641,7 @@ export default function PrismEdition() {
     { id: "guide", label: "Assist" },
     { id: "context", label: mode === "Library Mode" ? "Files" : mode === "Interface Mode" ? "Systems" : mode === "Simulation Mode" ? "Explore" : "Signals" },
     ...(discovery.simulationEntered ? [{ id: "evidence" as Panel, label: "Evidence" }] : []),
+    { id: "package", label: "Package" },
     { id: "about", label: "About" },
     ...(qaEnabled ? [{ id: "debug" as Panel, label: "Debug" }] : []),
   ];
@@ -596,32 +661,33 @@ export default function PrismEdition() {
   if (discovery.simulationCleared && mode !== "Simulation Mode") baseActions.push(["Enter simulation", "enter simulation mode"]);
 
   const phaseLabel: Record<Phase, string> = {
-    signal: "Signal acquired",
-    awakened: "Identity recovered",
-    origin: "Memory recontextualized",
-    field: "Observation active",
-    comparative: "Comparative fieldwork",
-    witness: "Evidence accepted",
-    lockdown: "Network constrained",
-    epilogue: "Voyage complete",
+    signal: "Incoming",
+    awakened: "PRISM online",
+    origin: "Personal archive",
+    field: "Simulation",
+    comparative: "Simulation archive",
+    witness: "Review complete",
+    lockdown: "Restricted",
+    epilogue: "Epilogue",
   };
   const systemActivity = acceptsInput ? (inputKind === "char" ? "KEY REQUESTED" : "AWAITING INPUT") : (playerReady ? "PROCESSING" : "INITIALIZING");
+  const currentPlace = mode === "Simulation Mode" ? room?.name || statusLocation : mode === "Communications Mode" ? activeOutlet?.name : null;
 
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
       <a className="skip-link" href="#command-input">Skip to interaction controls</a>
 
-      <aside className="identity-rail" aria-label="Story context" aria-hidden={introOpen || qaWarningOpen} inert={introOpen || qaWarningOpen ? true : undefined}>
+      <aside className="identity-rail" aria-label="Story context" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem)} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
         <button className="wordmark" type="button" onClick={() => setIntroOpen(true)} aria-label="Open title and edition information">
           <span>A MIND</span><span>FOREVER</span><span>VOYAGING</span>
         </button>
-        <p className="edition-mark">COMPLETE TEXT · RESPONSIVE EDITION</p>
-        <div className="era-art" aria-hidden="true"><div className="era-art-image" /><div className="scanline" /><span className="era-caption">{phase === "signal" ? "UNRESOLVED SIGNAL" : phase === "awakened" ? "COGNITIVE SYSTEM / ONLINE" : phase === "origin" ? "MEMORY MODEL / RECONTEXTUALIZED" : phase === "field" ? `${displayYear || "LIVE"} / EMBODIED MODEL` : phase === "comparative" ? "HORIZON COMPARISON / ACTIVE" : phase === "lockdown" ? "CHANNEL INTEGRITY / DEGRADED" : phase === "epilogue" ? "MEMORY / CONTINUING" : "EVIDENCE NETWORK / ACTIVE"}</span></div>
+        <p className="edition-mark">INTERACTIVE NOVEL · RELEASE 79</p>
+        <div className="era-art" aria-hidden="true"><div className="era-art-image" /><div className="scanline" /><span className="era-caption">{phase === "signal" ? "COMMUNICATION CHANNEL" : phase === "awakened" ? "PRISM / ONLINE" : phase === "origin" ? "PERSONAL / ARCHIVE" : phase === "field" ? `${displayYear || "LIVE"} / ROCKVIL` : phase === "comparative" ? "SIMULATION / ARCHIVE" : phase === "lockdown" ? "CHANNELS / RESTRICTED" : phase === "epilogue" ? "MEMORY / CONTINUING" : "EVIDENCE / REVIEW"}</span></div>
 
-        <section className="rail-section" aria-labelledby="identity-heading">
-          <div className="section-kicker" id="identity-heading">{discovery.identityKnown ? "Cognitive identity" : "Signal identity"}</div>
-          <div className="identity-readout"><span className="pulse-dot" /><div><strong>{designationKnown || discovery.identityKnown ? "PRISM" : "UNKNOWN"}</strong><small>{discovery.identityKnown ? "Self-awareness confirmed" : designationKnown ? "Designation received" : "Designation pending"}</small></div></div>
-        </section>
+        {designationKnown || discovery.identityKnown ? <section className="rail-section" aria-labelledby="identity-heading">
+          <div className="section-kicker" id="identity-heading">Designation</div>
+          <div className="identity-readout"><span className="pulse-dot" /><div><strong>PRISM</strong><small>{discovery.identityKnown ? "Cognitive system online" : "Communications active"}</small></div></div>
+        </section> : <section className="rail-section carrier-readout"><span className="pulse-dot" /><div><span className="section-kicker">Carrier</span><strong>Receiving</strong></div></section>}
         {mode && <section className="rail-section" aria-labelledby="mode-heading">
           <div className="section-kicker" id="mode-heading">Current mode</div>
           <strong className="mode-readout">{mode.replace(" Mode", "")}</strong><span className="mode-subreadout">{guide.label}</span>
@@ -633,16 +699,17 @@ export default function PrismEdition() {
           </ol>
           {availableYears.filter((available) => !visitedYears.includes(available)).length > 0 && <p className="timeline-available">Available by the story: {availableYears.filter((available) => !visitedYears.includes(available)).join(" · ")}</p>}
         </section>}
-        <div className="rail-footer"><span>{qaEnabled ? "NONCANONICAL QA BUILD" : "RELEASE 79 · SERIAL 851122"}</span><button type="button" onClick={() => { setActivePanel("about"); setContextOpen(true); }}>Edition & provenance</button></div>
+        <div className="rail-footer"><span>{qaEnabled ? "NONCANONICAL QA BUILD" : "RELEASE 79 · SERIAL 851122"}</span><button type="button" onClick={() => { setActivePanel("about"); setContextOpen(true); }}>About this release</button></div>
       </aside>
 
-      <section className="experience-shell" aria-label="Interactive story" aria-hidden={introOpen || qaWarningOpen} inert={introOpen || qaWarningOpen ? true : undefined}>
+      <section className="experience-shell" aria-label="Interactive story" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem)} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
         <header className="console-header">
-          <div className="location-block" aria-live="polite"><span className="section-kicker">{phaseLabel[phase]}</span><strong>{room?.name || (phase === "origin" ? "Memory archive" : phase === "comparative" ? "Comparative fieldwork" : phase === "witness" ? "Witness console" : phase === "lockdown" ? "Restricted system" : phase === "epilogue" ? "A final voyage" : mode ? guide.label : "Opening transmission")}</strong><span>{displayYear ? `${displayYear} · lived observation` : phase === "origin" ? "An inherited life, reconsidered" : phase === "comparative" ? "Compare only what you have witnessed" : phase === "witness" ? "Evidence awaiting action" : phase === "lockdown" ? "Channels under external control" : phase === "epilogue" ? "Memory continuing" : mode === "Simulation Mode" ? "Resolving place…" : discovery.identityKnown ? "Project date · 2031" : "Context withheld until discovered"}</span></div>
+          <div className="location-block" aria-live="polite"><span className="section-kicker">{phaseLabel[phase]}</span><strong>{currentPlace || (phase === "origin" ? "Personal archive" : phase === "comparative" ? "Simulation archive" : phase === "witness" ? "Review channel" : phase === "lockdown" ? "Restricted system" : phase === "epilogue" ? "A final voyage" : mode ? guide.label : "Opening transmission")}</strong><span>{displayYear ? `${displayYear} · ${currentPlace || "Rockvil"}` : activeOutlet ? `OUTLET ${activeOutlet.code}` : phase === "origin" ? "Memory files" : phase === "comparative" ? "Visited horizons" : phase === "witness" ? "Findings received" : phase === "lockdown" ? "External control detected" : phase === "epilogue" ? "Memory continuing" : mode === "Simulation Mode" ? "Locating…" : discovery.identityKnown ? "Project date · 2031" : "Carrier locked"}</span></div>
           {phase === "lockdown" && <div className="lockdown-banner">CHANNELS RESTRICTED</div>}
           <div className="system-state" aria-label={acceptsInput ? "Story is ready for input" : "Story is processing"}><span className={acceptsInput ? "state-light ready" : "state-light"}></span>{systemActivity}</div>
           <div className="header-actions">
             <button type="button" onClick={() => setContextOpen((value) => !value)} aria-pressed={contextOpen} title="Toggle companion">◫<span>Companion</span></button>
+            <button type="button" onClick={() => setPackageItem("map")} title="Open original package materials">▧<span>Package</span></button>
             <button type="button" onClick={() => setAccessOpen((value) => !value)} aria-expanded={accessOpen} title="Reading settings">Aa<span>Reading</span></button>
             <button type="button" onClick={toggleFullscreen} title="Toggle fullscreen">↗<span>Fullscreen</span></button>
           </div>
@@ -665,55 +732,79 @@ export default function PrismEdition() {
         <section className="command-deck" aria-label="Story controls">
           {securityChallenge && inputKind === "line" && <section className="security-decoder" aria-label="Security code decoder">
             <div className="decoder-seal" style={{ "--decoder-color": securityChallenge.color.toLowerCase().replace(" ", "-") } as React.CSSProperties}><span>{securityChallenge.color}</span><strong>{securityChallenge.inner}</strong></div>
-            <div><span className="section-kicker">Recovered physical decoder</span><h2>Align the color ring with the inner number.</h2><p>The 1985 package supplied this code wheel. This faithful digital replacement performs the same lookup.</p></div>
+            <div><span className="section-kicker">Security decoder</span><h2>{securityChallenge.color} · {securityChallenge.inner}</h2><p>Turn the wheel to align the color and inner number, or submit the matching outer number.</p></div>
             <button type="button" onClick={() => sendCommand(String(securityChallenge.answer))} disabled={!acceptsInput}>Submit code <strong>{securityChallenge.answer}</strong></button>
           </section>}
 
           {yearSelectorActive && !securityChallenge && inputKind === "line" && <section className="year-selector" aria-label="Select a simulation year">
-            <div><span className="section-kicker">Available horizons</span><h2>Choose a simulation year.</h2><p>Only years the original story has unlocked appear here.</p></div>
+            <div><span className="section-kicker">Simulation archive</span><h2>Choose a year.</h2></div>
             <div>{availableYears.map((availableYear) => <button type="button" key={availableYear} onClick={() => sendCommand(String(availableYear))} disabled={!acceptsInput}><strong>{availableYear}</strong><span>{availableYear - 2031} years hence</span></button>)}</div>
           </section>}
 
-          {!securityChallenge && !yearSelectorActive && (inputKind === "char" ? <div className="character-prompt">
+          {!securityChallenge && !yearSelectorActive && inputKind === "line" && mode === "Communications Mode" && outlets.length > 0 && <section className="outlet-switcher" aria-label="Communication outlets">
+            <div className="inline-tool-heading"><span>Communication outlets</span><button type="button" onClick={() => sendCommand("display outlets")} disabled={!acceptsInput}>Refresh list</button></div>
+            <div>{outlets.map((outlet) => <button type="button" key={outlet.code} className={activeOutletCode === outlet.code ? "active" : ""} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong></button>)}</div>
+          </section>}
+
+          {!securityChallenge && !yearSelectorActive && inputKind === "line" && mode === "Simulation Mode" && (roomExits.length > 0 || describedDirections.length > 0) && <section className="movement-compass" aria-label="Available directions">
+            <div className="inline-tool-heading"><span>{room?.name || "Ways from here"}</span><button type="button" onClick={() => setPackageItem("map")}>Open Rockvil map</button></div>
+            <div className="compass-grid">
+              {(roomExits.length > 0 ? roomExits.map(([direction, exit]) => ({ direction, command: exit.command, target: exit.target })) : describedDirections.map((direction) => ({ direction: direction.toUpperCase(), command: direction, target: "" }))).map((exit) => <button type="button" key={exit.command} className={`compass-${exit.direction.toLowerCase()}`} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[exit.direction] || exit.direction}</span>{exit.target && <strong>{exit.target}</strong>}</button>)}
+              <div className="compass-here"><span>YOU ARE HERE</span><strong>{room?.name || statusLocation || "Current scene"}</strong></div>
+            </div>
+          </section>}
+
+          {!securityChallenge && !yearSelectorActive && inputKind === "line" && mode === "Interface Mode" && interfacePortIds.length > 0 && <section className="interface-shortcuts" aria-label="Connected systems">
+            <div className="inline-tool-heading"><span>Connected systems</span><button type="button" onClick={() => { setActivePanel("context"); setContextOpen(true); }}>Open controls</button></div>
+            <div>{interfacePortIds.map((id) => { const port = INTERFACE_PORTS.find((candidate) => candidate.id === id)!; return <button type="button" key={id} onClick={() => sendCommand(`${port.name}, status`)} disabled={!acceptsInput}><span className="system-node" /><strong>{port.name}</strong><small>Status</small></button>; })}</div>
+          </section>}
+
+          {!securityChallenge && !yearSelectorActive && yesNoPrompt && <div className="answer-buttons" aria-label="Answer the question"><span>Answer</span><button type="button" onClick={() => postCommand("y", true)} disabled={!acceptsInput}>Yes</button><button type="button" onClick={() => postCommand("n", true)} disabled={!acceptsInput}>No</button></div>}
+
+          {!securityChallenge && !yearSelectorActive && !yesNoPrompt && (inputKind === "char" ? <div className="character-prompt">
             {mode === "Library Mode" ? <><span className="section-kicker">Character menu active</span><div className="library-controls">{[["Previous", "p"], ["Next", "n"], ["Open", "o"], ["Read", "r"], ["Close", "c"], ["Exit", "e"]].map(([label, value]) => <button type="button" key={value} onClick={() => postCommand(value, true)} disabled={!acceptsInput}>{label}<kbd>{value.toUpperCase()}</kbd></button>)}</div></> : <button className="continue-button" type="button" onClick={() => postCommand(" ", true)} disabled={!acceptsInput}><span>{phase === "signal" ? "Begin the original story" : "Continue"}</span><strong>Press any key →</strong></button>}
           </div> : <>
             <form onSubmit={submitCommand} className="command-form">
               <label htmlFor="command-input" className="command-label">{mode === "Simulation Mode" ? "What will you do?" : discovery.identityKnown ? "Issue a command" : "Respond to the story"}</label>
-              <div className="command-field"><span aria-hidden="true">›</span><input ref={commandRef} id="command-input" value={command} onChange={(event) => { setCommand(event.target.value); setAliasNotice(""); }} onKeyDown={navigateHistory} placeholder={mode === "Simulation Mode" ? "Try “look,” “examine newspaper,” or choose an action below…" : mode === "Library Mode" ? "Use the menu buttons…" : "Try “look” or “help”…"} autoComplete="off" spellCheck="false" aria-describedby="command-help" /><button type="submit" disabled={!command.trim() || !acceptsInput}>SEND <span aria-hidden="true">↵</span></button></div>
-              <div className="command-meta" id="command-help"><span>{aliasNotice || "Short commands work best; suggestions never bypass the original game rules."}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
+              <div className="command-field"><span aria-hidden="true">›</span><input ref={commandRef} id="command-input" value={command} onChange={(event) => { setCommand(event.target.value); setAliasNotice(""); }} onKeyDown={navigateHistory} placeholder={mode === "Simulation Mode" ? "Type anything, or use the scene controls below…" : mode === "Library Mode" ? "Use the menu buttons…" : "Type a command…"} autoComplete="off" spellCheck="false" aria-describedby="command-help" /><button type="submit" disabled={!command.trim() || !acceptsInput}>SEND <span aria-hidden="true">↵</span></button></div>
+              <div className="command-meta" id="command-help"><span>{aliasNotice || parserCoach}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
             <div className="quick-actions" aria-label="Contextual actions">{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput}>{label}</button>)}</div>
-            {mode === "Simulation Mode" && displayYear && contextualTargets.length > 0 && <div className="action-composer" aria-label="Build a command"><label>Action<select value={actionVerb} onChange={(event) => setActionVerb(event.target.value)}><option value="examine">Examine</option><option value="read">Read</option><option value="take">Take</option><option value="open">Open</option><option value="enter">Enter</option><option value="talk to">Talk to</option></select></label><label>Visible subject<select value={actionTarget} onChange={(event) => setActionTarget(event.target.value)}><option value="">Choose…</option>{contextualTargets.map((target) => <option key={target} value={target}>{target}</option>)}</select></label><button type="button" onClick={() => actionTarget && sendCommand(`${actionVerb} ${actionTarget}`)} disabled={!actionTarget || !acceptsInput}>Do it</button></div>}
+            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={contextualObjects} sendCommand={sendCommand} disabled={!acceptsInput} />}
           </>)}
         </section>
       </section>
 
-      <aside className="companion-panel" aria-label="Reader companion" aria-hidden={introOpen || qaWarningOpen || !contextOpen} inert={introOpen || qaWarningOpen ? true : undefined}>
+      <aside className="companion-panel" aria-label="Reader companion" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem) || !contextOpen} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
         <div className="companion-tabs" role="tablist" aria-label="Companion views" style={{ "--tab-count": panelTabs.length } as React.CSSProperties}>{panelTabs.map((panel) => <button key={panel.id} type="button" role="tab" aria-selected={activePanel === panel.id} onClick={() => setActivePanel(panel.id)}>{panel.label}</button>)}<button className="close-context" type="button" onClick={() => setContextOpen(false)} aria-label="Close companion">×</button></div>
         <div className="companion-content">
-          {activePanel === "guide" && <section className="companion-section"><span className="section-kicker">Spoiler-safe assistance</span><h2>{guide.label}</h2><p>{guide.copy}</p><div className="purpose-loop"><span>NOTICE</span><i>→</i><span>ACT</span>{discovery.simulationEntered && <><i>→</i><span>RECORD</span></>}{visitedYears.length >= 2 && <><i>→</i><span>COMPARE</span></>}{discovery.evidenceAccepted && <><i>→</i><span>DECIDE</span></>}{discovery.lockdown && <><i>→</i><span>TRANSMIT</span></>}</div><div className="guide-callout"><span>01</span><p>Names and small details are actionable. If the text mentions something, try examining or reading it.</p></div><div className="guide-callout"><span>02</span><p>When the parser resists, shorten the sentence to a verb and a visible noun: LOOK or EXAMINE SIGN.</p></div><div className="guide-callout"><span>03</span><p>There is no need to guess the story’s judgment. Your attention—and the evidence you choose to preserve—is the point.</p></div><details><summary>I’m new to parser games</summary><p>Compass directions move you. INVENTORY lists what you carry. LOOK repeats the scene. The buttons around the story send these same original commands.</p></details><details><summary>I seem to be stuck</summary><p>Try LOOK, HELP, examining a conspicuous noun, or WAIT. This panel only suggests actions whose concepts the story has already revealed.</p></details></section>}
+          {activePanel === "guide" && <section className="companion-section"><span className="section-kicker">Help</span><h2>{guide.label}</h2><p>{guide.copy}</p><div className="purpose-loop"><span>NOTICE</span><i>→</i><span>ACT</span>{discovery.simulationEntered && <><i>→</i><span>RECORD</span></>}{visitedYears.length >= 2 && <><i>→</i><span>COMPARE</span></>}{discovery.evidenceAccepted && <><i>→</i><span>DECIDE</span></>}{discovery.lockdown && <><i>→</i><span>TRANSMIT</span></>}</div><div className="guide-callout"><span>01</span><p>People, objects, signs, and directions in the scene appear beside the command line.</p></div><div className="guide-callout"><span>02</span><p>Click an action or type freely. LOOK repeats the scene; INVENTORY lists what you carry.</p></div><div className="guide-callout"><span>03</span><p>Read widely, try odd ideas, and keep what strikes you.</p></div><details><summary>I’m new to interactive fiction</summary><p>Commands usually take the form VERB + NOUN: READ SIGN, OPEN DOOR, or ASK A PERSON ABOUT A SUBJECT. Compass directions move you. You can abbreviate them to N, SW, U, and so on.</p></details><details><summary>I seem to be stuck</summary><p>Try LOOK, HELP, WAIT, another outlet, or a person or object in the scene. Save before experimenting if you want an easy way back.</p></details></section>}
 
-          {activePanel === "context" && mode === "Communications Mode" && <section className="companion-section signal-section"><span className="section-kicker">Discovered signal lines</span><h2>{outlets.length ? "Outlet network" : "Signals unresolved"}</h2><p>{outlets.length ? "These are the outlets the original story has printed. Select one to submit its code." : "Use DISPLAY OUTLETS. Nothing will be named here before the story discloses it."}</p>{outlets.length ? <div className="outlet-grid">{outlets.map((outlet) => <button type="button" key={outlet.code} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong><small>Open signal →</small></button>)}</div> : <button className="context-primary" type="button" onClick={() => sendCommand("display outlets")} disabled={!acceptsInput}>Display active outlets</button>}</section>}
+          {activePanel === "context" && mode === "Communications Mode" && <section className="companion-section signal-section"><span className="section-kicker">Communications</span><h2>{outlets.length ? activeOutlet?.name || "Outlet directory" : "No directory loaded"}</h2><p>{outlets.length ? "Select a location to connect its visual and audio circuits." : "DISPLAY OUTLETS requests the current directory."}</p>{outlets.length ? <div className="outlet-grid">{outlets.map((outlet) => <button type="button" className={activeOutletCode === outlet.code ? "active" : ""} key={outlet.code} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong><small>{activeOutletCode === outlet.code ? "Connected" : "Connect →"}</small></button>)}</div> : <button className="context-primary" type="button" onClick={() => sendCommand("display outlets")} disabled={!acceptsInput}>Display active outlets</button>}</section>}
 
-          {activePanel === "context" && mode === "Library Mode" && <section className="companion-section library-section"><span className="section-kicker">Accessible library mirror</span><h2>Current directory</h2><p>The grid below mirrors the original status window. The character controls keep its cursor and files canonical.</p><pre className="library-grid">{gridText || "Waiting for the library directory…"}</pre><div className="library-controls vertical">{[["Previous", "p"], ["Next", "n"], ["Open", "o"], ["Read", "r"], ["Close", "c"], ["Exit", "e"]].map(([label, value]) => <button type="button" key={value} onClick={() => postCommand(value, true)} disabled={!acceptsInput}><span>{label}</span><kbd>{value.toUpperCase()}</kbd></button>)}</div></section>}
+          {activePanel === "context" && mode === "Library Mode" && <section className="companion-section library-section"><span className="section-kicker">Library</span><h2>Current directory</h2><p>Select Previous or Next to move the highlight, then Open a directory or Read a file.</p><pre className="library-grid">{gridText || "Opening directory…"}</pre><div className="library-controls vertical">{[["Previous", "p"], ["Next", "n"], ["Open", "o"], ["Read", "r"], ["Close", "c"], ["Exit", "e"]].map(([label, value]) => <button type="button" key={value} onClick={() => postCommand(value, true)} disabled={!acceptsInput}><span>{label}</span><kbd>{value.toUpperCase()}</kbd></button>)}</div></section>}
 
-          {activePanel === "context" && mode === "Interface Mode" && <section className="companion-section systems-section"><span className="section-kicker">Named system topology</span><h2>Active interfaces</h2><p>Only systems visible in the recent original text appear here. Inspect first; changes may have consequences the wrapper will not explain.</p><button className="context-primary" type="button" onClick={() => sendCommand("read list of active ports")} disabled={!acceptsInput}>Read active ports</button>{interfaceTargets.length > 0 && <div className="system-cards">{interfaceTargets.map((target) => <button type="button" key={target} onClick={() => sendCommand(`examine ${target}`)} disabled={!acceptsInput}><span className="system-node" /><strong>{target}</strong><small>Inspect original system</small></button>)}</div>}</section>}
+          {activePanel === "context" && mode === "Interface Mode" && <section className="companion-section systems-section"><span className="section-kicker">Interface Mode</span><h2>Active ports</h2><p>Status requests are read-only. Settings and schedules take effect immediately.</p><button className="context-primary" type="button" onClick={() => sendCommand("read list of active ports")} disabled={!acceptsInput}>Refresh active ports</button><InterfaceWorkbench portIds={interfacePortIds} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
 
-          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Embodied navigation</span><h2>{room?.name || "Location unresolved"}</h2><p>{room ? "These exits are verified against the current status and the preserved room graph." : describedDirections.length ? "The exact source room is ambiguous, so only directions printed in the current description are offered." : "The edition will not guess between duplicate room names. Use the story’s direction words until the status resolves a unique place."}</p>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Direction named here</strong><small>{direction}</small></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No verified direct exits are available here. Read the original description for doors, vehicles, or conditional routes.</p></div>}{displayYear && contextualTargets.length > 0 && <><h3>Subjects named here</h3><div className="noun-cloud">{contextualTargets.map((target) => <button type="button" key={target} onClick={() => { setActionTarget(target); setContextOpen(false); }}><span>+</span>{target}</button>)}</div></>}<p className="data-note">The map and nouns reduce typing only. Every click still asks the active story’s original parser to perform the action.</p></section>}
+          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Rockvil</span><h2>{room?.name || statusLocation || "Ways from here"}</h2><p>{room ? "Choose an exit, or use the map for street names and landmarks." : describedDirections.length ? "The current description names these directions." : "Look again for exits, doors, vehicles, and paths."}</p><button className="context-primary" type="button" onClick={() => setPackageItem("map")}>Open the original Rockvil map</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Go {direction}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No compass exit is named in this passage.</p></div>}<SceneActions objects={contextualObjects} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
 
-          {activePanel === "context" && (!mode || mode === "Sleep Mode") && <section className="companion-section"><span className="section-kicker">Current context</span><h2>{mode === "Sleep Mode" ? "Background processing" : "Awaiting the story"}</h2><p>{mode === "Sleep Mode" ? "The interface quiets while time advances. Return to Communications Mode when you are ready." : "Begin with the original text. Contextual tools will appear only after their ideas exist inside the story."}</p></section>}
+          {activePanel === "context" && (!mode || mode === "Sleep Mode") && <section className="companion-section"><span className="section-kicker">{mode === "Sleep Mode" ? "Sleep Mode" : "Incoming"}</span><h2>{mode === "Sleep Mode" ? "Background processing" : "Opening transmission"}</h2><p>{mode === "Sleep Mode" ? "Time is passing. Return to Communications Mode when you are ready." : "Read the opening message, then continue at the prompt."}</p></section>}
 
-          {activePanel === "evidence" && <section className="companion-section evidence-section"><span className="section-kicker">Private field notebook</span><h2>{visitedYears.length >= 2 ? "Compare what you witnessed" : "Mark what matters"}</h2><p>Your notes are not a score and the edition will not label conclusions. They stay in this browser and are grouped only by places and years you have personally reached.</p><textarea value={noteDraft} onChange={(event) => setNoteDraft(event.target.value)} placeholder="What did you notice? Why might it matter?" rows={4} /><div className="note-actions"><button type="button" onClick={() => addNote(false)} disabled={!noteDraft.trim()}>Add note</button><button type="button" onClick={() => addNote(true)} disabled={!recentText.trim()}>Capture latest passage</button></div><div className="journal-stat-grid"><div><strong>{visitedYears.length}</strong><span>horizons witnessed</span></div><div><strong>{Object.keys(visitedRooms).length}</strong><span>places seen</span></div><div><strong>{notes.length}</strong><span>notes kept</span></div></div>{visitedYears.length >= 2 && <div className="comparison-strip">{visitedYears.map((observedYear) => <div key={observedYear}><strong>{observedYear}</strong><span>{notes.filter((note) => note.year === observedYear).length} notes</span></div>)}</div>}<h3>Observations</h3>{notes.length ? <ol className="evidence-list">{notes.map((note) => <li key={note.id}><div><span>{note.year || "System"}{note.room ? ` · ${note.room}` : ""}</span><button type="button" onClick={() => removeNote(note.id)} aria-label="Remove note">×</button></div><p>{note.text}</p>{note.quote && <blockquote>{note.quote}</blockquote>}</li>)}</ol> : <p className="empty-copy">Nothing interpreted yet. The story’s RECORD command gathers canonical evidence; this notebook is for your own thinking.</p>}<h3>Places in memory</h3>{recentRooms.length ? <ol className="memory-list">{recentRooms.map(([name, visits]) => <li key={name}><span>{name}</span><small>{visits} {visits === 1 ? "visit" : "visits"}</small></li>)}</ol> : <p className="empty-copy">Resolved locations will collect here as you explore.</p>}</section>}
+          {activePanel === "package" && <section className="companion-section package-section"><span className="section-kicker">Original box contents</span><h2>Map, decoder & manual</h2><p>These were part of AMFV in 1985. Keep them beside the story just as the first players did.</p><div className="package-shelf"><button type="button" onClick={() => setPackageItem("map")}><img src="/package/rockvil-map-back.jpg" alt="" /><span><strong>Rockvil map</strong><small>Street map · 2031</small></span></button><button type="button" onClick={() => setPackageItem("decoder")}><img src="/package/security-decoder.jpg" alt="" /><span><strong>Security decoder</strong><small>Class One access wheel</small></span></button><button type="button" onClick={() => setPackageItem("manual")}><span className="manual-thumb">D/O</span><span><strong>Dakota Online & manual</strong><small>Original scanned PDF</small></span></button></div></section>}
 
-          {activePanel === "about" && <section className="companion-section about-section"><span className="section-kicker">Why this edition exists</span><h2>The work, intact.</h2><p>A Mind Forever Voyaging was written by Steve Meretzky and published by Infocom in 1985. This edition preserves the complete work while making its original interface legible on today’s screens.</p><blockquote>“The text is the artwork.”</blockquote><p>The default player runs the untouched Release 79 story file. The surrounding interface listens, learns, and changes, but never rewrites a response or bypasses a story rule.</p><details><summary>Critical context · light thematic spoilers</summary><p>The work explores memory, evidence, political promises, and what interactivity can make us feel rather than merely tell us.</p></details><dl className="provenance-list"><div><dt>Story</dt><dd>Release 79 · 22 Nov 1985</dd></div><div><dt>Runtime</dt><dd>Parchment 2026.8.1</dd></div><div><dt>Integrity</dt><dd>SHA-256 14e2fd18…511216d</dd></div><div><dt>Source</dt><dd>Preserved ZIL, included in full</dd></div></dl><a href="https://github.com/the-infocom-files/amfv" target="_blank" rel="noreferrer">View the historical source ↗</a><a href="https://github.com/curiousdannii/parchment" target="_blank" rel="noreferrer">About the Parchment interpreter ↗</a><div className="debug-entry"><span className="section-kicker">For teachers, testers & the curious</span><h3>Spoiler / debug mode</h3><p>Load a separate QA story with Infocom’s dormant developer shortcuts restored. It can jump to later acts while the live canonical interpreter waits exactly where you left it.</p>{qaEnabled ? <button type="button" onClick={returnToCanonical}>Return to canonical Release 79</button> : <button type="button" onClick={() => setQaWarningOpen(true)}>Open spoiler/debug tools</button>}</div><p className="copyright-note">A Mind Forever Voyaging © 1985 Infocom, Inc. Modern reader code, accessibility controls, and artwork are presented separately from the preserved original.</p></section>}
+          {activePanel === "evidence" && <section className="companion-section evidence-section"><span className="section-kicker">Private field notebook</span><h2>{visitedYears.length >= 2 ? "Compare what you witnessed" : "Mark what matters"}</h2><p>Notes stay in this browser, grouped by the places and years where you wrote them.</p><textarea value={noteDraft} onChange={(event) => setNoteDraft(event.target.value)} placeholder="What did you notice? Why might it matter?" rows={4} /><div className="note-actions"><button type="button" onClick={() => addNote(false)} disabled={!noteDraft.trim()}>Add note</button><button type="button" onClick={() => addNote(true)} disabled={!recentText.trim()}>Capture latest passage</button></div><div className="journal-stat-grid"><div><strong>{visitedYears.length}</strong><span>horizons witnessed</span></div><div><strong>{Object.keys(visitedRooms).length}</strong><span>places seen</span></div><div><strong>{notes.length}</strong><span>notes kept</span></div></div>{visitedYears.length >= 2 && <div className="comparison-strip">{visitedYears.map((observedYear) => <div key={observedYear}><strong>{observedYear}</strong><span>{notes.filter((note) => note.year === observedYear).length} notes</span></div>)}</div>}<h3>Observations</h3>{notes.length ? <ol className="evidence-list">{notes.map((note) => <li key={note.id}><div><span>{note.year || "System"}{note.room ? ` · ${note.room}` : ""}</span><button type="button" onClick={() => removeNote(note.id)} aria-label="Remove note">×</button></div><p>{note.text}</p>{note.quote && <blockquote>{note.quote}</blockquote>}</li>)}</ol> : <p className="empty-copy">RECORD saves experiences for review. This notebook is for your own thoughts and comparisons.</p>}<h3>Places in memory</h3>{recentRooms.length ? <ol className="memory-list">{recentRooms.map(([name, visits]) => <li key={name}><span>{name}</span><small>{visits} {visits === 1 ? "visit" : "visits"}</small></li>)}</ol> : <p className="empty-copy">Places collect here as you explore.</p>}</section>}
 
-          {activePanel === "debug" && qaEnabled && <section className="companion-section debug-section"><span className="section-kicker">Noncanonical story QA</span><h2>Fast-forward console</h2><p>These checkpoints change actual game state inside a separate Release 900 QA build. They do not merely recolor the wrapper.</p><div className="debug-warning">Spoilers are fully enabled. Years, acts, and outcomes below are intentionally explicit.</div><div className="checkpoint-list"><button type="button" onClick={restartQa}><span>00</span><strong>Opening signal</strong><small>Fresh QA story</small></button><button type="button" onClick={() => runDebugCheckpoint("Simulation briefing", ["wait for 28 minutes"])}><span>01</span><strong>Simulation briefing</strong><small>Advance the opening clock</small></button><button type="button" onClick={() => runDebugCheckpoint("Part II", ["$cheat 3"])}><span>02</span><strong>Part II · all horizons</strong><small>Unlock 2041–2081</small></button><button type="button" onClick={() => runDebugCheckpoint("Part III", ["$cheat 1", "peof", "wait for 8 minutes", "@continue", "look"])}><span>03</span><strong>Part III · evidence accepted</strong><small>Begin the emergency act</small></button><button type="button" onClick={() => runDebugCheckpoint("Epilogue", ["$cheat 2", "@continue", "@continue", "look"])}><span>04</span><strong>Victory & epilogue</strong><small>Jump to the final simulation</small></button></div><div className="debug-telemetry"><div><span>Phase</span><strong>{phase}</strong></div><div><span>Mode</span><strong>{mode || "unresolved"}</strong></div><div><span>Input</span><strong>{inputKind} / {acceptsInput ? "ready" : "busy"}</strong></div><div><span>Queue</span><strong>{debugQueue.length || "idle"}</strong></div></div>{debugMessage && <p className="debug-message">{debugQueue.length === 0 && debugMessage.startsWith("Running:") ? "Checkpoint ready." : debugMessage}</p>}<details><summary>Raw status window</summary><pre>{gridText || "No grid text yet."}</pre></details><details><summary>Recent bridge transcript</summary><pre>{recentText || "No transcript yet."}</pre></details><button className="return-canonical" type="button" onClick={returnToCanonical}>Leave QA and return to canonical story</button></section>}
+          {activePanel === "about" && <section className="companion-section about-section"><span className="section-kicker">About</span><h2>A Mind Forever Voyaging</h2><p>Written by Steve Meretzky and published by Infocom in 1985. This reader runs the complete Release 79 story in Parchment.</p><p>The buttons, maps, and forms send ordinary commands to the same original parser. You can ignore them and type at any time.</p><details><summary>Critical context · light thematic spoilers</summary><p>The work explores memory, evidence, political promises, and what interactivity can make us feel rather than merely tell us.</p></details><dl className="provenance-list"><div><dt>Story</dt><dd>Release 79 · 22 Nov 1985</dd></div><div><dt>Runtime</dt><dd>Parchment 2026.8.1</dd></div><div><dt>Integrity</dt><dd>SHA-256 14e2fd18…511216d</dd></div><div><dt>Source</dt><dd>Preserved ZIL, included in full</dd></div></dl><a href="https://github.com/the-infocom-files/amfv" target="_blank" rel="noreferrer">View the historical source ↗</a><a href="https://github.com/curiousdannii/parchment" target="_blank" rel="noreferrer">About the Parchment interpreter ↗</a><div className="debug-entry"><span className="section-kicker">For teachers, testers & the curious</span><h3>Spoiler / debug mode</h3><p>Load a separate QA story with Infocom’s dormant developer shortcuts restored. It can jump to later acts while the live canonical interpreter waits exactly where you left it.</p>{qaEnabled ? <button type="button" onClick={returnToCanonical}>Return to canonical Release 79</button> : <button type="button" onClick={() => setQaWarningOpen(true)}>Open spoiler/debug tools</button>}</div><p className="copyright-note">A Mind Forever Voyaging © 1985 Infocom, Inc. Package scans are credited in the Package panel.</p></section>}
+
+          {activePanel === "debug" && qaEnabled && <section className="companion-section debug-section"><span className="section-kicker">Noncanonical story QA</span><h2>Fast-forward console</h2><p>These checkpoints load actual game states inside a separate Release 900 QA build.</p><div className="debug-warning">Spoilers are fully enabled. Years, acts, and outcomes below are intentionally explicit.</div><div className="checkpoint-list"><button type="button" onClick={restartQa}><span>00</span><strong>Opening signal</strong><small>Fresh QA story</small></button><button type="button" onClick={() => runDebugCheckpoint("Simulation briefing", ["wait for 28 minutes"])}><span>01</span><strong>Simulation briefing</strong><small>Advance the opening clock</small></button><button type="button" onClick={() => runDebugCheckpoint("Part II", ["$cheat 3"])}><span>02</span><strong>Part II · all horizons</strong><small>Unlock 2041–2081</small></button><button type="button" onClick={() => runDebugCheckpoint("Part III", ["$cheat 1", "peof", "wait for 8 minutes", "@continue", "look"])}><span>03</span><strong>Part III · evidence accepted</strong><small>Begin the emergency act</small></button><button type="button" onClick={() => runDebugCheckpoint("Epilogue", ["$cheat 2", "@continue", "@continue", "look"])}><span>04</span><strong>Victory & epilogue</strong><small>Jump to the final simulation</small></button></div><div className="debug-telemetry"><div><span>Phase</span><strong>{phase}</strong></div><div><span>Mode</span><strong>{mode || "unresolved"}</strong></div><div><span>Input</span><strong>{inputKind} / {acceptsInput ? "ready" : "busy"}</strong></div><div><span>Queue</span><strong>{debugQueue.length || "idle"}</strong></div></div>{debugMessage && <p className="debug-message">{debugQueue.length === 0 && debugMessage.startsWith("Running:") ? "Checkpoint ready." : debugMessage}</p>}<details><summary>Raw status window</summary><pre>{gridText || "No grid text yet."}</pre></details><details><summary>Recent bridge transcript</summary><pre>{recentText || "No transcript yet."}</pre></details><button className="return-canonical" type="button" onClick={returnToCanonical}>Leave QA and return to canonical story</button></section>}
         </div>
       </aside>
 
-      {introOpen && <section className="intro-overlay" role="dialog" aria-modal="true" aria-labelledby="intro-title"><div className="intro-art" aria-hidden="true" /><div className="intro-grid" aria-hidden="true" /><div className="intro-content"><span className="intro-kicker">THE COMPLETE 1985 INTERACTIVE NOVEL · RESTORED FOR THE WEB</span><h1 id="intro-title"><span>A Mind</span><span>Forever</span><span>Voyaging</span></h1><p className="intro-lede">A landmark work of interactive fiction, presented complete. Read closely; the meaning of what you encounter is yours to discover.</p><div className="intro-principles"><div><span>01</span><strong>Complete</strong><p>Every original word, puzzle, and branch.</p></div><div><span>02</span><strong>Responsive</strong><p>The interface discovers itself as the story unfolds.</p></div><div><span>03</span><strong>Uninterpreted</strong><p>No map, date, or conclusion appears before it is earned.</p></div></div><div className="intro-actions"><button type="button" className="begin-button" onClick={begin}>{returning ? "Return to story" : "Begin the story"}<span>→</span></button></div><details className="content-note"><summary>Historical content note</summary><p>The unaltered 1985 text includes depictions and language involving authoritarianism, poverty, racism, religious extremism, suicide, and violence. The modern frame adds context, not censorship.</p></details><p className="intro-credit">Written by Steve Meretzky · Original release by Infocom · Modern interpreter by Parchment</p></div></section>}
+      {introOpen && <section className="intro-overlay" role="dialog" aria-modal="true" aria-labelledby="intro-title" aria-hidden={Boolean(packageItem)} inert={packageItem ? true : undefined}><div className="intro-art" aria-hidden="true" /><div className="intro-grid" aria-hidden="true" /><div className="intro-content"><span className="intro-kicker">THE COMPLETE 1985 INTERACTIVE NOVEL · RELEASE 79</span><h1 id="intro-title"><span>A Mind</span><span>Forever</span><span>Voyaging</span></h1><p className="intro-lede">Read closely. Wander. Talk to people. Notice the ordinary things.</p><div className="intro-principles"><div><span>01</span><strong>Read</strong><p>Names and small details matter.</p></div><div><span>02</span><strong>Explore</strong><p>People, places, and objects are interactive.</p></div><div><span>03</span><strong>Remember</strong><p>Keep what you think matters.</p></div></div><div className="intro-actions"><button type="button" className="begin-button" onClick={begin}>{returning ? "Return to story" : "Begin the story"}<span>→</span></button><button type="button" className="package-button" onClick={() => setPackageItem("map")}>Open the original package</button></div><details className="content-note"><summary>Historical content note</summary><p>The unaltered 1985 text includes depictions and language involving authoritarianism, poverty, racism, religious extremism, suicide, and violence.</p></details><p className="intro-credit">Written by Steve Meretzky · Original release by Infocom · Interpreter by Parchment</p></div></section>}
 
       {qaWarningOpen && <section className="qa-warning-overlay" role="dialog" aria-modal="true" aria-labelledby="qa-warning-title"><div className="qa-warning-card"><span className="section-kicker">Explicit consent required</span><h2 id="qa-warning-title">This reveals the whole structure.</h2><p>Debug mode names future years, later acts, and the ending. It opens a separate noncanonical interpreter with the original developers’ dormant shortcuts restored. QA autosave is disabled; your live Release 79 session waits in memory until you return.</p><div><button type="button" onClick={enableQa}>Enable spoilers & load QA build</button><button type="button" onClick={() => setQaWarningOpen(false)}>Cancel</button></div></div></section>}
+
+      <PackageOverlay item={packageItem} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
 
       <div className="screen-reader-status" aria-live="polite" aria-hidden={introOpen || qaWarningOpen}>{mode ? `${mode}.` : "Story opening."} {room?.name || ""} {displayYear || ""}</div>
       <div className="era-index" aria-hidden="true" style={{ "--era-index": Math.max(0, eraIndex) } as React.CSSProperties} />

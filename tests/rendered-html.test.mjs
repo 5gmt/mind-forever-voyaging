@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { readFile, readdir } from "node:fs/promises";
+import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 
 test("static export renders the finished unabridged edition", async () => {
@@ -44,14 +44,30 @@ test("preserves the historical source and derives modern context from it", async
 
   assert.equal(sourceFiles.length, 10);
   assert.match(world, /export const WORLD_ROOMS/);
+  assert.match(world, /"flags": \[/);
   assert.match(world, /"name": "Rockvil Centre"/);
-  assert.match(shell, /The work, intact\./);
-  assert.match(shell, /Spoiler-safe assistance/);
-  assert.match(shell, /Recovered physical decoder/);
+  assert.match(shell, /Open the original Rockvil map/);
+  assert.match(shell, /Communication outlets/);
+  assert.match(shell, /InterfaceWorkbench/);
+  assert.match(shell, /SceneActions/);
+  assert.match(shell, /Turn the wheel to align the color and inner number/);
   assert.match(shell, /Fast-forward console/);
   assert.match(shell, /canonicalIframeRef/);
   assert.match(shell, /qaIframeRef/);
   assert.doesNotMatch(shell, /You are PRISM, the world’s first sentient computer/);
   assert.match(shell, /Historical content note/);
   assert.match(shell, /aria-live="polite"/);
+});
+
+test("ships the physical package materials beside the story", async () => {
+  await Promise.all([
+    access(new URL("../public/package/rockvil-map-back.jpg", import.meta.url)),
+    access(new URL("../public/package/security-decoder.jpg", import.meta.url)),
+    access(new URL("../public/package/amfv-manual.pdf", import.meta.url)),
+  ]);
+  const tools = await readFile(new URL("../app/StoryTools.tsx", import.meta.url), "utf8");
+  assert.match(tools, /Original 1985 promotional street map/);
+  assert.match(tools, /Dakota Online/);
+  assert.match(tools, /HVAC Controller/);
+  assert.match(tools, /traffic computer, set/);
 });

@@ -4,7 +4,7 @@
 export type WorldExit = { command: string; targetId: string; target: string };
 export type WorldRoom = { id: string; name: string; exits: Record<string, WorldExit> };
 
-export type WorldObject = { id: string; name: string; initialLocation: string | null };
+export type WorldObject = { id: string; name: string; initialLocation: string | null; flags: string[] };
 
 export const WORLD_ROOMS: WorldRoom[] = [
   {
@@ -3042,2086 +3042,3408 @@ export const WORLD_OBJECTS: WorldObject[] = [
   {
     "id": "WEATHER-COMPUTER",
     "name": "National Weather Center Computer",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "OUTLETS",
     "name": "list of communication outlets",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "READBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "TRAFFIC-COMPUTER",
     "name": "Metropolitan Traffic Computer",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "RACKS",
     "name": "racks of fashionable clothes",
-    "initialLocation": "DUNBARS"
+    "initialLocation": "DUNBARS",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "CC-STAFFER",
     "name": "PRISM Project staff member",
-    "initialLocation": "CONTROL-CENTER"
+    "initialLocation": "CONTROL-CENTER",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "CULTURAL-CENTER",
     "name": "Riverside Cultural Center",
-    "initialLocation": "SKYCAB"
+    "initialLocation": "SKYCAB",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "BORDELLO-AD",
     "name": "strip joint advertisement",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "READBIT",
+      "TAKEBIT",
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "EVENING-START",
     "name": "evening rush hour start",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "MORNING-START",
     "name": "morning rush hour start",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "FORMULA",
     "name": "bottle of baby formula",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT"
+    ]
   },
   {
     "id": "SCOTCH",
     "name": "bottle of cheap scotch",
-    "initialLocation": "LIQUOR-STORE"
+    "initialLocation": "LIQUOR-STORE",
+    "flags": [
+      "TAKEBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TRANSMITTER",
     "name": "WNN Feeder transmitter",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "LIGHTBIT",
+      "ONBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "AIR-CONDITIONING-UNIT",
     "name": "air conditioning unit",
-    "initialLocation": "CORE"
+    "initialLocation": "CORE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "LOGIC-GAME",
     "name": "electronic logic game",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "EVENING-END",
     "name": "evening rush hour end",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "JANITORIAL-CONTROLLER",
     "name": "Janitorial Controller",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "JANITORIAL-INSTRUCTIONS",
     "name": "JANITORIAL.CONTROLLER",
-    "initialLocation": "PRISM-INTERFACES-DIRECTORY"
+    "initialLocation": "PRISM-INTERFACES-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "MORNING-END",
     "name": "morning rush hour end",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "RYDER",
     "name": "Senator Richard Ryder",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "SIMULATION-CONTROLLER",
     "name": "Simulation Controller",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "SIMULATION-INSTRUCTIONS",
     "name": "SIMULATION.CONTROLLER",
-    "initialLocation": "PRISM-INTERFACES-DIRECTORY"
+    "initialLocation": "PRISM-INTERFACES-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "REPORT-BUFFER",
     "name": "Special Report buffer",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "BUFFERBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "ENTERTAINMENT-CENTER",
     "name": "entertainment center",
-    "initialLocation": "DEN"
+    "initialLocation": "DEN",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "PORT-LIST",
     "name": "List of Active Ports",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "READBIT",
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "AUDIT-PERCENT",
     "name": "auditing percentage",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "BROWN-TUBECAR-DOOR",
     "name": "brown tubecar doors",
-    "initialLocation": "BROWN-TUBECAR"
+    "initialLocation": "BROWN-TUBECAR",
+    "flags": [
+      "DOORBIT",
+      "NDESCBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "COMM-MODE",
     "name": "Communications Mode",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "GOVERNMENT-OFFICIAL",
     "name": "government official",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT"
+    ]
   },
   {
     "id": "AUDITING-SYSTEM",
     "name": "IRS Auditing System",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "SABOTEURS",
     "name": "maintenance workers",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "NEWSPAPER-DISPENSER",
     "name": "newspaper dispenser",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PARKVIEW-APARTMENTS-OBJECT",
     "name": "Parkview Apartments",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "COUNTRYSIDE",
     "name": "rolling countryside",
-    "initialLocation": "ROOFTOP"
+    "initialLocation": "ROOFTOP",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MEMORY-BANKS",
     "name": "row of memory banks",
-    "initialLocation": "CORE"
+    "initialLocation": "CORE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "SPARE-PARTS",
     "name": "bin of spare parts",
-    "initialLocation": "CORE"
+    "initialLocation": "CORE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CHURCH-STREET-CITY-OBJECT",
     "name": "Church Street City",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "HIGHWAY",
     "name": "interstate highway",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VOWELBIT"
+    ]
   },
   {
     "id": "NATIONAL-GUARDSMAN",
     "name": "National Guardsman",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "RESIGNATION-LETTER",
     "name": "RESIGNATION.LETTER",
-    "initialLocation": "PERELMAN-PERSONAL-DIRECTORY"
+    "initialLocation": "PERELMAN-PERSONAL-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "ROTATING",
     "name": "rotating functions",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "UNIVERSITY-HEIGHTS-OBJECT",
     "name": "University Heights",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VOWELBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "TIMBERS",
     "name": "blackened timbers",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "BOARDING-PLATFORM",
     "name": "boarding platform",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "CONSTRUCTION-OBJECT",
     "name": "construction site",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "FOUNTAIN",
     "name": "dried-up fountain",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "INFOTECH-BUILDING",
     "name": "InfoTech Building",
-    "initialLocation": "MAIN-AND-KENNEDY"
+    "initialLocation": "MAIN-AND-KENNEDY",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "PERELMAN-PERSONAL-DIRECTORY",
     "name": "PERELMAN.PERSONAL",
-    "initialLocation": "LIBRARY"
+    "initialLocation": "LIBRARY",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "RED-TUBECAR-DOOR",
     "name": "red tubecar doors",
-    "initialLocation": "RED-TUBECAR"
+    "initialLocation": "RED-TUBECAR",
+    "flags": [
+      "DOORBIT",
+      "NDESCBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "SILICORP-BUILDING",
     "name": "Silicorp Building",
-    "initialLocation": "MAIN-AND-KENNEDY"
+    "initialLocation": "MAIN-AND-KENNEDY",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "NEWS-BUFFER",
     "name": "World News buffer",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "BUFFERBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "FOURTH-FLOOR",
     "name": "activity offices",
-    "initialLocation": "STUDENT-UNION"
+    "initialLocation": "STUDENT-UNION",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT",
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "GROCERIES",
     "name": "bag of groceries",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT"
+    ]
   },
   {
     "id": "DRIVERS-LICENSE",
     "name": "driver's license",
-    "initialLocation": "WALLET"
+    "initialLocation": "WALLET",
+    "flags": [
+      "READBIT",
+      "TAKEBIT"
+    ]
   },
   {
     "id": "FORTZMAN",
     "name": "Eleanor Fortzman",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "VOWELBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "GARBAGE",
     "name": "garbage disposal",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "MAGAZINE-ARTICLE",
     "name": "magazine article",
-    "initialLocation": "PERELMAN-DESK"
+    "initialLocation": "PERELMAN-DESK",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "PICKFORD-THEATRE-OBJECT",
     "name": "Pickford Theatre",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BEAMS",
     "name": "plastalloy beams",
-    "initialLocation": "CONSTRUCTION-SITE-1"
+    "initialLocation": "CONSTRUCTION-SITE-1",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "PRISM-INTERFACES-DIRECTORY",
     "name": "PRISM.INTERFACES",
-    "initialLocation": "LIBRARY"
+    "initialLocation": "LIBRARY",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "RECEIVER-STATION",
     "name": "receiver station",
-    "initialLocation": "SKYCAB"
+    "initialLocation": "SKYCAB",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TRAFFIC-INSTRUCTIONS",
     "name": "TRAFFIC.COMPUTER",
-    "initialLocation": "PRISM-INTERFACES-DIRECTORY"
+    "initialLocation": "PRISM-INTERFACES-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "WEATHER-INSTRUCTIONS",
     "name": "WEATHER.COMPUTER",
-    "initialLocation": "PRISM-INTERFACES-DIRECTORY"
+    "initialLocation": "PRISM-INTERFACES-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "AUDITING-INSTRUCTIONS",
     "name": "AUDITING.SYSTEM",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "ESTHER",
     "name": "Esther Perelman",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "VOWELBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "PAMPHLET",
     "name": "glossy pamphlet",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "GRANOLA-CLUSTER",
     "name": "granola cluster",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "EATBIT"
+    ]
   },
   {
     "id": "HVAC-CONTROLLER",
     "name": "HVAC Controller",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "HVAC-INSTRUCTIONS",
     "name": "HVAC.CONTROLLER",
-    "initialLocation": "PRISM-INTERFACES-DIRECTORY"
+    "initialLocation": "PRISM-INTERFACES-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "INDUSTRIAL-PARK-OBJECT",
     "name": "industrial park",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VOWELBIT"
+    ]
   },
   {
     "id": "LIBRARY-ACCOUNT",
     "name": "library account",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "CHUN-BUILDING",
     "name": "office building",
-    "initialLocation": "AQUARIUM-AND-KENNEDY"
+    "initialLocation": "AQUARIUM-AND-KENNEDY",
+    "flags": [
+      "VOWELBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "ROY",
     "name": "old Chinese man",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "PLAN-POPULARITY",
     "name": "PLAN.POPULARITY",
-    "initialLocation": "PLAN-DATA-DIRECTORY"
+    "initialLocation": "PLAN-DATA-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "RAILROAD-BRIDGE",
     "name": "railroad bridge",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SERVICE-STATION-OBJECT",
     "name": "service station",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SIMULATION-MODE",
     "name": "Simulation Mode",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "STACKS-OF-PAPERS",
     "name": "stack of papers",
-    "initialLocation": "OFFICE"
+    "initialLocation": "OFFICE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TURKEY-SANDWICH",
     "name": "turkey sandwich",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "EATBIT"
+    ]
   },
   {
     "id": "SALAD",
     "name": "vegetable salad",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "CONTROL-CENTER-OBJECT",
     "name": "control center",
-    "initialLocation": "CONTROL-CENTER"
+    "initialLocation": "CONTROL-CENTER",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CURRENT-EVENTS-DIRECTORY",
     "name": "CURRENT.EVENTS",
-    "initialLocation": "LIBRARY"
+    "initialLocation": "LIBRARY",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "HALLEY-ESTATES-OBJECT",
     "name": "Halley Estates",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "HARDWARE-STORE-OBJECT",
     "name": "hardware store",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "HEIMAN-VILLAGE-OBJECT",
     "name": "Heiman Village",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "INTERFACE-MODE",
     "name": "Interface Mode",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "LIBYAN-ECONOMY",
     "name": "LIBYAN.ECONOMY",
-    "initialLocation": "CURRENT-EVENTS-DIRECTORY"
+    "initialLocation": "CURRENT-EVENTS-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "BANNED-TITLES-LIST",
     "name": "list of titles",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "MOUNT-TAKEOVER",
     "name": "MOUNT.TAKEOVER",
-    "initialLocation": "CURRENT-EVENTS-DIRECTORY"
+    "initialLocation": "CURRENT-EVENTS-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "POLICEMAN",
     "name": "police officer",
-    "initialLocation": "POLICE-STATION"
+    "initialLocation": "POLICE-STATION",
+    "flags": [
+      "ACTORBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "POLICE-STATION-OBJECT",
     "name": "police station",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "RYDER-SPEECHES",
     "name": "RYDER.SPEECHES",
-    "initialLocation": "PLAN-DATA-DIRECTORY"
+    "initialLocation": "PLAN-DATA-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "SPACEPORT-GATE",
     "name": "spaceport gate",
-    "initialLocation": "TERMINAL"
+    "initialLocation": "TERMINAL",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "STOCK-EXCHANGE-OBJECT",
     "name": "Stock Exchange",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "WORD-PROCESSOR",
     "name": "word processor",
-    "initialLocation": "LIVING-ROOM"
+    "initialLocation": "LIVING-ROOM",
+    "flags": [
+      "LIGHTBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "BAMBOO-SCREEN",
     "name": "bamboo screen",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BROWN-TUBECAR-OBJECT",
     "name": "brown tubecar",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT"
+    ]
   },
   {
     "id": "BSF-FORMATION",
     "name": "BSF.FORMATION",
-    "initialLocation": "CURRENT-EVENTS-DIRECTORY"
+    "initialLocation": "CURRENT-EVENTS-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "COFFEE",
     "name": "cup of coffee",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "HEALTH-CENTER-OBJECT",
     "name": "health center",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "MOVIE-THEATRE-OBJECT",
     "name": "movie theatre",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PLAN-ELEMENTS",
     "name": "PLAN.ELEMENTS",
-    "initialLocation": "PLAN-DATA-DIRECTORY"
+    "initialLocation": "PLAN-DATA-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "POWER-STATION-OBJECT",
     "name": "power station",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "RAILROAD-YARD",
     "name": "railroad yard",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "RAV",
     "name": "Rav and Frita",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "RECORD-BUFFER",
     "name": "record buffer",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "BUFFERBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "JILL-BOOK",
     "name": "romance novel",
-    "initialLocation": "LIVING-ROOM"
+    "initialLocation": "LIVING-ROOM",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "STREET-BRIDGE",
     "name": "street bridge",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "STUDENT-UNION-OBJECT",
     "name": "student union",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SYMPHONY-HALL-OBJECT",
     "name": "Symphony Hall",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "TICKET-SELLER",
     "name": "ticket seller",
-    "initialLocation": "CINEMA"
+    "initialLocation": "CINEMA",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TRAIN-STATION-OBJECT",
     "name": "train station",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "WELLS-THEATRE-OBJECT",
     "name": "Wells Theatre",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "AIRPORT-GATE",
     "name": "airport gate",
-    "initialLocation": "TERMINAL"
+    "initialLocation": "TERMINAL",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "ALI-BUILDING",
     "name": "ALI Building",
-    "initialLocation": "MIDLAND-AND-RIVER"
+    "initialLocation": "MIDLAND-AND-RIVER",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "ALPHA-SECTOR",
     "name": "alpha sector",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "PRICE",
     "name": "Alyson Price",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "RANDU",
     "name": "Aseejh Randu",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLE",
+      "VOWELBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "CARD-CATALOG",
     "name": "card catalog",
-    "initialLocation": "MAIN-LIBRARY"
+    "initialLocation": "MAIN-LIBRARY",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CHURCH-OFFICIAL",
     "name": "church elder",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT"
+    ]
   },
   {
     "id": "CONVERSATION",
     "name": "conversation",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CURRENT-FEED",
     "name": "current feed",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "DELTA-SECTOR",
     "name": "delta sector",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "DISHES",
     "name": "dirty dishes",
-    "initialLocation": "KITCHEN"
+    "initialLocation": "KITCHEN",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "GRIMWOLD",
     "name": "Dr. Grimwold",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "PERELMAN",
     "name": "Dr. Perelman",
-    "initialLocation": "OFFICE"
+    "initialLocation": "OFFICE",
+    "flags": [
+      "NARTICLEBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "WARREN",
     "name": "Emily Warren",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "FIREHOUSE-OBJECT",
     "name": "fire station",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "GAMMA-SECTOR",
     "name": "gamma sector",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "DUMP-OBJECT",
     "name": "garbage dump",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "HAM-SANDWICH",
     "name": "ham sandwich",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "EATBIT"
+    ]
   },
   {
     "id": "HEIMAN-WORLD-OBJECT",
     "name": "Heiman World",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "LECTURE-HALL-OBJECT",
     "name": "lecture hall",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "LIBRARY-MODE",
     "name": "Library Mode",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "LIBRARY-UNIT",
     "name": "library unit",
-    "initialLocation": "CORE"
+    "initialLocation": "CORE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "LIQUOR-STORE-OBJECT",
     "name": "liquor store",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "ROOF-SHADOWS",
     "name": "long shadows",
-    "initialLocation": "ROOFTOP"
+    "initialLocation": "ROOFTOP",
+    "flags": [
+      "NARTICLEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "DUCKS",
     "name": "mallard duck",
-    "initialLocation": "HALLEY-PARK-WEST"
+    "initialLocation": "HALLEY-PARK-WEST",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "PEREZ-TOWERS",
     "name": "Perez Towers",
-    "initialLocation": "MAIN-AND-RIVER"
+    "initialLocation": "MAIN-AND-RIVER",
+    "flags": [
+      "NARTICLEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "PICTUREPHONE",
     "name": "picturephone",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "MOLD",
     "name": "pile of mold",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TRYTAKEBIT",
+      "TAKEBIT"
+    ]
   },
   {
     "id": "REFRIGERATOR",
     "name": "refrigerator",
-    "initialLocation": "KITCHEN"
+    "initialLocation": "KITCHEN",
+    "flags": [
+      "NDESCBIT",
+      "CONTBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "SHOWER",
     "name": "shower stall",
-    "initialLocation": "BATHROOM"
+    "initialLocation": "BATHROOM",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "SOUP-KITCHEN",
     "name": "soup kitchen",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "RAILROAD-TRACKS",
     "name": "train tracks",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "TUBE-STATION",
     "name": "Tube station",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "UNSHAVEN-MAN",
     "name": "unshaven man",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "VOWELBIT",
+      "OPENBIT",
+      "CONTBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "MY-MAILBOX",
     "name": "your mailbox",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "PARENTS",
     "name": "your parents",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "BETA-SECTOR",
     "name": "beta sector",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "SODA",
     "name": "can of soda",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "DRINKBIT"
+    ]
   },
   {
     "id": "CREDIT-CARD",
     "name": "credit card",
-    "initialLocation": "WALLET"
+    "initialLocation": "WALLET",
+    "flags": [
+      "READBIT",
+      "TAKEBIT"
+    ]
   },
   {
     "id": "DERRICOPTERS",
     "name": "derricopter",
-    "initialLocation": "CONSTRUCTION-SITE-1"
+    "initialLocation": "CONSTRUCTION-SITE-1",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "DINETTE-SET",
     "name": "dinette set",
-    "initialLocation": "KITCHEN"
+    "initialLocation": "KITCHEN",
+    "flags": [
+      "NDESCBIT",
+      "FURNITUREBIT",
+      "SURFACEBIT",
+      "VEHBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "DINING-ROOM-OBJECT",
     "name": "dining room",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "INTERCHANGE-OBJECT",
     "name": "interchange",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VOWELBIT"
+    ]
   },
   {
     "id": "LIVING-ROOM-OBJECT",
     "name": "living room",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BEER",
     "name": "mug of beer",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT"
+    ]
   },
   {
     "id": "CARLOT",
     "name": "parking lot",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "POST-OFFICE-OBJECT",
     "name": "post office",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PROTRUSIONS",
     "name": "protrusions",
-    "initialLocation": "ROOFTOP"
+    "initialLocation": "ROOFTOP",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "RATION-CARD",
     "name": "ration card",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": [
+      "READBIT",
+      "TAKEBIT"
+    ]
   },
   {
     "id": "RED-TUBECAR-OBJECT",
     "name": "red tubecar",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT"
+    ]
   },
   {
     "id": "RESIGNATION",
     "name": "resignation",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "RUSTY-CROSS",
     "name": "rusty cross",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": [
+      "TRYTAKEBIT",
+      "TAKEBIT"
+    ]
   },
   {
     "id": "SILVER-DOVE",
     "name": "Silver Dove",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SUPERMARKET",
     "name": "supermarket",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "VENTILATION",
     "name": "ventilation",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "WATER-TOWER-OBJECT",
     "name": "water tower",
-    "initialLocation": "WATER-TOWER"
+    "initialLocation": "WATER-TOWER",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MY-BUZZER",
     "name": "your buzzer",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "AUDITORIUM",
     "name": "auditorium",
-    "initialLocation": "STUDENT-UNION"
+    "initialLocation": "STUDENT-UNION",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CLERKMATON",
     "name": "clerkmaton",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "COURTHOUSE-OBJECT",
     "name": "courthouse",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "DRUG-STORE-OBJECT",
     "name": "drug store",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "FIRECOPTER",
     "name": "firecopter",
-    "initialLocation": "FIREHOUSE"
+    "initialLocation": "FIREHOUSE",
+    "flags": [
+      "VEHBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "FLOODLIGHT",
     "name": "floodlight",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "HEADSTONES",
     "name": "headstones",
-    "initialLocation": "CEMETERY"
+    "initialLocation": "CEMETERY",
+    "flags": [
+      "READBIT",
+      "NDESCBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "HUANG-HALL-OBJECT",
     "name": "Huang Hall",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "POOL-TABLE",
     "name": "pool table",
-    "initialLocation": "POOL-HALL"
+    "initialLocation": "POOL-HALL",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "PRISM-NAME",
     "name": "PRISM.NAME",
-    "initialLocation": "PERELMAN-PERSONAL-DIRECTORY"
+    "initialLocation": "PERELMAN-PERSONAL-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "PROSTITUTE",
     "name": "prostitute",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT"
+    ]
   },
   {
     "id": "JOYBOOTH-BUTTON",
     "name": "red button",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "RESTAURANT-OBJECT",
     "name": "restaurant",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "RIVER-BANK",
     "name": "river bank",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SLEEP-MODE",
     "name": "Sleep Mode",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "STADIUM-STANDS",
     "name": "the stands",
-    "initialLocation": "ROCKVIL-STADIUM"
+    "initialLocation": "ROCKVIL-STADIUM",
+    "flags": [
+      "VEHBIT",
+      "FURNITUREBIT",
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "VACANT-LOT",
     "name": "vacant lot",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "VIEWSCREEN",
     "name": "viewscreen",
-    "initialLocation": "SKYCAB"
+    "initialLocation": "SKYCAB",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "WNN-FEEDER",
     "name": "WNN Feeder",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "WNN-INSTRUCTIONS",
     "name": "WNN.FEEDER",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "HANDS",
     "name": "your hands",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NDESCBIT",
+      "TOUCHBIT",
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "TEETH",
     "name": "your teeth",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "APARTMENT-OBJECT",
     "name": "apartment",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VOWELBIT"
+    ]
   },
   {
     "id": "BATHROOMS",
     "name": "bathrooms",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "POOL",
     "name": "billiards",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "BLEACHERS",
     "name": "bleachers",
-    "initialLocation": "ATHLETIC-FIELD"
+    "initialLocation": "ATHLETIC-FIELD",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "FURNITUREBIT"
+    ]
   },
   {
     "id": "SCHOOL-BOOKSTORE",
     "name": "bookstore",
-    "initialLocation": "STUDENT-UNION"
+    "initialLocation": "STUDENT-UNION",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "BOOKSTORE-OBJECT",
     "name": "bookstore",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BSF-GUARDS",
     "name": "BSF guard",
-    "initialLocation": "TERMINAL"
+    "initialLocation": "TERMINAL",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "CAFETERIA-OBJECT",
     "name": "cafeteria",
-    "initialLocation": "CAFETERIA"
+    "initialLocation": "CAFETERIA",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "UNIVERSITY-CAFETERIA",
     "name": "cafeteria",
-    "initialLocation": "STUDENT-UNION"
+    "initialLocation": "STUDENT-UNION",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CITY-HALL-OBJECT",
     "name": "City Hall",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "CLASSROOMS",
     "name": "classroom",
-    "initialLocation": "LECTURE-HALL"
+    "initialLocation": "LECTURE-HALL",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "ANDERSON-DIRECTORY",
     "name": "directory",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "DORM-OBJECT",
     "name": "dormitory",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "DUCK-POND",
     "name": "duck pond",
-    "initialLocation": "HALLEY-PARK-WEST"
+    "initialLocation": "HALLEY-PARK-WEST",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "FIREPLACE",
     "name": "fireplace",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "FIRETRUCK",
     "name": "firetruck",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VEHBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "HAZE",
     "name": "gray haze",
-    "initialLocation": "ROOFTOP"
+    "initialLocation": "ROOFTOP",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "LAMP-POST",
     "name": "lamp post",
-    "initialLocation": "BODANSKI-SQUARE"
+    "initialLocation": "BODANSKI-SQUARE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MACHINERY",
     "name": "machinery",
-    "initialLocation": "CORE"
+    "initialLocation": "CORE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MANTA-RAY",
     "name": "manta ray",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MILKSHAKE",
     "name": "milkshake",
-    "initialLocation": "DRUG-STORE"
+    "initialLocation": "DRUG-STORE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "NEWSPAPER",
     "name": "newspaper",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "READBIT",
+      "TAKEBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "PARTITION",
     "name": "partition",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PLAN-DATA-DIRECTORY",
     "name": "PLAN.DATA",
-    "initialLocation": "LIBRARY"
+    "initialLocation": "LIBRARY",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "POOL-HALL-OBJECT",
     "name": "pool hall",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "RESERVOIR",
     "name": "reservoir",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "CHURCH-SKYCOPTER",
     "name": "skycopter",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SOY-PATTY",
     "name": "soy patty",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT"
+    ]
   },
   {
     "id": "SPACEPORT",
     "name": "spaceport",
-    "initialLocation": "TERMINAL"
+    "initialLocation": "TERMINAL",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TAX-STUDY",
     "name": "TAX.STUDY",
-    "initialLocation": "CURRENT-EVENTS-DIRECTORY"
+    "initialLocation": "CURRENT-EVENTS-DIRECTORY",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "TERMINAL-BANKS",
     "name": "terminals",
-    "initialLocation": "CONTROL-CENTER"
+    "initialLocation": "CONTROL-CENTER",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "TOWNHOUSE",
     "name": "townhouse",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "GOLD",
     "name": "Vera Gold",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "WAREHOUSE-OBJECT",
     "name": "warehouse",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "WATERPOOL",
     "name": "waterpool",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "EARS",
     "name": "your ears",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "EYES",
     "name": "your eyes",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "HEAD",
     "name": "your head",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "MY-NAME",
     "name": "your name",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "MYBIT"
+    ]
   },
   {
     "id": "AQUARIUM-OBJECT",
     "name": "Aquarium",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BATHROOM-OBJECT",
     "name": "bathroom",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BSF-BASE",
     "name": "BSF base",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BUILDING",
     "name": "building",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "CEMETERY-OBJECT",
     "name": "cemetery",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "CHILDREN",
     "name": "children",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "CRIMINAL",
     "name": "criminal",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "DUNBARS-OBJECT",
     "name": "Dunbar's",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "DOORWAY",
     "name": "entrance",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "VOWELBIT"
+    ]
   },
   {
     "id": "EXHIBITS",
     "name": "exhibits",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "VOWELBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "GRAFFITI",
     "name": "graffiti",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "GUN-SHOP-OBJECT",
     "name": "gun shop",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "HARDWARE",
     "name": "hardware",
-    "initialLocation": "HARDWARE-STORE"
+    "initialLocation": "HARDWARE-STORE",
+    "flags": [
+      "NARTICLEBIT",
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "HOMEWORK",
     "name": "homework",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "READBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "HOSPITAL-OBJECT",
     "name": "hospital",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "JOYBOOTH-OBJECT",
     "name": "joybooth",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "MAGAZINE",
     "name": "magazine",
-    "initialLocation": "DRUG-STORE"
+    "initialLocation": "DRUG-STORE",
+    "flags": [
+      "NDESCBIT",
+      "READBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "MIDNIGHT",
     "name": "midnight",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "MITCHELL",
     "name": "Mitchell",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT",
+      "CONTBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "OVERCOAT",
     "name": "overcoat",
-    "initialLocation": "CONTROL-CENTER"
+    "initialLocation": "CONTROL-CENTER",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "PAINTING",
     "name": "painting",
-    "initialLocation": "LIVING-ROOM"
+    "initialLocation": "LIVING-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "PEDESTAL",
     "name": "pedestal",
-    "initialLocation": "HALLEY-PARK-EAST"
+    "initialLocation": "HALLEY-PARK-EAST",
+    "flags": [
+      "NDESCBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "AIRPORT-SIGN",
     "name": "red sign",
-    "initialLocation": "TERMINAL"
+    "initialLocation": "TERMINAL",
+    "flags": [
+      "NDESCBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "SKYLIGHT",
     "name": "skylight",
-    "initialLocation": "COLONIAL-HOTEL"
+    "initialLocation": "COLONIAL-HOTEL",
+    "flags": [
+      "NDESCBIT",
+      "TRANSBIT"
+    ]
   },
   {
     "id": "SOUVENIR",
     "name": "souvenir",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TENEMENT-OBJECT",
     "name": "tenement",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PERELMAN-TERMINAL",
     "name": "terminal",
-    "initialLocation": "OFFICE"
+    "initialLocation": "OFFICE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "SKYBUS-TERMINAL-OBJECT",
     "name": "terminal",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "AIRPORT-TERMINAL-OBJECT",
     "name": "terminal",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PLAN",
     "name": "the Plan",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "TOTE-BAGS",
     "name": "tote bag",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TOY",
     "name": "toy duck",
-    "initialLocation": "CRIB"
+    "initialLocation": "CRIB",
+    "flags": [
+      "TAKEBIT"
+    ]
   },
   {
     "id": "VIBRAMAT",
     "name": "vibramat",
-    "initialLocation": "LAUNDROMAT"
+    "initialLocation": "LAUNDROMAT",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "ME",
     "name": "yourself",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "ACTORBIT",
+      "TOUCHBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "BARKING",
     "name": "barking",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "BEDROOM-OBJECT",
     "name": "bedroom",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BLANKET",
     "name": "blanket",
-    "initialLocation": "JAIL-CELL"
+    "initialLocation": "JAIL-CELL",
+    "flags": [
+      "TAKEBIT"
+    ]
   },
   {
     "id": "CEILING",
     "name": "ceiling",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NDESCBIT",
+      "TOUCHBIT"
+    ]
   },
   {
     "id": "CLOTHES",
     "name": "clothes",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "COOLING",
     "name": "cooling",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "COUNTER",
     "name": "counter",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "SURFACEBIT",
+      "OPENBIT",
+      "CONTBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "DECODER",
     "name": "decoder",
-    "initialLocation": "PERELMAN-DESK"
+    "initialLocation": "PERELMAN-DESK",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "FACTORY-OBJECT",
     "name": "factory",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "GUN",
     "name": "firearm",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "HALLWAY",
     "name": "hallway",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "HEADSET",
     "name": "headset",
-    "initialLocation": "JOYBOOTH"
+    "initialLocation": "JOYBOOTH",
+    "flags": [
+      "NDESCBIT",
+      "WEARBIT"
+    ]
   },
   {
     "id": "HEATING",
     "name": "heating",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "HORIZON",
     "name": "horizon",
-    "initialLocation": "ROOFTOP"
+    "initialLocation": "ROOFTOP",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "JUKEBOX",
     "name": "jukebox",
-    "initialLocation": "BAR"
+    "initialLocation": "BAR",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "KITCHEN-OBJECT",
     "name": "kitchen",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "MAIN-LIBRARY-OBJECT",
     "name": "library",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "MAILBOXES",
     "name": "mailbox",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "MARQUEE",
     "name": "marquee",
-    "initialLocation": "CINEMA"
+    "initialLocation": "CINEMA",
+    "flags": [
+      "NDESCBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "RECTORY-OBJECT",
     "name": "rectory",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "ROCKVIL-OBJECT",
     "name": "Rockvil",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "SHELVES",
     "name": "shelves",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "SKYCAR",
     "name": "skycars",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "STADIUM-OBJECT",
     "name": "stadium",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SOLARIUM-OBJECT",
     "name": "sunroom",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SWEATER",
     "name": "sweater",
-    "initialLocation": "DUNBARS"
+    "initialLocation": "DUNBARS",
+    "flags": [
+      "TAKEBIT",
+      "WEARBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "PATIO-OBJECT",
     "name": "terrace",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "WASHERS",
     "name": "washers",
-    "initialLocation": "LAUNDROMAT"
+    "initialLocation": "LAUNDROMAT",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "ANIMAL",
     "name": "animal",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VOWELBIT"
+    ]
   },
   {
     "id": "ATRIUM",
     "name": "atrium",
-    "initialLocation": "COLONIAL-HOTEL"
+    "initialLocation": "COLONIAL-HOTEL",
+    "flags": [
+      "VOWELBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "BANNER",
     "name": "banner",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "BUREAU",
     "name": "bureau",
-    "initialLocation": "BEDROOM"
+    "initialLocation": "BEDROOM",
+    "flags": [
+      "NDESCBIT",
+      "CONTBIT",
+      "OPENBIT",
+      "SURFACEBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "BUZZERS",
     "name": "buzzer",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CAMPUS",
     "name": "campus",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "CHURCH-OBJECT",
     "name": "church",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "DRYERS",
     "name": "dryers",
-    "initialLocation": "LAUNDROMAT"
+    "initialLocation": "LAUNDROMAT",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "FLOORS",
     "name": "floors",
-    "initialLocation": "INTERFACE-ROOM"
+    "initialLocation": "INTERFACE-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "UNSEENBIT"
+    ]
   },
   {
     "id": "GROUND",
     "name": "ground",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "LIQUOR",
     "name": "liquor",
-    "initialLocation": "LIQUOR-STORE"
+    "initialLocation": "LIQUOR-STORE",
+    "flags": [
+      "NARTICLEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "OTHER-LIQUOR",
     "name": "liquor",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "LOUNGE",
     "name": "lounge",
-    "initialLocation": "DORM"
+    "initialLocation": "DORM",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MINDEX",
     "name": "mindex",
-    "initialLocation": "DORM"
+    "initialLocation": "DORM",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "MUSEUM-OBJECT",
     "name": "museum",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "INTNUM",
     "name": "number",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "OFFICE-OBJECT",
     "name": "office",
-    "initialLocation": "OFFICE"
+    "initialLocation": "OFFICE",
+    "flags": [
+      "VOWELBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "PROFESSOR-OFFICES",
     "name": "office",
-    "initialLocation": "LECTURE-HALL"
+    "initialLocation": "LECTURE-HALL",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "PEOPLE",
     "name": "people",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "PLAQUE",
     "name": "plaque",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "JAIL-OBJECT",
     "name": "prison",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PSEUDO-OBJECT",
     "name": "pseudo",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": []
   },
   {
     "id": "CC-PRINTOUT",
     "name": "report",
-    "initialLocation": "CONTROL-CENTER"
+    "initialLocation": "CONTROL-CENTER",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "SCHOOL-OBJECT",
     "name": "school",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SKYBUS",
     "name": "skybus",
-    "initialLocation": "SKYBUS-TERMINAL"
+    "initialLocation": "SKYBUS-TERMINAL",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "SKYCAB-OBJECT",
     "name": "skycab",
-    "initialLocation": "SKYCAB"
+    "initialLocation": "SKYCAB",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "STAIRS",
     "name": "stairs",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "STATUE",
     "name": "statue",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "HALLEY-STATUE",
     "name": "statue",
-    "initialLocation": "HALLEY-PARK-EAST"
+    "initialLocation": "HALLEY-PARK-EAST",
+    "flags": [
+      "NDESCBIT",
+      "READBIT"
+    ]
   },
   {
     "id": "TICKET",
     "name": "ticket",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TOILET",
     "name": "toilet",
-    "initialLocation": "BATHROOM"
+    "initialLocation": "BATHROOM",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "FURNITUREBIT"
+    ]
   },
   {
     "id": "TUNNEL",
     "name": "tunnel",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "TURTLE",
     "name": "turtle",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "WALLET",
     "name": "wallet",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": [
+      "CONTBIT",
+      "TAKEBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "APARTMENT-WINDOW",
     "name": "window",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TRANSBIT"
+    ]
   },
   {
     "id": "GLOBAL-WINDOW",
     "name": "window",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TRANSBIT"
+    ]
   },
   {
     "id": "ALARM",
     "name": "alarm",
-    "initialLocation": "WAREHOUSE-2"
+    "initialLocation": "WAREHOUSE-2",
+    "flags": [
+      "NDESCBIT",
+      "VOWELBIT"
+    ]
   },
   {
     "id": "ALLEY-OBJECT",
     "name": "alley",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "VOWELBIT"
+    ]
   },
   {
     "id": "ANNEX-OBJECT",
     "name": "annex",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "APPLE",
     "name": "apple",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VOWELBIT",
+      "TAKEBIT",
+      "EATBIT"
+    ]
   },
   {
     "id": "BENCH",
     "name": "bench",
-    "initialLocation": "CITY-HALL"
+    "initialLocation": "CITY-HALL",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "CONTBIT",
+      "FURNITUREBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "BOOKS",
     "name": "books",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "PLURALBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "CAGES",
     "name": "cages",
-    "initialLocation": "ZOO"
+    "initialLocation": "ZOO",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT",
+      "PLURALBIT"
+    ]
   },
   {
     "id": "CHAIR",
     "name": "chair",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "FURNITUREBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "CLAVE",
     "name": "Clave",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "COUCH",
     "name": "couch",
-    "initialLocation": "LIVING-ROOM"
+    "initialLocation": "LIVING-ROOM",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "FURNITUREBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "CRATE",
     "name": "crate",
-    "initialLocation": "WAREHOUSE-2"
+    "initialLocation": "WAREHOUSE-2",
+    "flags": [
+      "NDESCBIT",
+      "CONTBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "CRIME",
     "name": "crime",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "DRUGS",
     "name": "drugs",
-    "initialLocation": "DRUG-STORE"
+    "initialLocation": "DRUG-STORE",
+    "flags": [
+      "NDESCBIT",
+      "PLURALBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "EASEL",
     "name": "easel",
-    "initialLocation": "LIVING-ROOM"
+    "initialLocation": "LIVING-ROOM",
+    "flags": [
+      "VOWELBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "FENCE",
     "name": "fence",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "FIELD",
     "name": "field",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "GLASS",
     "name": "glass",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "HOTEL-OBJECT",
     "name": "hotel",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "LABEL",
     "name": "label",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "MOVIE",
     "name": "movie",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "MUSIC",
     "name": "music",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "NIGHT",
     "name": "night",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "RIVER",
     "name": "river",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "SCARF",
     "name": "scarf",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "WEARBIT"
+    ]
   },
   {
     "id": "SLEEP",
     "name": "sleep",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "SMOKE",
     "name": "smoke",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "OFFICIAL-SNACK",
     "name": "snack",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "STONES",
     "name": "stone",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "TAKEBIT"
+    ]
   },
   {
     "id": "BAR-STOOL",
     "name": "stool",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VEHBIT",
+      "FURNITUREBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "STORE-OBJECT",
     "name": "store",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "GLOBAL-TABLE",
     "name": "table",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "SURFACEBIT",
+      "VEHBIT"
+    ]
   },
   {
     "id": "RESTAURANT-TABLE",
     "name": "table",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "VEHBIT",
+      "SURFACEBIT",
+      "OPENBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "WASTE",
     "name": "waste",
-    "initialLocation": "CITY-DUMP"
+    "initialLocation": "CITY-DUMP",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "WATER",
     "name": "water",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "WOMAN",
     "name": "woman",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "BABY",
     "name": "baby",
-    "initialLocation": "CRIB"
+    "initialLocation": "CRIB",
+    "flags": [
+      "TAKEBIT",
+      "ACTORBIT"
+    ]
   },
   {
     "id": "BANK-OBJECT",
     "name": "bank",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "CARD-CATALOG-CARD",
     "name": "card",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "CRIB",
     "name": "crib",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "CONTBIT",
+      "OPENBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "DAWN",
     "name": "dawn",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "DESK",
     "name": "desk",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PERELMAN-DESK",
     "name": "desk",
-    "initialLocation": "OFFICE"
+    "initialLocation": "OFFICE",
+    "flags": [
+      "NDESCBIT",
+      "SURFACEBIT",
+      "CONTBIT",
+      "SEARCHBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "PARKVIEW-DOOR",
     "name": "door",
-    "initialLocation": "PARKVIEW-APARTMENTS"
+    "initialLocation": "PARKVIEW-APARTMENTS",
+    "flags": [
+      "DOORBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "APARTMENT-DOOR",
     "name": "door",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "DOORBIT"
+    ]
   },
   {
     "id": "UNOPENABLE-DOOR",
     "name": "door",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "DOORBIT"
+    ]
   },
   {
     "id": "WAREHOUSE-DOOR",
     "name": "door",
-    "initialLocation": "WAREHOUSE-1"
+    "initialLocation": "WAREHOUSE-1",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "DUSK",
     "name": "dusk",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "FISH",
     "name": "fish",
-    "initialLocation": "AQUARIUM"
+    "initialLocation": "AQUARIUM",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MEAL",
     "name": "food",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "FYLA",
     "name": "Fyla",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "GATE",
     "name": "gate",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "JILL",
     "name": "Jill",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "ACTORBIT",
+      "NARTICLEBIT",
+      "OPENBIT",
+      "CONTBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "LAWN",
     "name": "lawn",
-    "initialLocation": "CAFETERIA"
+    "initialLocation": "CAFETERIA",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "MALL-OBJECT",
     "name": "mall",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "MENU",
     "name": "menu",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "NOON",
     "name": "noon",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "NOTE",
     "name": "note",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "PARK-OBJECT",
     "name": "park",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PIER-OBJECT",
     "name": "pier",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PLAY",
     "name": "play",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "PAMPHLET-RACK",
     "name": "rack",
-    "initialLocation": "TRAIN-STATION"
+    "initialLocation": "TRAIN-STATION",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "RAMP",
     "name": "ramp",
-    "initialLocation": "AQUARIUM"
+    "initialLocation": "AQUARIUM",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "STREET",
     "name": "road",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "ROOF",
     "name": "roof",
-    "initialLocation": "ROOFTOP"
+    "initialLocation": "ROOFTOP",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "GLOBAL-ROOM",
     "name": "room",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "SACK",
     "name": "sack",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "TAKEBIT",
+      "CONTBIT",
+      "SEARCHBIT"
+    ]
   },
   {
     "id": "SEAT",
     "name": "seat",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "OPENBIT",
+      "FURNITUREBIT"
+    ]
   },
   {
     "id": "GLOBAL-SIGN",
     "name": "sign",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "TUBE-SIGN",
     "name": "sign",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "READBIT"
+    ]
   },
   {
     "id": "SINK",
     "name": "sink",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "SLOT",
     "name": "slot",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "STEW",
     "name": "soup",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": [
+      "NARTICLEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "TANK",
     "name": "tank",
-    "initialLocation": "AQUARIUM"
+    "initialLocation": "AQUARIUM",
+    "flags": [
+      "NDESCBIT",
+      "TRANSBIT"
+    ]
   },
   {
     "id": "TOOL",
     "name": "tool",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "VENT",
     "name": "vent",
-    "initialLocation": "CORE"
+    "initialLocation": "CORE",
+    "flags": [
+      "NDESCBIT"
+    ]
   },
   {
     "id": "VEST",
     "name": "vest",
-    "initialLocation": "DUNBARS"
+    "initialLocation": "DUNBARS",
+    "flags": [
+      "TAKEBIT",
+      "WEARBIT",
+      "TRYTAKEBIT",
+      "NDESCBIT"
+    ]
   },
   {
     "id": "WALLS",
     "name": "wall",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "NDESCBIT",
+      "TOUCHBIT"
+    ]
   },
   {
     "id": "AIR",
     "name": "air",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": [
+      "VOWELBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "BAR-OBJECT",
     "name": "bar",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "BED",
     "name": "bed",
-    "initialLocation": "BEDROOM"
+    "initialLocation": "BEDROOM",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "FURNITUREBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "DAY",
     "name": "day",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "DEN-OBJECT",
     "name": "den",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   },
   {
     "id": "DEW",
     "name": "dew",
-    "initialLocation": "ROOFTOP"
+    "initialLocation": "ROOFTOP",
+    "flags": [
+      "NDESCBIT",
+      "NARTICLEBIT"
+    ]
   },
   {
     "id": "KEY",
     "name": "key",
-    "initialLocation": null
+    "initialLocation": null,
+    "flags": [
+      "TAKEBIT",
+      "KEYBIT"
+    ]
   },
   {
     "id": "MAP",
     "name": "map",
-    "initialLocation": "PERELMAN-DESK"
+    "initialLocation": "PERELMAN-DESK",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "PEN",
     "name": "pen",
-    "initialLocation": "PERELMAN-DESK"
+    "initialLocation": "PERELMAN-DESK",
+    "flags": [
+      "NDESCBIT",
+      "TRYTAKEBIT"
+    ]
   },
   {
     "id": "SKY",
     "name": "sky",
-    "initialLocation": "GLOBAL-OBJECTS"
+    "initialLocation": "GLOBAL-OBJECTS",
+    "flags": []
   },
   {
     "id": "TUB",
     "name": "tub",
-    "initialLocation": "EPILOGUE-BATHROOM"
+    "initialLocation": "EPILOGUE-BATHROOM",
+    "flags": [
+      "NDESCBIT",
+      "VEHBIT",
+      "OPENBIT"
+    ]
   },
   {
     "id": "ZOO-OBJECT",
     "name": "zoo",
-    "initialLocation": "LOCAL-GLOBALS"
+    "initialLocation": "LOCAL-GLOBALS",
+    "flags": []
   }
 ];

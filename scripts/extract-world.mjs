@@ -37,7 +37,8 @@ for (const file of files) {
     const name = /\(DESC\s+"([^"]+)"\)/.exec(body)?.[1];
     if (!name || name === "it" || name === "(undefined)" || name.length < 2) continue;
     const initialLocation = /\(LOC\s+([A-Z0-9-]+)\)/.exec(body)?.[1] ?? null;
-    objects.push({ id, name, initialLocation });
+    const flags = /\(FLAGS\s+([^)]+)\)/.exec(body)?.[1].trim().split(/\s+/).filter(Boolean) ?? [];
+    objects.push({ id, name, initialLocation, flags });
   }
 }
 
@@ -62,7 +63,7 @@ const output = `// Generated from the preserved ZIL source by scripts/extract-wo
   `// Do not edit by hand; the original game remains canonical.\n\n` +
   `export type WorldExit = { command: string; targetId: string; target: string };\n` +
   `export type WorldRoom = { id: string; name: string; exits: Record<string, WorldExit> };\n\n` +
-  `export type WorldObject = { id: string; name: string; initialLocation: string | null };\n\n` +
+  `export type WorldObject = { id: string; name: string; initialLocation: string | null; flags: string[] };\n\n` +
   `export const WORLD_ROOMS: WorldRoom[] = ${JSON.stringify(normalized, null, 2)};\n\n` +
   `export const WORLD_OBJECTS: WorldObject[] = ${JSON.stringify(normalizedObjects, null, 2)};\n`;
 
