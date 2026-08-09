@@ -5,12 +5,15 @@
     <title>A Mind Forever Voyaging — Original Story Player</title>
     <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0">
     <link rel="stylesheet" href="/player-overrides.css">
-    <script>parchment_options = {
+    <script>const qaBuild = new URLSearchParams(location.search).get("qa") === "1";
+parchment_options = {
   "single_file": 1,
-  "story": {"url": "/amfv-r79-s851122.z4", "title": "A Mind Forever Voyaging — Release 79"},
+  "story": qaBuild
+    ? {"url": "/amfv-modern-debug.z4", "title": "A Mind Forever Voyaging — Modern QA Build"}
+    : {"url": "/amfv-r79-s851122.z4", "title": "A Mind Forever Voyaging — Release 79"},
   "autoplay": 1,
   "play_in_iframe": 1,
-  "do_vm_autosave": 1,
+  "do_vm_autosave": qaBuild ? 0 : 1,
   "use_proxy": 0,
   "set_body_to_page_bg": 0,
   "theme": "dark"

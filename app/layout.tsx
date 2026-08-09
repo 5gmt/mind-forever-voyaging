@@ -1,5 +1,4 @@
 import type { Metadata, Viewport } from "next";
-import { headers } from "next/headers";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -16,19 +15,8 @@ const geistMono = Geist_Mono({
 const title = "A Mind Forever Voyaging | Unabridged Modern Edition";
 const description = "Play Steve Meretzky’s complete 1985 interactive novel in a modern, accessible browser edition. Original text and story flow preserved.";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const requestHeaders = await headers();
-  const host = requestHeaders.get("x-forwarded-host") || requestHeaders.get("host") || "localhost:3000";
-  const protocol = requestHeaders.get("x-forwarded-proto") || (host.startsWith("localhost") ? "http" : "https");
-  let metadataBase: URL;
-  try {
-    metadataBase = new URL(`${protocol}://${host}`);
-  } catch {
-    metadataBase = new URL("http://localhost:3000");
-  }
-
-  return {
-  metadataBase,
+export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://mind-forever-voyaging.netlify.app"),
   title,
   description,
   applicationName: "A Mind Forever Voyaging",
@@ -39,16 +27,15 @@ export async function generateMetadata(): Promise<Metadata> {
     title,
     description,
     siteName: "A Mind Forever Voyaging",
-    images: [{ url: new URL("/og.png", metadataBase).toString(), width: 1664, height: 936, alt: "A Mind Forever Voyaging over four visions of Rockvil’s future" }],
+    images: [{ url: "/og-v2.png", width: 1664, height: 936, alt: "A Mind Forever Voyaging — the complete interactive novel" }],
   },
   twitter: {
     card: "summary_large_image",
     title,
     description,
-    images: [new URL("/og.png", metadataBase).toString()],
+    images: ["/og-v2.png"],
   },
 };
-}
 
 export const viewport: Viewport = {
   themeColor: "#071312",
