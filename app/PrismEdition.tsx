@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- package thumbnails are scans, not responsive artwork */
 
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
-import { INTERFACE_PORTS, InterfaceWorkbench, PackageOverlay, SceneActions, type InteractionLevel, type PackageItem } from "./StoryTools";
+import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
@@ -62,16 +62,42 @@ const OUTLET_SOURCE_ROOMS: Record<string, string> = {
 };
 
 const OBJECTS_BY_ID = new Map(WORLD_OBJECTS.map((object) => [object.id, object]));
+const ROOMS_BY_ID = new Map(WORLD_ROOMS.map((candidate) => [candidate.id, candidate]));
+const ROOM_NAMES = new Set(WORLD_ROOMS.flatMap((candidate) => [candidate.name, ...candidate.aliases]).map((name) => name.toLowerCase()));
 const belongsToSourceRoom = (object: WorldObject, roomId: string) => {
+  const sourceRoom = ROOMS_BY_ID.get(roomId);
+  if (sourceRoom?.globals.includes(object.id)) return true;
   let location = object.initialLocation;
   const visited = new Set<string>();
   while (location && !visited.has(location)) {
     if (location === roomId) return true;
-    if (location === "LOCAL-GLOBALS") return false;
+    if (location === "LOCAL-GLOBALS") return object.initialLocation === "LOCAL-GLOBALS" && !object.id.endsWith("-OBJECT");
+    if (location === "GLOBAL-OBJECTS") return false;
     visited.add(location);
     location = OBJECTS_BY_ID.get(location)?.initialLocation ?? null;
   }
-  return object.initialLocation === "GLOBAL-OBJECTS";
+  return false;
+};
+
+type WalkingStep = { command: string; targetId: string; target: string };
+const walkingRoute = (fromId: string | null | undefined, toId: string): WalkingStep[] | null => {
+  if (!fromId) return null;
+  if (fromId === toId) return [];
+  const queue: Array<{ id: string; steps: WalkingStep[] }> = [{ id: fromId, steps: [] }];
+  const seen = new Set([fromId]);
+  while (queue.length) {
+    const current = queue.shift()!;
+    const source = ROOMS_BY_ID.get(current.id);
+    if (!source) continue;
+    for (const exit of Object.values(source.exits)) {
+      if (seen.has(exit.targetId)) continue;
+      const steps = [...current.steps, exit];
+      if (exit.targetId === toId) return steps;
+      seen.add(exit.targetId);
+      queue.push({ id: exit.targetId, steps });
+    }
+  }
+  return null;
 };
 
 const MODE_COPY: Record<Mode, { label: string; copy: string }> = {
@@ -185,9 +211,10 @@ const detectRoom = (status: string, previous: WorldRoom | null, lastCommand: str
   const normalizedStatus = status.toLowerCase();
   const locationMatch = status.match(/Location:\s*([\s\S]*?)(?:Date:|$)/i);
   const locationName = locationMatch?.[1].replace(/\s+/g, " ").trim().toLowerCase();
-  const candidates = WORLD_ROOMS.filter((candidate) => locationName
-    ? candidate.name.toLowerCase() === locationName
-    : normalizedStatus.includes(candidate.name.toLowerCase()));
+  const candidates = WORLD_ROOMS.filter((candidate) => {
+    const names = [candidate.name, ...candidate.aliases].map((name) => name.toLowerCase());
+    return locationName ? names.includes(locationName) : names.some((name) => normalizedStatus.includes(name));
+  });
   if (candidates.length === 1) return candidates[0];
   if (candidates.length > 1 && previous) {
     const direction = Object.keys(previous.exits).find((key) => previous.exits[key].command === lastCommand.toLowerCase());
@@ -287,6 +314,7 @@ export default function PrismEdition() {
   const [recording, setRecording] = useState(false);
   const [activeOutletCode, setActiveOutletCode] = useState<string | null>(null);
   const [packageItem, setPackageItem] = useState<PackageItem | null>(null);
+  const [mapDestinationId, setMapDestinationId] = useState<string | null>(null);
   const [noteDraft, setNoteDraft] = useState("");
   const [notes, setNotes] = useState<Note[]>([]);
   const [qaWarningOpen, setQaWarningOpen] = useState(false);
@@ -316,11 +344,12 @@ export default function PrismEdition() {
   const contextualObjects = useMemo(() => {
     const lower = sceneText.toLowerCase();
     const sourceRoomId = mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : mode === "Simulation Mode" ? room?.id : null;
+    if ((mode === "Simulation Mode" || mode === "Communications Mode") && !sourceRoomId) return [];
     const blocked = new Set(["it", "you", "room", "area", "something", "nothing", "object", "number", "time", "story", "mode", "office", "building", "wall", "rockvil", "communications mode", "library mode", "interface mode", "simulation mode", "sleep mode", "list of communication outlets"]);
     const found: WorldObject[] = [];
     for (const object of WORLD_OBJECTS) {
       const name = object.name.replace(/\s+/g, " ").trim();
-      if (name.length < 3 || name.length > 42 || blocked.has(name.toLowerCase())) continue;
+      if (name.length < 3 || name.length > 42 || blocked.has(name.toLowerCase()) || ROOM_NAMES.has(name.toLowerCase()) || !hasUsefulSceneAction(object, sourceRoomId)) continue;
       if (sourceRoomId && !belongsToSourceRoom(object, sourceRoomId)) continue;
       const escapedName = name.toLowerCase().replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
       if (!new RegExp(`(^|\\W)${escapedName}(?=$|\\W)`, "i").test(lower)) continue;
@@ -329,8 +358,14 @@ export default function PrismEdition() {
         existing.flags = [...new Set([...existing.flags, ...object.flags])];
         existing.synonyms = [...new Set([...existing.synonyms, ...object.synonyms])];
         existing.adjectives = [...new Set([...existing.adjectives, ...object.adjectives])];
+        existing.handledVerbs = [...new Set([...existing.handledVerbs, ...object.handledVerbs])];
+        existing.actionRooms = [...new Set([...existing.actionRooms, ...object.actionRooms])];
+        existing.globalVerbs = [...new Set([...existing.globalVerbs, ...object.globalVerbs])];
+        for (const [verb, rooms] of Object.entries(object.verbRooms)) existing.verbRooms[verb] = [...new Set([...(existing.verbRooms[verb] ?? []), ...rooms])];
         existing.commandNoun ||= object.commandNoun;
-      } else found.push({ ...object, flags: [...object.flags], synonyms: [...object.synonyms], adjectives: [...object.adjectives] });
+        existing.action ||= object.action;
+        existing.hasText ||= object.hasText;
+      } else found.push({ ...object, flags: [...object.flags], synonyms: [...object.synonyms], adjectives: [...object.adjectives], handledVerbs: [...object.handledVerbs], actionRooms: [...object.actionRooms], globalVerbs: [...object.globalVerbs], verbRooms: Object.fromEntries(Object.entries(object.verbRooms).map(([verb, rooms]) => [verb, [...rooms]])) });
     }
     const sorted = found.sort((a, b) => b.name.split(/\s+/).length - a.name.split(/\s+/).length || b.name.length - a.name.length);
     return sorted.filter((object, index) => !sorted.slice(0, index).some((earlier) => new RegExp(`(^|\\W)${object.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}(?=$|\\W)`, "i").test(earlier.name))).slice(0, 8);
@@ -347,6 +382,14 @@ export default function PrismEdition() {
     return INTERFACE_PORTS.filter((port) => port.match.test(list)).map((port) => port.id);
   }, [transcript]);
   const activeOutlet = outlets.find((outlet) => outlet.code === activeOutletCode) || null;
+  const mapRoutePreview = useMemo<MapRoutePreview | null>(() => {
+    const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.id === mapDestinationId);
+    if (!destination) return null;
+    const route = walkingRoute(room?.id, destination.targetId);
+    if (!route) return { destination, nextCommand: null, nextPlace: null, steps: 0, arrived: false };
+    const next = route[0];
+    return { destination, nextCommand: next?.command ?? null, nextPlace: next?.target ?? null, steps: route.length, arrived: route.length === 0 };
+  }, [mapDestinationId, room?.id]);
   const yesNoPrompt = useMemo(() => {
     const current = `${latestSceneText}\n${recentText.slice(-1200)}`.replace(/\s+/g, " ").replace(/[>\s]+$/g, "");
     return /(?:do you want|would you like|are you sure|do you wish|shall i|is that (?:okay|correct))[^?]*\?\s*(?:\(y\/n\))?$/i.test(current);
@@ -586,6 +629,26 @@ export default function PrismEdition() {
     window.setTimeout(() => commandRef.current?.focus(), 40);
   };
 
+  const chooseInteractionLevel = (value: InteractionLevel) => {
+    setInteractionLevel(value);
+    if (value === "classic" && activePanel === "context") setActivePanel("guide");
+    try { localStorage.setItem("amfv:interaction-level", value); } catch { /* optional */ }
+  };
+
+  const selectMapLandmark = (landmark: RockvilLandmark) => setMapDestinationId(landmark.id);
+
+  const useMapRouteStep = () => {
+    if (!mapRoutePreview?.nextCommand || !acceptsInput) return;
+    if (interactionLevel === "guided") {
+      setCommand(mapRoutePreview.nextCommand);
+      setAliasNotice(`Route to ${mapRoutePreview.destination.label}: edit this step or press Send.`);
+      window.setTimeout(() => commandRef.current?.focus(), 40);
+    } else {
+      sendCommand(mapRoutePreview.nextCommand);
+    }
+    setPackageItem(null);
+  };
+
   useEffect(() => {
     queueRef.current = debugQueue;
     if (!debugQueue.length || !acceptsInput || !qaEnabled) return;
@@ -793,7 +856,7 @@ export default function PrismEdition() {
         </header>
 
         {accessOpen && <section className="access-panel" aria-label="Reading and play settings">
-          <div className="interaction-setting"><span>Play controls</span><div className="segmented interaction-segments">{([['classic', 'Classic'], ['guided', 'Guided'], ['actions', 'Action menus']] as Array<[InteractionLevel, string]>).map(([value, label]) => <button key={value} type="button" className={interactionLevel === value ? "active" : ""} aria-pressed={interactionLevel === value} onClick={() => { setInteractionLevel(value); if (value === "classic" && activePanel === "context") setActivePanel("guide"); }}>{label}</button>)}</div><small>{interactionLevel === "classic" ? "Text commands and the story’s own prompts." : interactionLevel === "guided" ? "Navigation buttons; scene words draft editable commands." : "Direct actions for parser-recognized people and objects."}</small></div>
+          <div className="interaction-setting"><span>Play controls</span><div className="segmented interaction-segments">{([['classic', 'Classic'], ['guided', 'Guided'], ['actions', 'Action menus']] as Array<[InteractionLevel, string]>).map(([value, label]) => <button key={value} type="button" className={interactionLevel === value ? "active" : ""} aria-pressed={interactionLevel === value} onClick={() => chooseInteractionLevel(value)}>{label}</button>)}</div><small>{interactionLevel === "classic" ? "Text commands and the story’s own prompts." : interactionLevel === "guided" ? "Navigation and one editable suggestion for useful things." : "Direct actions for useful people and objects."}</small></div>
           <div><span>Text size</span><div className="segmented">{[15, 17, 20, 23].map((size) => <button key={size} type="button" className={fontScale === size ? "active" : ""} onClick={() => setFontScale(size)}>{size === 15 ? "S" : size === 17 ? "M" : size === 20 ? "L" : "XL"}</button>)}</div></div>
           <label><input type="checkbox" checked={readingMode === "mono"} onChange={(event) => setReadingMode(event.target.checked ? "mono" : "serif")} /> Monospaced story text</label>
           <label><input type="checkbox" checked={highContrast} onChange={(event) => setHighContrast(event.target.checked)} /> High contrast</label>
@@ -830,6 +893,7 @@ export default function PrismEdition() {
               {(roomExits.length > 0 ? roomExits.map(([direction, exit]) => ({ direction, command: exit.command, target: exit.target })) : describedDirections.map((direction) => ({ direction: direction.toUpperCase(), command: direction, target: "" }))).map((exit) => <button type="button" key={exit.command} className={`compass-${exit.direction.toLowerCase()}`} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[exit.direction] || exit.direction}</span>{exit.target && <strong>{exit.target}</strong>}</button>)}
               <div className="compass-here"><span>YOU ARE HERE</span><strong>{room?.name || statusLocation || "Current scene"}</strong></div>
             </div>
+            {mapRoutePreview && <div className="active-map-route"><span>Map route</span><strong>{mapRoutePreview.destination.label}</strong>{mapRoutePreview.arrived ? <small>Mapped approach reached</small> : mapRoutePreview.nextCommand ? <><small>{mapRoutePreview.steps} {mapRoutePreview.steps === 1 ? "step" : "steps"} · next {mapRoutePreview.nextCommand.toUpperCase()}</small><button type="button" onClick={useMapRouteStep} disabled={!acceptsInput}>{interactionLevel === "guided" ? "Draft next step" : "Take next step"}</button></> : <small>Move to a named street to begin this route.</small>}<button type="button" className="clear-route" onClick={() => setMapDestinationId(null)}>Clear</button></div>}
           </section>}
 
           {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Interface Mode" && interfacePortIds.length > 0 && <section className="interface-shortcuts" aria-label="Connected systems">
@@ -848,7 +912,7 @@ export default function PrismEdition() {
               <div className="command-meta" id="command-help"><span>{aliasNotice || parserCoach}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
             {assisted && <div className="quick-actions" aria-label="Common actions">{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput}>{label}</button>)}</div>}
-            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={contextualObjects} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
+            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={contextualObjects} roomId={mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : room?.id} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
           </>)}
         </section>
       </section>
@@ -856,7 +920,7 @@ export default function PrismEdition() {
       <aside className="companion-panel" aria-label="Reader companion" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem) || !contextOpen} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
         <div className="companion-tabs" role="tablist" aria-label="Companion views" style={{ "--tab-count": panelTabs.length } as React.CSSProperties}>{panelTabs.map((panel) => <button key={panel.id} type="button" role="tab" aria-selected={activePanel === panel.id} onClick={() => setActivePanel(panel.id)}>{panel.label}</button>)}<button className="close-context" type="button" onClick={() => setContextOpen(false)} aria-label="Close companion">×</button></div>
         <div className="companion-content">
-          {activePanel === "guide" && <section className="companion-section"><span className="section-kicker">Help</span><h2>{guide.label}</h2><p>{guide.copy}</p><div className="play-style-picker" aria-label="Choose play controls">{([['classic', 'Classic', 'Type every command.'], ['guided', 'Guided', 'Navigation buttons and editable suggestions.'], ['actions', 'Action menus', 'Direct actions for words in the passage.']] as Array<[InteractionLevel, string, string]>).map(([value, label, copy]) => <button type="button" key={value} aria-pressed={interactionLevel === value} className={interactionLevel === value ? "active" : ""} onClick={() => setInteractionLevel(value)}><strong>{label}</strong><span>{copy}</span></button>)}</div><div className="purpose-loop"><span>NOTICE</span><i>→</i><span>ACT</span>{discovery.simulationEntered && <><i>→</i><span>RECORD</span></>}{visitedYears.length >= 2 && <><i>→</i><span>COMPARE</span></>}{discovery.evidenceAccepted && <><i>→</i><span>DECIDE</span></>}{discovery.lockdown && <><i>→</i><span>TRANSMIT</span></>}</div><div className="guide-callout"><span>01</span><p>{interactionLevel === "classic" ? "The command line is yours. No navigation or scene suggestions are shown." : interactionLevel === "guided" ? "Places and directions are clickable. A scene word drafts EXAMINE, but does not act until you press Send." : "Places, directions, and actions are clickable. Only vocabulary recognized by the story is used."}</p></div><div className="guide-callout"><span>02</span><p>LOOK repeats your surroundings; INVENTORY lists what you carry.</p></div><div className="guide-callout"><span>03</span><p>Read widely, try odd ideas, and keep what strikes you.</p></div><details><summary>I’m new to interactive fiction</summary><p>Commands usually take the form VERB + NOUN: READ SIGN, OPEN DOOR, or ASK A PERSON ABOUT A SUBJECT. Compass directions move you. You can abbreviate them to N, SW, U, and so on.</p></details><details><summary>I seem to be stuck</summary><p>Try LOOK, HELP, WAIT, another outlet, or a person or object in the scene. Save before experimenting if you want an easy way back.</p></details></section>}
+          {activePanel === "guide" && <section className="companion-section"><span className="section-kicker">Help</span><h2>{guide.label}</h2><p>{guide.copy}</p><div className="play-style-picker" aria-label="Choose play controls">{([['classic', 'Classic', 'Type every command.'], ['guided', 'Guided', 'Navigation plus one editable suggestion.'], ['actions', 'Action menus', 'Direct actions for useful scene details.']] as Array<[InteractionLevel, string, string]>).map(([value, label, copy]) => <button type="button" key={value} aria-pressed={interactionLevel === value} className={interactionLevel === value ? "active" : ""} onClick={() => chooseInteractionLevel(value)}><strong>{label}</strong><span>{copy}</span></button>)}</div><div className="purpose-loop"><span>NOTICE</span><i>→</i><span>ACT</span>{discovery.simulationEntered && <><i>→</i><span>RECORD</span></>}{visitedYears.length >= 2 && <><i>→</i><span>COMPARE</span></>}{discovery.evidenceAccepted && <><i>→</i><span>DECIDE</span></>}{discovery.lockdown && <><i>→</i><span>TRANSMIT</span></>}</div><div className="guide-callout"><span>01</span><p>{interactionLevel === "classic" ? "The command line is yours. No navigation or scene suggestions are shown." : interactionLevel === "guided" ? "Navigation is clickable. A useful scene detail drafts one likely command, but does not act until you press Send." : "Navigation and useful actions are clickable. The original map can plot a walking route."}</p></div><div className="guide-callout"><span>02</span><p>LOOK repeats your surroundings; INVENTORY lists what you carry.</p></div><div className="guide-callout"><span>03</span><p>Read widely, try odd ideas, and keep what strikes you.</p></div><details><summary>I’m new to interactive fiction</summary><p>Commands usually take the form VERB + NOUN: READ SIGN, OPEN DOOR, or ASK A PERSON ABOUT A SUBJECT. Compass directions move you. You can abbreviate them to N, SW, U, and so on.</p></details><details><summary>I seem to be stuck</summary><p>Try LOOK, HELP, WAIT, another outlet, or a person or object in the scene. Save before experimenting if you want an easy way back.</p></details></section>}
 
           {activePanel === "context" && mode === "Communications Mode" && <section className="companion-section signal-section"><span className="section-kicker">Communications</span><h2>{outlets.length ? activeOutlet?.name || "Outlet directory" : "No directory loaded"}</h2><p>{outlets.length ? "Select a location to connect its visual and audio circuits." : "DISPLAY OUTLETS requests the current directory."}</p>{outlets.length ? <div className="outlet-grid">{outlets.map((outlet) => <button type="button" className={activeOutletCode === outlet.code ? "active" : ""} key={outlet.code} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong><small>{activeOutletCode === outlet.code ? "Connected" : "Connect →"}</small></button>)}</div> : <button className="context-primary" type="button" onClick={() => sendCommand("display outlets")} disabled={!acceptsInput}>Display active outlets</button>}</section>}
 
@@ -864,7 +928,7 @@ export default function PrismEdition() {
 
           {activePanel === "context" && mode === "Interface Mode" && <section className="companion-section systems-section"><span className="section-kicker">Interface Mode</span><h2>Active ports</h2><p>Status requests are read-only. Settings and schedules take effect immediately.</p><button className="context-primary" type="button" onClick={() => sendCommand("read list of active ports")} disabled={!acceptsInput}>Refresh active ports</button><InterfaceWorkbench portIds={interfacePortIds} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
 
-          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Rockvil</span><h2>{room?.name || statusLocation || "Ways from here"}</h2><p>{room ? "Choose an exit, or use the map for street names and landmarks." : describedDirections.length ? "The current description names these directions." : "Look again for exits, doors, vehicles, and paths."}</p><button className="context-primary" type="button" onClick={() => setPackageItem("map")}>Open the original Rockvil map</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Go {direction}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No compass exit is named in this passage.</p></div>}<SceneActions objects={contextualObjects} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
+          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Rockvil</span><h2>{room?.name || statusLocation || "Ways from here"}</h2><p>{room ? "Choose an exit, or use the map for street names and landmarks." : describedDirections.length ? "The current description names these directions." : "Look again for exits, doors, vehicles, and paths."}</p><button className="context-primary" type="button" onClick={() => setPackageItem("map")}>Open the original Rockvil map</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Go {direction}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No compass exit is named in this passage.</p></div>}<SceneActions objects={contextualObjects} roomId={room?.id} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
 
           {activePanel === "context" && (!mode || mode === "Sleep Mode") && <section className="companion-section"><span className="section-kicker">{mode === "Sleep Mode" ? "Sleep Mode" : "Incoming"}</span><h2>{mode === "Sleep Mode" ? "Background processing" : "Opening transmission"}</h2><p>{mode === "Sleep Mode" ? "Time is passing. Return to Communications Mode when you are ready." : "Read the opening message, then continue at the prompt."}</p></section>}
 
@@ -878,11 +942,23 @@ export default function PrismEdition() {
         </div>
       </aside>
 
-      {introOpen && <section className="intro-overlay" role="dialog" aria-modal="true" aria-labelledby="intro-title" aria-hidden={Boolean(packageItem)} inert={packageItem ? true : undefined}><div className="intro-art" aria-hidden="true" /><div className="intro-grid" aria-hidden="true" /><div className="intro-content"><span className="intro-kicker">THE COMPLETE 1985 INTERACTIVE NOVEL · RELEASE 79</span><h1 id="intro-title"><span>A Mind</span><span>Forever</span><span>Voyaging</span></h1><p className="intro-lede">Read closely. Wander. Talk to people. Notice the ordinary things.</p><div className="intro-principles"><div><span>01</span><strong>Read</strong><p>Names and small details matter.</p></div><div><span>02</span><strong>Explore</strong><p>People, places, and objects are interactive.</p></div><div><span>03</span><strong>Remember</strong><p>Keep what you think matters.</p></div></div><div className="intro-actions"><button type="button" className="begin-button" onClick={begin}>{returning ? "Return to story" : "Begin the story"}<span>→</span></button><button type="button" className="package-button" onClick={() => setPackageItem("map")}>Open the original package</button></div><details className="content-note"><summary>Historical content note</summary><p>The unaltered 1985 text includes depictions and language involving authoritarianism, poverty, racism, religious extremism, suicide, and violence.</p></details><p className="intro-credit">Written by Steve Meretzky · Original release by Infocom · Interpreter by Parchment</p></div></section>}
+      {introOpen && <section className="intro-overlay" role="dialog" aria-modal="true" aria-labelledby="intro-title" aria-hidden={Boolean(packageItem)} inert={packageItem ? true : undefined}>
+        <div className="intro-art" aria-hidden="true" /><div className="intro-grid" aria-hidden="true" />
+        <div className="intro-content">
+          <span className="intro-kicker">THE COMPLETE 1985 INTERACTIVE NOVEL · RELEASE 79</span>
+          <h1 id="intro-title"><span>A Mind</span><span>Forever</span><span>Voyaging</span></h1>
+          <p className="intro-lede">Read closely. Wander. Talk to people. Notice the ordinary things.</p>
+          <div className="intro-principles"><div><span>01</span><strong>Read</strong><p>Names and small details matter.</p></div><div><span>02</span><strong>Explore</strong><p>People, places, and objects are interactive.</p></div><div><span>03</span><strong>Remember</strong><p>Keep what you think matters.</p></div></div>
+          <fieldset className="intro-play-style"><legend>How would you like to play?</legend><div>{([['classic', 'Classic', 'The original command line.'], ['guided', 'Guided', 'Clickable navigation and editable hints.'], ['actions', 'Action menus', 'Direct actions for useful scene details.']] as Array<[InteractionLevel, string, string]>).map(([value, label, copy]) => <button type="button" key={value} aria-pressed={interactionLevel === value} className={interactionLevel === value ? "active" : ""} onClick={() => chooseInteractionLevel(value)}><strong>{label}</strong><span>{copy}</span></button>)}</div></fieldset>
+          <div className="intro-actions"><button type="button" className="begin-button" onClick={begin}>{returning ? "Return to story" : `Begin · ${interactionLevel === "actions" ? "Action menus" : interactionLevel[0].toUpperCase() + interactionLevel.slice(1)}`}<span>→</span></button><button type="button" className="package-button" onClick={() => setPackageItem("map")}>Open the original package</button></div>
+          <details className="content-note"><summary>Historical content note</summary><p>The unaltered 1985 text includes depictions and language involving authoritarianism, poverty, racism, religious extremism, suicide, and violence.</p></details>
+          <p className="intro-credit">Written by Steve Meretzky · Original release by Infocom · Interpreter by Parchment</p>
+        </div>
+      </section>}
 
       {qaWarningOpen && <section className="qa-warning-overlay" role="dialog" aria-modal="true" aria-labelledby="qa-warning-title"><div className="qa-warning-card"><span className="section-kicker">Explicit consent required</span><h2 id="qa-warning-title">This reveals the whole structure.</h2><p>Debug mode names future years, later acts, and the ending. It opens a separate noncanonical interpreter with the original developers’ dormant shortcuts restored. QA autosave is disabled; your live Release 79 session waits in memory until you return.</p><div><button type="button" onClick={enableQa}>Enable spoilers & load QA build</button><button type="button" onClick={() => setQaWarningOpen(false)}>Cancel</button></div></div></section>}
 
-      <PackageOverlay item={packageItem} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
+      <PackageOverlay item={packageItem} onSelect={setPackageItem} onClose={() => setPackageItem(null)} interactiveMap={interactionLevel !== "classic" && mode === "Simulation Mode"} currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} routeStepDisabled={!acceptsInput} routeStepLabel={interactionLevel === "guided" ? "Draft next step" : "Take next step"} onSelectLandmark={selectMapLandmark} onRouteStep={useMapRouteStep} />
 
       <div className="screen-reader-status" aria-live="polite" aria-hidden={introOpen || qaWarningOpen}>{mode ? `${mode}.` : "Story opening."} {room?.name || ""} {displayYear || ""}</div>
       <div className="era-index" aria-hidden="true" style={{ "--era-index": Math.max(0, eraIndex) } as React.CSSProperties} />

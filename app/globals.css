@@ -1190,6 +1190,60 @@ summary:focus-visible {
   line-height: 1.4;
 }
 
+.intro-play-style {
+  max-width: 610px;
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+}
+
+.intro-play-style legend {
+  margin-bottom: 8px;
+  color: #91a39a;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.intro-play-style > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.intro-play-style button {
+  display: grid;
+  min-height: 66px;
+  align-content: start;
+  gap: 5px;
+  padding: 10px;
+  border: 1px solid var(--line-strong);
+  background: rgba(7,19,18,0.82);
+  color: var(--paper-muted);
+  cursor: pointer;
+  text-align: left;
+}
+
+.intro-play-style button strong {
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.intro-play-style button span {
+  color: #809087;
+  font-size: 9px;
+  line-height: 1.35;
+}
+
+.intro-play-style button[aria-pressed="true"] {
+  border-color: var(--mint);
+  background: rgba(147,213,184,0.1);
+  color: var(--paper);
+  box-shadow: inset 0 -2px var(--mint);
+}
+
 .intro-actions {
   display: flex;
   align-items: stretch;
@@ -2899,6 +2953,61 @@ summary:focus-visible {
   font-size: 12px;
 }
 
+.scene-word-list button small {
+  display: block;
+  margin-top: 2px;
+  color: var(--era-accent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.active-map-route {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 1px solid color-mix(in srgb, var(--era-accent) 48%, transparent);
+  background: color-mix(in srgb, var(--era-accent) 6%, #081410);
+}
+
+.active-map-route > span,
+.active-map-route > small {
+  color: #86958d;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.active-map-route > strong {
+  overflow: hidden;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.active-map-route button {
+  min-height: 34px;
+  padding: 6px 9px;
+  border: 1px solid var(--era-accent);
+  background: transparent;
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  text-transform: uppercase;
+}
+
+.active-map-route .clear-route {
+  border-color: var(--line);
+  color: #819087;
+}
+
 .scene-word-list button:hover,
 .scene-word-list button:focus-visible {
   border-color: var(--era-accent);
@@ -3223,6 +3332,10 @@ summary:focus-visible {
   overflow: hidden;
 }
 
+.package-viewer figure:has(.map-route-card) {
+  grid-template-rows: minmax(0, 1fr) auto auto;
+}
+
 .package-image-scroll {
   min-height: 0;
   overflow: auto;
@@ -3237,6 +3350,137 @@ summary:focus-visible {
   height: auto;
   margin: 0 auto;
   box-shadow: 0 10px 30px rgba(0,0,0,0.24);
+}
+
+.rockvil-map-stage {
+  position: relative;
+  width: min(100%, 1100px);
+  margin: 0 auto;
+}
+
+.rockvil-map-stage > img {
+  width: 100%;
+}
+
+.map-hotspots {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.map-hotspots button {
+  position: absolute;
+  left: var(--map-x);
+  top: var(--map-y);
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  transform: translate(-50%, -50%);
+  border: 2px solid #10241d;
+  border-radius: 50%;
+  background: #e8d36a;
+  box-shadow: 0 2px 9px rgba(0,0,0,0.42);
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.map-hotspots button::after {
+  content: "";
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: #153a2c;
+}
+
+.map-hotspots button.current {
+  background: #f3f0d8;
+  box-shadow: 0 0 0 4px rgba(243,240,216,0.5);
+}
+
+.map-hotspots button.selected {
+  background: var(--mint);
+  box-shadow: 0 0 0 5px rgba(20,61,46,0.42);
+}
+
+.map-hotspots button span {
+  position: absolute;
+  z-index: 2;
+  left: 17px;
+  top: 50%;
+  width: max-content;
+  max-width: 135px;
+  padding: 4px 6px;
+  transform: translateY(-50%);
+  border: 1px solid rgba(17,38,30,0.68);
+  background: rgba(246,240,216,0.94);
+  color: #13251e;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 7px;
+  font-weight: 800;
+  line-height: 1.2;
+  opacity: 0;
+  pointer-events: none;
+  text-align: left;
+  text-transform: uppercase;
+  transition: opacity 120ms ease;
+}
+
+.map-hotspots button:hover span,
+.map-hotspots button:focus-visible span,
+.map-hotspots button.selected span,
+.map-hotspots button.current span {
+  opacity: 1;
+}
+
+.map-route-card {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 8px 14px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--line-strong);
+  background: #081410;
+}
+
+.map-route-card > span {
+  grid-row: 1 / span 2;
+  color: var(--mint);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.map-route-card strong,
+.map-route-card p {
+  margin: 0;
+}
+
+.map-route-card strong {
+  font-family: Georgia, serif;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.map-route-card p {
+  grid-column: 2;
+  color: #91a198;
+  font-size: 10px;
+}
+
+.map-route-card button {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  min-height: 42px;
+  padding: 8px 13px;
+  border: 1px solid var(--mint);
+  background: var(--mint);
+  color: #071310;
+  cursor: pointer;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+  font-weight: 800;
+  text-transform: uppercase;
 }
 
 .package-image-scroll.decoder-image img {
@@ -3333,6 +3577,16 @@ summary:focus-visible {
 }
 
 @media (max-width: 760px) {
+  .intro-play-style > div {
+    grid-template-columns: 1fr;
+  }
+
+  .intro-play-style button {
+    min-height: 48px;
+    grid-template-columns: 90px 1fr;
+    align-items: center;
+  }
+
   .command-deck {
     max-height: 48dvh;
   }
@@ -3377,6 +3631,19 @@ summary:focus-visible {
     display: none;
   }
 
+  .active-map-route {
+    grid-template-columns: 1fr auto;
+  }
+
+  .active-map-route > span,
+  .active-map-route > small {
+    grid-column: 1;
+  }
+
+  .active-map-route button {
+    grid-column: 2;
+  }
+
   .port-console-title {
     align-items: stretch;
     flex-direction: column;
@@ -3395,6 +3662,33 @@ summary:focus-visible {
 
   .package-image-scroll {
     padding: 8px;
+  }
+
+  .map-hotspots button {
+    width: 28px;
+    height: 28px;
+  }
+
+  .map-hotspots button span {
+    left: 24px;
+  }
+
+  .map-route-card {
+    grid-template-columns: 1fr auto;
+  }
+
+  .map-route-card > span {
+    grid-row: auto;
+  }
+
+  .map-route-card strong,
+  .map-route-card p {
+    grid-column: 1;
+  }
+
+  .map-route-card button {
+    grid-column: 2;
+    grid-row: 1 / span 3;
   }
 
   .manual-card {

@@ -133,12 +133,20 @@
     true,
   );
 
-  window.addEventListener("load", () => {
+  const startBridge = () => {
+    const root = document.documentElement;
+    if (!(root instanceof Node)) {
+      window.requestAnimationFrame(startBridge);
+      return;
+    }
     observer = new MutationObserver(announceUpdate);
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    observer.observe(root, { childList: true, subtree: true, characterData: true });
     post("ready");
     announceUpdate();
-  });
+  };
+
+  if (document.readyState === "complete") startBridge();
+  else window.addEventListener("load", startBridge, { once: true });
 
   window.addEventListener("beforeunload", () => observer?.disconnect());
 })();
