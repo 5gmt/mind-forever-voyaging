@@ -1,0 +1,82 @@
+:root,
+:root[data-theme="dark"] {
+  --glkote-buffer-bg: #071312;
+  --glkote-buffer-fg: #d7e6d8;
+  --glkote-buffer-reverse-bg: #93d5b8;
+  --glkote-buffer-reverse-fg: #071312;
+  --glkote-grid-bg: #0a1a18;
+  --glkote-grid-fg: #a8cbb7;
+  --glkote-grid-reverse-bg: #22413a;
+  --glkote-grid-reverse-fg: #f1f7ef;
+  --glkote-input-fg: #f2c66d;
+  --glkote-page-bg: #071312;
+  --glkote-prop-family: Georgia, "Times New Roman", serif;
+  --glkote-mono-family: "Geist Mono", "Cascadia Mono", Consolas, monospace;
+  --glkote-buffer-size: 17px;
+  --glkote-grid-size: 13px;
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: #071312 !important;
+}
+
+#gameport {
+  max-width: none !important;
+}
+
+.WindowFrame {
+  border-radius: 0;
+}
+
+.BufferWindowInner {
+  padding: clamp(18px, 4vw, 42px) clamp(20px, 5vw, 72px) 48px;
+}
+
+.BufferLine {
+  letter-spacing: 0.005em;
+}
+
+.BufferLine .Style_header,
+.GridWindow {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.BufferLine .Style_input,
+.BufferLine textarea.Input {
+  color: #f2c66d;
+}
+
+.BufferLine textarea.Input {
+  caret-color: #f2c66d;
+}
+
+.BufferWindow::-webkit-scrollbar-thumb {
+  background: rgba(147, 213, 184, 0.24);
+  border-radius: 999px;
+}
+
+html[data-reading-mode="mono"] {
+  --glkote-prop-family: "Geist Mono", "Cascadia Mono", Consolas, monospace;
+}
+
+html[data-contrast="high"] {
+  --glkote-buffer-bg: #000;
+  --glkote-buffer-fg: #fff;
+  --glkote-grid-bg: #000;
+  --glkote-grid-fg: #fff;
+  --glkote-input-fg: #ffe16a;
+  --glkote-page-bg: #000;
+}
+
+@media (max-width: 760px) {
+  .BufferWindowInner {
+    padding: 18px 18px 86px;
+  }
+
+  :root {
+    --glkote-buffer-size: 16px;
+  }
+}
