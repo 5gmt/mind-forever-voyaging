@@ -472,6 +472,42 @@ summary:focus-visible {
   display: none;
 }
 
+.header-actions .share-control svg,
+.share-intro-button svg {
+  width: 17px;
+  height: 17px;
+  overflow: visible;
+  fill: var(--ink);
+  stroke: currentColor;
+  stroke-width: 1.6;
+}
+
+.header-actions .share-control svg {
+  fill: var(--era-accent);
+}
+
+.share-toast {
+  position: fixed;
+  z-index: 110;
+  top: 18px;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 10px 16px;
+  border: 1px solid var(--era-accent);
+  background: #10211d;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.45);
+  color: var(--paper);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.share-toast.error {
+  border-color: var(--rust);
+}
+
 .access-panel {
   position: absolute;
   z-index: 20;
@@ -2842,11 +2878,156 @@ summary:focus-visible {
   padding-bottom: 12px;
 }
 
-.fieldwork-console {
+.fieldwork-launcher {
   display: grid;
-  grid-template-columns: minmax(0, 1.35fr) minmax(270px, 0.8fr);
-  gap: 10px;
+  gap: 8px;
   margin-bottom: 10px;
+}
+
+.open-fieldwork {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 64px;
+  padding: 9px 13px;
+  border: 1px solid color-mix(in srgb, var(--era-accent) 50%, var(--line));
+  background: linear-gradient(110deg, color-mix(in srgb, var(--era-accent) 10%, #081410), #081410 70%);
+  color: var(--paper);
+  cursor: pointer;
+  text-align: left;
+}
+
+.open-fieldwork > span:nth-child(2) {
+  display: grid;
+  gap: 2px;
+}
+
+.open-fieldwork small,
+.open-fieldwork em,
+.open-fieldwork > b {
+  font-family: var(--font-geist-mono), monospace;
+  font-style: normal;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.open-fieldwork small {
+  color: var(--era-accent);
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.open-fieldwork strong {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  font-weight: 400;
+}
+
+.open-fieldwork em {
+  color: #8fa097;
+  font-size: 8px;
+}
+
+.open-fieldwork > b {
+  color: var(--era-accent);
+  font-size: 9px;
+}
+
+.fieldwork-map-icon {
+  position: relative;
+  display: grid;
+  width: 44px;
+  height: 38px;
+  grid-template-columns: repeat(3, 1fr);
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: #cfc7b2;
+  transform: skewY(-4deg);
+}
+
+.fieldwork-map-icon i {
+  border-right: 1px solid rgba(30,50,43,0.35);
+  background: linear-gradient(140deg, transparent 38%, rgba(57,92,79,0.55) 40% 44%, transparent 46%);
+}
+
+.fieldwork-map-icon i:last-child {
+  border-right: 0;
+}
+
+.record-reminder {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+  min-height: 58px;
+  padding: 9px 12px;
+  border: 1px solid color-mix(in srgb, var(--amber) 65%, var(--line));
+  background: rgba(229,171,79,0.08);
+}
+
+.record-reminder-light {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--amber);
+  box-shadow: 0 0 14px rgba(229,171,79,0.6);
+}
+
+.record-reminder.active .record-reminder-light {
+  background: #e56f5b;
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+.record-reminder > div {
+  display: grid;
+  gap: 2px;
+}
+
+.record-reminder small,
+.record-reminder span,
+.record-reminder > b,
+.record-reminder button {
+  font-family: var(--font-geist-mono), monospace;
+}
+
+.record-reminder small {
+  color: var(--amber);
+  font-size: 8px;
+  font-weight: 850;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.record-reminder strong {
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.record-reminder > div > span {
+  color: #9cab9f;
+  font-size: 9px;
+}
+
+.record-reminder > b {
+  color: #f08a70;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+}
+
+.record-reminder button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--amber);
+  background: var(--amber);
+  color: #12150f;
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
 .rockvil-navigator,
@@ -3026,6 +3207,194 @@ summary:focus-visible {
 .fieldwork-checklist li small {
   color: #7f9087;
   font-size: 7px;
+}
+
+.fieldwork-checklist li.current {
+  box-shadow: inset 3px 0 0 var(--era-accent);
+  background: color-mix(in srgb, var(--era-accent) 6%, transparent);
+}
+
+.navigator-route-actions {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.navigator-route .route-clear {
+  border-color: var(--line);
+  background: transparent;
+  color: var(--paper-muted);
+}
+
+.fieldwork-drawer-backdrop {
+  position: fixed;
+  z-index: 85;
+  inset: 0;
+  display: grid;
+  place-items: end center;
+  padding: 24px;
+  background: rgba(2,9,7,0.76);
+  backdrop-filter: blur(8px);
+  animation: fieldwork-fade .2s ease-out;
+}
+
+.fieldwork-drawer {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  width: min(1160px, calc(100vw - 48px));
+  height: min(760px, calc(100dvh - 48px));
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  background: #0a1714;
+  box-shadow: 0 28px 90px rgba(0,0,0,0.6);
+  animation: fieldwork-rise .3s cubic-bezier(.2,.75,.2,1);
+}
+
+@keyframes fieldwork-fade {
+  from { opacity: 0; }
+}
+
+@keyframes fieldwork-rise {
+  from { transform: translateY(42px); opacity: 0; }
+}
+
+.fieldwork-drawer-header {
+  display: flex;
+  min-height: 78px;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 13px 16px 12px 20px;
+  border-bottom: 1px solid var(--line-strong);
+  background: linear-gradient(100deg, color-mix(in srgb, var(--era-accent) 8%, #0a1714), #0a1714 58%);
+}
+
+.fieldwork-drawer-header h2 {
+  margin: 3px 0 2px;
+  font-family: Georgia, serif;
+  font-size: 24px;
+  font-weight: 400;
+}
+
+.fieldwork-drawer-header p {
+  margin: 0;
+  color: var(--era-accent);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.fieldwork-drawer-status {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--paper-muted);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+}
+
+.fieldwork-drawer-status span b {
+  color: var(--paper);
+  font-size: 16px;
+}
+
+.fieldwork-drawer-status > strong {
+  color: #f08a70;
+  font-size: 9px;
+}
+
+.fieldwork-drawer-status > button:not(.fieldwork-close) {
+  min-height: 38px;
+  padding: 7px 11px;
+  border: 1px solid var(--amber);
+  background: var(--amber);
+  color: #12150f;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 8px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.fieldwork-close {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--paper);
+  cursor: pointer;
+  font-size: 23px;
+}
+
+.fieldwork-drawer-tabs {
+  display: none;
+}
+
+.fieldwork-drawer-body {
+  display: grid;
+  min-height: 0;
+  gap: 12px;
+  padding: 12px;
+}
+
+.fieldwork-drawer-body.with-brief {
+  grid-template-columns: minmax(0, 1.62fr) minmax(310px, .78fr);
+}
+
+.fieldwork-drawer-body.map-only {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.fieldwork-drawer .rockvil-navigator,
+.fieldwork-drawer .fieldwork-checklist {
+  display: grid;
+  min-height: 0;
+}
+
+.fieldwork-drawer .rockvil-navigator {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.fieldwork-drawer .fieldwork-checklist {
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.fieldwork-drawer .navigator-map-scroll,
+.fieldwork-drawer .fieldwork-checklist ol {
+  max-height: none;
+  min-height: 0;
+}
+
+.fieldwork-drawer .navigator-map-stage {
+  width: min(100%, 830px);
+}
+
+.fieldwork-drawer .fieldwork-checklist li {
+  min-height: 58px;
+  padding: 8px 9px;
+}
+
+.fieldwork-drawer .fieldwork-checklist li strong {
+  font-size: 12px;
+}
+
+.fieldwork-drawer .fieldwork-checklist li small,
+.fieldwork-drawer .navigator-route small,
+.fieldwork-drawer .navigator-empty,
+.fieldwork-drawer .navigator-heading small,
+.fieldwork-drawer .checklist-heading small {
+  font-size: 9px;
+}
+
+.fieldwork-drawer .navigator-heading strong,
+.fieldwork-drawer .checklist-heading strong,
+.fieldwork-drawer .navigator-route strong {
+  font-size: 16px;
 }
 
 .compass-grid {
@@ -3866,7 +4235,8 @@ summary:focus-visible {
   flex-wrap: wrap;
 }
 
-.intro-actions .package-button {
+.intro-actions .package-button,
+.intro-actions .share-intro-button {
   min-height: 51px;
   padding: 10px 16px;
   border: 1px solid rgba(238,242,234,0.28);
@@ -3878,6 +4248,14 @@ summary:focus-visible {
   font-weight: 750;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+}
+
+.intro-actions .share-intro-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border-color: rgba(147,213,184,0.5);
+  color: var(--mint-bright);
 }
 
 @media (max-width: 760px) {
@@ -3902,9 +4280,29 @@ summary:focus-visible {
     margin-inline: -8px;
   }
 
-  .fieldwork-console {
-    grid-template-columns: 1fr;
+  .fieldwork-launcher {
     margin-inline: -8px;
+  }
+
+  .open-fieldwork {
+    grid-template-columns: 42px minmax(0, 1fr) auto;
+    min-height: 68px;
+    padding-inline: 10px;
+  }
+
+  .open-fieldwork strong {
+    font-size: 15px;
+  }
+
+  .record-reminder {
+    grid-template-columns: 10px minmax(0, 1fr);
+  }
+
+  .record-reminder button,
+  .record-reminder > b {
+    grid-column: 1 / -1;
+    width: 100%;
+    min-height: 44px;
   }
 
   .navigator-heading,
@@ -3935,6 +4333,126 @@ summary:focus-visible {
 
   .fieldwork-checklist ol {
     max-height: 260px;
+  }
+
+  .fieldwork-drawer-backdrop {
+    place-items: end stretch;
+    padding: 0;
+    backdrop-filter: blur(5px);
+  }
+
+  .fieldwork-drawer {
+    width: 100%;
+    height: min(92dvh, 820px);
+    border-width: 1px 0 0;
+    border-radius: 18px 18px 0 0;
+    grid-template-rows: auto auto minmax(0, 1fr);
+  }
+
+  .fieldwork-drawer.map-only {
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+
+  .fieldwork-drawer-header {
+    min-height: 74px;
+    padding: 11px 10px 10px 14px;
+  }
+
+  .fieldwork-drawer-header h2 {
+    font-size: 19px;
+  }
+
+  .fieldwork-drawer-header p {
+    max-width: 190px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .fieldwork-drawer-status > span,
+  .fieldwork-drawer-status > strong,
+  .fieldwork-drawer-status > button:not(.fieldwork-close) {
+    display: none;
+  }
+
+  .fieldwork-drawer-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 50px;
+    border-bottom: 1px solid var(--line-strong);
+  }
+
+  .fieldwork-drawer-tabs button {
+    border: 0;
+    border-right: 1px solid var(--line);
+    background: transparent;
+    color: var(--paper-muted);
+    cursor: pointer;
+    font-family: var(--font-geist-mono), monospace;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+  }
+
+  .fieldwork-drawer-tabs button:last-child {
+    border-right: 0;
+  }
+
+  .fieldwork-drawer-tabs button[aria-selected="true"] {
+    box-shadow: inset 0 -3px 0 var(--era-accent);
+    background: color-mix(in srgb, var(--era-accent) 7%, transparent);
+    color: var(--paper);
+  }
+
+  .fieldwork-drawer-tabs span {
+    color: var(--era-accent);
+  }
+
+  .fieldwork-drawer-body,
+  .fieldwork-drawer-body.with-brief,
+  .fieldwork-drawer-body.map-only {
+    display: block;
+    min-height: 0;
+    padding: 8px;
+    overflow: hidden;
+  }
+
+  .fieldwork-drawer[data-fieldwork-view="map"] .fieldwork-checklist,
+  .fieldwork-drawer[data-fieldwork-view="brief"] .rockvil-navigator {
+    display: none;
+  }
+
+  .fieldwork-drawer .rockvil-navigator,
+  .fieldwork-drawer .fieldwork-checklist {
+    height: 100%;
+  }
+
+  .fieldwork-drawer .navigator-map-scroll {
+    max-height: none;
+  }
+
+  .fieldwork-drawer .fieldwork-checklist ol {
+    max-height: none;
+  }
+
+  .fieldwork-drawer .navigator-heading,
+  .fieldwork-drawer .checklist-heading {
+    flex-direction: row;
+    align-items: flex-start;
+  }
+
+  .fieldwork-drawer .navigator-route {
+    min-height: 70px;
+  }
+
+  .fieldwork-drawer .navigator-route-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .fieldwork-drawer .navigator-route-actions button {
+    min-height: 38px;
   }
 
   .outlet-switcher > div:last-child > button,

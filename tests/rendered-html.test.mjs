@@ -115,7 +115,7 @@ test("preserves the historical source and derives modern context from it", async
     assert.ok(object.synonyms.some((synonym) => noun === synonym || noun.startsWith(synonym)), `${object.id} must use a parser noun`);
     for (const adjective of words.slice(0, -1)) assert.ok(object.adjectives.some((word) => adjective === word || adjective.startsWith(word)), `${object.id} must use parser adjectives`);
   }
-  assert.match(shell, /Open the original Rockvil map/);
+  assert.match(shell, /Open map & routes/);
   assert.match(shell, /Communication outlets/);
   assert.match(shell, /InterfaceWorkbench/);
   assert.match(shell, /SceneActions/);
@@ -138,7 +138,19 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /mapRoutePreview/);
   assert.match(shell, /RockvilNavigator/);
   assert.match(shell, /Perelman’s brief/);
-  assert.match(shell, /FIELD_COMPLETION_PATTERNS/);
+  assert.match(shell, /FIELD_RECORDING_RULES/);
+  for (const tableIndex of [0, 2, 4, 6, 8, 10, 12, 14, 16]) assert.match(shell, new RegExp(`tableIndex: ${tableIndex}`));
+  assert.match(shell, /WARNING: Deactivating record feature/);
+  assert.match(shell, /\\\(recording\\\)/);
+  assert.match(shell, /Map & recording brief/);
+  assert.match(shell, /Checks follow the same Release 79 triggers as the game/);
+  assert.match(shell, /Start RECORD before you complete this experience/);
+  assert.match(shell, /interactionLevel === "actions" && initialFieldworkActive/);
+  assert.match(shell, /role="dialog" aria-modal="true" aria-labelledby="fieldwork-title"/);
+  assert.match(shell, /navigator\.share/);
+  assert.match(shell, /https:\/\/mind-forever-voyaging\.netlify\.app\//);
+  assert.match(shell, /Share this edition/);
+  assert.match(shell, /resetWrapperForStory[\s\S]*setCommand\(""\)[\s\S]*setAliasNotice\(""\)[\s\S]*setMapDestinationId\(null\)/);
   assert.match(shell, /Begin the requested observations/);
   assert.match(shell, /Perelman’s brief · nine requested observations/);
   assert.match(shell, /\["wait for 28 minutes", "wait"\]/);

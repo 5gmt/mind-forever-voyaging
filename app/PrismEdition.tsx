@@ -10,6 +10,9 @@ const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
 const EVIDENCE_YEARS = [2041, 2051, 2061, 2071, 2081] as const;
 const ALL_YEARS = [...EVIDENCE_YEARS, 2091] as const;
+const SHARE_URL = "https://mind-forever-voyaging.netlify.app/";
+const SHARE_TEXT = "Experience Steve Meretzky’s complete 1985 interactive novel in a modern browser edition.";
+type FieldworkView = "map" | "brief";
 
 const SECURITY_COLORS = [
   "WHITE", "DARK GREEN", "DARK BLUE", "PINK", "ORANGE", "PURPLE", "TAN", "AQUA",
@@ -308,31 +311,33 @@ const concisePassage = (recentText: string) => {
 };
 
 const recordedPassages = (transcript: string) => {
-  const commands = [...transcript.matchAll(/^>\s*([^\r\n]*)/gm)];
+  const events = [...transcript.matchAll(/^(?:>\s*([^\r\n]*)|(WARNING: Deactivating record feature\.))/gim)];
   let active = false;
   let cursor = 0;
   const passages: string[] = [];
-  for (const command of commands) {
-    if (active) passages.push(transcript.slice(cursor, command.index));
-    const normalized = command[1].trim().toLowerCase();
+  for (const event of events) {
+    if (active) passages.push(transcript.slice(cursor, event.index));
+    const normalized = event[1]?.trim().toLowerCase() ?? "";
     if (normalized === "record" || normalized === "ron") active = true;
     if (normalized === "record off" || normalized === "roff") active = false;
-    cursor = (command.index ?? 0) + command[0].length;
+    if (event[2]) active = false;
+    cursor = (event.index ?? 0) + event[0].length;
   }
   if (active) passages.push(transcript.slice(cursor));
   return passages.join("\n");
 };
 
-const FIELD_COMPLETION_PATTERNS = [
-  /you order a bowl of hot and sour soup|decide to splurge and buy a beef burger|the waiter places/i,
-  /cheerily comments on how well things in the city are running|grumpily complains that most of his department has been laid off/i,
-  /central power station for all of rockvil/i,
-  /headline story in the news section|newspaper is extremely thin/i,
-  /tubecar glides into a station/i,
-  /the court is in session/i,
-  /comments on how happy he is about the recent increase in church attendance|complains about the growth of the church of god's word/i,
-  /you begin watching/i,
-  /\b(?:living room|kitchen|bedroom|bathroom)\b/i,
+// These are the exact moments that set RECORDING-TABLE slots 0..16 in Release 79.
+const FIELD_RECORDING_RULES = [
+  { tableIndex: 0, pattern: /you order a bowl of hot and sour soup|decide to splurge and buy a beef burger|the waiter places/i },
+  { tableIndex: 2, pattern: /cheerily comments on how well things in the city are running|grumpily complains that most of his department has been laid off/i },
+  { tableIndex: 4, pattern: /^Power Station\s*$/im },
+  { tableIndex: 6, pattern: /headline story in the news section|newspaper is extremely thin/i },
+  { tableIndex: 8, pattern: /tubecar glides into a station/i },
+  { tableIndex: 10, pattern: /^Courthouse\s*$/im },
+  { tableIndex: 12, pattern: /comments on how happy he is about the recent increase in church attendance|complains about the growth of the church of god's word/i },
+  { tableIndex: 14, pattern: /you begin watching/i },
+  { tableIndex: 16, pattern: /^(?:Living Room|Kitchen|Bedroom|Bathroom)\s*$/im },
 ] as const;
 
 export default function PrismEdition() {
@@ -349,6 +354,8 @@ export default function PrismEdition() {
   const visitedYearsRef = useRef<number[]>([]);
   const queueRef = useRef<string[]>([]);
   const lastPackageCueRef = useRef(-1);
+  const fieldworkLauncherRef = useRef<HTMLButtonElement>(null);
+  const fieldworkCloseRef = useRef<HTMLButtonElement>(null);
 
   const [introOpen, setIntroOpen] = useState(true);
   const [returning, setReturning] = useState(false);
@@ -386,6 +393,9 @@ export default function PrismEdition() {
   const [activeOutletCode, setActiveOutletCode] = useState<string | null>(null);
   const [packageItem, setPackageItem] = useState<PackageItem | null>(null);
   const [mapDestinationId, setMapDestinationId] = useState<string | null>(null);
+  const [fieldworkOpen, setFieldworkOpen] = useState(false);
+  const [fieldworkView, setFieldworkView] = useState<FieldworkView>("map");
+  const [shareState, setShareState] = useState<"idle" | "copied" | "shared" | "error">("idle");
   const [noteDraft, setNoteDraft] = useState("");
   const [notes, setNotes] = useState<Note[]>([]);
   const [qaWarningOpen, setQaWarningOpen] = useState(false);
@@ -479,8 +489,14 @@ export default function PrismEdition() {
   }, [displayYear, mapDestinationId, room?.id]);
   const fieldProgress = useMemo(() => {
     const passages = recordedPassages(transcript);
-    return FIELD_COMPLETION_PATTERNS.map((pattern) => pattern.test(passages));
+    return FIELD_RECORDING_RULES.map(({ pattern }) => pattern.test(passages));
   }, [transcript]);
+  const fieldworkRecordedCount = fieldProgress.filter(Boolean).length;
+  const initialFieldworkActive = discovery.simulationEntered && !discovery.partTwo;
+  const currentFieldworkLandmark = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment !== undefined && landmark.targetId === room?.id);
+  const currentFieldworkIndex = currentFieldworkLandmark?.assignment;
+  const currentFieldworkAssignment = currentFieldworkIndex === undefined ? null : FIELD_ASSIGNMENTS[currentFieldworkIndex];
+  const currentFieldworkComplete = currentFieldworkIndex === undefined ? false : fieldProgress[currentFieldworkIndex];
   const yesNoPrompt = useMemo(() => {
     const current = `${latestSceneText}\n${recentText.slice(-1200)}`.replace(/\s+/g, " ").replace(/[>\s]+$/g, "");
     return /(?:do you want|would you like|are you sure|do you wish|shall i|is that (?:okay|correct))[^?]*\?\s*(?:\(y\/n\))?$/i.test(current);
@@ -525,6 +541,8 @@ export default function PrismEdition() {
       if (event.data.type === "command" && typeof event.data.command === "string") {
         const entered = event.data.command.trim();
         if (!entered) return;
+        if (/^(?:record|ron)$/i.test(entered)) setRecording(true);
+        if (/^(?:record off|roff)$/i.test(entered)) setRecording(false);
         lastCommandRef.current = entered;
         if (/^[a-z]{4}$/i.test(entered)) {
           activeOutletRef.current = entered.toUpperCase();
@@ -623,6 +641,7 @@ export default function PrismEdition() {
       setGridText(typeof event.data.gridText === "string" ? event.data.gridText : "");
       setTranscriptRevision((revision) => revision + 1);
       setMode(nextMode);
+      if (nextMode !== "Simulation Mode") setFieldworkOpen(false);
       if (nextMode !== "Communications Mode") {
         activeOutletRef.current = null;
         setActiveOutletCode(null);
@@ -630,6 +649,7 @@ export default function PrismEdition() {
       setStatusLocation(displayedStatusLocation);
       setYear(nextYear);
       setRoom(nextRoom);
+      setRecording(/\(recording\)/i.test(status));
       setInputKind(event.data.inputKind === "char" ? "char" : "line");
       setAcceptsInput(Boolean(event.data.acceptsInput));
 
@@ -717,22 +737,78 @@ export default function PrismEdition() {
   const chooseInteractionLevel = (value: InteractionLevel) => {
     setInteractionLevel(value);
     if (value === "classic" && activePanel === "context") setActivePanel("guide");
+    if (value === "classic") setFieldworkOpen(false);
     try { localStorage.setItem("amfv:interaction-level", value); } catch { /* optional */ }
   };
 
   const selectMapLandmark = (landmark: RockvilLandmark) => setMapDestinationId(landmark.id);
+
+  const openFieldwork = (view: FieldworkView = "map") => {
+    setFieldworkView(view);
+    setContextOpen(false);
+    setAccessOpen(false);
+    setFieldworkOpen(true);
+  };
+
+  const closeFieldwork = () => {
+    setFieldworkOpen(false);
+    window.setTimeout(() => fieldworkLauncherRef.current?.focus(), 60);
+  };
+
+  const plotFieldworkAssignment = (destination: RockvilLandmark) => {
+    selectMapLandmark(destination);
+    setFieldworkView("map");
+  };
+
+  const handleShare = async () => {
+    const finish = (state: "copied" | "shared" | "error") => {
+      setShareState(state);
+      window.setTimeout(() => setShareState("idle"), 2600);
+    };
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "A Mind Forever Voyaging", text: SHARE_TEXT, url: SHARE_URL });
+        finish("shared");
+      } else {
+        await navigator.clipboard.writeText(SHARE_URL);
+        finish("copied");
+      }
+    } catch (error) {
+      if (error instanceof DOMException && error.name === "AbortError") return;
+      try {
+        await navigator.clipboard.writeText(SHARE_URL);
+        finish("copied");
+      } catch {
+        finish("error");
+      }
+    }
+  };
 
   const useMapRouteStep = () => {
     if (!mapRoutePreview?.nextCommand || !acceptsInput) return;
     if (interactionLevel === "guided") {
       setCommand(mapRoutePreview.nextCommand);
       setAliasNotice(`Route to ${mapRoutePreview.destination.label}: edit this step or press Send.`);
+      setFieldworkOpen(false);
       window.setTimeout(() => commandRef.current?.focus(), 40);
     } else {
       sendCommand(mapRoutePreview.nextCommand);
     }
     setPackageItem(null);
   };
+
+  useEffect(() => {
+    if (!fieldworkOpen) return;
+    fieldworkCloseRef.current?.focus();
+    const closeOnEscape = (event: globalThis.KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setFieldworkOpen(false);
+        window.setTimeout(() => fieldworkLauncherRef.current?.focus(), 60);
+      }
+    };
+    window.addEventListener("keydown", closeOnEscape);
+    return () => window.removeEventListener("keydown", closeOnEscape);
+  }, [fieldworkOpen]);
 
   useEffect(() => {
     queueRef.current = debugQueue;
@@ -821,15 +897,26 @@ export default function PrismEdition() {
     setRoom(null);
     setTranscript("");
     setRecentText("");
+    setInputKind("line");
     sceneTextRef.current = "";
     sceneCacheRef.current.clear();
     setSceneText("");
     setGridText("");
+    setKnownModes([]);
     setDiscovery(EMPTY_DISCOVERY);
+    setCommand("");
+    setAliasNotice("");
+    setCommandHistory([]);
+    setHistoryIndex(-1);
     setVisitedYears([]);
     setAvailableYears([]);
     setVisitedRooms({});
     setRecording(false);
+    setPackageItem(null);
+    setMapDestinationId(null);
+    setFieldworkOpen(false);
+    setFieldworkView("map");
+    setNoteDraft("");
     activeOutletRef.current = null;
     setActiveOutletCode(null);
     setDebugQueue([]);
@@ -905,12 +992,13 @@ export default function PrismEdition() {
   const assisted = interactionLevel !== "classic";
   const assistedSecurity = assisted && Boolean(securityChallenge);
   const assistedYearSelector = assisted && yearSelectorActive;
+  const blockingOverlayOpen = introOpen || qaWarningOpen || Boolean(packageItem) || fieldworkOpen;
 
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
       <a className="skip-link" href="#command-input">Skip to interaction controls</a>
 
-      <aside className="identity-rail" aria-label="Story context" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem)} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
+      <aside className="identity-rail" aria-label="Story context" aria-hidden={blockingOverlayOpen} inert={blockingOverlayOpen ? true : undefined}>
         <button className="wordmark" type="button" onClick={() => setIntroOpen(true)} aria-label="Open title and edition information">
           <span>A MIND</span><span>FOREVER</span><span>VOYAGING</span>
         </button>
@@ -935,7 +1023,7 @@ export default function PrismEdition() {
         <div className="rail-footer"><span>{qaEnabled ? "NONCANONICAL QA BUILD" : "RELEASE 79 · SERIAL 851122"}</span><button type="button" onClick={() => { setActivePanel("about"); setContextOpen(true); }}>About this release</button></div>
       </aside>
 
-      <section className="experience-shell" aria-label="Interactive story" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem)} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
+      <section className="experience-shell" aria-label="Interactive story" aria-hidden={blockingOverlayOpen} inert={blockingOverlayOpen ? true : undefined}>
         <header className="console-header">
           <div className="location-block" aria-live="polite"><span className="section-kicker">{phaseLabel[phase]}</span><strong>{currentPlace || (phase === "origin" ? "Personal archive" : phase === "comparative" ? "Simulation archive" : phase === "witness" ? "Review channel" : phase === "lockdown" ? "Restricted system" : phase === "epilogue" ? "A final voyage" : mode ? guide.label : "Opening transmission")}</strong><span>{displayYear ? `${displayYear} · ${currentPlace || "Rockvil"}` : activeOutlet ? `OUTLET ${activeOutlet.code}` : phase === "origin" ? "Memory files" : phase === "comparative" ? "Visited horizons" : phase === "witness" ? "Findings received" : phase === "lockdown" ? "External control detected" : phase === "epilogue" ? "Memory continuing" : mode === "Simulation Mode" ? "Locating…" : discovery.identityKnown ? "Project date · 2031" : "Carrier locked"}</span></div>
           {phase === "lockdown" && <div className="lockdown-banner">CHANNELS RESTRICTED</div>}
@@ -944,6 +1032,7 @@ export default function PrismEdition() {
             <button type="button" onClick={() => setContextOpen((value) => !value)} aria-pressed={contextOpen} title="Toggle companion">◫<span>Companion</span></button>
             <button type="button" onClick={() => setPackageItem("map")} title="Open original package materials">▧<span>Package</span></button>
             <button type="button" onClick={() => setAccessOpen((value) => !value)} aria-expanded={accessOpen} title="Reading and play settings">Aa<span>Settings</span></button>
+            <button className="share-control" type="button" onClick={handleShare} aria-label="Share this edition" title="Share this edition"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.4" /><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="19" r="2.4" /><path d="m8.1 10.8 7.7-4.5M8.1 13.2l7.7 4.5" /></svg><span>Share</span></button>
             <button type="button" onClick={toggleFullscreen} title="Toggle fullscreen">↗<span>Fullscreen</span></button>
           </div>
         </header>
@@ -980,18 +1069,17 @@ export default function PrismEdition() {
             <div>{outlets.map((outlet) => <button type="button" key={outlet.code} className={activeOutletCode === outlet.code ? "active" : ""} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong></button>)}</div>
           </section>}
 
-          {!assistedSecurity && !assistedYearSelector && inputKind === "line" && mode === "Simulation Mode" && interactionLevel === "actions" && discovery.simulationEntered && <section className="fieldwork-console" aria-label="Rockvil fieldwork">
-            <RockvilNavigator currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} onSelect={selectMapLandmark} onStep={useMapRouteStep} disabled={!acceptsInput} />
-            <section className="fieldwork-checklist" aria-label="Fieldwork checklist"><div className="checklist-heading"><div><span>Perelman’s brief</span><strong>{fieldProgress.filter(Boolean).length} of {FIELD_ASSIGNMENTS.length} recorded</strong></div><small>Switch RECORD on before the experience. A check appears only when the original story counts it.</small></div><ol>{FIELD_ASSIGNMENTS.map((assignment, index) => { const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment === index); const complete = fieldProgress[index]; return <li key={assignment} className={complete ? "complete" : ""}><span aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>{assignment}</strong>{destination && <small>{destination.label}</small>}</div>{destination && <button type="button" onClick={() => selectMapLandmark(destination)} aria-label={`Plot route for ${assignment}`}>{mapDestinationId === destination.id ? "Route plotted" : "Show on map"}</button>}</li>; })}</ol></section>
+          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && discovery.simulationEntered && <section className="fieldwork-launcher" aria-label={initialFieldworkActive ? "Rockvil map and fieldwork brief" : "Rockvil map"}>
+            <button ref={fieldworkLauncherRef} className="open-fieldwork" type="button" onClick={() => openFieldwork("map")}><span className="fieldwork-map-icon" aria-hidden="true"><i /><i /><i /></span><span><small>{initialFieldworkActive ? "Fieldwork" : "Navigation"}</small><strong>{initialFieldworkActive ? "Map & recording brief" : "Rockvil map"}</strong><em>{initialFieldworkActive ? `${fieldworkRecordedCount} of ${FIELD_ASSIGNMENTS.length} recorded` : mapRoutePreview ? `Route: ${mapRoutePreview.destination.label}` : "Choose a destination"}</em></span><b>Open <span aria-hidden="true">→</span></b></button>
+            {interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && <div className={`record-reminder ${recording ? "active" : ""}`}><span className="record-reminder-light" aria-hidden="true" /><div><small>{recording ? "Recording now" : "Recording is off"}</small><strong>{currentFieldworkAssignment}</strong><span>{recording ? "Complete the experience; the brief will check itself." : "Start RECORD before you complete this experience."}</span></div>{recording ? <b>● RECORDING</b> : <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>Start recording</button>}</div>}
           </section>}
 
           {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && (roomExits.length > 0 || describedDirections.length > 0) && <section className="movement-compass" aria-label="Available directions">
-            <div className="inline-tool-heading"><span>{currentRoomName || "Ways from here"}</span><button type="button" onClick={() => setPackageItem("map")}>Open Rockvil map</button></div>
+            <div className="inline-tool-heading"><span>{currentRoomName || "Ways from here"}</span><button type="button" onClick={() => openFieldwork("map")}>Open map & routes</button></div>
             <div className="compass-grid">
               {(roomExits.length > 0 ? roomExits.map(([direction, exit]) => ({ direction, command: exit.command, target: roomNameForYear(exit.targetId, displayYear) || exit.target })) : describedDirections.map((direction) => ({ direction: direction.toUpperCase(), command: direction, target: "" }))).map((exit) => <button type="button" key={exit.command} className={`compass-${exit.direction.toLowerCase()}`} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[exit.direction] || exit.direction}</span>{exit.target && <strong>{exit.target}</strong>}</button>)}
               <div className="compass-here"><span>YOU ARE HERE</span><strong>{currentRoomName || "Current scene"}</strong></div>
             </div>
-            {mapRoutePreview && interactionLevel !== "actions" && <div className="active-map-route"><span>Map route</span><strong>{mapRoutePreview.destination.label}</strong>{mapRoutePreview.arrived ? <small>Mapped approach reached</small> : mapRoutePreview.nextCommand ? <><small>{mapRoutePreview.steps} {mapRoutePreview.steps === 1 ? "step" : "steps"} · next {mapRoutePreview.nextCommand.toUpperCase()}</small><button type="button" onClick={useMapRouteStep} disabled={!acceptsInput}>{interactionLevel === "guided" ? "Draft next step" : "Take next step"}</button></> : <small>Move to a named street to begin this route.</small>}<button type="button" className="clear-route" onClick={() => setMapDestinationId(null)}>Clear</button></div>}
           </section>}
 
           {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Interface Mode" && interfacePortIds.length > 0 && <section className="interface-shortcuts" aria-label="Connected systems">
@@ -1020,7 +1108,7 @@ export default function PrismEdition() {
         </section>
       </section>
 
-      <aside className="companion-panel" aria-label="Reader companion" aria-hidden={introOpen || qaWarningOpen || Boolean(packageItem) || !contextOpen} inert={introOpen || qaWarningOpen || packageItem ? true : undefined}>
+      <aside className="companion-panel" aria-label="Reader companion" aria-hidden={blockingOverlayOpen || !contextOpen} inert={blockingOverlayOpen ? true : undefined}>
         <div className="companion-tabs" role="tablist" aria-label="Companion views" style={{ "--tab-count": panelTabs.length } as React.CSSProperties}>{panelTabs.map((panel) => <button key={panel.id} type="button" role="tab" aria-selected={activePanel === panel.id} onClick={() => setActivePanel(panel.id)}>{panel.label}</button>)}<button className="close-context" type="button" onClick={() => setContextOpen(false)} aria-label="Close companion">×</button></div>
         <div className="companion-content">
           {activePanel === "guide" && <section className="companion-section"><span className="section-kicker">Help</span><h2>{guide.label}</h2><p>{guide.copy}</p><div className="play-style-picker" aria-label="Choose play controls">{([['classic', 'Classic', 'Type every command.'], ['guided', 'Guided', 'Navigation plus one editable suggestion.'], ['actions', 'Action menus', 'Direct actions for useful scene details.']] as Array<[InteractionLevel, string, string]>).map(([value, label, copy]) => <button type="button" key={value} aria-pressed={interactionLevel === value} className={interactionLevel === value ? "active" : ""} onClick={() => chooseInteractionLevel(value)}><strong>{label}</strong><span>{copy}</span></button>)}</div><div className="purpose-loop"><span>NOTICE</span><i>→</i><span>ACT</span>{discovery.simulationEntered && <><i>→</i><span>RECORD</span></>}{visitedYears.length >= 2 && <><i>→</i><span>COMPARE</span></>}{discovery.evidenceAccepted && <><i>→</i><span>DECIDE</span></>}{discovery.lockdown && <><i>→</i><span>TRANSMIT</span></>}</div><div className="guide-callout"><span>01</span><p>{interactionLevel === "classic" ? "The command line is yours. No navigation or scene suggestions are shown." : interactionLevel === "guided" ? "Navigation is clickable. A useful scene detail drafts one likely command, but does not act until you press Send." : "Navigation and useful actions are clickable. The original map can plot a walking route."}</p></div><div className="guide-callout"><span>02</span><p>LOOK repeats your surroundings; INVENTORY lists what you carry.</p></div><div className="guide-callout"><span>03</span><p>Read widely, try odd ideas, and keep what strikes you.</p></div><details><summary>I’m new to interactive fiction</summary><p>Commands usually take the form VERB + NOUN: READ SIGN, OPEN DOOR, or ASK A PERSON ABOUT A SUBJECT. Compass directions move you. You can abbreviate them to N, SW, U, and so on.</p></details><details><summary>I seem to be stuck</summary><p>Try LOOK, HELP, WAIT, another outlet, or a person or object in the scene. Save before experimenting if you want an easy way back.</p></details></section>}
@@ -1031,7 +1119,7 @@ export default function PrismEdition() {
 
           {activePanel === "context" && mode === "Interface Mode" && <section className="companion-section systems-section"><span className="section-kicker">Interface Mode</span><h2>Active ports</h2><p>Status requests are read-only. Settings and schedules take effect immediately.</p><button className="context-primary" type="button" onClick={() => sendCommand("read list of active ports")} disabled={!acceptsInput}>Refresh active ports</button><InterfaceWorkbench portIds={interfacePortIds} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
 
-          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Rockvil</span><h2>{currentRoomName || "Ways from here"}</h2><p>{room ? "Choose an exit, or use the map for street names and landmarks." : describedDirections.length ? "The current description names these directions." : "Look again for exits, doors, vehicles, and paths."}</p><button className="context-primary" type="button" onClick={() => setPackageItem("map")}>Open the original Rockvil map</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{roomNameForYear(exit.targetId, displayYear) || exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Go {direction}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No compass exit is named in this passage.</p></div>}<SceneActions objects={contextualObjects} roomId={room?.id} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
+          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section"><span className="section-kicker">Rockvil</span><h2>{currentRoomName || "Ways from here"}</h2><p>{room ? "Choose an exit, or use the map for street names and landmarks." : describedDirections.length ? "The current description names these directions." : "Look again for exits, doors, vehicles, and paths."}</p><button className="context-primary" type="button" onClick={() => openFieldwork("map")}>Open map & route planner</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong>{roomNameForYear(exit.targetId, displayYear) || exit.target}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>Go {direction}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>No compass exit is named in this passage.</p></div>}<SceneActions objects={contextualObjects} roomId={room?.id} level={interactionLevel} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
 
           {activePanel === "context" && (!mode || mode === "Sleep Mode") && <section className="companion-section"><span className="section-kicker">{mode === "Sleep Mode" ? "Sleep Mode" : "Incoming"}</span><h2>{mode === "Sleep Mode" ? "Background processing" : "Opening transmission"}</h2><p>{mode === "Sleep Mode" ? "Time is passing. Return to Communications Mode when you are ready." : "Read the opening message, then continue at the prompt."}</p></section>}
 
@@ -1045,6 +1133,19 @@ export default function PrismEdition() {
         </div>
       </aside>
 
+      {fieldworkOpen && <div className="fieldwork-drawer-backdrop">
+        <section className={`fieldwork-drawer ${initialFieldworkActive ? "with-brief" : "map-only"}`} role="dialog" aria-modal="true" aria-labelledby="fieldwork-title" data-fieldwork-view={fieldworkView}>
+          <header className="fieldwork-drawer-header"><div><span className="section-kicker">{initialFieldworkActive ? "Perelman’s fieldwork console" : "Rockvil navigation"}</span><h2 id="fieldwork-title">{initialFieldworkActive ? "Map & recording brief" : "Rockvil map"}</h2><p>{currentRoomName ? `${currentRoomName}${displayYear ? ` · ${displayYear}` : ""}` : "Choose a destination on the original map."}</p></div><div className="fieldwork-drawer-status">{initialFieldworkActive && <span><b>{fieldworkRecordedCount}</b> / {FIELD_ASSIGNMENTS.length} recorded</span>}{recording && <strong>● RECORDING</strong>}{interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && !recording && <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>Start RECORD</button>}<button ref={fieldworkCloseRef} className="fieldwork-close" type="button" onClick={closeFieldwork} aria-label="Close map and fieldwork brief">×</button></div></header>
+          {initialFieldworkActive && <div className="fieldwork-drawer-tabs" role="tablist" aria-label="Fieldwork views"><button type="button" role="tab" aria-selected={fieldworkView === "map"} onClick={() => setFieldworkView("map")}>Map & route</button><button type="button" role="tab" aria-selected={fieldworkView === "brief"} onClick={() => setFieldworkView("brief")}>Brief <span>{fieldworkRecordedCount}/{FIELD_ASSIGNMENTS.length}</span></button></div>}
+          <div className={`fieldwork-drawer-body ${initialFieldworkActive ? "with-brief" : "map-only"}`}>
+            <RockvilNavigator currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} onSelect={selectMapLandmark} onStep={useMapRouteStep} onClear={() => setMapDestinationId(null)} stepLabel={interactionLevel === "guided" ? "Draft next step" : "Take next step"} disabled={!acceptsInput} />
+            {initialFieldworkActive && <section className="fieldwork-checklist" aria-label="Fieldwork checklist"><div className="checklist-heading"><div><span>Perelman’s brief</span><strong>{fieldworkRecordedCount} of {FIELD_ASSIGNMENTS.length} recorded</strong></div><small>RECORD must be active during the experience. Checks follow the same Release 79 triggers as the game.</small></div><ol>{FIELD_ASSIGNMENTS.map((assignment, index) => { const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment === index); const complete = fieldProgress[index]; const current = currentFieldworkIndex === index; return <li key={assignment} className={`${complete ? "complete" : ""} ${current ? "current" : ""}`}><span aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>{assignment}</strong>{destination && <small>{destination.label}{current ? " · you are here" : ""}</small>}</div>{destination && <button type="button" onClick={() => plotFieldworkAssignment(destination)} aria-label={`Plot route for ${assignment}`}>{mapDestinationId === destination.id ? "Route plotted" : "Show on map"}</button>}</li>; })}</ol></section>}
+          </div>
+        </section>
+      </div>}
+
+      {shareState !== "idle" && <div className={`share-toast ${shareState}`} role="status">{shareState === "shared" ? "Shared" : shareState === "copied" ? "Link copied" : "Couldn’t copy the link"}</div>}
+
       {introOpen && <section className="intro-overlay" role="dialog" aria-modal="true" aria-labelledby="intro-title" aria-hidden={Boolean(packageItem)} inert={packageItem ? true : undefined}>
         <div className="intro-art" aria-hidden="true" /><div className="intro-grid" aria-hidden="true" />
         <div className="intro-content">
@@ -1053,7 +1154,7 @@ export default function PrismEdition() {
           <p className="intro-lede">Read closely. Wander. Talk to people. Notice the ordinary things.</p>
           <div className="intro-principles"><div><span>01</span><strong>Read</strong><p>Names and small details matter.</p></div><div><span>02</span><strong>Explore</strong><p>People, places, and objects are interactive.</p></div><div><span>03</span><strong>Remember</strong><p>Keep what you think matters.</p></div></div>
           <fieldset className="intro-play-style"><legend>How would you like to play?</legend><div>{([['classic', 'Classic', 'The original command line.'], ['guided', 'Guided', 'Clickable navigation and editable hints.'], ['actions', 'Action menus', 'Direct actions for useful scene details.']] as Array<[InteractionLevel, string, string]>).map(([value, label, copy]) => <button type="button" key={value} aria-pressed={interactionLevel === value} className={interactionLevel === value ? "active" : ""} onClick={() => chooseInteractionLevel(value)}><strong>{label}</strong><span>{copy}</span></button>)}</div></fieldset>
-          <div className="intro-actions"><button type="button" className="begin-button" onClick={begin}>{returning ? "Return to story" : `Begin · ${interactionLevel === "actions" ? "Action menus" : interactionLevel[0].toUpperCase() + interactionLevel.slice(1)}`}<span>→</span></button><button type="button" className="package-button" onClick={() => setPackageItem("map")}>Open the original package</button></div>
+          <div className="intro-actions"><button type="button" className="begin-button" onClick={begin}>{returning ? "Return to story" : `Begin · ${interactionLevel === "actions" ? "Action menus" : interactionLevel[0].toUpperCase() + interactionLevel.slice(1)}`}<span>→</span></button><button type="button" className="package-button" onClick={() => setPackageItem("map")}>Open the original package</button><button type="button" className="share-intro-button" onClick={handleShare}><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.4" /><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="19" r="2.4" /><path d="m8.1 10.8 7.7-4.5M8.1 13.2l7.7 4.5" /></svg>Share this edition</button></div>
           <details className="content-note"><summary>Historical content note</summary><p>The unaltered 1985 text includes depictions and language involving authoritarianism, poverty, racism, religious extremism, suicide, and violence.</p></details>
           <p className="intro-credit">Written by Steve Meretzky · Original release by Infocom · Interpreter by Parchment</p>
         </div>
@@ -1061,7 +1162,7 @@ export default function PrismEdition() {
 
       {qaWarningOpen && <section className="qa-warning-overlay" role="dialog" aria-modal="true" aria-labelledby="qa-warning-title"><div className="qa-warning-card"><span className="section-kicker">Explicit consent required</span><h2 id="qa-warning-title">This reveals the whole structure.</h2><p>Debug mode names future years, later acts, and the ending. It opens a separate noncanonical interpreter with the original developers’ dormant shortcuts restored. QA autosave is disabled; your live Release 79 session waits in memory until you return.</p><div><button type="button" onClick={enableQa}>Enable spoilers & load QA build</button><button type="button" onClick={() => setQaWarningOpen(false)}>Cancel</button></div></div></section>}
 
-      <PackageOverlay item={packageItem} onSelect={setPackageItem} onClose={() => setPackageItem(null)} interactiveMap={interactionLevel !== "classic" && mode === "Simulation Mode"} currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} routeStepDisabled={!acceptsInput} routeStepLabel={interactionLevel === "guided" ? "Draft next step" : "Take next step"} onSelectLandmark={selectMapLandmark} onRouteStep={useMapRouteStep} />
+      <PackageOverlay item={packageItem} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
 
       <div className="screen-reader-status" aria-live="polite" aria-hidden={introOpen || qaWarningOpen}>{mode ? `${mode}.` : "Story opening."} {currentPlace || ""} {displayYear || ""}</div>
       <div className="era-index" aria-hidden="true" style={{ "--era-index": Math.max(0, eraIndex) } as React.CSSProperties} />
