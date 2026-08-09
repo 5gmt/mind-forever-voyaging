@@ -3397,88 +3397,210 @@ summary:focus-visible {
   font-size: 16px;
 }
 
-.compass-grid {
+.travel-heading {
   display: grid;
-  grid-template-areas:
-    "nw n ne"
-    "w here e"
-    "sw s se";
-  grid-template-columns: repeat(3, minmax(76px, 1fr));
-  grid-template-rows: repeat(3, minmax(38px, auto));
-  gap: 5px;
+  grid-template-columns: minmax(125px, auto) minmax(0, 1fr) auto;
+  min-height: 44px;
+  align-items: stretch;
+  gap: 8px;
+  margin-bottom: 7px;
 }
 
-.compass-grid > button {
-  display: flex;
-  min-height: 38px;
+.travel-location {
+  display: grid;
+  align-content: center;
+  min-width: 0;
+  padding: 4px 9px;
+  border-left: 2px solid var(--era-accent);
+  background: color-mix(in srgb, var(--era-accent) 5%, transparent);
+}
+
+.travel-location span,
+.route-thread span,
+.route-thread small,
+.compact-map-button small,
+.compass-exit em {
+  font-family: var(--font-geist-mono), monospace;
+  text-transform: uppercase;
+}
+
+.travel-location span {
+  color: #6f8077;
+  font-size: 7px;
+  font-weight: 750;
+  letter-spacing: .08em;
+}
+
+.travel-location strong {
+  overflow: hidden;
+  color: var(--paper);
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-thread {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, auto) minmax(0, 1fr) 28px;
   align-items: center;
   gap: 7px;
-  padding: 5px 8px;
-  border: 1px solid var(--line);
+  min-width: 0;
+  padding: 5px 7px 5px 10px;
+  border: 1px solid color-mix(in srgb, var(--era-accent) 58%, var(--line));
+  background: linear-gradient(90deg, color-mix(in srgb, var(--era-accent) 12%, #081410), #081410);
+}
+
+.route-thread span {
+  color: var(--era-accent);
+  font-size: 7px;
+  font-weight: 850;
+  letter-spacing: .08em;
+}
+
+.route-thread strong {
+  overflow: hidden;
+  font-family: Georgia, serif;
+  font-size: 13px;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-thread small {
+  overflow: hidden;
+  color: #819088;
+  font-size: 7px;
+  letter-spacing: .04em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.route-thread.arrived {
+  border-color: var(--mint-bright);
+}
+
+.route-thread button {
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--paper-muted);
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.compact-map-button {
+  display: flex;
+  min-width: 132px;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 5px 10px;
+  border: 1px solid var(--line-strong);
   background: #081410;
+  color: var(--paper);
   cursor: pointer;
   text-align: left;
 }
 
-.compass-grid > button:hover {
+.compact-map-button > span:last-child {
+  display: grid;
+  gap: 1px;
+}
+
+.compact-map-button strong {
+  font-family: Georgia, serif;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.compact-map-button small {
+  color: var(--era-accent);
+  font-size: 6px;
+  letter-spacing: .06em;
+}
+
+.mini-map {
+  color: var(--era-accent);
+  font-size: 20px;
+  line-height: 1;
+}
+
+.compass-grid {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
+  scrollbar-color: rgba(147,213,184,0.2) transparent;
+}
+
+.compass-exit {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  min-width: 132px;
+  min-height: 46px;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 9px;
+  border: 1px solid var(--line);
+  background: #081410;
+  color: var(--paper);
+  cursor: pointer;
+  text-align: left;
+}
+
+.compass-exit:hover {
   border-color: var(--era-accent);
 }
 
-.compass-grid > button > span {
+.compass-exit > span {
   display: grid;
-  min-width: 25px;
-  height: 25px;
+  width: 31px;
+  min-height: 34px;
   place-items: center;
-  border: 1px solid var(--line-strong);
+  border-right: 1px solid var(--line);
   color: var(--era-accent);
-  font-family: var(--font-geist-mono), monospace;
-  font-size: 7px;
 }
 
-.compass-grid > button > strong {
-  overflow: hidden;
-  font-family: Georgia, serif;
-  font-size: 10px;
-  font-weight: 400;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+.compass-exit > span i {
+  font-size: 15px;
+  font-style: normal;
+  line-height: 1;
 }
 
-.compass-north, .compass-n { grid-area: n; }
-.compass-northeast, .compass-ne { grid-area: ne; }
-.compass-east, .compass-e { grid-area: e; }
-.compass-southeast, .compass-se { grid-area: se; }
-.compass-south, .compass-s { grid-area: s; }
-.compass-southwest, .compass-sw { grid-area: sw; }
-.compass-west, .compass-w { grid-area: w; }
-.compass-northwest, .compass-nw { grid-area: nw; }
-
-.compass-here {
-  grid-area: here;
-  display: grid;
-  min-width: 0;
-  place-content: center;
-  padding: 4px 8px;
-  border: 1px solid color-mix(in srgb, var(--era-accent) 52%, transparent);
-  background: color-mix(in srgb, var(--era-accent) 7%, transparent);
-  text-align: center;
-}
-
-.compass-here span {
-  color: #607067;
+.compass-exit > span b {
   font-family: var(--font-geist-mono), monospace;
   font-size: 6px;
-  letter-spacing: 0.08em;
+  letter-spacing: .06em;
 }
 
-.compass-here strong {
+.compass-exit > strong {
   overflow: hidden;
-  margin-top: 2px;
   font-family: Georgia, serif;
-  font-size: 10px;
+  font-size: 11px;
   font-weight: 400;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.compass-exit em {
+  color: var(--era-accent);
+  font-size: 6px;
+  font-style: normal;
+  font-weight: 900;
+  letter-spacing: .08em;
+}
+
+.compass-exit.route-next {
+  min-width: 190px;
+  order: -1;
+  border-color: var(--era-accent);
+  background: linear-gradient(105deg, color-mix(in srgb, var(--era-accent) 18%, #081410), #081410 74%);
+  box-shadow: inset 3px 0 0 var(--era-accent);
 }
 
 .interface-shortcuts > div:last-child > button {
@@ -3544,8 +3666,9 @@ summary:focus-visible {
 }
 
 .scene-actions {
-  margin-top: 8px;
+  margin-top: 6px;
   margin-bottom: 0;
+  padding-block: 6px;
 }
 
 .scene-actions-heading small {
@@ -3555,18 +3678,22 @@ summary:focus-visible {
 }
 
 .scene-object {
-  min-width: 190px;
-  padding: 9px;
+  display: grid;
+  min-width: 230px;
+  grid-template-columns: minmax(70px, .65fr) minmax(0, 1.35fr);
+  align-items: center;
+  gap: 8px;
+  padding: 6px 7px;
   border: 1px solid var(--line);
   background: #081410;
 }
 
 .scene-object > strong {
   display: block;
-  min-height: 30px;
+  min-height: 0;
   color: var(--paper);
   font-family: Georgia, serif;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
   line-height: 1.2;
 }
@@ -3611,8 +3738,9 @@ summary:focus-visible {
 
 .scene-word-list {
   display: flex;
-  flex-wrap: wrap;
   gap: 6px;
+  overflow-x: auto;
+  padding-bottom: 2px;
 }
 
 .scene-word-list button {
@@ -4295,14 +4423,26 @@ summary:focus-visible {
   }
 
   .record-reminder {
-    grid-template-columns: 10px minmax(0, 1fr);
+    min-height: 52px;
+    grid-template-columns: 10px minmax(0, 1fr) auto;
+    gap: 8px;
+    padding: 6px 8px;
   }
 
   .record-reminder button,
   .record-reminder > b {
-    grid-column: 1 / -1;
-    width: 100%;
+    grid-column: auto;
+    width: auto;
     min-height: 44px;
+  }
+
+  .record-reminder > div > span {
+    display: none;
+  }
+
+  .record-reminder button {
+    padding-inline: 10px;
+    white-space: nowrap;
   }
 
   .navigator-heading,
@@ -4457,7 +4597,7 @@ summary:focus-visible {
 
   .outlet-switcher > div:last-child > button,
   .scene-object {
-    min-width: 176px;
+    min-width: 230px;
   }
 
   .scene-object button,
@@ -4479,13 +4619,33 @@ summary:focus-visible {
     min-height: 54px;
   }
 
-  .compass-grid > button {
-    min-height: 43px;
-    padding-inline: 5px;
+  .travel-heading {
+    grid-template-columns: minmax(0, 1fr) auto;
   }
 
-  .compass-grid > button > strong {
-    display: none;
+  .travel-location {
+    grid-column: 1;
+  }
+
+  .compact-map-button {
+    grid-column: 2;
+    min-width: 112px;
+  }
+
+  .route-thread {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    grid-template-columns: auto minmax(0, 1fr) auto 28px;
+  }
+
+  .compass-exit {
+    min-width: 118px;
+    min-height: 48px;
+    padding-inline: 7px;
+  }
+
+  .compass-exit.route-next {
+    min-width: 178px;
   }
 
   .active-map-route {

@@ -7,6 +7,7 @@ test("static export renders the finished unabridged edition", async () => {
   const html = await readFile(new URL("../out/index.html", import.meta.url), "utf8");
   assert.match(html, /<title>A Mind Forever Voyaging \| Unabridged Modern Edition<\/title>/i);
   assert.match(html, /Original text and story flow preserved/i);
+  assert.match(html, /<link rel="icon" href="\/icon\.svg[^"]*"[^>]*type="image\/svg\+xml"/i);
   assert.doesNotMatch(html, /codex-preview|Your site is taking shape|SkeletonPreview|react-loading-skeleton/i);
 });
 
@@ -115,7 +116,7 @@ test("preserves the historical source and derives modern context from it", async
     assert.ok(object.synonyms.some((synonym) => noun === synonym || noun.startsWith(synonym)), `${object.id} must use a parser noun`);
     for (const adjective of words.slice(0, -1)) assert.ok(object.adjectives.some((word) => adjective === word || adjective.startsWith(word)), `${object.id} must use parser adjectives`);
   }
-  assert.match(shell, /Open map & routes/);
+  assert.match(shell, /Map & routes/);
   assert.match(shell, /Communication outlets/);
   assert.match(shell, /InterfaceWorkbench/);
   assert.match(shell, /SceneActions/);
@@ -143,6 +144,11 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /WARNING: Deactivating record feature/);
   assert.match(shell, /\\\(recording\\\)/);
   assert.match(shell, /Map & recording brief/);
+  assert.match(shell, /const travelOptions = useMemo/);
+  assert.match(shell, /routeNext: Boolean/);
+  assert.match(shell, /route-thread/);
+  assert.match(shell, /compact-map-button/);
+  assert.match(shell, /Clear current route/);
   assert.match(shell, /Checks follow the same Release 79 triggers as the game/);
   assert.match(shell, /Start RECORD before you complete this experience/);
   assert.match(shell, /interactionLevel === "actions" && initialFieldworkActive/);
@@ -165,6 +171,7 @@ test("preserves the historical source and derives modern context from it", async
 
 test("ships the physical package materials beside the story", async () => {
   await Promise.all([
+    access(new URL("../app/icon.svg", import.meta.url)),
     access(new URL("../public/package/rockvil-map-back.jpg", import.meta.url)),
     access(new URL("../public/package/security-decoder.jpg", import.meta.url)),
     access(new URL("../public/package/amfv-manual.pdf", import.meta.url)),

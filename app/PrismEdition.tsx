@@ -65,6 +65,11 @@ const DIRECTION_LABELS: Record<string, string> = {
   SOUTH: "S", SOUTHWEST: "SW", SW: "SW", WEST: "W", NORTHWEST: "NW", NW: "NW",
   UP: "UP", DOWN: "DN", IN: "IN", OUT: "OUT",
 };
+const DIRECTION_ARROWS: Record<string, string> = {
+  NORTH: "↑", N: "↑", NORTHEAST: "↗", NE: "↗", EAST: "→", E: "→", SOUTHEAST: "↘", SE: "↘",
+  SOUTH: "↓", S: "↓", SOUTHWEST: "↙", SW: "↙", WEST: "←", W: "←", NORTHWEST: "↖", NW: "↖",
+  UP: "↑", DOWN: "↓", IN: "↳", OUT: "↰",
+};
 
 const OUTLET_SOURCE_ROOMS: Record<string, string> = {
   PPCC: "CONTROL-CENTER",
@@ -487,6 +492,15 @@ export default function PrismEdition() {
     const next = route[0];
     return { destination, nextCommand: next?.command ?? null, nextPlace: next?.target ?? null, steps: route.length, arrived: route.length === 0 };
   }, [displayYear, mapDestinationId, room?.id]);
+  const travelOptions = useMemo(() => {
+    const options = roomExits.length > 0
+      ? roomExits.map(([direction, exit]) => ({ direction, command: exit.command, target: roomNameForYear(exit.targetId, displayYear) || exit.target }))
+      : describedDirections.map((direction) => ({ direction: direction.toUpperCase(), command: direction, target: "" }));
+    const routeCommand = mapRoutePreview?.nextCommand?.toLowerCase();
+    return options
+      .map((option) => ({ ...option, routeNext: Boolean(routeCommand && option.command.toLowerCase() === routeCommand) }))
+      .sort((a, b) => Number(b.routeNext) - Number(a.routeNext));
+  }, [describedDirections, displayYear, mapRoutePreview?.nextCommand, roomExits]);
   const fieldProgress = useMemo(() => {
     const passages = recordedPassages(transcript);
     return FIELD_RECORDING_RULES.map(({ pattern }) => pattern.test(passages));
@@ -1069,16 +1083,19 @@ export default function PrismEdition() {
             <div>{outlets.map((outlet) => <button type="button" key={outlet.code} className={activeOutletCode === outlet.code ? "active" : ""} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span>{outlet.code}</span><strong>{outlet.name}</strong></button>)}</div>
           </section>}
 
-          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && discovery.simulationEntered && <section className="fieldwork-launcher" aria-label={initialFieldworkActive ? "Rockvil map and fieldwork brief" : "Rockvil map"}>
-            <button ref={fieldworkLauncherRef} className="open-fieldwork" type="button" onClick={() => openFieldwork("map")}><span className="fieldwork-map-icon" aria-hidden="true"><i /><i /><i /></span><span><small>{initialFieldworkActive ? "Fieldwork" : "Navigation"}</small><strong>{initialFieldworkActive ? "Map & recording brief" : "Rockvil map"}</strong><em>{initialFieldworkActive ? `${fieldworkRecordedCount} of ${FIELD_ASSIGNMENTS.length} recorded` : mapRoutePreview ? `Route: ${mapRoutePreview.destination.label}` : "Choose a destination"}</em></span><b>Open <span aria-hidden="true">→</span></b></button>
+          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && discovery.simulationEntered && (travelOptions.length === 0 || (interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete)) && <section className="fieldwork-launcher" aria-label={initialFieldworkActive ? "Rockvil map and fieldwork brief" : "Rockvil map"}>
+            {travelOptions.length === 0 && <button ref={fieldworkLauncherRef} className="open-fieldwork" type="button" onClick={() => openFieldwork("map")}><span className="fieldwork-map-icon" aria-hidden="true"><i /><i /><i /></span><span><small>{initialFieldworkActive ? "Fieldwork" : "Navigation"}</small><strong>{initialFieldworkActive ? "Map & recording brief" : "Rockvil map"}</strong><em>{initialFieldworkActive ? `${fieldworkRecordedCount} of ${FIELD_ASSIGNMENTS.length} recorded` : mapRoutePreview ? `Route: ${mapRoutePreview.destination.label}` : "Choose a destination"}</em></span><b>Open <span aria-hidden="true">→</span></b></button>}
             {interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && <div className={`record-reminder ${recording ? "active" : ""}`}><span className="record-reminder-light" aria-hidden="true" /><div><small>{recording ? "Recording now" : "Recording is off"}</small><strong>{currentFieldworkAssignment}</strong><span>{recording ? "Complete the experience; the brief will check itself." : "Start RECORD before you complete this experience."}</span></div>{recording ? <b>● RECORDING</b> : <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>Start recording</button>}</div>}
           </section>}
 
-          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && (roomExits.length > 0 || describedDirections.length > 0) && <section className="movement-compass" aria-label="Available directions">
-            <div className="inline-tool-heading"><span>{currentRoomName || "Ways from here"}</span><button type="button" onClick={() => openFieldwork("map")}>Open map & routes</button></div>
-            <div className="compass-grid">
-              {(roomExits.length > 0 ? roomExits.map(([direction, exit]) => ({ direction, command: exit.command, target: roomNameForYear(exit.targetId, displayYear) || exit.target })) : describedDirections.map((direction) => ({ direction: direction.toUpperCase(), command: direction, target: "" }))).map((exit) => <button type="button" key={exit.command} className={`compass-${exit.direction.toLowerCase()}`} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[exit.direction] || exit.direction}</span>{exit.target && <strong>{exit.target}</strong>}</button>)}
-              <div className="compass-here"><span>YOU ARE HERE</span><strong>{currentRoomName || "Current scene"}</strong></div>
+          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && travelOptions.length > 0 && <section className={`movement-compass ${mapRoutePreview && !mapRoutePreview.arrived ? "has-route" : ""}`} aria-label="Available directions">
+            <div className="travel-heading">
+              <div className="travel-location"><span>You are at</span><strong>{currentRoomName || "Current scene"}</strong></div>
+              {mapRoutePreview && !mapRoutePreview.arrived && <div className="route-thread" role="status"><span>Route to</span><strong>{mapRoutePreview.destination.label}</strong><small>{mapRoutePreview.nextCommand ? `${mapRoutePreview.steps} ${mapRoutePreview.steps === 1 ? "step" : "steps"} remaining` : "Reach a named street to continue"}</small><button type="button" onClick={() => setMapDestinationId(null)} aria-label="Clear current route">×</button></div>}
+              <button ref={fieldworkLauncherRef} className="compact-map-button" type="button" onClick={() => openFieldwork("map")}><span className="mini-map" aria-hidden="true">⌁</span><span><strong>{mapRoutePreview && !mapRoutePreview.arrived ? "Change route" : "Map & routes"}</strong>{initialFieldworkActive && <small>{fieldworkRecordedCount}/{FIELD_ASSIGNMENTS.length} recorded</small>}</span></button>
+            </div>
+            <div className="compass-grid" aria-label={mapRoutePreview?.nextCommand ? `Route toward ${mapRoutePreview.destination.label}; next ${mapRoutePreview.nextCommand}` : "Exits from this location"}>
+              {travelOptions.map((exit) => <button type="button" key={exit.command} className={`compass-exit ${exit.routeNext ? "route-next" : ""}`} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span><i aria-hidden="true">{DIRECTION_ARROWS[exit.direction] || "→"}</i><b>{DIRECTION_LABELS[exit.direction] || exit.direction}</b></span>{exit.target && <strong>{exit.target}</strong>}{exit.routeNext && <em>Next</em>}</button>)}
             </div>
           </section>}
 
