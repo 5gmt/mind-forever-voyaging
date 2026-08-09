@@ -727,6 +727,62 @@ summary:focus-visible {
   color: var(--paper);
 }
 
+.simulation-ready {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 12px;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--amber) 55%, var(--line));
+  background: linear-gradient(110deg, rgba(229, 171, 79, 0.12), rgba(147, 213, 184, 0.035));
+  box-shadow: inset 3px 0 0 var(--amber);
+}
+
+.simulation-ready strong,
+.simulation-ready small {
+  display: block;
+}
+
+.simulation-ready strong {
+  margin-top: 4px;
+  color: var(--paper);
+  font-family: Georgia, serif;
+  font-size: 18px;
+  font-weight: 400;
+}
+
+.simulation-ready small {
+  margin-top: 4px;
+  color: var(--paper-muted);
+  font-size: 10px;
+}
+
+.simulation-ready > button {
+  min-height: 50px;
+  padding: 10px 16px;
+  border: 1px solid var(--amber);
+  background: var(--amber);
+  color: #10140f;
+  cursor: pointer;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.simulation-ready > button span {
+  margin-left: 8px;
+  font-size: 15px;
+}
+
+.simulation-ready > button:disabled {
+  cursor: not-allowed;
+  filter: grayscale(1);
+  opacity: 0.45;
+}
+
 .companion-panel {
   position: relative;
   z-index: 9;
@@ -2178,6 +2234,58 @@ summary:focus-visible {
   line-height: 1.5;
 }
 
+.field-brief {
+  margin: 16px 0;
+  border: 1px solid var(--line-strong);
+  background: rgba(147, 213, 184, 0.025);
+}
+
+.field-brief summary {
+  padding: 11px 12px;
+  color: var(--paper);
+  cursor: pointer;
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 9px;
+  font-weight: 750;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.field-brief ol {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  padding: 0 12px;
+  list-style: none;
+  counter-reset: brief;
+}
+
+.field-brief li {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 8px;
+  padding: 8px 0;
+  border-top: 1px solid var(--line);
+  color: #aebbb3;
+  font-family: Georgia, serif;
+  font-size: 12px;
+  line-height: 1.35;
+  counter-increment: brief;
+}
+
+.field-brief li::before {
+  color: var(--era-accent);
+  content: counter(brief, decimal-leading-zero);
+  font-family: var(--font-geist-mono), monospace;
+  font-size: 8px;
+}
+
+.field-brief > p {
+  margin: 8px 12px 12px;
+  color: #6f8076;
+  font-size: 9px;
+}
+
 .evidence-section textarea:focus {
   border-color: var(--era-accent);
 }
@@ -2514,6 +2622,16 @@ summary:focus-visible {
   .quick-actions button,
   .noun-cloud button {
     min-height: 44px;
+  }
+
+  .simulation-ready {
+    grid-template-columns: 1fr;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .simulation-ready > button {
+    width: 100%;
   }
 
   .action-composer {

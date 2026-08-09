@@ -2,9 +2,9 @@
 // Do not edit by hand; the original game remains canonical.
 
 export type WorldExit = { command: string; targetId: string; target: string };
-export type WorldRoom = { id: string; name: string; aliases: string[]; globals: string[]; exits: Record<string, WorldExit> };
+export type WorldRoom = { id: string; name: string; aliases: string[]; yearNames: Record<string, string>; globals: string[]; exits: Record<string, WorldExit> };
 
-export type WorldObject = { id: string; name: string; initialLocation: string | null; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null; action: string | null; handledVerbs: string[]; actionRooms: string[]; globalVerbs: string[]; verbRooms: Record<string, string[]>; hasText: boolean };
+export type WorldObject = { id: string; name: string; initialLocation: string | null; dynamicLocations: string[]; movesToCurrentRoom: boolean; flags: string[]; synonyms: string[]; adjectives: string[]; commandNoun: string | null; action: string | null; handledVerbs: string[]; actionRooms: string[]; globalVerbs: string[]; guaranteedVerbs: string[]; verbRooms: Record<string, string[]>; hasText: boolean };
 
 export const WORLD_ROOMS: WorldRoom[] = [
   {
@@ -13,6 +13,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "PRISM Project Control Center"
     ],
+    "yearNames": {},
     "globals": [
       "CONVERSATION",
       "GUN",
@@ -28,6 +29,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Entrance to Halley Estates",
       "Park Entrance"
     ],
+    "yearNames": {
+      "2041": "Park Entrance",
+      "2051": "Park Entrance",
+      "2061": "Park Entrance",
+      "2071": "Entrance to Halley Estates",
+      "2081": "Park Entrance",
+      "2091": "Park Entrance"
+    },
     "globals": [
       "PARK-OBJECT",
       "CARLOT",
@@ -50,6 +59,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "south",
         "targetId": "CENTRE-AND-KENNEDY",
         "target": "Centre & Kennedy"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "HALLEY-PARK-EAST",
+        "target": "Halley Park East"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "HALLEY-PARK-EAST",
+        "target": "Halley Park East"
       }
     }
   },
@@ -59,6 +78,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Church Street Apartments"
     ],
+    "yearNames": {},
     "globals": [
       "UNOPENABLE-DOOR",
       "MAILBOXES",
@@ -76,6 +96,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "MAIN-AND-CHURCH",
         "target": "Main & Church"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
       }
     }
   },
@@ -85,6 +115,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Hall Near Your Apartment"
     ],
+    "yearNames": {},
     "globals": [
       "APARTMENT-DOOR",
       "APARTMENT-OBJECT",
@@ -103,6 +134,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "north",
         "targetId": "LIVING-ROOM",
         "target": "Living Room"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "PARKVIEW-APARTMENTS",
+        "target": "Parkview Apartments"
+      },
+      "OUT": {
+        "command": "out",
+        "targetId": "PARKVIEW-APARTMENTS",
+        "target": "Parkview Apartments"
+      },
+      "DOWN": {
+        "command": "down",
+        "targetId": "PARKVIEW-APARTMENTS",
+        "target": "Parkview Apartments"
       }
     }
   },
@@ -112,6 +158,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Industrial Park Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "INDUSTRIAL-PARK-OBJECT",
       "WAREHOUSE-OBJECT",
@@ -156,6 +203,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "PRISM Facility Cafeteria"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-WINDOW",
       "GLOBAL-TABLE",
@@ -171,6 +219,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Research Center Rooftop"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "STAIRS",
@@ -185,6 +234,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "World News Network Feed"
     ],
+    "yearNames": {},
     "globals": [
       "OUTLETS"
     ],
@@ -196,6 +246,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Power Station Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "POWER-STATION-OBJECT",
       "WATER",
@@ -249,6 +300,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Dr. Perelman's Office"
     ],
+    "yearNames": {},
     "globals": [
       "SHELVES",
       "OUTLETS",
@@ -262,6 +314,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Industrial Park Drive"
     ],
+    "yearNames": {},
     "globals": [
       "UNOPENABLE-DOOR",
       "INDUSTRIAL-PARK-OBJECT",
@@ -283,6 +336,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Street by Vacant Lot",
       "Church Entrance"
     ],
+    "yearNames": {
+      "2041": "Church Entrance",
+      "2051": "Church Entrance",
+      "2061": "Church Entrance",
+      "2071": "Street by Vacant Lot",
+      "2081": "Church Entrance",
+      "2091": "Church Entrance"
+    },
     "globals": [
       "GRAFFITI",
       "CEMETERY-OBJECT",
@@ -308,6 +369,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "south",
         "targetId": "MAIN-AND-CHURCH",
         "target": "Main & Church"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "ST-MICHAELS",
+        "target": "Vacant Lot"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "CONSTRUCTION-SITE-5",
+        "target": "Construction Site"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "ST-MICHAELS",
+        "target": "Vacant Lot"
       }
     }
   },
@@ -317,6 +393,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Halley & University"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "CAMPUS",
@@ -341,6 +418,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "INTERCHANGE",
         "target": "Interchange"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "HALLEY-PARK-WEST",
+        "target": "Halley Park West"
       }
     }
   },
@@ -350,6 +432,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Parkview Apartments"
     ],
+    "yearNames": {},
     "globals": [
       "MAILBOXES",
       "PICTUREPHONE",
@@ -367,6 +450,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "east",
         "targetId": "SOUTHWAY-AND-PARK",
         "target": "Southway & Park"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
       }
     }
   },
@@ -376,6 +469,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "River Street Bridge"
     ],
+    "yearNames": {},
     "globals": [
       "STREET-BRIDGE",
       "RIVER",
@@ -396,6 +490,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Rockvil Reformatory"
     ],
+    "yearNames": {},
     "globals": [
       "JAIL-OBJECT"
     ],
@@ -418,6 +513,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Airportway & River"
     ],
+    "yearNames": {},
     "globals": [
       "BSF-BASE",
       "FENCE",
@@ -453,6 +549,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "sw",
         "targetId": "WELLS-THEATRE",
         "target": "Wells Theatre"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "ROCKVIL-HIGH",
+        "target": "Rockvil High"
       }
     }
   },
@@ -462,6 +563,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Aquarium & Kennedy"
     ],
+    "yearNames": {},
     "globals": [
       "BANK-OBJECT",
       "SCHOOL-OBJECT",
@@ -493,6 +595,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "AQUARIUM-AND-PARK",
         "target": "Aquarium & Park"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "AQUARIUM",
+        "target": "Aquarium"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "BANK",
+        "target": "Bank"
       }
     }
   },
@@ -502,6 +614,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Aquarium Underpass"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "PEOPLE"
@@ -521,6 +634,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Church Street Park",
       "Church Street City"
     ],
+    "yearNames": {
+      "2041": "Church Street Park",
+      "2051": "Church Street Park",
+      "2061": "Church Street City",
+      "2071": "Church Street City",
+      "2081": "Church Street City",
+      "2091": "Church Street City"
+    },
     "globals": [
       "GRAFFITI",
       "TUNNEL",
@@ -550,6 +671,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Main Street Bridge"
     ],
+    "yearNames": {},
     "globals": [
       "STREET-BRIDGE",
       "RIVER",
@@ -570,6 +692,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Rockvil University"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "DORM-OBJECT",
@@ -588,6 +711,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "south",
         "targetId": "ELM-AND-UNIVERSITY",
         "target": "Elm & University"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "STUDENT-UNION",
+        "target": "Student Union"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "LECTURE-HALL",
+        "target": "Lecture Hall"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "DORM",
+        "target": "Dorm"
       }
     }
   },
@@ -597,6 +735,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Southway & Kennedy"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "CARLOT",
@@ -638,6 +777,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "SOUTHWAY-AND-PARK",
         "target": "Southway & Park"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "CONSTRUCTION-SITE-1",
+        "target": "Construction Site"
       }
     }
   },
@@ -647,6 +791,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Southway Underpass"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "FIREHOUSE-OBJECT",
@@ -687,6 +832,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "University Heights"
     ],
+    "yearNames": {},
     "globals": [
       "UNOPENABLE-DOOR",
       "MAILBOXES",
@@ -705,6 +851,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "north",
         "targetId": "ELM-AND-UNIVERSITY",
         "target": "Elm & University"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
       }
     }
   },
@@ -714,6 +870,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Construction Site"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-SIGN",
       "FENCE",
@@ -739,6 +896,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Construction Site",
       "Heiman World"
     ],
+    "yearNames": {
+      "2041": "Construction Site",
+      "2051": "Heiman World",
+      "2061": "Heiman World",
+      "2071": "Heiman World",
+      "2081": "Heiman World",
+      "2091": "Heiman World"
+    },
     "globals": [
       "GLOBAL-SIGN",
       "CONSTRUCTION-OBJECT",
@@ -766,6 +931,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Rectory",
       "Ruined Building"
     ],
+    "yearNames": {
+      "2041": "Construction Site",
+      "2051": "Rectory",
+      "2061": "Ruined Building",
+      "2071": "Ruined Building",
+      "2081": "Ruined Building",
+      "2091": "Ruined Building"
+    },
     "globals": [
       "GLASS",
       "RECTORY-OBJECT",
@@ -790,6 +963,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Symphony Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "BSF-BASE",
       "GLOBAL-SIGN",
@@ -821,6 +995,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "AIRPORTWAY-AND-RIVER",
         "target": "Airportway & River"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "SYMPHONY-HALL",
+        "target": "Symphony Hall"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "SYMPHONY-HALL",
+        "target": "Symphony Hall"
       }
     }
   },
@@ -830,6 +1014,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Airport Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "AIRPORT-TERMINAL-OBJECT",
       "PEOPLE"
@@ -858,6 +1043,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Aquarium & River"
     ],
+    "yearNames": {},
     "globals": [
       "VACANT-LOT",
       "CHURCH-OBJECT",
@@ -904,6 +1090,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Centre & Kennedy"
     ],
+    "yearNames": {},
     "globals": [
       "HOTEL-OBJECT",
       "HUANG-HALL-OBJECT",
@@ -953,6 +1140,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Elm & University"
     ],
+    "yearNames": {},
     "globals": [
       "CAMPUS",
       "STAIRS",
@@ -989,6 +1177,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Factory Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "FACTORY-OBJECT",
       "TENEMENT-OBJECT",
@@ -1029,6 +1218,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "in",
         "targetId": "SKYCAR-FACTORY",
         "target": "Skycar Factory"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "GUN-SHOP",
+        "target": "Gun Shop"
       }
     }
   },
@@ -1038,6 +1232,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Halley Park East"
     ],
+    "yearNames": {},
     "globals": [
       "GRAFFITI",
       "PARK-OBJECT",
@@ -1066,6 +1261,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "SKYCAR-LOT-4",
         "target": "Skycar Lot"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "AQUARIUM",
+        "target": "Aquarium"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "HALLEY-PARK-WEST",
+        "target": "Halley Park West"
       }
     }
   },
@@ -1075,6 +1280,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Halley Park West"
     ],
+    "yearNames": {},
     "globals": [
       "PEOPLE",
       "STAIRS",
@@ -1109,6 +1315,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "ZOO",
         "target": "Zoo"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "HALLEY-PARK-EAST",
+        "target": "Halley Park East"
       }
     }
   },
@@ -1118,6 +1329,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Maintenance Core"
     ],
+    "yearNames": {},
     "globals": [
       "GUN",
       "OUTLETS",
@@ -1131,6 +1343,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Midland & Church"
     ],
+    "yearNames": {},
     "globals": [
       "CEMETERY-OBJECT",
       "RAILROAD-YARD",
@@ -1159,6 +1372,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "MIDLAND-AND-RIVER",
         "target": "Midland & River"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "CONSTRUCTION-SITE-5",
+        "target": "Construction Site"
       }
     }
   },
@@ -1168,6 +1386,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Pickford Theatre"
     ],
+    "yearNames": {},
     "globals": [
       "PICKFORD-THEATRE-OBJECT",
       "PLAY"
@@ -1191,6 +1410,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Southway & River"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "RIVER",
@@ -1238,6 +1458,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Aquarium & Park"
     ],
+    "yearNames": {},
     "globals": [
       "TUNNEL",
       "RESTAURANT-OBJECT",
@@ -1272,6 +1493,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "SERVICE-STATION",
         "target": "Service Station"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "BURGER-MEISTER",
+        "target": "Bar"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "AQUARIUM",
+        "target": "Aquarium"
       }
     }
   },
@@ -1281,6 +1512,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bodanski Square"
     ],
+    "yearNames": {},
     "globals": [
       "TRAIN-STATION-OBJECT",
       "STAIRS",
@@ -1316,6 +1548,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "SKYCAR-LOT-5",
         "target": "Skycar Lot"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "SIMONS",
+        "target": "Simon's"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "TRAIN-STATION",
+        "target": "Train Station"
       }
     }
   },
@@ -1325,6 +1567,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Burned-out Area"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-WINDOW"
     ],
@@ -1377,6 +1620,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Midland & River"
     ],
+    "yearNames": {},
     "globals": [
       "GLASS",
       "CARLOT",
@@ -1404,6 +1648,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "south",
         "targetId": "MAIN-AND-RIVER",
         "target": "Main & River"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "TRAIN-STATION",
+        "target": "Train Station"
       }
     }
   },
@@ -1413,6 +1662,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Museum Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-SIGN",
       "MUSEUM-OBJECT",
@@ -1431,6 +1681,26 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "BODANSKI-SQUARE",
         "target": "Bodanski Square"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "RIVERSIDE-PARK",
+        "target": "Riverside Park"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "RAILROAD-MUSEUM",
+        "target": "Railroad Museum"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "CINEMA",
+        "target": "Cinema"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "RAILROAD-MUSEUM",
+        "target": "Railroad Museum"
       }
     }
   },
@@ -1440,6 +1710,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Railroad Museum"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-WINDOW",
       "MUSEUM-OBJECT",
@@ -1458,6 +1729,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "MUSEUM-ENTRANCE",
         "target": "Museum Entrance"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "RIVERSIDE-PARK",
+        "target": "Riverside Park"
       }
     }
   },
@@ -1467,6 +1743,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "River & Kennedy"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "WATER",
@@ -1495,6 +1772,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "RIVER-AND-PARK",
         "target": "River & Park"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "ROCKVIL-HIGH",
+        "target": "Rockvil High"
       }
     }
   },
@@ -1504,6 +1786,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Rockvil Stadium"
     ],
+    "yearNames": {},
     "globals": [
       "STAIRS",
       "ANIMAL",
@@ -1536,6 +1819,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Service Station"
     ],
+    "yearNames": {},
     "globals": [
       "SERVICE-STATION-OBJECT"
     ],
@@ -1558,6 +1842,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skybus Terminal"
     ],
+    "yearNames": {},
     "globals": [
       "SKYBUS-TERMINAL-OBJECT",
       "GATE",
@@ -1584,6 +1869,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Southway & Park"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-SIGN",
       "GLOBAL-WINDOW",
@@ -1625,6 +1911,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "PARKVIEW-APARTMENTS",
         "target": "Parkview Apartments"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "MAIN-LIBRARY",
+        "target": "Main Library"
       }
     }
   },
@@ -1634,6 +1925,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Athletic Field"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "CHILDREN",
@@ -1660,6 +1952,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Closed Factory",
       "Soup Kitchen"
     ],
+    "yearNames": {
+      "2041": "Closed Factory",
+      "2051": "Soup Kitchen",
+      "2061": "Soup Kitchen",
+      "2071": "Soup Kitchen",
+      "2081": "Soup Kitchen",
+      "2091": "Soup Kitchen"
+    },
     "globals": [
       "FACTORY-OBJECT",
       "GLOBAL-TABLE",
@@ -1684,6 +1984,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Colonial Hotel"
     ],
+    "yearNames": {},
     "globals": [
       "CARLOT",
       "HOTEL-OBJECT"
@@ -1707,6 +2008,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Hardware Store"
     ],
+    "yearNames": {},
     "globals": [
       "HARDWARE-STORE-OBJECT"
     ],
@@ -1729,6 +2031,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Heiman Village"
     ],
+    "yearNames": {},
     "globals": [
       "PARK-OBJECT",
       "SCHOOL-OBJECT",
@@ -1761,6 +2064,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Hospital Annex"
     ],
+    "yearNames": {},
     "globals": [
       "HOSPITAL-OBJECT",
       "ANNEX-OBJECT",
@@ -1785,6 +2089,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Main & Kennedy"
     ],
+    "yearNames": {},
     "globals": [
       "SKYBUS-TERMINAL-OBJECT",
       "PARK-OBJECT",
@@ -1814,6 +2119,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "ROCKVIL-CENTRE",
         "target": "Rockvil Centre"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "KENNEDY-PARK",
+        "target": "Kennedy Park"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "SKYBUS-TERMINAL",
+        "target": "Skybus Terminal"
       }
     }
   },
@@ -1823,6 +2138,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Master Bedroom"
     ],
+    "yearNames": {},
     "globals": [
       "LIVING-ROOM-OBJECT",
       "BEDROOM-OBJECT",
@@ -1843,6 +2159,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Park Underpass"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "PEOPLE"
@@ -1861,6 +2178,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Police Station"
     ],
+    "yearNames": {},
     "globals": [
       "JAIL-OBJECT",
       "POLICE-STATION-OBJECT",
@@ -1886,6 +2204,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Riverside Park"
     ],
+    "yearNames": {},
     "globals": [
       "RAILROAD-YARD",
       "FENCE",
@@ -1909,6 +2228,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "SKYCAR-LOT-6",
         "target": "Skycar Lot"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "SYMPHONY-HALL",
+        "target": "Symphony Hall"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "RAILROAD-MUSEUM",
+        "target": "Railroad Museum"
       }
     }
   },
@@ -1918,6 +2247,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Rockvil Centre"
     ],
+    "yearNames": {},
     "globals": [
       "CITY-HALL-OBJECT",
       "DUNBARS-OBJECT",
@@ -1943,6 +2273,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "south",
         "targetId": "ELM-AND-PARK",
         "target": "Elm & Park"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "DUNBARS",
+        "target": "Dunbar's"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "CITY-HALL",
+        "target": "City Hall"
       }
     }
   },
@@ -1952,6 +2292,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Factory"
     ],
+    "yearNames": {},
     "globals": [
       "FACTORY-OBJECT",
       "CARLOT",
@@ -1976,6 +2317,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Stock Exchange"
     ],
+    "yearNames": {},
     "globals": [
       "STOCK-EXCHANGE-OBJECT"
     ],
@@ -1998,6 +2340,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Wicker & River"
     ],
+    "yearNames": {},
     "globals": [
       "TENEMENT-OBJECT",
       "RAILROAD-BRIDGE",
@@ -2039,6 +2382,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "BEND",
         "target": "Bend"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "CLOSED-FACTORY",
+        "target": "Closed Factory"
       }
     }
   },
@@ -2048,6 +2396,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Dental School"
     ],
+    "yearNames": {},
     "globals": [
       "SCHOOL-OBJECT"
     ],
@@ -2070,6 +2419,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Dump Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "DUMP-OBJECT",
       "TENEMENT-OBJECT"
@@ -2103,6 +2453,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Elm & Kennedy"
     ],
+    "yearNames": {},
     "globals": [
       "STOCK-EXCHANGE-OBJECT",
       "MALL-OBJECT",
@@ -2138,6 +2489,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "ELM-AND-PARK",
         "target": "Elm & Park"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "STOCK-EXCHANGE",
+        "target": "Stock Exchange"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "ROCKVIL-MALL",
+        "target": "Rockvil Mall"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "KENNEDY-PARK",
+        "target": "Kennedy Park"
       }
     }
   },
@@ -2147,6 +2513,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Elm Underpass"
     ],
+    "yearNames": {},
     "globals": [
       "PEOPLE",
       "GRAFFITI",
@@ -2160,6 +2527,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "east",
         "targetId": "ELM-AND-UNIVERSITY",
         "target": "Elm & University"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "EZZIS-BAR",
+        "target": "Ezzi's Bar"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "ROYS-PAGODA",
+        "target": "Roy's Pagoda"
       }
     }
   },
@@ -2169,6 +2546,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Halley & Park"
     ],
+    "yearNames": {},
     "globals": [
       "TUNNEL",
       "MUSEUM-OBJECT",
@@ -2194,6 +2572,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "HALLEY-AND-UNIVERSITY",
         "target": "Halley & University"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "HALLEY-PARK-EAST",
+        "target": "Halley Park East"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "HALLEY-MUSEUM",
+        "target": "Halley Museum"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "HALLEY-PARK-WEST",
+        "target": "Halley Park West"
       }
     }
   },
@@ -2203,6 +2596,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Halley Museum"
     ],
+    "yearNames": {},
     "globals": [
       "MUSEUM-OBJECT",
       "EXHIBITS",
@@ -2227,6 +2621,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Main & Church"
     ],
+    "yearNames": {},
     "globals": [
       "CEMETERY-OBJECT",
       "PARK-OBJECT",
@@ -2274,6 +2669,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Main & Wicker"
     ],
+    "yearNames": {},
     "globals": [
       "CEMETERY-OBJECT",
       "GLOBAL-SIGN",
@@ -2307,6 +2703,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "south",
         "targetId": "WICKER-AND-PIER",
         "target": "Wicker & Pier"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "THE-COACHMAN",
+        "target": "The Coachman"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "MAIN-AND-CHURCH",
+        "target": "Main & Church"
       }
     }
   },
@@ -2316,6 +2722,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Power Station"
     ],
+    "yearNames": {},
     "globals": [
       "POWER-STATION-OBJECT",
       "SMOKE"
@@ -2339,6 +2746,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Stadium Lot A"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "STADIUM-OBJECT"
@@ -2362,6 +2770,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Stadium Lot B"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "STADIUM-OBJECT"
@@ -2385,6 +2794,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Stadium Lot C"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "STADIUM-OBJECT"
@@ -2408,6 +2818,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Student Union"
     ],
+    "yearNames": {},
     "globals": [
       "CAMPUS",
       "STUDENT-UNION-OBJECT"
@@ -2431,6 +2842,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Symphony Hall"
     ],
+    "yearNames": {},
     "globals": [
       "WATER",
       "RIVER",
@@ -2454,6 +2866,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "SKYCAR-LOT-7",
         "target": "Skycar Lot"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "RIVERSIDE-PARK",
+        "target": "Riverside Park"
       }
     }
   },
@@ -2464,6 +2881,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Train Station",
       "Church Lobby"
     ],
+    "yearNames": {},
     "globals": [
       "CHURCH-OBJECT",
       "TRAIN-STATION-OBJECT",
@@ -2488,6 +2906,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Veldran Hotel"
     ],
+    "yearNames": {},
     "globals": [
       "HOTEL-OBJECT"
     ],
@@ -2515,6 +2934,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Wells Theatre"
     ],
+    "yearNames": {},
     "globals": [
       "WELLS-THEATRE-OBJECT",
       "PLAY"
@@ -2538,6 +2958,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Wicker & Pier"
     ],
+    "yearNames": {},
     "globals": [
       "RAILROAD-BRIDGE",
       "BOOKSTORE-OBJECT",
@@ -2567,6 +2988,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "TENEMENT-3",
         "target": "Tenement"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "BOOKSTORE",
+        "target": "Bookstore"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "LIQUOR-STORE",
+        "target": "Liquor Store"
       }
     }
   },
@@ -2577,6 +3008,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Kennedy Park",
       "Construction Site"
     ],
+    "yearNames": {
+      "2041": "Kennedy Park",
+      "2051": "Kennedy Park",
+      "2061": "Construction Site",
+      "2071": "Construction Site",
+      "2081": "Construction Site",
+      "2091": "Construction Site"
+    },
     "globals": [
       "PEOPLE",
       "GATE",
@@ -2609,6 +3048,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Lecture Hall"
     ],
+    "yearNames": {},
     "globals": [
       "CAMPUS",
       "LECTURE-HALL-OBJECT"
@@ -2632,6 +3072,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Liquor Store"
     ],
+    "yearNames": {},
     "globals": [
       "LIQUOR-STORE-OBJECT"
     ],
@@ -2654,6 +3095,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Main & River"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-SIGN",
       "GLASS",
@@ -2700,6 +3142,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Main Library"
     ],
+    "yearNames": {},
     "globals": [
       "MAIN-LIBRARY-OBJECT",
       "PEOPLE"
@@ -2723,6 +3166,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "River & Park"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "WATER",
@@ -2765,6 +3209,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Rockvil High",
       "The Vincent School"
     ],
+    "yearNames": {
+      "2041": "Rockvil High",
+      "2051": "Rockvil High",
+      "2061": "The Vincent School",
+      "2071": "The Vincent School",
+      "2081": "The Vincent School",
+      "2091": "The Vincent School"
+    },
     "globals": [
       "SCHOOL-OBJECT"
     ],
@@ -2787,6 +3239,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Rockvil Mall"
     ],
+    "yearNames": {},
     "globals": [
       "JOYBOOTH-OBJECT",
       "MALL-OBJECT",
@@ -2809,6 +3262,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "ELM-AND-KENNEDY",
         "target": "Elm & Kennedy"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "JOYBOOTH",
+        "target": "Joybooth"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "JOYBOOTH",
+        "target": "Joybooth"
       }
     }
   },
@@ -2818,6 +3281,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Roy's Pagoda"
     ],
+    "yearNames": {},
     "globals": [
       "RESTAURANT-OBJECT",
       "MENU",
@@ -2844,6 +3308,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Serf Housing",
       "Health Center"
     ],
+    "yearNames": {
+      "2041": "Health Center",
+      "2051": "Health Center",
+      "2061": "Health Center",
+      "2071": "Serf Housing",
+      "2081": "Health Center",
+      "2091": "Health Center"
+    },
     "globals": [
       "CARLOT",
       "HEALTH-CENTER-OBJECT"
@@ -2867,6 +3339,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "The Coachman"
     ],
+    "yearNames": {},
     "globals": [
       "RESTAURANT-OBJECT",
       "MENU",
@@ -2891,6 +3364,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "TUBE-SIGN",
       "STAIRS",
@@ -2910,6 +3384,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "ROCKVIL-STADIUM",
         "target": "Rockvil Stadium"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -2919,6 +3408,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "TUBE-SIGN",
       "STAIRS",
@@ -2937,6 +3427,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "HALLEY-PARK-WEST",
         "target": "Halley Park West"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -2946,6 +3451,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "TUBE-SIGN",
       "STAIRS",
@@ -2964,6 +3470,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "ELM-AND-RIVER",
         "target": "Elm & River"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -2973,6 +3494,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "TUBE-SIGN",
       "STAIRS",
@@ -2991,6 +3513,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "WICKER-AND-RIVER",
         "target": "Wicker & River"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -3000,6 +3537,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "STAIRS",
       "TUBE-SIGN",
@@ -3019,6 +3557,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "TERMINAL",
         "target": "Terminal"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -3028,6 +3581,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "STAIRS",
       "TUBE-SIGN",
@@ -3046,6 +3600,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "BODANSKI-SQUARE",
         "target": "Bodanski Square"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -3055,6 +3624,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "STAIRS",
       "TUBE-SIGN",
@@ -3073,6 +3643,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "ELM-AND-UNIVERSITY",
         "target": "Elm & University"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -3082,6 +3667,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tube Station"
     ],
+    "yearNames": {},
     "globals": [
       "STAIRS",
       "TUBE-SIGN",
@@ -3101,6 +3687,26 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "SKYBUS-TERMINAL",
         "target": "Skybus Terminal"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "BROWN-TUBECAR",
+        "target": "Tubecar"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "RED-TUBECAR",
+        "target": "Tubecar"
       }
     }
   },
@@ -3110,6 +3716,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Zoo Entrance"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "PEOPLE",
@@ -3149,6 +3756,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Dining Room"
     ],
+    "yearNames": {},
     "globals": [
       "LIVING-ROOM-OBJECT",
       "KITCHEN",
@@ -3185,6 +3793,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Elm & River"
     ],
+    "yearNames": {},
     "globals": [
       "STAIRS",
       "STOCK-EXCHANGE-OBJECT",
@@ -3223,6 +3832,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "ELM-AND-KENNEDY",
         "target": "Elm & Kennedy"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "ROCKVIL-MALL",
+        "target": "Rockvil Mall"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "STOCK-EXCHANGE",
+        "target": "Stock Exchange"
       }
     }
   },
@@ -3232,6 +3851,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Interchange"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "INTERCHANGE-OBJECT"
@@ -3250,6 +3870,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Living Room"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "APARTMENT-OBJECT",
@@ -3273,6 +3894,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "east",
         "targetId": "KITCHEN",
         "target": "Kitchen"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
+      },
+      "OUT": {
+        "command": "out",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
       }
     }
   },
@@ -3282,6 +3913,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Living Room"
     ],
+    "yearNames": {},
     "globals": [
       "LIVING-ROOM-OBJECT",
       "HALLWAY",
@@ -3321,6 +3953,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Post Office"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-SIGN",
       "GLOBAL-WINDOW",
@@ -3347,6 +3980,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Water Tower"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "FENCE",
@@ -3385,6 +4019,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Courthouse"
     ],
+    "yearNames": {},
     "globals": [
       "COURTHOUSE-OBJECT",
       "WOMAN",
@@ -3409,6 +4044,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Drug Store"
     ],
+    "yearNames": {},
     "globals": [
       "DRUG-STORE-OBJECT",
       "COUNTER",
@@ -3433,6 +4069,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Elm & Park"
     ],
+    "yearNames": {},
     "globals": [
       "COURTHOUSE-OBJECT",
       "PARK-OBJECT",
@@ -3473,6 +4110,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "ELM-AND-UNIVERSITY",
         "target": "Elm & University"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "KENNEDY-PARK",
+        "target": "Kennedy Park"
+      },
+      "NW": {
+        "command": "nw",
+        "targetId": "COURTHOUSE",
+        "target": "Courthouse"
       }
     }
   },
@@ -3482,12 +4129,24 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Ezzi's Bar"
     ],
+    "yearNames": {},
     "globals": [
       "BAR-OBJECT",
       "COUNTER",
       "PEOPLE"
     ],
-    "exits": {}
+    "exits": {
+      "SOUTH": {
+        "command": "south",
+        "targetId": "ELM-UNDERPASS",
+        "target": "Elm Underpass"
+      },
+      "OUT": {
+        "command": "out",
+        "targetId": "ELM-UNDERPASS",
+        "target": "Elm Underpass"
+      }
+    }
   },
   {
     "id": "GUEST-ROOM",
@@ -3495,6 +4154,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Guest Room"
     ],
+    "yearNames": {},
     "globals": [
       "HALLWAY",
       "BEDROOM-OBJECT"
@@ -3518,6 +4178,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Huang Hall"
     ],
+    "yearNames": {},
     "globals": [
       "PARK-OBJECT",
       "HUANG-HALL-OBJECT",
@@ -3533,6 +4194,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "HALLEY-AND-PARK",
         "target": "Halley & Park"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "HALLEY-PARK-EAST",
+        "target": "Halley Park East"
       }
     }
   },
@@ -3542,6 +4208,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Laundromat"
     ],
+    "yearNames": {},
     "globals": [],
     "exits": {
       "EAST": {
@@ -3562,6 +4229,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Row Houses"
     ],
+    "yearNames": {},
     "globals": [
       "UNOPENABLE-DOOR"
     ],
@@ -3585,6 +4253,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "out",
         "targetId": "SOUTHWAY-AND-KENNEDY",
         "target": "Southway & Kennedy"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
+      },
+      "IN": {
+        "command": "in",
+        "targetId": "PARKVIEW-HALL",
+        "target": "Hall Near Your Apartment"
       }
     }
   },
@@ -3594,6 +4272,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Lot"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "SUPERMARKET",
@@ -3615,6 +4294,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Lot"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "MALL-OBJECT",
@@ -3630,6 +4310,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "sw",
         "targetId": "SOUTHWAY-AND-KENNEDY",
         "target": "Southway & Kennedy"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "ROCKVIL-MALL",
+        "target": "Rockvil Mall"
       }
     }
   },
@@ -3639,6 +4324,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Lot"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "CARLOT",
@@ -3663,6 +4349,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Lot"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "ZOO-OBJECT",
@@ -3682,6 +4369,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "ZOO",
         "target": "Zoo"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "AQUARIUM",
+        "target": "Aquarium"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "HALLEY-PARK-EAST",
+        "target": "Halley Park East"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "HALLEY-PARK-WEST",
+        "target": "Halley Park West"
       }
     }
   },
@@ -3691,6 +4393,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Lot"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "VACANT-LOT",
@@ -3721,6 +4424,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Lot"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-SIGN",
       "FENCE",
@@ -3735,6 +4439,21 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "south",
         "targetId": "MUSEUM-ENTRANCE",
         "target": "Museum Entrance"
+      },
+      "NORTH": {
+        "command": "north",
+        "targetId": "SYMPHONY-HALL",
+        "target": "Symphony Hall"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "RIVERSIDE-PARK",
+        "target": "Riverside Park"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "CINEMA",
+        "target": "Cinema"
       }
     }
   },
@@ -3744,6 +4463,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycar Lot"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-SIGN",
       "FENCE",
@@ -3763,6 +4483,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "COLONIAL-HOTEL",
         "target": "Colonial Hotel"
+      },
+      "EAST": {
+        "command": "east",
+        "targetId": "SYMPHONY-HALL",
+        "target": "Symphony Hall"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "CINEMA",
+        "target": "Cinema"
       }
     }
   },
@@ -3773,6 +4503,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Vacant Lot",
       "St. Michael's"
     ],
+    "yearNames": {
+      "2041": "St. Michael's",
+      "2051": "St. Michael's",
+      "2061": "St. Michael's",
+      "2071": "Vacant Lot",
+      "2081": "St. Michael's",
+      "2091": "St. Michael's"
+    },
     "globals": [
       "VACANT-LOT",
       "CHURCH-OBJECT"
@@ -3797,6 +4535,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Vacant Lot",
       "First Methodist Church"
     ],
+    "yearNames": {
+      "2041": "First Methodist Church",
+      "2051": "First Methodist Church",
+      "2061": "First Methodist Church",
+      "2071": "Vacant Lot",
+      "2081": "First Methodist Church",
+      "2091": "First Methodist Church"
+    },
     "globals": [
       "VACANT-LOT",
       "CARLOT",
@@ -3826,6 +4572,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Base Gate"
     ],
+    "yearNames": {},
     "globals": [
       "BSF-BASE",
       "FENCE",
@@ -3846,6 +4593,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bookstore"
     ],
+    "yearNames": {},
     "globals": [
       "SHELVES",
       "BOOKSTORE-OBJECT"
@@ -3869,6 +4617,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "City Dump"
     ],
+    "yearNames": {},
     "globals": [
       "FENCE",
       "RIVER",
@@ -3895,6 +4644,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "City Hall"
     ],
+    "yearNames": {},
     "globals": [
       "CITY-HALL-OBJECT"
     ],
@@ -3917,6 +4667,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Firehouse"
     ],
+    "yearNames": {},
     "globals": [
       "FIREHOUSE-OBJECT"
     ],
@@ -3939,6 +4690,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Foodville"
     ],
+    "yearNames": {},
     "globals": [
       "SUPERMARKET",
       "CARLOT",
@@ -3963,6 +4715,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Foodville"
     ],
+    "yearNames": {},
     "globals": [
       "SUPERMARKET",
       "GLASS",
@@ -3987,6 +4740,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Jail Cell"
     ],
+    "yearNames": {},
     "globals": [
       "JAIL-OBJECT",
       "UNOPENABLE-DOOR"
@@ -3999,6 +4753,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Pool Hall"
     ],
+    "yearNames": {},
     "globals": [
       "POOL-HALL-OBJECT",
       "PIER-OBJECT",
@@ -4025,6 +4780,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Warehouse",
       "Vacant Lot"
     ],
+    "yearNames": {
+      "2041": "Warehouse",
+      "2051": "Warehouse",
+      "2061": "Vacant Lot",
+      "2071": "Vacant Lot",
+      "2081": "Vacant Lot",
+      "2091": "Vacant Lot"
+    },
     "globals": [
       "VACANT-LOT",
       "WAREHOUSE-OBJECT",
@@ -4045,6 +4808,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Warehouse"
     ],
+    "yearNames": {},
     "globals": [
       "WAREHOUSE-OBJECT"
     ],
@@ -4067,6 +4831,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Aquarium"
     ],
+    "yearNames": {},
     "globals": [
       "EXHIBITS",
       "PARK-OBJECT",
@@ -4089,6 +4854,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "AQUARIUM-AND-PARK",
         "target": "Aquarium & Park"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "HALLEY-PARK-EAST",
+        "target": "Halley Park East"
       }
     }
   },
@@ -4098,6 +4868,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bathroom"
     ],
+    "yearNames": {},
     "globals": [
       "APARTMENT-OBJECT",
       "WATER",
@@ -4125,6 +4896,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Cemetery"
     ],
+    "yearNames": {},
     "globals": [
       "GRAFFITI",
       "WATER",
@@ -4163,6 +4935,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Dunbar's"
     ],
+    "yearNames": {},
     "globals": [
       "DUNBARS-OBJECT",
       "PEOPLE"
@@ -4186,6 +4959,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Gun Shop"
     ],
+    "yearNames": {},
     "globals": [
       "COUNTER",
       "GUN",
@@ -4210,6 +4984,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Hospital"
     ],
+    "yearNames": {},
     "globals": [
       "HOSPITAL-OBJECT",
       "ANNEX-OBJECT",
@@ -4235,11 +5010,23 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Joybooth"
     ],
+    "yearNames": {},
     "globals": [
       "JOYBOOTH-OBJECT",
       "SLOT"
     ],
-    "exits": {}
+    "exits": {
+      "OUT": {
+        "command": "out",
+        "targetId": "ROCKVIL-MALL",
+        "target": "Rockvil Mall"
+      },
+      "WEST": {
+        "command": "west",
+        "targetId": "ROCKVIL-MALL",
+        "target": "Rockvil Mall"
+      }
+    }
   },
   {
     "id": "SOLARIUM",
@@ -4247,6 +5034,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Solarium"
     ],
+    "yearNames": {},
     "globals": [
       "LIVING-ROOM-OBJECT",
       "SOLARIUM-OBJECT",
@@ -4281,6 +5069,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tenement"
     ],
+    "yearNames": {},
     "globals": [
       "TENEMENT-OBJECT"
     ],
@@ -4308,6 +5097,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tenement"
     ],
+    "yearNames": {},
     "globals": [
       "TENEMENT-OBJECT"
     ],
@@ -4330,6 +5120,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tenement"
     ],
+    "yearNames": {},
     "globals": [
       "TENEMENT-OBJECT"
     ],
@@ -4352,6 +5143,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Terminal"
     ],
+    "yearNames": {},
     "globals": [
       "STAIRS",
       "AIRPORT-TERMINAL-OBJECT",
@@ -4373,6 +5165,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bedroom"
     ],
+    "yearNames": {},
     "globals": [
       "APARTMENT-OBJECT",
       "APARTMENT-WINDOW",
@@ -4410,6 +5203,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Kitchen"
     ],
+    "yearNames": {},
     "globals": [
       "SINK",
       "WATER",
@@ -4438,6 +5232,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Kitchen"
     ],
+    "yearNames": {},
     "globals": [
       "SINK",
       "KITCHEN",
@@ -4462,6 +5257,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Simon's"
     ],
+    "yearNames": {},
     "globals": [
       "RESTAURANT-OBJECT",
       "MENU",
@@ -4486,6 +5282,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tubecar"
     ],
+    "yearNames": {},
     "globals": [
       "TUBE-SIGN",
       "GRAFFITI",
@@ -4500,6 +5297,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Tubecar"
     ],
+    "yearNames": {},
     "globals": [
       "TUBE-SIGN",
       "GRAFFITI",
@@ -4514,6 +5312,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Cinema"
     ],
+    "yearNames": {},
     "globals": [
       "SLOT",
       "MOVIE-THEATRE-OBJECT",
@@ -4545,6 +5344,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Skycab"
     ],
+    "yearNames": {},
     "globals": [
       "GLOBAL-WINDOW",
       "RIVER",
@@ -4562,6 +5362,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Alley"
     ],
+    "yearNames": {},
     "globals": [
       "BAR-OBJECT",
       "MUSIC"
@@ -4595,6 +5396,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Foyer"
     ],
+    "yearNames": {},
     "globals": [
       "LIVING-ROOM-OBJECT",
       "HALLWAY",
@@ -4637,6 +5439,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Patio"
     ],
+    "yearNames": {},
     "globals": [
       "SOLARIUM-OBJECT",
       "PATIO-OBJECT",
@@ -4661,6 +5464,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bank"
     ],
+    "yearNames": {},
     "globals": [
       "BANK-OBJECT"
     ],
@@ -4683,6 +5487,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bath"
     ],
+    "yearNames": {},
     "globals": [
       "SINK",
       "HALLWAY",
@@ -4713,6 +5518,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bend"
     ],
+    "yearNames": {},
     "globals": [
       "PEOPLE",
       "RAILROAD-BRIDGE",
@@ -4743,6 +5549,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "west",
         "targetId": "LAUNDROMAT",
         "target": "Laundromat"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "HARDWARE-STORE",
+        "target": "Hardware Store"
+      },
+      "SW": {
+        "command": "sw",
+        "targetId": "DRUG-STORE",
+        "target": "Drug Store"
       }
     }
   },
@@ -4752,6 +5568,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Dorm"
     ],
+    "yearNames": {},
     "globals": [
       "DORM-OBJECT",
       "CAMPUS",
@@ -4777,6 +5594,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Pier"
     ],
+    "yearNames": {},
     "globals": [
       "WATER",
       "RIVER",
@@ -4795,6 +5613,11 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "nw",
         "targetId": "WICKER-AND-PIER",
         "target": "Wicker & Pier"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "POOL-HALL",
+        "target": "Pool Hall"
       }
     }
   },
@@ -4806,6 +5629,14 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "Burgerworld",
       "Burger Meister"
     ],
+    "yearNames": {
+      "2041": "Burger Meister",
+      "2051": "Burger Meister",
+      "2061": "Burgerworld",
+      "2071": "Bar",
+      "2081": "Burger Meister",
+      "2091": "Burger Meister"
+    },
     "globals": [
       "RESTAURANT-OBJECT",
       "BAR-OBJECT",
@@ -4815,7 +5646,18 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "MENU",
       "PEOPLE"
     ],
-    "exits": {}
+    "exits": {
+      "SW": {
+        "command": "sw",
+        "targetId": "AQUARIUM-AND-PARK",
+        "target": "Aquarium & Park"
+      },
+      "OUT": {
+        "command": "out",
+        "targetId": "AQUARIUM-AND-PARK",
+        "target": "Aquarium & Park"
+      }
+    }
   },
   {
     "id": "BAR",
@@ -4823,6 +5665,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Bar"
     ],
+    "yearNames": {},
     "globals": [
       "BAR-OBJECT",
       "COUNTER",
@@ -4832,7 +5675,18 @@ export const WORLD_ROOMS: WorldRoom[] = [
       "BAR",
       "PEOPLE"
     ],
-    "exits": {}
+    "exits": {
+      "WEST": {
+        "command": "west",
+        "targetId": "ALLEY",
+        "target": "Alley"
+      },
+      "NE": {
+        "command": "ne",
+        "targetId": "PIER",
+        "target": "Pier"
+      }
+    }
   },
   {
     "id": "DEN",
@@ -4840,6 +5694,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Den"
     ],
+    "yearNames": {},
     "globals": [
       "HALLWAY",
       "DEN-OBJECT",
@@ -4864,6 +5719,7 @@ export const WORLD_ROOMS: WorldRoom[] = [
     "aliases": [
       "Zoo"
     ],
+    "yearNames": {},
     "globals": [
       "HIGHWAY",
       "ZOO-OBJECT",
@@ -4886,6 +5742,16 @@ export const WORLD_ROOMS: WorldRoom[] = [
         "command": "east",
         "targetId": "SKYCAR-LOT-4",
         "target": "Skycar Lot"
+      },
+      "SE": {
+        "command": "se",
+        "targetId": "HALLEY-PARK-WEST",
+        "target": "Halley Park West"
+      },
+      "SOUTH": {
+        "command": "south",
+        "targetId": "HALLEY-PARK-WEST",
+        "target": "Halley Park West"
       }
     }
   }
@@ -4921,8 +5787,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "guaranteedVerbs": [
+      "STATUS",
+      "HELLO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "OUTLETS",
@@ -4957,8 +5829,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "WHAT"
     ],
+    "guaranteedVerbs": [
+      "DISPLAY",
+      "READ",
+      "WHAT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TRAFFIC-COMPUTER",
@@ -4990,8 +5869,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SET",
       "HELLO"
     ],
+    "guaranteedVerbs": [
+      "STATUS",
+      "HELLO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RACKS",
@@ -5020,8 +5905,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CC-STAFFER",
@@ -5049,8 +5939,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CULTURAL-CENTER",
@@ -5075,8 +5968,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BORDELLO-AD",
@@ -5120,8 +6018,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "EVENING-START",
@@ -5145,8 +6050,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MORNING-START",
@@ -5170,8 +6078,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FORMULA",
@@ -5201,8 +6112,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DRINK",
       "EAT"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "DRINK",
+      "EAT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SCOTCH",
@@ -5245,6 +6163,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "OPEN",
+      "DRINK",
+      "CLOSE",
+      "READ"
+    ],
     "verbRooms": {
       "BUY": [
         "LIQUOR-STORE",
@@ -5253,7 +6178,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "BURGER-MEISTER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "LIQUOR-STORE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TRANSMITTER",
@@ -5280,8 +6209,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AIR-CONDITIONING-UNIT",
@@ -5308,8 +6240,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LOGIC-GAME",
@@ -5344,8 +6279,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PLAY",
       "PLAY-WITH"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "TAKE",
+      "PLAY",
+      "PLAY-WITH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "EVENING-END",
@@ -5369,8 +6312,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JANITORIAL-CONTROLLER",
@@ -5400,8 +6346,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SET",
       "HELLO"
     ],
+    "guaranteedVerbs": [
+      "STATUS",
+      "HELLO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JANITORIAL-INSTRUCTIONS",
@@ -5417,8 +6369,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MORNING-END",
@@ -5442,8 +6397,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RYDER",
@@ -5476,8 +6434,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LISTEN"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "CALL",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "OFFICE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SIMULATION-CONTROLLER",
@@ -5507,8 +6474,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STATUS",
       "HELLO"
     ],
+    "guaranteedVerbs": [
+      "STATUS",
+      "HELLO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SIMULATION-INSTRUCTIONS",
@@ -5524,8 +6497,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "REPORT-BUFFER",
@@ -5547,8 +6523,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ENTERTAINMENT-CENTER",
@@ -5577,8 +6556,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ON"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "ON"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PORT-LIST",
@@ -5612,8 +6597,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WHAT",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "DISPLAY",
+      "WHAT",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AUDIT-PERCENT",
@@ -5637,8 +6630,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BROWN-TUBECAR-DOOR",
@@ -5671,12 +6667,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "OPEN",
+      "CLOSE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "BROWN-TUBECAR"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "BROWN-TUBECAR"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "COMM-MODE",
@@ -5704,8 +6709,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GOVERNMENT-OFFICIAL",
@@ -5732,8 +6743,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL",
       "SIT-NEXT-TO"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "SIT-NEXT-TO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CITY-HALL"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AUDITING-SYSTEM",
@@ -5767,8 +6786,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SET",
       "HELLO"
     ],
+    "guaranteedVerbs": [
+      "STATUS",
+      "SET",
+      "HELLO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SABOTEURS",
@@ -5808,8 +6834,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ASK-FOR",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "TELL-ABOUT",
+      "ASK-ABOUT",
+      "ASK-FOR",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CORE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "NEWSPAPER-DISPENSER",
@@ -5836,8 +6873,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "PUT"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "OPEN",
+      "PUT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "BODANSKI-SQUARE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PARKVIEW-APARTMENTS-OBJECT",
@@ -5867,6 +6913,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PARKVIEW-APARTMENTS"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXIT",
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "SOUTHWAY-AND-PARK"
@@ -5890,7 +6942,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "PARKVIEW-APARTMENTS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "COUNTRYSIDE",
@@ -5910,8 +6964,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MEMORY-BANKS",
@@ -5934,8 +6991,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SPARE-PARTS",
@@ -5959,8 +7019,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CHURCH-STREET-CITY-OBJECT",
@@ -5997,6 +7060,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CHURCH-STREET-PARK"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-AND-CHURCH",
@@ -6016,7 +7084,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CHURCH-STREET-PARK"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HIGHWAY",
@@ -6040,8 +7110,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "NATIONAL-GUARDSMAN",
@@ -6067,8 +7140,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CONTROL-CENTER"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RESIGNATION-LETTER",
@@ -6084,8 +7162,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ROTATING",
@@ -6107,8 +7188,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "UNIVERSITY-HEIGHTS-OBJECT",
@@ -6144,6 +7228,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "guaranteedVerbs": [
+      "WALK-TO",
+      "THROUGH",
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "LEAVE": [
         "ELM-AND-UNIVERSITY"
@@ -6155,7 +7246,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "UNIVERSITY-HEIGHTS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TIMBERS",
@@ -6185,8 +7278,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MOVE",
       "TOUCH"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "THE-COACHMAN"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BOARDING-PLATFORM",
@@ -6212,6 +7310,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SKYBUS-TERMINAL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "SKYBUS-TERMINAL"
@@ -6229,7 +7328,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SKYBUS-TERMINAL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CONSTRUCTION-OBJECT",
@@ -6274,6 +7375,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CEMETERY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "BEND",
@@ -6325,7 +7431,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CONSTRUCTION-SITE-5"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FOUNTAIN",
@@ -6351,8 +7459,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CHURCH-STREET-PARK"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "INFOTECH-BUILDING",
@@ -6394,6 +7509,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO",
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-KENNEDY"
@@ -6402,7 +7524,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-AND-KENNEDY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PERELMAN-PERSONAL-DIRECTORY",
@@ -6418,8 +7542,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RED-TUBECAR-DOOR",
@@ -6452,12 +7579,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "OPEN",
+      "CLOSE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "RED-TUBECAR"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "RED-TUBECAR"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SILICORP-BUILDING",
@@ -6495,6 +7631,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO",
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-KENNEDY"
@@ -6503,7 +7646,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-AND-KENNEDY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "NEWS-BUFFER",
@@ -6525,8 +7670,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FOURTH-FLOOR",
@@ -6557,6 +7705,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STUDENT-UNION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -6565,7 +7717,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "STUDENT-UNION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GROCERIES",
@@ -6601,6 +7755,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT",
       "BUY"
     ],
+    "guaranteedVerbs": [
+      "LOOK-INSIDE",
+      "EXAMINE",
+      "OPEN",
+      "EAT",
+      "PUT",
+      "PUT-AWAY",
+      "BUY"
+    ],
     "verbRooms": {
       "EAT": [
         "KITCHEN"
@@ -6609,7 +7772,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "KITCHEN"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DRIVERS-LICENSE",
@@ -6633,8 +7798,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FORTZMAN",
@@ -6657,8 +7825,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GARBAGE",
@@ -6680,8 +7851,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MAGAZINE-ARTICLE",
@@ -6711,8 +7885,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PICKFORD-THEATRE-OBJECT",
@@ -6742,6 +7922,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PICKFORD-THEATRE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "PICKFORD-THEATRE"
@@ -6759,7 +7944,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "PICKFORD-THEATRE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BEAMS",
@@ -6784,8 +7971,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PRISM-INTERFACES-DIRECTORY",
@@ -6801,8 +7991,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RECEIVER-STATION",
@@ -6827,8 +8020,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TRAFFIC-INSTRUCTIONS",
@@ -6844,8 +8042,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WEATHER-INSTRUCTIONS",
@@ -6861,8 +8062,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AUDITING-INSTRUCTIONS",
@@ -6878,8 +8082,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ESTHER",
@@ -6905,8 +8112,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PAMPHLET",
@@ -6935,8 +8145,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "READ"
     ],
+    "guaranteedVerbs": [
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "TRAIN-STATION"
+    ],
+    "movesToCurrentRoom": true
   },
   {
     "id": "GRANOLA-CLUSTER",
@@ -6962,8 +8179,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "BUY"
     ],
+    "guaranteedVerbs": [
+      "BUY"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HVAC-CONTROLLER",
@@ -7008,8 +8230,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OFF",
       "HELLO"
     ],
+    "guaranteedVerbs": [
+      "STATUS",
+      "SHUT-OFF",
+      "TURN-ON",
+      "ON",
+      "OFF",
+      "HELLO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HVAC-INSTRUCTIONS",
@@ -7025,8 +8257,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "INDUSTRIAL-PARK-OBJECT",
@@ -7057,6 +8292,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "INDUSTRIAL-PARK-DRIVE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "INDUSTRIAL-PARK-ENTRANCE",
@@ -7076,7 +8316,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "INDUSTRIAL-PARK-DRIVE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LIBRARY-ACCOUNT",
@@ -7098,12 +8340,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MAIN-LIBRARY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "ASK-FOR"
+    ],
     "verbRooms": {
       "ASK-FOR": [
         "MAIN-LIBRARY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CHUN-BUILDING",
@@ -7135,8 +8382,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "WALK-TO",
+      "THROUGH",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ROY",
@@ -7160,8 +8414,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "ELM-UNDERPASS"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PLAN-POPULARITY",
@@ -7177,8 +8436,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RAILROAD-BRIDGE",
@@ -7208,6 +8470,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WICKER-AND-RIVER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "CROSS",
+      "WALK-UNDER"
+    ],
     "verbRooms": {
       "CROSS": [
         "MAIN-AND-WICKER",
@@ -7220,7 +8486,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "WICKER-AND-RIVER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SERVICE-STATION-OBJECT",
@@ -7251,6 +8519,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SERVICE-STATION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "AQUARIUM-AND-PARK"
@@ -7268,7 +8541,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SERVICE-STATION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SIMULATION-MODE",
@@ -7300,8 +8575,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LEAVE",
       "DISEMBARK"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STACKS-OF-PAPERS",
@@ -7329,8 +8610,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TURKEY-SANDWICH",
@@ -7358,13 +8645,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FOODVILLE-2"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "BUY"
+    ],
     "verbRooms": {
       "BUY": [
         "FOODVILLE-1",
         "FOODVILLE-2"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SALAD",
@@ -7391,8 +8683,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "EAT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "KITCHEN"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CONTROL-CENTER-OBJECT",
@@ -7418,8 +8718,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CURRENT-EVENTS-DIRECTORY",
@@ -7435,8 +8740,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HALLEY-ESTATES-OBJECT",
@@ -7473,6 +8781,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "PARK-ENTRANCE",
@@ -7485,7 +8798,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "HALLEY-AND-UNIVERSITY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HARDWARE-STORE-OBJECT",
@@ -7516,6 +8831,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "HARDWARE-STORE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "DISEMBARK": [
         "HARDWARE-STORE"
@@ -7533,7 +8853,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "HARDWARE-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HEIMAN-VILLAGE-OBJECT",
@@ -7587,6 +8909,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CHURCH-STREET-PARK"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "HEIMAN-VILLAGE",
@@ -7606,7 +8933,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "HEIMAN-VILLAGE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "INTERFACE-MODE",
@@ -7633,8 +8962,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LIBYAN-ECONOMY",
@@ -7650,8 +8985,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BANNED-TITLES-LIST",
@@ -7683,8 +9021,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "MAIN-LIBRARY"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MOUNT-TAKEOVER",
@@ -7700,8 +9046,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "POLICEMAN",
@@ -7732,8 +9081,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "TELL-ABOUT"
     ],
+    "guaranteedVerbs": [
+      "TELL-ABOUT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "POLICE-STATION-OBJECT",
@@ -7762,6 +9116,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "POLICE-STATION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "ELM-AND-PARK"
@@ -7779,7 +9138,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "POLICE-STATION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RYDER-SPEECHES",
@@ -7795,8 +9156,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SPACEPORT-GATE",
@@ -7827,8 +9191,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE",
+      "THROUGH",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STOCK-EXCHANGE-OBJECT",
@@ -7861,6 +9233,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ELM-AND-RIVER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "STOCK-EXCHANGE",
@@ -7880,7 +9257,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "STOCK-EXCHANGE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WORD-PROCESSOR",
@@ -7919,8 +9298,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "MOVE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "WRITE",
+      "SIT",
+      "BOARD",
+      "TAKE",
+      "MOVE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BAMBOO-SCREEN",
@@ -7939,8 +9328,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BROWN-TUBECAR-OBJECT",
@@ -7978,6 +9370,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WAIT-FOR"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "BOARD",
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "THROUGH": [
         "BROWN-TUBECAR"
@@ -7992,7 +9390,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "BROWN-TUBECAR"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "BROWN-TUBECAR"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BSF-FORMATION",
@@ -8008,8 +9410,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "COFFEE",
@@ -8038,8 +9443,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "BUY"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "OFFICE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HEALTH-CENTER-OBJECT",
@@ -8069,6 +9479,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MAIN-AND-RIVER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "HEALTH-CENTER",
@@ -8088,7 +9503,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "HEALTH-CENTER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MOVIE-THEATRE-OBJECT",
@@ -8124,6 +9541,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SKYCAR-LOT-7"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE",
+      "SMELL"
+    ],
     "verbRooms": {
       "THROUGH": [
         "MUSEUM-ENTRANCE",
@@ -8148,7 +9571,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CINEMA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PLAN-ELEMENTS",
@@ -8164,8 +9589,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "POWER-STATION-OBJECT",
@@ -8193,6 +9621,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "POWER-STATION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "POWER-STATION"
@@ -8210,7 +9642,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "POWER-STATION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RAILROAD-YARD",
@@ -8241,6 +9675,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "MIDLAND-AND-CHURCH"
@@ -8249,7 +9687,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MIDLAND-AND-CHURCH"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RAV",
@@ -8269,8 +9709,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RECORD-BUFFER",
@@ -8300,8 +9743,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "OFF"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JILL-BOOK",
@@ -8339,8 +9785,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "BUY"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "READ",
+      "EXAMINE",
+      "OPEN",
+      "CLOSE",
+      "BUY"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "BEDROOM",
+      "LIVING-ROOM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STREET-BRIDGE",
@@ -8378,6 +9837,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CROSS",
       "LOOK-UNDER"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "THROUGH",
+      "WALK-TO",
+      "CROSS",
+      "LOOK-UNDER"
+    ],
     "verbRooms": {
       "DISEMBARK": [
         "RIVER-STREET-BRIDGE",
@@ -8403,7 +9870,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-AND-WICKER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STUDENT-UNION-OBJECT",
@@ -8432,6 +9901,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STUDENT-UNION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "STUDENT-UNION"
@@ -8449,7 +9922,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "STUDENT-UNION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SYMPHONY-HALL-OBJECT",
@@ -8479,6 +9954,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SKYCAR-LOT-7"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "SYMPHONY-HALL",
@@ -8500,7 +9980,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SYMPHONY-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TICKET-SELLER",
@@ -8527,8 +10009,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TRAIN-STATION-OBJECT",
@@ -8565,6 +10052,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TRAIN-STATION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "BODANSKI-SQUARE",
@@ -8584,7 +10076,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "TRAIN-STATION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WELLS-THEATRE-OBJECT",
@@ -8615,6 +10109,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WELLS-THEATRE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "AIRPORTWAY-AND-RIVER",
@@ -8634,7 +10133,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "WELLS-THEATRE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AIRPORT-GATE",
@@ -8666,8 +10167,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE",
+      "THROUGH",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ALI-BUILDING",
@@ -8704,8 +10213,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ALPHA-SECTOR",
@@ -8728,8 +10242,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PRICE",
@@ -8752,8 +10269,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RANDU",
@@ -8776,8 +10296,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CARD-CATALOG",
@@ -8807,8 +10330,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "EXAMINE",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CHURCH-OFFICIAL",
@@ -8833,8 +10363,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "TELL"
     ],
+    "guaranteedVerbs": [
+      "TELL"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "CONVERSATION",
@@ -8858,12 +10393,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CONTROL-CENTER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LISTEN"
+    ],
     "verbRooms": {
       "LISTEN": [
         "CONTROL-CENTER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CURRENT-FEED",
@@ -8889,12 +10429,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NEWS"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "NEWS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "NEWS"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DELTA-SECTOR",
@@ -8917,8 +10464,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DISHES",
@@ -8946,8 +10496,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "WASH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GRIMWOLD",
@@ -8987,8 +10543,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "NO",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "OFFICE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PERELMAN",
@@ -9043,8 +10606,24 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHOW",
       "GIVE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "READ",
+      "WHO",
+      "WHAT",
+      "TELL-ABOUT",
+      "THANK",
+      "CALL",
+      "SHOW",
+      "GIVE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CONTROL-CENTER",
+      "OFFICE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WARREN",
@@ -9067,8 +10646,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FIREHOUSE-OBJECT",
@@ -9096,6 +10678,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FIREHOUSE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "THROUGH": [
         "FIREHOUSE"
@@ -9110,7 +10696,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "FIREHOUSE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GAMMA-SECTOR",
@@ -9133,8 +10721,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DUMP-OBJECT",
@@ -9172,6 +10763,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CITY-DUMP"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "CITY-DUMP"
@@ -9189,7 +10784,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CITY-DUMP"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HAM-SANDWICH",
@@ -9217,13 +10814,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FOODVILLE-2"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "BUY"
+    ],
     "verbRooms": {
       "BUY": [
         "FOODVILLE-1",
         "FOODVILLE-2"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HEIMAN-WORLD-OBJECT",
@@ -9258,6 +10860,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CONSTRUCTION-SITE-2"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "SOUTHWAY-AND-RIVER",
@@ -9277,7 +10884,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CONSTRUCTION-SITE-2"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LECTURE-HALL-OBJECT",
@@ -9304,6 +10913,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LECTURE-HALL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "ROCKVIL-UNIVERSITY"
@@ -9321,7 +10934,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "LECTURE-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LIBRARY-MODE",
@@ -9348,8 +10963,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LIBRARY-UNIT",
@@ -9369,8 +10987,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LIQUOR-STORE-OBJECT",
@@ -9400,6 +11021,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LIQUOR-STORE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "LEAVE": [
         "LIQUOR-STORE"
@@ -9417,7 +11043,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "LIQUOR-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DUCKS",
@@ -9450,8 +11078,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "KICK"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "TAKE",
+      "KICK"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "HALLEY-PARK-WEST"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PEREZ-TOWERS",
@@ -9485,6 +11122,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-RIVER"
@@ -9493,7 +11135,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-AND-RIVER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PICTUREPHONE",
@@ -9513,8 +11157,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MOLD",
@@ -9546,8 +11193,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "TAKE"
     ],
+    "guaranteedVerbs": [
+      "EAT",
+      "SMELL",
+      "TAKE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "FOODVILLE-2"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "REFRIGERATOR",
@@ -9573,8 +11229,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "EPILOGUE-KITCHEN"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SHOWER",
@@ -9607,8 +11268,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "ON"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE",
+      "TAKE",
+      "ON"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SOUP-KITCHEN",
@@ -9639,6 +11308,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSED-FACTORY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER"
@@ -9656,7 +11330,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CLOSED-FACTORY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RAILROAD-TRACKS",
@@ -9695,6 +11371,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WICKER-AND-RIVER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "CROSS"
+    ],
     "verbRooms": {
       "CROSS": [
         "WICKER-AND-PIER",
@@ -9705,7 +11384,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "WAREHOUSE-1"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TUBE-STATION",
@@ -9739,6 +11420,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "SMELL"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "RED-TUBECAR",
@@ -9760,7 +11446,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "WICKER-AND-RIVER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "UNSHAVEN-MAN",
@@ -9793,8 +11481,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SGIVE",
       "ASK-FOR"
     ],
+    "guaranteedVerbs": [
+      "GIVE",
+      "SGIVE",
+      "ASK-FOR"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "MY-MAILBOX",
@@ -9832,8 +11527,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "CLOSE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "EXAMINE",
+      "LOOK-INSIDE",
+      "UNLOCK",
+      "CLOSE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PARENTS",
@@ -9860,8 +11564,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BETA-SECTOR",
@@ -9884,8 +11591,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SODA",
@@ -9934,6 +11644,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "DRINK"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE",
+      "BUY",
+      "LOOK-INSIDE",
+      "DRINK"
+    ],
     "verbRooms": {
       "BUY": [
         "EZZIS-BAR",
@@ -9944,7 +11661,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DRUG-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CREDIT-CARD",
@@ -9967,8 +11686,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DERRICOPTERS",
@@ -9992,8 +11714,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LISTEN"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "LISTEN"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DINETTE-SET",
@@ -10020,8 +11748,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DINING-ROOM-OBJECT",
@@ -10050,6 +11781,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DINING-ROOM"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "EPILOGUE-KITCHEN",
@@ -10069,7 +11805,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DINING-ROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "INTERCHANGE-OBJECT",
@@ -10099,6 +11837,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "INTERCHANGE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "INTERCHANGE"
@@ -10116,7 +11859,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "INTERCHANGE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LIVING-ROOM-OBJECT",
@@ -10155,6 +11900,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "WASH"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "KITCHEN",
@@ -10187,7 +11938,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "EPILOGUE-LIVING-ROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BEER",
@@ -10227,6 +11980,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROW",
       "DRINK"
     ],
+    "guaranteedVerbs": [
+      "THROW",
+      "DRINK"
+    ],
     "verbRooms": {
       "BUY": [
         "EZZIS-BAR",
@@ -10236,7 +11993,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROYS-PAGODA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "CARLOT",
@@ -10279,6 +12038,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "SKYCAR-FACTORY"
@@ -10287,7 +12052,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SKYCAR-FACTORY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "POST-OFFICE-OBJECT",
@@ -10313,6 +12080,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "POST-OFFICE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "POST-OFFICE"
@@ -10330,7 +12102,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "POST-OFFICE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PROTRUSIONS",
@@ -10361,8 +12135,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RATION-CARD",
@@ -10391,6 +12170,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FOODVILLE-2"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "GIVE",
+      "SHOW"
+    ],
     "verbRooms": {
       "GIVE": [
         "FOODVILLE-1",
@@ -10401,7 +12184,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "FOODVILLE-2"
       ]
     },
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RED-TUBECAR-OBJECT",
@@ -10440,6 +12225,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WAIT-FOR"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "BOARD",
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "RED-TUBECAR"
@@ -10454,7 +12245,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "RED-TUBECAR"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "RED-TUBECAR"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RESIGNATION",
@@ -10474,8 +12269,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RUSTY-CROSS",
@@ -10505,8 +12303,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "SILVER-DOVE",
@@ -10524,8 +12328,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SUPERMARKET",
@@ -10564,6 +12371,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "SMELL",
+      "WASH"
+    ],
     "verbRooms": {
       "THROUGH": [
         "FOODVILLE-1",
@@ -10590,7 +12403,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "FOODVILLE-2"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "VENTILATION",
@@ -10614,8 +12429,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WATER-TOWER-OBJECT",
@@ -10648,8 +12466,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-FOO",
       "CLIMB-UP"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "CLIMB-FOO",
+      "CLIMB-UP"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MY-BUZZER",
@@ -10680,8 +12505,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUSH",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "PUSH",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AUDITORIUM",
@@ -10706,6 +12537,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STUDENT-UNION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -10714,7 +12549,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "STUDENT-UNION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CLERKMATON",
@@ -10730,8 +12567,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "COURTHOUSE-OBJECT",
@@ -10758,6 +12598,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "COURTHOUSE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "COURTHOUSE"
@@ -10775,7 +12620,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "COURTHOUSE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DRUG-STORE-OBJECT",
@@ -10805,6 +12652,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DRUG-STORE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "DISEMBARK": [
         "DRUG-STORE"
@@ -10822,7 +12674,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DRUG-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FIRECOPTER",
@@ -10853,8 +12707,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "THROUGH"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "BOARD",
+      "THROUGH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FLOODLIGHT",
@@ -10874,8 +12735,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HEADSTONES",
@@ -10911,8 +12775,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HUANG-HALL-OBJECT",
@@ -10948,6 +12818,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "HUANG-HALL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "CENTRE-AND-KENNEDY",
@@ -10969,7 +12844,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "HUANG-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "POOL-TABLE",
@@ -10995,8 +12872,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PRISM-NAME",
@@ -11012,8 +12894,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PROSTITUTE",
@@ -11040,8 +12925,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JOYBOOTH-BUTTON",
@@ -11065,8 +12953,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "PUSH"
     ],
+    "guaranteedVerbs": [
+      "PUSH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "JOYBOOTH"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RESTAURANT-OBJECT",
@@ -11117,6 +13012,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ELM-UNDERPASS"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "MAIN-AND-WICKER",
@@ -11147,7 +13047,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-AND-WICKER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RIVER-BANK",
@@ -11167,8 +13069,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SLEEP-MODE",
@@ -11195,8 +13100,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STADIUM-STANDS",
@@ -11228,8 +13136,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "VACANT-LOT",
@@ -11262,6 +13173,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FIRST-METHODIST-CHURCH"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "THROUGH": [
         "AQUARIUM-AND-RIVER",
@@ -11286,7 +13201,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "FIRST-METHODIST-CHURCH"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "VIEWSCREEN",
@@ -11313,8 +13230,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ON"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "ON"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WNN-FEEDER",
@@ -11353,8 +13276,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TRANSMIT",
       "HELLO"
     ],
+    "guaranteedVerbs": [
+      "STATUS",
+      "ON",
+      "OFF",
+      "SET",
+      "TRANSMIT",
+      "HELLO"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WNN-INSTRUCTIONS",
@@ -11370,8 +13303,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HANDS",
@@ -11406,8 +13342,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SHAKE",
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "WAVE",
+      "SHAKE",
+      "WASH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "APARTMENT-OBJECT",
@@ -11439,6 +13382,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "WASH"
+    ],
     "verbRooms": {
       "DISEMBARK": [
         "LIVING-ROOM"
@@ -11447,7 +13395,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "LIVING-ROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BATHROOMS",
@@ -11467,8 +13417,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "POOL",
@@ -11492,6 +13445,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "POOL-HALL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "PLAY",
+      "SHOOT"
+    ],
     "verbRooms": {
       "PLAY": [
         "POOL-HALL"
@@ -11500,7 +13457,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "POOL-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BLEACHERS",
@@ -11521,8 +13480,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SCHOOL-BOOKSTORE",
@@ -11550,6 +13512,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STUDENT-UNION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -11558,7 +13524,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "STUDENT-UNION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BOOKSTORE-OBJECT",
@@ -11590,6 +13558,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOOKSTORE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "SEARCH",
+      "SMELL"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "BOOKSTORE"
@@ -11613,7 +13588,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "BOOKSTORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BSF-GUARDS",
@@ -11638,8 +13615,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CAFETERIA-OBJECT",
@@ -11665,8 +13645,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "UNIVERSITY-CAFETERIA",
@@ -11690,6 +13675,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "STUDENT-UNION"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {
       "THROUGH": [
         "STUDENT-UNION"
@@ -11698,7 +13687,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "STUDENT-UNION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CITY-HALL-OBJECT",
@@ -11726,6 +13717,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ROCKVIL-CENTRE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "THROUGH": [
         "CITY-HALL"
@@ -11740,7 +13735,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROCKVIL-CENTRE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CLASSROOMS",
@@ -11769,6 +13766,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LECTURE-HALL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {
       "THROUGH": [
         "LECTURE-HALL"
@@ -11777,7 +13778,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "LECTURE-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ANDERSON-DIRECTORY",
@@ -11801,8 +13804,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "HEALTH-CENTER"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DORM-OBJECT",
@@ -11834,6 +13845,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "SMELL"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "SMELL"
+    ],
     "verbRooms": {
       "THROUGH": [
         "DORM"
@@ -11851,7 +13867,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DORM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DUCK-POND",
@@ -11890,8 +13908,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "SWIM"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "LOOK-INSIDE",
+      "PUT",
+      "THROW",
+      "BOARD",
+      "THROUGH",
+      "SWIM"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FIREPLACE",
@@ -11920,8 +13949,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FIRETRUCK",
@@ -11952,8 +13986,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "THROUGH"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "BOARD",
+      "THROUGH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "FIREHOUSE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LAMP-POST",
@@ -11981,8 +14024,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-UP",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "CLIMB-FOO",
+      "CLIMB-UP",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MACHINERY",
@@ -12000,8 +14050,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MANTA-RAY",
@@ -12021,8 +14074,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "AQUARIUM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MILKSHAKE",
@@ -12057,6 +14115,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "TAKE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "BUY": [
         "DRUG-STORE"
@@ -12065,7 +14128,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DRUG-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "NEWSPAPER",
@@ -12108,13 +14173,24 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "PUT"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "TAKE",
+      "BUY",
+      "PUT"
+    ],
     "verbRooms": {
       "BUY": [
         "BODANSKI-SQUARE",
         "DRUG-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "EPILOGUE-LIVING-ROOM",
+      "BODANSKI-SQUARE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PARTITION",
@@ -12140,8 +14216,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-AROUND",
       "LOOK"
     ],
+    "guaranteedVerbs": [
+      "LOOK-BEHIND",
+      "WALK-AROUND",
+      "LOOK"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "LIVING-ROOM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PLAN-DATA-DIRECTORY",
@@ -12157,8 +14242,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "POOL-HALL-OBJECT",
@@ -12187,6 +14275,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "POOL-HALL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "SMELL"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "POOL-HALL"
@@ -12207,7 +14301,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "POOL-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RESERVOIR",
@@ -12233,8 +14329,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SWIM",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BOARD",
+      "THROUGH",
+      "SWIM",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CHURCH-SKYCOPTER",
@@ -12262,8 +14366,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LISTEN",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "LISTEN",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "SOY-PATTY",
@@ -12296,13 +14406,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EAT",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EAT",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "BUY": [
         "FOODVILLE-1",
         "FOODVILLE-2"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SPACEPORT",
@@ -12329,6 +14445,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TERMINAL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "WALK-TO",
+      "THROUGH"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "TERMINAL"
@@ -12337,7 +14457,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "TERMINAL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TAX-STUDY",
@@ -12353,8 +14475,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TERMINAL-BANKS",
@@ -12381,8 +14506,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "READ"
     ],
+    "guaranteedVerbs": [
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TOWNHOUSE",
@@ -12410,6 +14540,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ELM-AND-PARK"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-AND-KENNEDY",
@@ -12422,7 +14553,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ELM-AND-PARK"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GOLD",
@@ -12446,8 +14579,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WAREHOUSE-OBJECT",
@@ -12482,6 +14618,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER",
@@ -12502,7 +14643,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "WAREHOUSE-2"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WATERPOOL",
@@ -12538,8 +14681,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "BOARD",
+      "SWIM",
+      "LOOK-INSIDE",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "KENNEDY-PARK"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HEAD",
@@ -12568,8 +14722,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MY-NAME",
@@ -12595,8 +14755,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WHAT"
     ],
+    "guaranteedVerbs": [
+      "WHAT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AQUARIUM-OBJECT",
@@ -12625,6 +14790,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "AQUARIUM"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "SMELL"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "HALLEY-PARK-EAST",
@@ -12651,7 +14822,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "AQUARIUM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BATHROOM-OBJECT",
@@ -12690,6 +14863,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "TAKE",
+      "EXAMINE",
+      "WASH"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "BEDROOM",
@@ -12717,7 +14897,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "EPILOGUE-BATHROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BSF-BASE",
@@ -12754,6 +14936,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "LEAVE": [
         "BASE-GATE"
@@ -12770,7 +14957,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SYMPHONY-ENTRANCE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BUILDING",
@@ -12811,6 +15000,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "LEAVE"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {
       "EXAMINE": [
         "BURNED-OUT-AREA",
@@ -12819,7 +15009,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CONSTRUCTION-SITE-5"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CEMETERY-OBJECT",
@@ -12849,6 +15041,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CHURCH-ENTRANCE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "CEMETERY",
@@ -12872,7 +15068,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CEMETERY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CHILDREN",
@@ -12906,8 +15104,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CRIMINAL",
@@ -12926,8 +15130,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DUNBARS-OBJECT",
@@ -12965,6 +15172,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ROCKVIL-CENTRE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "DUNBARS"
@@ -12982,7 +15194,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DUNBARS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DOORWAY",
@@ -13027,12 +15241,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLOSE",
       "LOOK-INSIDE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE",
+      "SMELL",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {
       "SMELL": [
         "WICKER-AND-RIVER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "EXHIBITS",
@@ -13082,13 +15304,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "RAILROAD-MUSEUM"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "AQUARIUM",
         "RAILROAD-MUSEUM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GRAFFITI",
@@ -13117,6 +15344,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "HALLEY-PARK-EAST"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "READ"
+    ],
     "verbRooms": {
       "READ": [
         "CEMETERY",
@@ -13126,7 +15356,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ELM-UNDERPASS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GUN-SHOP-OBJECT",
@@ -13155,6 +15387,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "GUN-SHOP"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXIT",
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "FACTORY-ENTRANCE"
@@ -13175,7 +15413,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "GUN-SHOP"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HARDWARE",
@@ -13204,12 +15444,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "TAKE"
     ],
+    "guaranteedVerbs": [
+      "TAKE"
+    ],
     "verbRooms": {
       "BUY": [
         "HARDWARE-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HOMEWORK",
@@ -13241,8 +15486,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "LIVING-ROOM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HOSPITAL-OBJECT",
@@ -13274,6 +15528,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "HOSPITAL-ANNEX"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "HOSPITAL",
@@ -13296,7 +15555,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "HOSPITAL-ANNEX"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JOYBOOTH-OBJECT",
@@ -13330,6 +15591,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "JOYBOOTH"
@@ -13347,7 +15612,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "JOYBOOTH"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MAGAZINE",
@@ -13383,6 +15650,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DRUG-STORE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "TAKE",
+      "READ",
+      "EXAMINE",
+      "BUY"
+    ],
     "verbRooms": {
       "TAKE": [
         "SKYCAB",
@@ -13400,7 +15673,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DRUG-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MIDNIGHT",
@@ -13418,8 +15693,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MITCHELL",
@@ -13471,8 +15749,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "TOUCH"
     ],
+    "guaranteedVerbs": [
+      "HELLO",
+      "KISS",
+      "EXAMINE",
+      "PLAY-WITH",
+      "FOLLOW",
+      "WALK-TO",
+      "TOUCH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "LIVING-ROOM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "OVERCOAT",
@@ -13493,8 +15784,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PAINTING",
@@ -13537,8 +15831,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MOVE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "MOVE",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PEDESTAL",
@@ -13562,8 +15863,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AIRPORT-SIGN",
@@ -13588,8 +15892,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "READ"
     ],
+    "guaranteedVerbs": [
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SKYLIGHT",
@@ -13614,8 +15923,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "LOOK-INSIDE"
     ],
+    "guaranteedVerbs": [
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SOUVENIR",
@@ -13650,12 +15964,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "BUY": [
         "TRAIN-STATION"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "TRAIN-STATION"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TENEMENT-OBJECT",
@@ -13710,6 +16032,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TENEMENT-1"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "SMELL"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER",
@@ -13745,7 +16073,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "TENEMENT-3"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PERELMAN-TERMINAL",
@@ -13769,8 +16099,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "READ"
     ],
+    "guaranteedVerbs": [
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SKYBUS-TERMINAL-OBJECT",
@@ -13798,6 +16133,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MAIN-AND-KENNEDY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "SKYBUS-TERMINAL",
@@ -13814,7 +16153,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SKYBUS-TERMINAL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "AIRPORT-TERMINAL-OBJECT",
@@ -13842,6 +16183,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "AIRPORT-ENTRANCE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "TERMINAL",
@@ -13861,7 +16206,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "TERMINAL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PLAN",
@@ -13879,8 +16226,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TOTE-BAGS",
@@ -13902,8 +16252,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CORE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TOY",
@@ -13936,8 +16291,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SQUEEZE",
       "PLAY-WITH"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "SQUEEZE",
+      "PLAY-WITH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "VIBRAMAT",
@@ -13963,8 +16325,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "ON",
+      "PUT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ME",
@@ -14031,6 +16400,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WASH",
       "CALL"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "LISTEN",
+      "ALARM",
+      "GIVE",
+      "KILL",
+      "MUNG",
+      "FIND",
+      "WHERE",
+      "WHO",
+      "FOLLOW",
+      "EXAMINE",
+      "WASH"
+    ],
     "verbRooms": {
       "FIND": [
         "MAIN-STREET-BRIDGE",
@@ -14053,7 +16436,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "COMM-ROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BARKING",
@@ -14078,8 +16463,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "LISTEN"
     ],
+    "guaranteedVerbs": [
+      "LISTEN"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "BEDROOM-OBJECT",
@@ -14120,6 +16510,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE",
+      "WASH"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "BEDROOM",
@@ -14153,7 +16549,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "GUEST-ROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BLANKET",
@@ -14189,8 +16587,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-ON",
       "WEAR"
     ],
+    "guaranteedVerbs": [
+      "PUT-ON",
+      "EXAMINE",
+      "BOARD",
+      "LIE-DOWN",
+      "CLIMB-ON",
+      "WEAR"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "JAIL-CELL"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CEILING",
@@ -14214,8 +16624,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "LOOK-UNDER"
     ],
+    "guaranteedVerbs": [
+      "LOOK-UNDER"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CLOTHES",
@@ -14267,6 +16682,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "REMOVE",
       "TAKE-OFF"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "TAKE",
+      "WEAR",
+      "REMOVE",
+      "TAKE-OFF",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "BUY": [
         "DUNBARS",
@@ -14283,7 +16706,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DUNBARS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "COOLING",
@@ -14307,8 +16732,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "COUNTER",
@@ -14336,6 +16764,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EPILOGUE-KITCHEN"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {
       "PUT": [
         "KITCHEN",
@@ -14346,7 +16775,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "EPILOGUE-KITCHEN"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "EPILOGUE-KITCHEN"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DECODER",
@@ -14371,8 +16804,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FACTORY-OBJECT",
@@ -14416,6 +16855,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SKYCAR-FACTORY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "WALK-TO",
+      "THROUGH",
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "WICKER-AND-RIVER",
@@ -14443,7 +16888,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "INDUSTRIAL-PARK-DRIVE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GUN",
@@ -14526,6 +16973,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "SHOOT"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "SHOOT",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "BUY": [
         "GUN-SHOP"
@@ -14540,7 +16992,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "GUN-SHOP"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HALLWAY",
@@ -14582,6 +17036,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FOYER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "EPILOGUE-LIVING-ROOM",
@@ -14622,7 +17080,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CINEMA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HEADSET",
@@ -14651,8 +17111,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "PUT-ON"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "PUT-ON"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "JOYBOOTH"
+    ],
+    "movesToCurrentRoom": true
   },
   {
     "id": "HEATING",
@@ -14677,8 +17145,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JUKEBOX",
@@ -14708,8 +17179,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PLAY"
     ],
+    "guaranteedVerbs": [
+      "LISTEN",
+      "ON",
+      "PLAY"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "KITCHEN-OBJECT",
@@ -14740,6 +17218,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "WASH"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "KITCHEN",
@@ -14762,7 +17246,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "EPILOGUE-KITCHEN"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MAIN-LIBRARY-OBJECT",
@@ -14794,6 +17280,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MAIN-LIBRARY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "SMELL"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-LIBRARY"
@@ -14814,7 +17306,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-LIBRARY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MAILBOXES",
@@ -14849,8 +17343,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "COUNT",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "UNLOCK",
+      "READ",
+      "COUNT",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MARQUEE",
@@ -14873,8 +17376,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "READ"
     ],
+    "guaranteedVerbs": [
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RECTORY-OBJECT",
@@ -14904,6 +17412,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CHURCH-ENTRANCE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "CONSTRUCTION-SITE-5",
@@ -14920,7 +17433,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CONSTRUCTION-SITE-5"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ROCKVIL-OBJECT",
@@ -14949,13 +17464,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "WALK-TO"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "ROOFTOP",
         "SKYCAB"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SHELVES",
@@ -14995,6 +17517,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FOODVILLE-2"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "BOOKSTORE",
@@ -15002,7 +17527,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "FOODVILLE-2"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SKYCAR",
@@ -15040,12 +17567,20 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "BUY"
     ],
+    "guaranteedVerbs": [
+      "WAIT-FOR",
+      "THROUGH",
+      "BOARD",
+      "COUNT"
+    ],
     "verbRooms": {
       "COUNT": [
         "SKYCAR-FACTORY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STADIUM-OBJECT",
@@ -15091,6 +17626,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TUBE-AT-STADIUM"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "BOARD",
+      "SIT"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "ROCKVIL-STADIUM",
@@ -15121,7 +17663,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROCKVIL-STADIUM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SOLARIUM-OBJECT",
@@ -15153,6 +17697,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SOLARIUM"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "PATIO",
@@ -15172,7 +17721,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SOLARIUM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SWEATER",
@@ -15207,8 +17758,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "TAKE",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "DUNBARS"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PATIO-OBJECT",
@@ -15236,6 +17796,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PATIO"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "PATIO"
@@ -15253,7 +17818,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "PATIO"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WASHERS",
@@ -15285,8 +17852,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "ON",
+      "PUT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ANIMAL",
@@ -15328,8 +17902,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "GIVE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TOUCH",
+      "FEED",
+      "GIVE",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ATRIUM",
@@ -15358,8 +17940,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BANNER",
@@ -15383,8 +17970,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "ZOO"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BUREAU",
@@ -15420,8 +18015,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "OPEN",
+      "CLOSE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BUZZERS",
@@ -15454,6 +18056,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUSH",
       "COUNT"
     ],
+    "guaranteedVerbs": [
+      "PUSH",
+      "EXAMINE",
+      "READ",
+      "COUNT"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "PARKVIEW-APARTMENTS"
@@ -15462,7 +18070,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "PARKVIEW-APARTMENTS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "CAMPUS",
@@ -15500,6 +18110,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ROCKVIL-UNIVERSITY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK"
+    ],
     "verbRooms": {
       "THROUGH": [
         "ELM-AND-UNIVERSITY",
@@ -15528,7 +18142,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "LECTURE-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CHURCH-OBJECT",
@@ -15579,6 +18195,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ST-MICHAELS"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "BODANSKI-SQUARE",
@@ -15613,7 +18234,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MIDLAND-AND-RIVER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DRYERS",
@@ -15645,8 +18268,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "PUT"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "ON",
+      "PUT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FLOORS",
@@ -15666,8 +18296,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GROUND",
@@ -15703,8 +18336,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-UNDER",
       "LEAVE"
     ],
+    "guaranteedVerbs": [
+      "LEAVE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LIQUOR",
@@ -15739,6 +18377,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "TAKE"
     ],
+    "guaranteedVerbs": [
+      "TAKE"
+    ],
     "verbRooms": {
       "BUY": [
         "LIQUOR-STORE",
@@ -15750,7 +18391,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROYS-PAGODA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "OTHER-LIQUOR",
@@ -15794,6 +18437,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ROYS-PAGODA"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {
       "BUY": [
         "LIQUOR-STORE",
@@ -15805,7 +18449,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROYS-PAGODA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LOUNGE",
@@ -15831,6 +18477,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "SMELL"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO",
+      "SMELL"
+    ],
     "verbRooms": {
       "THROUGH": [
         "DORM"
@@ -15839,7 +18490,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DORM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MINDEX",
@@ -15870,8 +18523,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SMELL",
       "BUY"
     ],
+    "guaranteedVerbs": [
+      "PUSH",
+      "MOVE",
+      "TOUCH",
+      "SMELL"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MUSEUM-OBJECT",
@@ -15903,6 +18564,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "RAILROAD-MUSEUM"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "RIVERSIDE-PARK",
@@ -15929,7 +18595,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MUSEUM-ENTRANCE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "INTNUM",
@@ -15947,8 +18615,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "OFFICE-OBJECT",
@@ -15971,8 +18642,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PROFESSOR-OFFICES",
@@ -16001,6 +18677,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LECTURE-HALL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {
       "THROUGH": [
         "LECTURE-HALL"
@@ -16009,7 +18689,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "LECTURE-HALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PEOPLE",
@@ -16062,6 +18744,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL-ABOUT",
       "FOLLOW"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "ASK-ABOUT",
+      "TELL-ABOUT",
+      "EXAMINE",
+      "LISTEN"
+    ],
     "verbRooms": {
       "WAIT-FOR": [
         "CORE",
@@ -16075,7 +18764,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROCKVIL-STADIUM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PLAQUE",
@@ -16097,8 +18788,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [
+      "KENNEDY-PARK"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JAIL-OBJECT",
@@ -16140,6 +18836,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "LOOK-INSIDE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "LOOK-INSIDE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "WATER-TOWER",
@@ -16166,7 +18868,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROCKVIL-REFORMATORY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CC-PRINTOUT",
@@ -16195,8 +18899,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SCHOOL-OBJECT",
@@ -16240,6 +18950,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DENTAL-SCHOOL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "AQUARIUM-AND-KENNEDY",
@@ -16265,7 +18980,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "AQUARIUM-AND-KENNEDY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SKYBUS",
@@ -16293,8 +19010,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "FIND"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "WAIT-FOR",
+      "EXAMINE",
+      "FIND"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SKYCAB-OBJECT",
@@ -16332,8 +19057,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DISEMBARK",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXIT",
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STAIRS",
@@ -16374,6 +19107,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-FOO",
       "CLIMB-DOWN"
     ],
+    "guaranteedVerbs": [
+      "CLIMB-UP",
+      "CLIMB-FOO",
+      "CLIMB-DOWN",
+      "SMELL",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "SMELL": [
         "WICKER-AND-RIVER"
@@ -16382,7 +19122,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MASTER-BEDROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STATUE",
@@ -16412,8 +19154,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "KENNEDY-PARK"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HALLEY-STATUE",
@@ -16445,8 +19195,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "WHO",
+      "EXAMINE",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TICKET",
@@ -16485,6 +19242,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "TAKE",
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "BUY": [
         "CINEMA",
@@ -16495,7 +19258,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "TERMINAL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CINEMA"
+    ],
+    "movesToCurrentRoom": true
   },
   {
     "id": "TOILET",
@@ -16523,8 +19290,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FLUSH",
       "LOOK-INSIDE"
     ],
+    "guaranteedVerbs": [
+      "FLUSH",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "EPILOGUE-BATHROOM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TUNNEL",
@@ -16549,13 +19324,19 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "LOOK-INSIDE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "HALLEY-AND-PARK",
         "AQUARIUM-AND-PARK"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TURTLE",
@@ -16575,8 +19356,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "AQUARIUM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WALLET",
@@ -16599,8 +19385,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "APARTMENT-WINDOW",
@@ -16631,8 +19420,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GLOBAL-WINDOW",
@@ -16682,6 +19478,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "CLOSE"
     ],
+    "guaranteedVerbs": [
+      "LOOK-INSIDE",
+      "EXAMINE",
+      "OPEN",
+      "CLOSE"
+    ],
     "verbRooms": {
       "LOOK-INSIDE": [
         "RAILROAD-MUSEUM",
@@ -16690,7 +19492,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SKYCAB"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ALARM",
@@ -16715,8 +19519,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "LISTEN"
     ],
+    "guaranteedVerbs": [
+      "LISTEN"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ALLEY-OBJECT",
@@ -16748,6 +19557,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BAR"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "ALLEY",
@@ -16769,7 +19583,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ALLEY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ANNEX-OBJECT",
@@ -16803,6 +19619,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "HOSPITAL-ANNEX"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "HOSPITAL",
@@ -16822,7 +19643,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "HOSPITAL-ANNEX"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "APPLE",
@@ -16847,8 +19670,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "BUY"
     ],
+    "guaranteedVerbs": [
+      "BUY"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BENCH",
@@ -16874,8 +19702,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BOOKS",
@@ -16914,6 +19747,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MAIN-LIBRARY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "BUY",
+      "SEARCH",
+      "EXAMINE",
+      "READ",
+      "OPEN",
+      "TAKE",
+      "SMELL"
+    ],
     "verbRooms": {
       "BUY": [
         "BOOKSTORE"
@@ -16940,7 +19782,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-LIBRARY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "CAGES",
@@ -16975,8 +19819,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "UNLOCK"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "EXAMINE",
+      "LOOK-INSIDE",
+      "OPEN",
+      "UNLOCK"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CHAIR",
@@ -17016,8 +19869,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-ON",
       "BOARD"
     ],
+    "guaranteedVerbs": [
+      "SIT",
+      "CLIMB-ON",
+      "BOARD"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "DINING-ROOM"
+    ],
+    "movesToCurrentRoom": true
   },
   {
     "id": "CLAVE",
@@ -17043,8 +19905,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "COUCH",
@@ -17066,8 +19931,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CRATE",
@@ -17096,8 +19964,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CRIME",
@@ -17118,8 +19992,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DRUGS",
@@ -17149,12 +20026,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DRUG-STORE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "BUY"
+    ],
     "verbRooms": {
       "BUY": [
         "DRUG-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "EASEL",
@@ -17184,8 +20066,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "MOVE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TAKE",
+      "MOVE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FENCE",
@@ -17220,6 +20108,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ROOFTOP"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "CLIMB-FOO",
+      "CLIMB-UP",
+      "CLIMB-OVER",
+      "LEAP"
+    ],
     "verbRooms": {
       "CLIMB-FOO": [
         "ROOFTOP"
@@ -17234,7 +20128,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROOFTOP"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FIELD",
@@ -17264,6 +20160,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ATHLETIC-FIELD"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "RIVER-AND-PARK",
@@ -17288,7 +20189,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ATHLETIC-FIELD"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GLASS",
@@ -17319,6 +20222,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CHURCH-STREET-APARTMENTS"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "TAKE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "FOODVILLE-2",
@@ -17329,7 +20236,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CONSTRUCTION-SITE-5"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "HOTEL-OBJECT",
@@ -17365,6 +20274,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "COLONIAL-HOTEL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "CENTRE-AND-KENNEDY",
@@ -17390,7 +20304,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CENTRE-AND-KENNEDY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "LABEL",
@@ -17421,8 +20337,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "COUNT",
+      "READ",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MOVIE",
@@ -17447,8 +20370,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROUGH",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MUSIC",
@@ -17476,12 +20404,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BAR"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LISTEN"
+    ],
     "verbRooms": {
       "LISTEN": [
         "BAR"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "NIGHT",
@@ -17507,8 +20440,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WAIT-FOR"
     ],
+    "guaranteedVerbs": [
+      "WAIT-FOR"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RIVER",
@@ -17544,12 +20482,21 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SWIM",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "BOARD",
+      "THROUGH",
+      "LEAP",
+      "SWIM"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "PATIO"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SCARF",
@@ -17577,8 +20524,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BUY",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SLEEP",
@@ -17603,8 +20556,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "WALK-TO"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SMOKE",
@@ -17640,6 +20596,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BURGER-MEISTER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "WALK-TO",
+      "SMELL"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "MAIN-AND-WICKER"
@@ -17653,7 +20613,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MAIN-AND-WICKER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "OFFICIAL-SNACK",
@@ -17686,8 +20648,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "TAKE",
+      "EAT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CITY-HALL"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STONES",
@@ -17713,8 +20684,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "TAKE"
     ],
+    "guaranteedVerbs": [
+      "TAKE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "ATHLETIC-FIELD"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BAR-STOOL",
@@ -17742,8 +20720,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "PUT"
     ],
+    "guaranteedVerbs": [
+      "PUT"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "STORE-OBJECT",
@@ -17772,8 +20755,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-TO",
       "THROUGH"
     ],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "WALK-TO",
+      "THROUGH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GLOBAL-TABLE",
@@ -17808,12 +20799,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PUT",
       "PUT-ON"
     ],
+    "guaranteedVerbs": [
+      "PUT",
+      "PUT-ON"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "CAFETERIA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RESTAURANT-TABLE",
@@ -17839,6 +20836,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ROYS-PAGODA"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "BOARD",
+      "SIT"
+    ],
     "verbRooms": {
       "BOARD": [
         "ROYS-PAGODA"
@@ -17847,7 +20848,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROYS-PAGODA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": true
   },
   {
     "id": "WASTE",
@@ -17879,8 +20882,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WATER",
@@ -17918,6 +20926,12 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "AQUARIUM"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "BUY",
+      "DRINK",
+      "OFF",
+      "ON"
+    ],
     "verbRooms": {
       "BUY": [
         "SIMONS",
@@ -17939,7 +20953,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "KITCHEN"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WOMAN",
@@ -17973,8 +20989,16 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TELL-ABOUT",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "ASK-ABOUT",
+      "TELL-ABOUT",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BABY",
@@ -18037,8 +21061,25 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "THROW",
       "KICK"
     ],
+    "guaranteedVerbs": [
+      "TELL",
+      "WASH",
+      "GIVE",
+      "EXAMINE",
+      "FEED",
+      "SHOW",
+      "THANK",
+      "PLAY-WITH",
+      "KISS",
+      "SHAKE",
+      "ALARM",
+      "THROW",
+      "KICK"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BANK-OBJECT",
@@ -18065,6 +21106,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BANK"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "BANK"
@@ -18082,7 +21128,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "BANK"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CARD-CATALOG-CARD",
@@ -18098,8 +21146,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "CRIB",
@@ -18128,8 +21179,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "CLOSE"
     ],
+    "guaranteedVerbs": [
+      "CLOSE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "BEDROOM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DAWN",
@@ -18151,8 +21209,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DESK",
@@ -18171,8 +21232,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PERELMAN-DESK",
@@ -18203,8 +21267,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PARKVIEW-DOOR",
@@ -18232,8 +21302,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "UNLOCK",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "UNLOCK",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "APARTMENT-DOOR",
@@ -18261,6 +21338,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PARKVIEW-HALL"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "OPEN",
+      "THROUGH",
+      "UNLOCK",
+      "LOCK",
+      "KNOCK"
+    ],
     "verbRooms": {
       "OPEN": [
         "FOYER",
@@ -18282,7 +21366,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "FOYER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "FOYER"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "UNOPENABLE-DOOR",
@@ -18315,6 +21403,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "UNLOCK"
     ],
+    "guaranteedVerbs": [
+      "OPEN",
+      "UNLOCK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "UNIVERSITY-HEIGHTS",
@@ -18322,7 +21415,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CHURCH-STREET-APARTMENTS"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WAREHOUSE-DOOR",
@@ -18348,8 +21443,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "OPEN",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "OPEN",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DUSK",
@@ -18371,8 +21473,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FISH",
@@ -18401,8 +21506,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EAT",
       "TOUCH"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "EAT",
+      "TOUCH"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MEAL",
@@ -18454,6 +21566,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "WAIT-FOR",
+      "TAKE",
+      "EAT",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "FOODVILLE-2",
@@ -18488,7 +21607,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "THE-COACHMAN"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "FYLA",
@@ -18507,8 +21628,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GATE",
@@ -18550,6 +21674,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CHURCH-ENTRANCE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "OPEN",
+      "CLOSE",
+      "THROUGH"
+    ],
     "verbRooms": {
       "OPEN": [
         "SKYBUS-TERMINAL",
@@ -18585,7 +21714,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SKYCAR-LOT-4"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "JILL",
@@ -18662,12 +21793,39 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "FOLLOW",
       "SIT-NEXT-TO"
     ],
+    "guaranteedVerbs": [
+      "WHO",
+      "WHAT",
+      "TELL-ABOUT",
+      "HELLO",
+      "EXAMINE",
+      "CLIMB-ON",
+      "CLIMB-FOO",
+      "BOARD",
+      "LIE-DOWN",
+      "ALARM",
+      "PLAY-WITH",
+      "TOUCH",
+      "SQUEEZE",
+      "KISS",
+      "GIVE",
+      "FOLLOW",
+      "SIT-NEXT-TO"
+    ],
     "verbRooms": {
       "GIVE": [
         "BEDROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "LIVING-ROOM",
+      "BEDROOM",
+      "BATHROOM",
+      "KITCHEN",
+      "MASTER-BEDROOM"
+    ],
+    "movesToCurrentRoom": true
   },
   {
     "id": "LAWN",
@@ -18691,8 +21849,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MALL-OBJECT",
@@ -18722,6 +21883,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ELM-AND-RIVER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "ROCKVIL-MALL",
@@ -18740,7 +21905,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ROCKVIL-MALL"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MENU",
@@ -18772,8 +21939,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "ASK-NO-ONE-FOR"
     ],
+    "guaranteedVerbs": [
+      "READ",
+      "EXAMINE",
+      "ASK-NO-ONE-FOR"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "NOON",
@@ -18793,8 +21967,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "NOTE",
@@ -18812,8 +21989,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": true
+    "hasText": true,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PARK-OBJECT",
@@ -18871,6 +22051,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     ],
     "globalVerbs": [
       "EXAMINE"
+    ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "DISEMBARK",
+      "LEAVE"
     ],
     "verbRooms": {
       "EXAMINE": [
@@ -18933,7 +22118,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CHURCH-STREET-PARK"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PIER-OBJECT",
@@ -18970,6 +22157,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PIER"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "SKYCAB",
@@ -18992,7 +22184,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "PIER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PLAY",
@@ -19017,6 +22211,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "PICKFORD-THEATRE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "THROUGH",
+      "WALK-TO"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "WELLS-THEATRE",
@@ -19031,7 +22230,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "PICKFORD-THEATRE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PAMPHLET-RACK",
@@ -19059,8 +22260,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "LOOK-INSIDE"
     ],
+    "guaranteedVerbs": [
+      "PUT",
+      "EXAMINE",
+      "LOOK-INSIDE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "RAMP",
@@ -19086,8 +22294,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CLIMB-FOO",
       "CLIMB-DOWN"
     ],
+    "guaranteedVerbs": [
+      "CLIMB-UP",
+      "CLIMB-FOO",
+      "CLIMB-DOWN"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STREET",
@@ -19118,8 +22333,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "CROSS",
       "FOLLOW"
     ],
+    "guaranteedVerbs": [
+      "CROSS"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ROOF",
@@ -19138,8 +22358,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "handledVerbs": [],
     "actionRooms": [],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "GLOBAL-ROOM",
@@ -19183,8 +22406,18 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "WALK-AROUND",
       "WASH"
     ],
+    "guaranteedVerbs": [
+      "LOOK",
+      "EXAMINE",
+      "LOOK-INSIDE",
+      "LEAVE",
+      "DISEMBARK",
+      "WALK-AROUND"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SACK",
@@ -19210,8 +22443,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "MAIN-STREET-BRIDGE"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SEAT",
@@ -19245,6 +22485,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "SKYCAB"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "COUNT"
+    ],
     "verbRooms": {
       "COUNT": [
         "LECTURE-HALL"
@@ -19253,7 +22496,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "SKYCAB"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "SKYCAB"
+    ],
+    "movesToCurrentRoom": true
   },
   {
     "id": "GLOBAL-SIGN",
@@ -19295,8 +22542,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "READ",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TUBE-SIGN",
@@ -19324,8 +22574,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "READ"
     ],
+    "guaranteedVerbs": [
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SINK",
@@ -19364,6 +22619,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ON",
       "OFF"
     ],
+    "guaranteedVerbs": [
+      "PUT",
+      "EXAMINE",
+      "LOOK-INSIDE",
+      "TURN",
+      "ON",
+      "OFF"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "KITCHEN"
@@ -19372,7 +22635,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "KITCHEN"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SLOT",
@@ -19399,6 +22664,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "PUT"
     ],
+    "guaranteedVerbs": [
+      "PUT"
+    ],
     "verbRooms": {
       "PUT": [
         "JOYBOOTH",
@@ -19406,7 +22674,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "CINEMA"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "STEW",
@@ -19445,6 +22715,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EAT"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "TAKE",
+      "EAT"
+    ],
     "verbRooms": {
       "BUY": [
         "CLOSED-FACTORY",
@@ -19454,7 +22729,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "BURGER-MEISTER"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "CLOSED-FACTORY"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TANK",
@@ -19488,8 +22767,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "SWIM"
     ],
+    "guaranteedVerbs": [
+      "LOOK-INSIDE",
+      "WASH",
+      "THROUGH",
+      "BOARD",
+      "SWIM"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TOOL",
@@ -19514,12 +22802,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "HARDWARE-STORE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [],
     "verbRooms": {
       "BUY": [
         "HARDWARE-STORE"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "VENT",
@@ -19545,8 +22836,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "LISTEN"
     ],
+    "guaranteedVerbs": [
+      "LISTEN"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "VEST",
@@ -19580,8 +22876,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "TAKE",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "BUY",
+      "TAKE",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "WALLS",
@@ -19605,12 +22908,17 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ROCKVIL-REFORMATORY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {
       "EXAMINE": [
         "ROCKVIL-REFORMATORY"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BAR-OBJECT",
@@ -19658,6 +22966,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ALLEY"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE",
+      "SMELL",
+      "PUT-ON"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "BURGER-MEISTER",
@@ -19699,7 +23014,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "BAR"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "BED",
@@ -19732,6 +23049,7 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WALK-TO"
     ],
+    "guaranteedVerbs": [],
     "verbRooms": {
       "TAKE": [
         "MASTER-BEDROOM"
@@ -19743,7 +23061,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "MASTER-BEDROOM"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [
+      "MASTER-BEDROOM"
+    ],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DAY",
@@ -19768,8 +23090,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "WAIT-FOR"
     ],
+    "guaranteedVerbs": [
+      "WAIT-FOR"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "DEN-OBJECT",
@@ -19797,6 +23124,11 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "DEN"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "LEAVE",
+      "DISEMBARK",
+      "EXAMINE"
+    ],
     "verbRooms": {
       "WALK-TO": [
         "FOYER"
@@ -19814,7 +23146,9 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "DEN"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "KEY",
@@ -19840,8 +23174,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "MAP",
@@ -19871,8 +23210,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "PEN",
@@ -19901,8 +23246,14 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "EXAMINE",
       "READ"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE",
+      "READ"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "SKY",
@@ -19926,8 +23277,13 @@ export const WORLD_OBJECTS: WorldObject[] = [
     "globalVerbs": [
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "TUB",
@@ -19960,8 +23316,15 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "BOARD",
       "EXAMINE"
     ],
+    "guaranteedVerbs": [
+      "THROUGH",
+      "BOARD",
+      "EXAMINE"
+    ],
     "verbRooms": {},
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   },
   {
     "id": "ZOO-OBJECT",
@@ -19992,6 +23355,10 @@ export const WORLD_OBJECTS: WorldObject[] = [
       "ZOO-ENTRANCE"
     ],
     "globalVerbs": [],
+    "guaranteedVerbs": [
+      "DISEMBARK",
+      "LEAVE"
+    ],
     "verbRooms": {
       "THROUGH": [
         "ZOO",
@@ -20011,6 +23378,8 @@ export const WORLD_OBJECTS: WorldObject[] = [
         "ZOO"
       ]
     },
-    "hasText": false
+    "hasText": false,
+    "dynamicLocations": [],
+    "movesToCurrentRoom": false
   }
 ];

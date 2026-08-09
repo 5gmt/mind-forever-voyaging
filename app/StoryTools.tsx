@@ -38,7 +38,7 @@ type InterfacePortId = (typeof INTERFACE_PORTS)[number]["id"];
 
 const hasFlag = (object: WorldObject, flag: string) => object.flags.includes(flag);
 const handles = (object: WorldObject, roomId: string | null | undefined, ...verbs: string[]) => verbs.some((verb) => {
-  const globalBranchApplies = object.globalVerbs.includes(verb) && (!object.actionRooms.length || Boolean(roomId && object.actionRooms.includes(roomId)));
+  const globalBranchApplies = object.globalVerbs.includes(verb) && object.guaranteedVerbs.includes(verb) && (!object.actionRooms.length || Boolean(roomId && object.actionRooms.includes(roomId)));
   return globalBranchApplies || Boolean(roomId && object.verbRooms[verb]?.includes(roomId));
 });
 
