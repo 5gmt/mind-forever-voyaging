@@ -30,6 +30,21 @@ Across the assisted levels:
 
 Every submitted control uses nouns, adjectives, grammar, room-local globals, and action routines from the original parser. Commented-out ZIL definitions and generic parser-global vocabulary are excluded from scene suggestions, and the establishing scene remains stable until the player moves or uses LOOK. Free typing remains available throughout.
 
+## How the wrapper stays in sync
+
+The canonical Release 79 interpreter remains the authority. Guided controls never move the player, complete an objective, or change a story flag themselves: each one submits an ordinary parser command to Parchment and waits for the interpreter to accept it and print the result.
+
+The current integration is output-derived rather than a direct read of Z-machine memory:
+
+- `public/player-bridge.js` watches Parchment’s transcript, status window, grid window, and active input. It reports the latest text, whether the story expects a line or a single character, and whether the interpreter is ready for another command.
+- `app/PrismEdition.tsx` derives the current mode, year, location, available simulations, outlets, ports, and major story phase from the status window and exact messages printed by the original game.
+- `scripts/extract-world.mjs` builds `app/world-data.ts` from the historical ZIL source. The interface combines that authored room/object graph with the resolved location and the nouns actually mentioned in the current scene before offering navigation or actions.
+- Ambiguous locations are resolved conservatively using the previous room, the last movement command, and the current passage. If there is no reliable answer, the wrapper withholds graph-derived controls instead of guessing.
+
+The fieldwork checklist follows the same authored moments that fill `RECORDING-TABLE` in Release 79. It reconstructs the passages printed while RECORD is active and matches the canonical events for the nine requested observations. It does **not** currently read that table from VM memory.
+
+This design keeps the original story file untouched and ensures every assisted action still goes through the original parser. Its remaining limitation is saved-state rollback: RESTART is detected and resets the shell, but RESTORE or UNDO to an earlier state cannot yet roll every derived discovery flag back with VM-level certainty. A future hardened integration could expose a small read-only telemetry packet from Parchment—current room, mode, year, recording bitmask, and save generation—while continuing to run the unmodified, checksum-verified Release 79 story.
+
 Spoiler/debug tools live under **About**. After explicit confirmation they load `public/amfv-modern-debug.z4`, a separate Release 900 QA build with the dormant `$CHEAT` routines restored. The untouched Release 79 session remains mounted and resumes where it was left.
 
 ## Local development
