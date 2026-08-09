@@ -125,6 +125,13 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /How would you like to play/);
   assert.match(shell, /setIntroOpen\(true\)/);
   assert.doesNotMatch(shell, /setIntroOpen\(!hasVisited\)/);
+  assert.doesNotMatch(shell, /localStorage\.getItem\("amfv:(?:designation|modes|years|discoveries)"\)/);
+  assert.match(shell, /const simulationInvitationSeen = qaEnabled[\s\S]*programming team has finished entering the parameters for the plan/);
+  assert.match(shell, /const simulationReady = simulationInvitationSeen && mode === "Communications Mode" && phase !== "witness" && phase !== "lockdown"/);
+  assert.doesNotMatch(shell, /const simulationReady = discovery\.simulationCleared/);
+  assert.match(shell, /Simulation Controller ready/);
+  assert.match(shell, /Begin the final voyage/);
+  assert.match(shell, /const nextMode = freshCanonicalOpening \? null : detectMode/);
   assert.match(shell, /actorAppearsPresent/);
   assert.match(shell, /actorHasDeparted/);
   assert.doesNotMatch(shell, /object\.initialLocation === "LOCAL-GLOBALS" && !object\.id\.endsWith/);
@@ -160,6 +167,7 @@ test("ships the physical package materials beside the story", async () => {
   assert.match(tools, /\$\{noun\}, hello/);
   assert.match(tools, /hasFlag\(object, "READBIT"\)/);
   assert.match(tools, /canonicalActions/);
+  assert.match(tools, /object\.initialLocation === "LOCAL-GLOBALS" && \["enter", "leave"\]\.includes\(definition\.action\.id\)/);
   assert.match(tools, /refusalOnlyVerbs/);
   assert.match(tools, /RockvilNavigator/);
   assert.match(tools, /fieldwork destination/);

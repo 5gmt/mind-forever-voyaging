@@ -748,14 +748,14 @@ summary:focus-visible {
   margin-top: 4px;
   color: var(--paper);
   font-family: Georgia, serif;
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 400;
 }
 
 .simulation-ready small {
   margin-top: 4px;
   color: var(--paper-muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .simulation-ready > button {
@@ -766,7 +766,7 @@ summary:focus-visible {
   color: #10140f;
   cursor: pointer;
   font-family: var(--font-geist-mono), monospace;
-  font-size: 10px;
+  font-size: 13px;
   font-weight: 850;
   letter-spacing: 0.06em;
   text-transform: uppercase;

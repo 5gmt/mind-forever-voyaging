@@ -496,22 +496,14 @@ export default function PrismEdition() {
 
   useEffect(() => {
     try {
-      const hasVisited = localStorage.getItem("amfv:welcomed") === "true";
-      const storedYears = JSON.parse(localStorage.getItem("amfv:years") || "[]") as number[];
-      const storedDiscovery = JSON.parse(localStorage.getItem("amfv:discoveries") || "null") as Discovery | null;
+      // Story capabilities belong to the active interpreter, never to stale wrapper memory.
+      for (const key of ["amfv:designation", "amfv:modes", "amfv:years", "amfv:discoveries"]) localStorage.removeItem(key);
       // eslint-disable-next-line react-hooks/set-state-in-effect -- browser-only session continuity is available after hydration
-      setReturning(hasVisited);
+      setReturning(false);
       setIntroOpen(true);
-      setVisitedYears(storedYears);
-      setAvailableYears(storedYears);
-      visitedYearsRef.current = storedYears;
-      if (storedDiscovery) setDiscovery(storedDiscovery);
-      else if (storedYears.length) setDiscovery({ ...EMPTY_DISCOVERY, identityKnown: true, originKnown: true, simulationCleared: true, simulationEntered: true, partTwo: storedYears.length > 1 });
       setVisitedRooms(JSON.parse(localStorage.getItem("amfv:rooms") || "{}"));
       setCommandHistory(JSON.parse(localStorage.getItem("amfv:history") || "[]"));
       setNotes(JSON.parse(localStorage.getItem("amfv:notes") || "[]"));
-      setKnownModes(JSON.parse(localStorage.getItem("amfv:modes") || "[]"));
-      setDesignationKnown(localStorage.getItem("amfv:designation") === "true" || Boolean(storedDiscovery?.identityKnown) || storedYears.length > 0);
       setFontScale(Number(localStorage.getItem("amfv:font-size")) || 17);
       setReadingMode(localStorage.getItem("amfv:reading-mode") === "mono" ? "mono" : "serif");
       const storedInteraction = localStorage.getItem("amfv:interaction-level");
@@ -551,8 +543,9 @@ export default function PrismEdition() {
       const nextRecent = typeof event.data.recentText === "string" ? event.data.recentText : nextTranscript.slice(-5000);
       const status = typeof event.data.statusText === "string" ? event.data.statusText : "";
       const freshCanonicalOpening = !qaEnabled && nextTranscript.length < 2000 && nextTranscript.includes("Tomorrow never yet");
+      const pristineOpening = nextTranscript.includes("Tomorrow never yet") && /Hit\s+any\s+key\s+to\s+continue/i.test(nextTranscript);
       const priorMode = modeRef.current;
-      const nextMode = detectMode(status, nextTranscript, priorMode);
+      const nextMode = freshCanonicalOpening ? null : detectMode(status, nextTranscript, priorMode);
       const nextYear = nextMode === "Simulation Mode" ? detectYear(status, nextRecent, yearRef.current) : null;
       const locationMatch = status.match(/Location:\s*([\s\S]*?)(?:Date:|$)/i);
       const nextStatusLocation = locationMatch?.[1].replace(/\s+/g, " ").trim();
@@ -586,6 +579,7 @@ export default function PrismEdition() {
         } catch { /* optional */ }
       }
       setPlayerReady(true);
+      setReturning(nextTranscript.length > 0 && !pristineOpening);
       setTranscript(nextTranscript);
       const packageCues: Array<{ index: number; item: PackageItem }> = [
         { index: nextTranscript.lastIndexOf("This is the map that you'll find in your"), item: "map" },
@@ -599,7 +593,6 @@ export default function PrismEdition() {
       }
       if (nextTranscript.includes("PRISM")) {
         setDesignationKnown(true);
-        if (!qaEnabled) try { localStorage.setItem("amfv:designation", "true"); } catch { /* optional */ }
       }
       setRecentText(nextRecent);
       const recentCommands = [...nextRecent.matchAll(/>[ \t]*([^\r\n]+)(?:\r?\n|$)/g)];
@@ -644,14 +637,12 @@ export default function PrismEdition() {
         setKnownModes((previous) => {
           if (previous.includes(nextMode)) return previous;
           const next = [...previous, nextMode];
-          if (!qaEnabled) try { localStorage.setItem("amfv:modes", JSON.stringify(next)); } catch { /* optional */ }
           return next;
         });
       }
 
       setDiscovery((previous) => {
         const next = progressFromTranscript(freshCanonicalOpening ? EMPTY_DISCOVERY : previous, nextTranscript);
-        if (!qaEnabled) try { localStorage.setItem("amfv:discoveries", JSON.stringify(next)); } catch { /* optional */ }
         return next;
       });
 
@@ -662,7 +653,6 @@ export default function PrismEdition() {
         visitedYearsRef.current = next;
         setVisitedYears(next);
         setAvailableYears((previous) => [...new Set([...previous, nextYear])].sort());
-        if (!qaEnabled) try { localStorage.setItem("amfv:years", JSON.stringify(next)); } catch { /* optional */ }
       }
 
       if (nextRoom && nextRoom.id !== priorRoom?.id) {
@@ -779,7 +769,6 @@ export default function PrismEdition() {
   };
 
   const begin = () => {
-    try { localStorage.setItem("amfv:welcomed", "true"); } catch { /* optional */ }
     setReturning(true);
     setIntroOpen(false);
     setTimeout(() => commandRef.current?.focus(), 140);
@@ -869,10 +858,13 @@ export default function PrismEdition() {
     setDebugMessage("Fresh QA story loaded.");
   };
 
+  const simulationInvitationSeen = qaEnabled
+    ? discovery.simulationCleared
+    : /programming team has finished entering the parameters for the plan|simulation mode at any time/i.test(transcript);
   const panelTabs: Array<{ id: Panel; label: string }> = [
     { id: "guide", label: "Assist" },
     ...(interactionLevel !== "classic" ? [{ id: "context" as Panel, label: mode === "Library Mode" ? "Files" : mode === "Interface Mode" ? "Systems" : mode === "Simulation Mode" ? "Explore" : "Signals" }] : []),
-    ...(discovery.simulationCleared ? [{ id: "evidence" as Panel, label: discovery.simulationEntered ? "Evidence" : "Field brief" }] : []),
+    ...(simulationInvitationSeen ? [{ id: "evidence" as Panel, label: discovery.simulationEntered ? "Evidence" : "Field brief" }] : []),
     { id: "package", label: "Package" },
     { id: "about", label: "About" },
     ...(qaEnabled ? [{ id: "debug" as Panel, label: "Debug" }] : []),
@@ -890,7 +882,12 @@ export default function PrismEdition() {
       baseActions.push([knownMode.replace(" Mode", ""), `enter ${knownMode.toLowerCase()}`]);
     }
   }
-  const simulationReady = discovery.simulationCleared && mode === "Communications Mode";
+  const simulationReady = simulationInvitationSeen && mode === "Communications Mode" && phase !== "witness" && phase !== "lockdown";
+  const simulationPrompt = phase === "epilogue"
+    ? { kicker: "Simulation Controller ready", title: "Begin the final voyage", detail: "The New Plan simulation is ready." }
+    : phase === "comparative"
+      ? { kicker: "Simulation archive available", title: "Choose another horizon", detail: "Re-enter to select an available simulation." }
+      : { kicker: "Simulation Mode available", title: "Begin the requested observations", detail: "Perelman’s field brief is saved beside the story." };
 
   const phaseLabel: Record<Phase, string> = {
     signal: "Incoming",
@@ -1005,7 +1002,7 @@ export default function PrismEdition() {
           {!assistedSecurity && !assistedYearSelector && yesNoPrompt && <div className="answer-buttons" aria-label="Answer the question"><span>Answer</span><button type="button" onClick={() => postCommand("y", true)} disabled={!acceptsInput}>Yes</button><button type="button" onClick={() => postCommand("n", true)} disabled={!acceptsInput}>No</button></div>}
 
           {!assistedSecurity && !assistedYearSelector && !yesNoPrompt && assisted && inputKind === "line" && simulationReady && <section className="simulation-ready" aria-label="Simulation Mode available">
-            <div><span className="section-kicker">Simulation Mode available</span><strong>Begin the requested observations</strong><small>Perelman’s field brief is saved beside the story.</small></div>
+            <div><span className="section-kicker">{simulationPrompt.kicker}</span><strong>{simulationPrompt.title}</strong><small>{simulationPrompt.detail}</small></div>
             <button type="button" onClick={() => sendCommand("enter simulation mode")} disabled={!acceptsInput}>Enter Simulation Mode <span aria-hidden="true">→</span></button>
           </section>}
 

@@ -113,6 +113,9 @@ const actionsFor = (object: WorldObject, roomId?: string | null) => {
   else if (hasFlag(object, "VEHBIT") && !object.refusalOnlyVerbs.includes("BOARD")) actions.push(actionFor("BOARD"));
   const usedAuthoredVerbs = new Set<string>();
   for (const definition of canonicalActions) {
+    // Local-global place nouns often route ENTER/LEAVE to the parser's generic
+    // "which direction?" response. The map and compass provide exact exits instead.
+    if (object.initialLocation === "LOCAL-GLOBALS" && ["enter", "leave"].includes(definition.action.id)) continue;
     if (!handles(object, roomId, ...definition.verbs)) continue;
     const matchingGroups = object.verbGroups.filter((group) => group.some((verb) => definition.verbs.includes(verb)));
     if (matchingGroups.some((group) => group.every((verb) => usedAuthoredVerbs.has(verb)))) continue;
