@@ -2,7 +2,9 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
+import vm from "node:vm";
 import { localizeStoryTranscript } from "../app/localization.ts";
+import { openingPresentation } from "../app/story-presentation.ts";
 
 test("static export renders the finished unabridged edition", async () => {
   const html = await readFile(new URL("../out/index.html", import.meta.url), "utf8");
@@ -203,7 +205,10 @@ test("localizes only presentation while preserving raw English mechanics", async
     readFile(new URL("../public/amfv-r79-s851122.z4", import.meta.url)),
   ]);
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
-  assert.match(shell, /localizeStoryTranscript\(transcript, locale\)/);
+  assert.match(shell, /openingPresentation\(presentation, locale\)/);
+  assert.match(shell, /locale === "ja" && acceptsInput && inputKind === "char"/);
+  assert.match(shell, /aria-hidden=\{qaEnabled \|\| Boolean\(presentedOpening\)\}/);
+  assert.match(shell, /inert=\{presentedOpening \? true : undefined\}/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
@@ -223,4 +228,85 @@ test("localizes the real opening whitespace and falls back deterministically", (
   assert.doesNotMatch(japanese, /Tomorrow never yet|On any human being rose or set/);
   assert.match(japanese, /This line is deliberately untranslated\./);
   assert.equal(localizeStoryTranscript(raw, "en"), raw);
+});
+
+test("builds the opening presentation from Parchment BufferLine bridge data", async () => {
+  const [fixtureHtml, fixturePayload, bridgeHelper, shell] = await Promise.all([
+    readFile(new URL("./fixtures/parchment-opening.html", import.meta.url), "utf8"),
+    readFile(new URL("./fixtures/parchment-opening-payload.json", import.meta.url), "utf8").then(JSON.parse),
+    readFile(new URL("../public/player-bridge.js", import.meta.url), "utf8"),
+    readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.equal((fixtureHtml.match(/class="BufferLine(?:\s|")/g) || []).length, fixturePayload.presentation.lines.length);
+  const classList = (classes) => ({
+    contains: (value) => classes.includes(value),
+    [Symbol.iterator]: function* () { yield* classes; },
+  });
+  const lines = fixturePayload.presentation.lines.map((line) => {
+    const node = { innerText: line.text, textContent: line.text, classList: classList(line.classes), children: [] };
+    node.children = line.runs.map((run) => ({
+      innerText: run.text,
+      textContent: run.text,
+      classList: classList(run.classes),
+      tagName: run.tag.toUpperCase(),
+      disabled: false,
+      maxLength: run.tag === "textarea" ? 1 : -1,
+      closest: (selector) => selector === ".BufferLine" ? node : null,
+    }));
+    return node;
+  });
+  const input = lines.at(-1).children.at(-1);
+  const fixtureDocument = { querySelectorAll: (selector) => selector === "#gameport .BufferLine" ? lines : [input] };
+  const context = vm.createContext({});
+  vm.runInContext(bridgeHelper, context);
+  const extracted = context.AMFVPresentationBridge.extract(fixtureDocument, () => ({
+    display: "block", visibility: "visible", textAlign: "start", marginLeft: "0px", paddingLeft: "0px", whiteSpace: "pre-wrap",
+  }));
+  assert.deepEqual(JSON.parse(JSON.stringify(extracted)), fixturePayload.presentation);
+
+  const blocks = openingPresentation(fixturePayload.presentation, "ja");
+  assert.deepEqual(blocks?.map((block) => block.kind), ["heading", "quote", "prompt"]);
+  assert.equal(blocks?.[0].text, "* PART I *");
+  assert.match(blocks?.[1].text || "", /明日という日はまだ/);
+  assert.equal(blocks?.[1].attribution, "-- William Marsden");
+  assert.match(blocks?.[2].text || "", /いずれかのキーを押して/);
+
+  assert.match(shell, /openingPresentation\(presentation, locale\)/);
+  assert.match(shell, /className="story-presentation-heading"/);
+  assert.match(shell, /className="story-presentation-quote"/);
+  assert.match(shell, /className="story-presentation-prompt"/);
+  assert.doesNotMatch(shell, /className="localized-story"|<pre ref=\{localizedStoryRef\}/);
+});
+
+test("shows the structured opening only for the live terminal character prompt", async () => {
+  const payload = JSON.parse(await readFile(new URL("./fixtures/parchment-opening-payload.json", import.meta.url), "utf8"));
+  assert.ok(openingPresentation(payload.presentation, "ja"));
+
+  const lineInput = structuredClone(payload.presentation);
+  lineInput.activeInput.kind = "line";
+  assert.equal(openingPresentation(lineInput, "ja"), null);
+
+  const staleScrollback = structuredClone(payload.presentation);
+  staleScrollback.lines.push({ text: "Infocom interactive fiction - a science fiction story", classes: ["BufferLine", "Style_normal_par"], runs: [], layout: staleScrollback.lines[0].layout });
+  staleScrollback.terminalLine = staleScrollback.lines.length - 1;
+  staleScrollback.activeInput = { kind: "line", line: staleScrollback.terminalLine, classes: ["Input", "LineInput"] };
+  assert.equal(openingPresentation(staleScrollback, "ja"), null);
+
+  const detachedInput = structuredClone(payload.presentation);
+  detachedInput.activeInput.line = null;
+  assert.equal(openingPresentation(detachedInput, "ja"), null);
+
+  const unrecognized = structuredClone(payload.presentation);
+  unrecognized.lines[2].text = "A different story opening";
+  assert.equal(openingPresentation(unrecognized, "ja"), null);
+
+  const groupedRuns = structuredClone(payload.presentation);
+  groupedRuns.lines.splice(2, 3, {
+    ...groupedRuns.lines[2],
+    text: groupedRuns.lines.slice(2, 5).map((line) => line.text).join("\n"),
+  });
+  groupedRuns.terminalLine = 4;
+  groupedRuns.activeInput.line = 4;
+  assert.deepEqual(openingPresentation(groupedRuns, "ja")?.map((block) => block.kind), ["heading", "quote", "prompt"]);
 });

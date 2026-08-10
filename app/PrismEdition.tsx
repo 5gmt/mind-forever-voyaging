@@ -5,7 +5,8 @@
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
-import { localizeStoryTranscript, uiText, type Locale } from "./localization";
+import { uiText, type Locale } from "./localization";
+import { openingPresentation, type BridgePresentation } from "./story-presentation";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -350,7 +351,6 @@ export default function PrismEdition() {
   const canonicalIframeRef = useRef<HTMLIFrameElement>(null);
   const qaIframeRef = useRef<HTMLIFrameElement>(null);
   const commandRef = useRef<HTMLInputElement>(null);
-  const localizedStoryRef = useRef<HTMLPreElement>(null);
   const modeRef = useRef<Mode | null>(null);
   const yearRef = useRef<number | null>(null);
   const roomRef = useRef<WorldRoom | null>(null);
@@ -373,6 +373,7 @@ export default function PrismEdition() {
   const [recentText, setRecentText] = useState("");
   const [sceneText, setSceneText] = useState("");
   const [gridText, setGridText] = useState("");
+  const [presentation, setPresentation] = useState<BridgePresentation | null>(null);
   const [transcriptRevision, setTranscriptRevision] = useState(0);
   const [mode, setMode] = useState<Mode | null>(null);
   const [statusLocation, setStatusLocation] = useState<string | null>(null);
@@ -661,6 +662,9 @@ export default function PrismEdition() {
       }
       setSceneText(sceneTextRef.current);
       setGridText(typeof event.data.gridText === "string" ? event.data.gridText : "");
+      setPresentation(event.data.presentation?.version === 2 && Array.isArray(event.data.presentation.lines)
+        ? event.data.presentation
+        : null);
       setTranscriptRevision((revision) => revision + 1);
       setMode(nextMode);
       if (nextMode !== "Simulation Mode") setFieldworkOpen(false);
@@ -924,6 +928,7 @@ export default function PrismEdition() {
     sceneCacheRef.current.clear();
     setSceneText("");
     setGridText("");
+    setPresentation(null);
     setKnownModes([]);
     setDiscovery(EMPTY_DISCOVERY);
     setCommand("");
@@ -1015,12 +1020,10 @@ export default function PrismEdition() {
   const assistedSecurity = assisted && Boolean(securityChallenge);
   const assistedYearSelector = assisted && yearSelectorActive;
   const blockingOverlayOpen = introOpen || qaWarningOpen || Boolean(packageItem) || fieldworkOpen;
-  const presentedTranscript = useMemo(() => localizeStoryTranscript(transcript, locale), [transcript, locale]);
-
-  useEffect(() => {
-    const story = localizedStoryRef.current;
-    if (locale === "ja" && story) story.scrollTop = story.scrollHeight;
-  }, [locale, transcriptRevision]);
+  const presentedOpening = useMemo(
+    () => locale === "ja" && acceptsInput && inputKind === "char" ? openingPresentation(presentation, locale) : null,
+    [acceptsInput, inputKind, locale, presentation],
+  );
 
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
@@ -1076,9 +1079,17 @@ export default function PrismEdition() {
 
         <div className="story-frame-wrap">
           {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
-          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || locale === "ja"} inert={locale === "ja" ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
+          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || Boolean(presentedOpening)} inert={presentedOpening ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
-          {locale === "ja" && !qaEnabled && <pre ref={localizedStoryRef} className="localized-story" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>{presentedTranscript || uiText(locale, "opening")}</pre>}
+          {presentedOpening && !qaEnabled && <section className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
+            {presentedOpening.map((block) => block.kind === "heading"
+              ? <h2 key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-heading">{block.text}</h2>
+              : block.kind === "quote"
+                ? <blockquote key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-quote"><p>{block.text}</p>{block.attribution && <cite>{block.attribution}</cite>}</blockquote>
+                : block.kind === "prompt"
+                  ? <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-prompt">{block.text}</p>
+                  : <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-prose">{block.text}</p>)}
+          </section>}
           <div className="story-vignette" aria-hidden="true" />
         </div>
 
