@@ -1,4 +1,58 @@
+((root) => {
+  const normalize = (value) => (value || "").replace(/\u00a0/g, " ");
+
+  const visibleInput = (documentRoot, getStyle) => {
+    const inputs = [...documentRoot.querySelectorAll("#gameport textarea.Input, #gameport input[type='text'], #gameport textarea")];
+    return inputs.reverse().find((input) => {
+      const style = getStyle(input);
+      return !input.disabled && style.display !== "none" && style.visibility !== "hidden";
+    });
+  };
+
+  const extract = (documentRoot, getStyle) => {
+    const allLines = [...documentRoot.querySelectorAll("#gameport .BufferLine")];
+    const lines = allLines.slice(-80).map((line) => {
+      const style = getStyle(line);
+      return {
+        text: normalize(line.innerText || line.textContent),
+        classes: [...line.classList],
+        runs: [...line.children].map((run) => ({
+          text: normalize(run.innerText || run.textContent),
+          classes: [...run.classList],
+          tag: run.tagName.toLowerCase(),
+        })),
+        layout: {
+          textAlign: style.textAlign,
+          marginLeft: style.marginLeft,
+          paddingLeft: style.paddingLeft,
+          whiteSpace: style.whiteSpace,
+        },
+      };
+    });
+    const input = visibleInput(documentRoot, getStyle);
+    const inputLine = input?.closest(".BufferLine");
+    const absoluteInputLine = inputLine ? allLines.indexOf(inputLine) : -1;
+    const sliceStart = Math.max(0, allLines.length - 80);
+    const slicedInputLine = absoluteInputLine >= sliceStart ? absoluteInputLine - sliceStart : null;
+    const terminalLine = lines.findLastIndex((line) => line.text.trim().length > 0);
+
+    return {
+      version: 2,
+      lines,
+      terminalLine,
+      activeInput: input ? {
+        kind: input.maxLength === 1 && !input.classList.contains("LineInput") ? "char" : "line",
+        line: slicedInputLine,
+        classes: [...input.classList],
+      } : null,
+    };
+  };
+
+  root.AMFVPresentationBridge = Object.freeze({ extract });
+})(globalThis);
+
 (() => {
+  if (typeof window === "undefined" || typeof document === "undefined") return;
   const CHANNEL = "amfv:bridge";
   let observer;
   let updateTimer;
@@ -48,6 +102,7 @@
     recentText: recentText(),
     statusText: statusText(),
     gridText: gridText(),
+    presentation: window.AMFVPresentationBridge?.extract(document, (element) => getComputedStyle(element)),
     inputKind: activeInput()?.maxLength === 1 && !activeInput()?.classList.contains("LineInput") ? "char" : "line",
     acceptsInput: Boolean(activeInput()),
   });

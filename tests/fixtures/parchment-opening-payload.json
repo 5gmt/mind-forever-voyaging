@@ -1,0 +1,183 @@
+{
+  "channel": "amfv:bridge",
+  "type": "transcript",
+  "text": "                      * PART I *\n\n                      \"Tomorrow never yet\n                       On any human being rose or set.\"\n                                       -- William Marsden\n\n[Hit any key to continue.]",
+  "recentText": "                      * PART I *\n\n                      \"Tomorrow never yet\n                       On any human being rose or set.\"\n                                       -- William Marsden\n\n[Hit any key to continue.]",
+  "statusText": "",
+  "inputKind": "char",
+  "acceptsInput": true,
+  "presentation": {
+    "version": 2,
+    "lines": [
+      {
+        "text": "                      * PART I *",
+        "classes": [
+          "BufferLine",
+          "Style_header_par"
+        ],
+        "runs": [
+          {
+            "text": "                      * PART I *",
+            "classes": [
+              "Style_header"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": " ",
+        "classes": [
+          "BufferLine",
+          "BlankPara"
+        ],
+        "runs": [
+          {
+            "text": " ",
+            "classes": [
+              "BlankLineSpace"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "                      \"Tomorrow never yet",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "                      \"Tomorrow never yet",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "                       On any human being rose or set.\"",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "                       On any human being rose or set.\"",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "                                       -- William Marsden",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "                                       -- William Marsden",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": " ",
+        "classes": [
+          "BufferLine",
+          "BlankPara"
+        ],
+        "runs": [
+          {
+            "text": " ",
+            "classes": [
+              "BlankLineSpace"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "[Hit any key to continue.]",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "[Hit any key to continue.]",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "",
+            "classes": [
+              "Input"
+            ],
+            "tag": "textarea"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      }
+    ],
+    "terminalLine": 6,
+    "activeInput": {
+      "kind": "char",
+      "line": 6,
+      "classes": [
+        "Input"
+      ]
+    }
+  }
+}
