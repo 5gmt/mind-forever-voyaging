@@ -35,6 +35,28 @@
       .replace(/\u00a0/g, " ")
       .slice(-5000);
 
+  const presentationLines = () =>
+    [...document.querySelectorAll("#gameport .BufferLine")]
+      .slice(-80)
+      .map((line) => {
+        const style = getComputedStyle(line);
+        const runs = [...line.children].map((run) => ({
+          text: (run.innerText || run.textContent || "").replace(/\u00a0/g, " "),
+          classes: [...run.classList],
+        }));
+        return {
+          text: line.innerText.replace(/\u00a0/g, " "),
+          classes: [...line.classList],
+          runs,
+          layout: {
+            textAlign: style.textAlign,
+            marginLeft: style.marginLeft,
+            paddingLeft: style.paddingLeft,
+            whiteSpace: style.whiteSpace,
+          },
+        };
+      });
+
   const activeInput = () => {
     const inputs = [...document.querySelectorAll("#gameport textarea.Input, #gameport input[type='text'], #gameport textarea")];
     return inputs.reverse().find((input) => {
@@ -48,6 +70,7 @@
     recentText: recentText(),
     statusText: statusText(),
     gridText: gridText(),
+    presentation: { version: 1, lines: presentationLines() },
     inputKind: activeInput()?.maxLength === 1 && !activeInput()?.classList.contains("LineInput") ? "char" : "line",
     acceptsInput: Boolean(activeInput()),
   });

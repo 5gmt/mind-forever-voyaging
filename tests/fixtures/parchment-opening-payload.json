@@ -1,0 +1,21 @@
+{
+  "channel": "amfv:bridge",
+  "type": "transcript",
+  "text": "                      * PART I *\n\n                      \"Tomorrow never yet\n                       On any human being rose or set.\"\n                                       -- William Marsden\n\n[Hit any key to continue.]",
+  "recentText": "                      * PART I *\n\n                      \"Tomorrow never yet\n                       On any human being rose or set.\"\n                                       -- William Marsden\n\n[Hit any key to continue.]",
+  "statusText": "",
+  "inputKind": "char",
+  "acceptsInput": true,
+  "presentation": {
+    "version": 1,
+    "lines": [
+      { "text": "                      * PART I *", "classes": ["BufferLine"], "runs": [{ "text": "                      * PART I *", "classes": ["Style_header"] }], "layout": { "textAlign": "start", "marginLeft": "0px", "paddingLeft": "0px", "whiteSpace": "pre-wrap" } },
+      { "text": " ", "classes": ["BufferLine"], "runs": [{ "text": " ", "classes": ["Style_normal"] }], "layout": { "textAlign": "start", "marginLeft": "0px", "paddingLeft": "0px", "whiteSpace": "pre-wrap" } },
+      { "text": "                      \"Tomorrow never yet", "classes": ["BufferLine"], "runs": [{ "text": "                      \"Tomorrow never yet", "classes": ["Style_normal"] }], "layout": { "textAlign": "start", "marginLeft": "0px", "paddingLeft": "0px", "whiteSpace": "pre-wrap" } },
+      { "text": "                       On any human being rose or set.\"", "classes": ["BufferLine"], "runs": [{ "text": "                       On any human being rose or set.\"", "classes": ["Style_normal"] }], "layout": { "textAlign": "start", "marginLeft": "0px", "paddingLeft": "0px", "whiteSpace": "pre-wrap" } },
+      { "text": "                                       -- William Marsden", "classes": ["BufferLine"], "runs": [{ "text": "                                       -- William Marsden", "classes": ["Style_normal"] }], "layout": { "textAlign": "start", "marginLeft": "0px", "paddingLeft": "0px", "whiteSpace": "pre-wrap" } },
+      { "text": " ", "classes": ["BufferLine"], "runs": [{ "text": " ", "classes": ["Style_normal"] }], "layout": { "textAlign": "start", "marginLeft": "0px", "paddingLeft": "0px", "whiteSpace": "pre-wrap" } },
+      { "text": "[Hit any key to continue.]", "classes": ["BufferLine"], "runs": [{ "text": "[Hit any key to continue.]", "classes": ["Style_normal"] }, { "text": "", "classes": ["Input", "CharInput"] }], "layout": { "textAlign": "start", "marginLeft": "0px", "paddingLeft": "0px", "whiteSpace": "pre-wrap" } }
+    ]
+  }
+}

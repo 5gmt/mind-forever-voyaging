@@ -3,6 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import { localizeStoryTranscript } from "../app/localization.ts";
+import { openingPresentation } from "../app/story-presentation.ts";
 
 test("static export renders the finished unabridged edition", async () => {
   const html = await readFile(new URL("../out/index.html", import.meta.url), "utf8");
@@ -203,7 +204,7 @@ test("localizes only presentation while preserving raw English mechanics", async
     readFile(new URL("../public/amfv-r79-s851122.z4", import.meta.url)),
   ]);
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
-  assert.match(shell, /localizeStoryTranscript\(transcript, locale\)/);
+  assert.match(shell, /openingPresentation\(presentationLines, locale\)/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
@@ -223,4 +224,30 @@ test("localizes the real opening whitespace and falls back deterministically", (
   assert.doesNotMatch(japanese, /Tomorrow never yet|On any human being rose or set/);
   assert.match(japanese, /This line is deliberately untranslated\./);
   assert.equal(localizeStoryTranscript(raw, "en"), raw);
+});
+
+test("builds the opening presentation from Parchment BufferLine bridge data", async () => {
+  const [fixtureHtml, fixturePayload, bridge, shell] = await Promise.all([
+    readFile(new URL("./fixtures/parchment-opening.html", import.meta.url), "utf8"),
+    readFile(new URL("./fixtures/parchment-opening-payload.json", import.meta.url), "utf8").then(JSON.parse),
+    readFile(new URL("../public/player-bridge.js", import.meta.url), "utf8"),
+    readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8"),
+  ]);
+
+  assert.equal((fixtureHtml.match(/class="BufferLine"/g) || []).length, fixturePayload.presentation.lines.length);
+  assert.match(bridge, /querySelectorAll\("#gameport \.BufferLine"\)/);
+  assert.match(bridge, /presentation: \{ version: 1, lines: presentationLines\(\) \}/);
+
+  const blocks = openingPresentation(fixturePayload.presentation.lines, "ja");
+  assert.deepEqual(blocks?.map((block) => block.kind), ["heading", "quote", "prompt"]);
+  assert.equal(blocks?.[0].text, "* PART I *");
+  assert.match(blocks?.[1].text || "", /明日という日はまだ/);
+  assert.equal(blocks?.[1].attribution, "-- William Marsden");
+  assert.match(blocks?.[2].text || "", /いずれかのキーを押して/);
+
+  assert.match(shell, /openingPresentation\(presentationLines, locale\)/);
+  assert.match(shell, /className="story-presentation-heading"/);
+  assert.match(shell, /className="story-presentation-quote"/);
+  assert.match(shell, /className="story-presentation-prompt"/);
+  assert.doesNotMatch(shell, /className="localized-story"|<pre ref=\{localizedStoryRef\}/);
 });
