@@ -49,23 +49,33 @@ Spoiler/debug tools live under **About**. After explicit confirmation they load 
 
 ## Local development
 
+The repository has separate commands for its two deployment targets. For the
+Next.js static edition used by Netlify:
+
 ```sh
 npm install
-npm run dev
+npm run dev:next
+npm run build:next
+npm run test:next
 ```
 
-Build and verify the static export:
-
-```sh
-npm run build
-npm test
-```
-
-The output is written to `out/`. This project deploys to Netlify using `netlify.toml`:
+Netlify publishes the resulting `out/` directory:
 
 ```sh
 npx netlify-cli deploy --dir=out --prod
 ```
+
+For the owner-only ChatGPT Sites edition:
+
+```sh
+npm run dev
+npm run build
+npm run test:sites
+```
+
+Sites packages the application as a Worker under `dist/`. Both targets share
+the same `app/`, `public/`, and historical `source/` trees. Run `npm test`
+to build and verify both targets.
 
 ## Credits
 

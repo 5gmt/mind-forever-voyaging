@@ -6,34 +6,47 @@
     "node": ">=22.13.0"
   },
   "scripts": {
-    "dev": "next dev",
+    "install:ci": "bash scripts/install-ci.sh",
+    "dev": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vite",
+    "dev:next": "next dev",
     "prebuild": "npm run world",
-    "build": "next build",
-    "start": "next start",
+    "build": "bash scripts/build-sites-verified.sh",
+    "build:next": "npm run world && next build",
+    "start": "WRANGLER_LOG_PATH=.wrangler/wrangler.log vinext start",
+    "start:next": "next start",
     "world": "node scripts/extract-world.mjs",
-    "test": "npm run build && node --test tests/rendered-html.test.mjs",
-    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out --ignore-pattern .netlify"
+    "test": "npm run test:next && npm run test:sites",
+    "test:next": "npm run build:next && node --test tests/rendered-html.test.mjs",
+    "test:sites": "npm run build && node --test tests/sites-rendered-html.test.mjs",
+    "lint": "eslint . --ignore-pattern dist --ignore-pattern .next --ignore-pattern out --ignore-pattern .netlify --ignore-pattern .sites-runtime --ignore-pattern .wrangler"
   },
   "dependencies": {
     "next": "^16.3.0",
-    "react": "19.2.6",
-    "react-dom": "19.2.6"
+    "react": "19.2.8",
+    "react-dom": "19.2.8"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "1.51.1",
     "@eslint/js": "9.39.4",
     "@next/eslint-plugin-next": "^16.3.0",
     "@tailwindcss/postcss": "4.2.1",
     "@types/node": "22.19.19",
     "@types/react": "19.2.14",
     "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react": "6.0.2",
+    "@vitejs/plugin-rsc": "0.5.26",
     "eslint": "9.39.4",
     "eslint-plugin-jsx-a11y": "6.10.2",
     "eslint-plugin-react": "7.37.5",
     "eslint-plugin-react-hooks": "7.1.1",
     "globals": "16.4.0",
+    "react-server-dom-webpack": "19.2.8",
     "tailwindcss": "4.2.1",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.59.3"
+    "typescript-eslint": "8.59.3",
+    "vinext": "0.0.50",
+    "vite": "8.2.1",
+    "wrangler": "4.120.0"
   },
   "type": "module"
 }
