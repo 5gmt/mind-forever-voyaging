@@ -194,3 +194,17 @@ test("ships the physical package materials beside the story", async () => {
   assert.match(tools, /!hasFlag\(object, "TRYTAKEBIT"\)/);
   assert.doesNotMatch(tools, /hasFlag\(object, "CONTBIT"\).*Open/);
 });
+
+test("localizes only presentation while preserving raw English mechanics", async () => {
+  const [shell, localization, story] = await Promise.all([
+    readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/localization.ts", import.meta.url), "utf8"),
+    readFile(new URL("../public/amfv-r79-s851122.z4", import.meta.url)),
+  ]);
+  assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
+  assert.match(shell, /localizeStoryTranscript\(transcript, locale\)/);
+  assert.match(shell, /command: normalized/);
+  assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
+  assert.match(localization, /replaceAll\(english, japanese\)/);
+  assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+});

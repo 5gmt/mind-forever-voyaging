@@ -5,6 +5,7 @@
 import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
+import { localizeStoryTranscript, uiText, type Locale } from "./localization";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -394,6 +395,7 @@ export default function PrismEdition() {
   const [interactionLevel, setInteractionLevel] = useState<InteractionLevel>("guided");
   const [highContrast, setHighContrast] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
+  const [locale, setLocale] = useState<Locale>("en");
   const [recording, setRecording] = useState(false);
   const [activeOutletCode, setActiveOutletCode] = useState<string | null>(null);
   const [packageItem, setPackageItem] = useState<PackageItem | null>(null);
@@ -540,10 +542,15 @@ export default function PrismEdition() {
       setInteractionLevel(storedInteraction === "classic" || storedInteraction === "actions" ? storedInteraction : "guided");
       setHighContrast(localStorage.getItem("amfv:contrast") === "true");
       setReduceMotion(localStorage.getItem("amfv:reduce-motion") === "true");
+      setLocale(localStorage.getItem("amfv:locale") === "ja" ? "ja" : "en");
     } catch {
       // Storage improves continuity but never blocks the story.
     }
   }, []);
+
+  useEffect(() => {
+    try { localStorage.setItem("amfv:locale", locale); } catch { /* optional */ }
+  }, [locale]);
 
   useEffect(() => {
     const onMessage = (event: MessageEvent) => {
@@ -1007,6 +1014,7 @@ export default function PrismEdition() {
   const assistedSecurity = assisted && Boolean(securityChallenge);
   const assistedYearSelector = assisted && yearSelectorActive;
   const blockingOverlayOpen = introOpen || qaWarningOpen || Boolean(packageItem) || fieldworkOpen;
+  const presentedTranscript = useMemo(() => localizeStoryTranscript(transcript, locale), [transcript, locale]);
 
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
@@ -1043,15 +1051,16 @@ export default function PrismEdition() {
           {phase === "lockdown" && <div className="lockdown-banner">CHANNELS RESTRICTED</div>}
           <div className="system-state" aria-label={acceptsInput ? "Story is ready for input" : "Story is processing"}><span className={acceptsInput ? "state-light ready" : "state-light"}></span>{systemActivity}</div>
           <div className="header-actions">
-            <button type="button" onClick={() => setContextOpen((value) => !value)} aria-pressed={contextOpen} title="Toggle companion">◫<span>Companion</span></button>
-            <button type="button" onClick={() => setPackageItem("map")} title="Open original package materials">▧<span>Package</span></button>
-            <button type="button" onClick={() => setAccessOpen((value) => !value)} aria-expanded={accessOpen} title="Reading and play settings">Aa<span>Settings</span></button>
+            <button type="button" onClick={() => setContextOpen((value) => !value)} aria-pressed={contextOpen} title="Toggle companion">◫<span>{uiText(locale, "companion")}</span></button>
+            <button type="button" onClick={() => setPackageItem("map")} title="Open original package materials">▧<span>{uiText(locale, "package")}</span></button>
+            <button type="button" onClick={() => setAccessOpen((value) => !value)} aria-expanded={accessOpen} title="Reading and play settings">Aa<span>{uiText(locale, "settings")}</span></button>
             <button className="share-control" type="button" onClick={handleShare} aria-label="Share this edition" title="Share this edition"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="2.4" /><circle cx="6" cy="12" r="2.4" /><circle cx="18" cy="19" r="2.4" /><path d="m8.1 10.8 7.7-4.5M8.1 13.2l7.7 4.5" /></svg><span>Share</span></button>
-            <button type="button" onClick={toggleFullscreen} title="Toggle fullscreen">↗<span>Fullscreen</span></button>
+            <button type="button" onClick={toggleFullscreen} title="Toggle fullscreen">↗<span>{uiText(locale, "fullscreen")}</span></button>
           </div>
         </header>
 
         {accessOpen && <section className="access-panel" aria-label="Reading and play settings">
+          <div><span>{uiText(locale, "language")}</span><div className="segmented"><button type="button" className={locale === "en" ? "active" : ""} aria-pressed={locale === "en"} onClick={() => setLocale("en")}>English</button><button type="button" className={locale === "ja" ? "active" : ""} aria-pressed={locale === "ja"} onClick={() => setLocale("ja")}>日本語</button></div></div>
           <div className="interaction-setting"><span>Play controls</span><div className="segmented interaction-segments">{([['classic', 'Classic'], ['guided', 'Guided'], ['actions', 'Action menus']] as Array<[InteractionLevel, string]>).map(([value, label]) => <button key={value} type="button" className={interactionLevel === value ? "active" : ""} aria-pressed={interactionLevel === value} onClick={() => chooseInteractionLevel(value)}>{label}</button>)}</div><small>{interactionLevel === "classic" ? "Text commands and the story’s own prompts." : interactionLevel === "guided" ? "Navigation and one editable suggestion for useful things." : "Direct actions for useful people and objects."}</small></div>
           <div><span>Text size</span><div className="segmented">{[15, 17, 20, 23].map((size) => <button key={size} type="button" className={fontScale === size ? "active" : ""} onClick={() => setFontScale(size)}>{size === 15 ? "S" : size === 17 ? "M" : size === 20 ? "L" : "XL"}</button>)}</div></div>
           <label><input type="checkbox" checked={readingMode === "mono"} onChange={(event) => setReadingMode(event.target.checked ? "mono" : "serif")} /> Monospaced story text</label>
@@ -1060,13 +1069,14 @@ export default function PrismEdition() {
         </section>}
 
         <div className="story-frame-wrap">
-          {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>Opening the complete story…</p></div>}
+          {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
           <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
+          {locale === "ja" && !qaEnabled && <pre className="localized-story" lang="ja" aria-label="日本語ストーリー表示">{presentedTranscript || uiText(locale, "opening")}</pre>}
           <div className="story-vignette" aria-hidden="true" />
         </div>
 
-        <section className="command-deck" aria-label="Story controls">
+        <section className="command-deck" aria-label={uiText(locale, "storyControls")}>
           {assistedSecurity && securityChallenge && inputKind === "line" && <section className="security-decoder" aria-label="Security code decoder">
             <div className="decoder-seal" style={{ "--decoder-color": securityChallenge.color.toLowerCase().replace(" ", "-") } as React.CSSProperties}><span>{securityChallenge.color}</span><strong>{securityChallenge.inner}</strong></div>
             <div><span className="section-kicker">Security decoder</span><h2>{securityChallenge.color} · {securityChallenge.inner}</h2><p>Turn the wheel to align the color and inner number, or submit the matching outer number.</p></div>
@@ -1112,11 +1122,11 @@ export default function PrismEdition() {
           </section>}
 
           {!assistedSecurity && !assistedYearSelector && !yesNoPrompt && (inputKind === "char" ? <div className="character-prompt">
-            {mode === "Library Mode" ? <><span className="section-kicker">Character menu active</span><div className="library-controls">{[["Previous", "p"], ["Next", "n"], ["Open", "o"], ["Read", "r"], ["Close", "c"], ["Exit", "e"]].map(([label, value]) => <button type="button" key={value} onClick={() => postCommand(value, true)} disabled={!acceptsInput}>{label}<kbd>{value.toUpperCase()}</kbd></button>)}</div></> : <button className="continue-button" type="button" onClick={() => postCommand(" ", true)} disabled={!acceptsInput}><span>{phase === "signal" ? "Begin the original story" : "Continue"}</span><strong>Press any key →</strong></button>}
+            {mode === "Library Mode" ? <><span className="section-kicker">Character menu active</span><div className="library-controls">{[["Previous", "p"], ["Next", "n"], ["Open", "o"], ["Read", "r"], ["Close", "c"], ["Exit", "e"]].map(([label, value]) => <button type="button" key={value} onClick={() => postCommand(value, true)} disabled={!acceptsInput}>{label}<kbd>{value.toUpperCase()}</kbd></button>)}</div></> : <button className="continue-button" type="button" onClick={() => postCommand(" ", true)} disabled={!acceptsInput}><span>{phase === "signal" ? (locale === "ja" ? "原作を始める" : "Begin the original story") : uiText(locale, "continue")}</span><strong>{uiText(locale, "pressAnyKey")}</strong></button>}
           </div> : <>
             <form onSubmit={submitCommand} className="command-form">
-              <label htmlFor="command-input" className="command-label">{mode === "Simulation Mode" ? "What will you do?" : discovery.identityKnown ? "Issue a command" : "Respond to the story"}</label>
-              <div className="command-field"><span aria-hidden="true">›</span><input ref={commandRef} id="command-input" value={command} onChange={(event) => { setCommand(event.target.value); setAliasNotice(""); }} onKeyDown={navigateHistory} placeholder={mode === "Simulation Mode" ? "Type anything, or use the scene controls below…" : mode === "Library Mode" ? "Use the menu buttons…" : "Type a command…"} autoComplete="off" spellCheck="false" aria-describedby="command-help" /><button type="submit" disabled={!command.trim() || !acceptsInput}>SEND <span aria-hidden="true">↵</span></button></div>
+              <label htmlFor="command-input" className="command-label">{mode === "Simulation Mode" ? "What will you do?" : discovery.identityKnown ? "Issue a command" : uiText(locale, "command")}</label>
+              <div className="command-field"><span aria-hidden="true">›</span><input ref={commandRef} id="command-input" value={command} onChange={(event) => { setCommand(event.target.value); setAliasNotice(""); }} onKeyDown={navigateHistory} placeholder={mode === "Simulation Mode" ? "Type anything, or use the scene controls below…" : mode === "Library Mode" ? "Use the menu buttons…" : uiText(locale, "commandPlaceholder")} autoComplete="off" spellCheck="false" aria-describedby="command-help" /><button type="submit" disabled={!command.trim() || !acceptsInput}>{uiText(locale, "send")} <span aria-hidden="true">↵</span></button></div>
               <div className="command-meta" id="command-help"><span>{aliasNotice || parserCoach}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
             {assisted && <div className="quick-actions" aria-label="Common actions">{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput}>{label}</button>)}</div>}
