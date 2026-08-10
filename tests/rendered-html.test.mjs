@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
+import { localizeStoryTranscript } from "../app/localization.ts";
 
 test("static export renders the finished unabridged edition", async () => {
   const html = await readFile(new URL("../out/index.html", import.meta.url), "utf8");
@@ -205,6 +206,21 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(shell, /localizeStoryTranscript\(transcript, locale\)/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
-  assert.match(localization, /replaceAll\(english, japanese\)/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+});
+
+test("localizes the real opening whitespace and falls back deterministically", () => {
+  const raw = [
+    "                      \"Tomorrow never yet",
+    "                       On any human being rose or set.\"",
+    "                                       -- William Marsden",
+    "[Hit any key to continue.]",
+    "This line is deliberately untranslated.",
+  ].join("\r\n");
+  const japanese = localizeStoryTranscript(raw, "ja");
+
+  assert.match(japanese, /「明日という日はまだ、\nいかなる人間の上にも昇らず、沈みもしなかった。」/);
+  assert.doesNotMatch(japanese, /Tomorrow never yet|On any human being rose or set/);
+  assert.match(japanese, /This line is deliberately untranslated\./);
+  assert.equal(localizeStoryTranscript(raw, "en"), raw);
 });

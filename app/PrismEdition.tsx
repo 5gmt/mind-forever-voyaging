@@ -350,6 +350,7 @@ export default function PrismEdition() {
   const canonicalIframeRef = useRef<HTMLIFrameElement>(null);
   const qaIframeRef = useRef<HTMLIFrameElement>(null);
   const commandRef = useRef<HTMLInputElement>(null);
+  const localizedStoryRef = useRef<HTMLPreElement>(null);
   const modeRef = useRef<Mode | null>(null);
   const yearRef = useRef<number | null>(null);
   const roomRef = useRef<WorldRoom | null>(null);
@@ -1016,6 +1017,11 @@ export default function PrismEdition() {
   const blockingOverlayOpen = introOpen || qaWarningOpen || Boolean(packageItem) || fieldworkOpen;
   const presentedTranscript = useMemo(() => localizeStoryTranscript(transcript, locale), [transcript, locale]);
 
+  useEffect(() => {
+    const story = localizedStoryRef.current;
+    if (locale === "ja" && story) story.scrollTop = story.scrollHeight;
+  }, [locale, transcriptRevision]);
+
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
       <a className="skip-link" href="#command-input">Skip to interaction controls</a>
@@ -1070,9 +1076,9 @@ export default function PrismEdition() {
 
         <div className="story-frame-wrap">
           {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
-          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
+          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || locale === "ja"} inert={locale === "ja" ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
-          {locale === "ja" && !qaEnabled && <pre className="localized-story" lang="ja" aria-label="日本語ストーリー表示">{presentedTranscript || uiText(locale, "opening")}</pre>}
+          {locale === "ja" && !qaEnabled && <pre ref={localizedStoryRef} className="localized-story" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>{presentedTranscript || uiText(locale, "opening")}</pre>}
           <div className="story-vignette" aria-hidden="true" />
         </div>
 

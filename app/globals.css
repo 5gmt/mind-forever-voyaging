@@ -610,9 +610,10 @@ summary:focus-visible {
   overflow: auto;
   border: 0;
   white-space: pre-wrap;
-  color: #e7eee7;
-  background: #071312;
-  font: 1rem/1.8 var(--font-geist-mono), monospace;
+  color: var(--paper);
+  background: var(--ink);
+  font-family: var(--font-geist-mono), monospace;
+  line-height: 1.8;
 }
 
 .story-vignette {

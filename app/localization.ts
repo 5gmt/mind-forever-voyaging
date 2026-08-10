@@ -38,8 +38,8 @@ export const uiText = (locale: Locale, key: UiKey) => UI[locale][key];
 
 // Intentionally tiny and exact: this PoC only presents deterministic translations
 // of the canonical opening. Anything not listed remains verbatim English.
-const OPENING_TRANSLATIONS: ReadonlyArray<readonly [string, string]> = [
-  ["\"Tomorrow never yet\nOn any human being rose or set.\"", "「明日という日はまだ、\nいかなる人間の上にも昇らず、沈みもしなかった。」"],
+const OPENING_TRANSLATIONS: ReadonlyArray<readonly [string | RegExp, string]> = [
+  [/"Tomorrow never yet[ \t]*\r?\n[ \t]*On any human being rose or set\."/, "「明日という日はまだ、\nいかなる人間の上にも昇らず、沈みもしなかった。」"],
   ["[Hit any key to continue.]", "［いずれかのキーを押して続けてください。］"],
   ["Infocom interactive fiction - a science fiction story", "Infocom インタラクティブ・フィクション ― SFストーリー"],
   ["Copyright (c) 1985 by Infocom, Inc. All rights reserved.", "Copyright (c) 1985 Infocom, Inc. All rights reserved.（著作権表示）"],
@@ -48,7 +48,7 @@ const OPENING_TRANSLATIONS: ReadonlyArray<readonly [string, string]> = [
 export const localizeStoryTranscript = (rawEnglish: string, locale: Locale) => {
   if (locale === "en") return rawEnglish;
   return OPENING_TRANSLATIONS.reduce(
-    (presented, [english, japanese]) => presented.replaceAll(english, japanese),
+    (presented, [english, japanese]) => presented.replace(english, japanese),
     rawEnglish,
   );
 };
