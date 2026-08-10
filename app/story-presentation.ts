@@ -1,4 +1,4 @@
-import { localizeStoryTranscript, type Locale } from "./localization.ts";
+import { localizeStoryContent, localizeStoryTranscript, type Locale, type StoryContentId } from "./localization.ts";
 
 export type BridgePresentationLine = {
   text: string;
@@ -20,8 +20,10 @@ export type BridgePresentation = {
 };
 
 export type StoryPresentationBlock = {
-  kind: "heading" | "prose" | "quote" | "prompt";
+  kind: "heading" | "prose" | "quote" | "prompt" | "command";
   text: string;
+  contentId?: StoryContentId;
+  canonicalText?: string;
   attribution?: string;
   sourceLines: number[];
 };
@@ -73,3 +75,73 @@ export const openingPresentation = (
 
   return blocks;
 };
+
+const INITIAL_MESSAGE = /You "hear" a message coming in on the official message line:[\s\S]*?current issue of Dakota Online\."/i;
+const RELEASE = /Infocom interactive fiction - a science fiction story[\s\S]*?Release 79\s*\/\s*Serial number 851122/i;
+const COMMUNICATIONS = /You have entered Communications Mode\.\s*The following locations are equipped with communication outlets:/i;
+const OUTLETS = /PRISM Project Control Center\s*\(PPCC\)[\s\S]*?WNN(?: Feed)?\s*\(WNNF\)[\s\S]*?submit the associated code\./i;
+
+const contentBlock = (
+  contentId: StoryContentId,
+  canonicalText: string,
+  locale: Locale,
+  sourceLines: number[],
+): StoryPresentationBlock => ({
+  kind: "prose",
+  contentId,
+  canonicalText,
+  text: localizeStoryContent(contentId, canonicalText, locale),
+  sourceLines,
+});
+
+// Source evidence: GO and V-LOOK in source/misc.zil and source/verbs.zil,
+// with MESSAGE-B and the outlet list in source/prism.zil. This intentionally
+// recognizes only the first line-input tableau and its immediately following
+// LOOK turn; it is not a general transcript/turn parser.
+export const initialLineTurnPresentation = (
+  presentation: BridgePresentation | null,
+  locale: Locale,
+): StoryPresentationBlock[] | null => {
+  if (locale !== "ja" || !presentation || presentation.version !== 2 || presentation.activeInput?.kind !== "line") return null;
+  const { lines, terminalLine, activeInput } = presentation;
+  if (!activeInput.classes.includes("Input") || !activeInput.classes.includes("LineInput")) return null;
+  if (terminalLine < 0 || activeInput.line !== terminalLine) return null;
+
+  const indexed = lines.map((line, index) => ({ text: clean(line.text.replace(/\r/g, "")), index }));
+  const terminalText = indexed[terminalLine]?.text ?? "";
+  if (!/^>\s*$/.test(terminalText)) return null;
+  const joined = indexed.map((line) => line.text).join("\n");
+  const message = joined.match(INITIAL_MESSAGE)?.[0];
+  const release = joined.match(RELEASE)?.[0];
+  const descriptions = [...joined.matchAll(new RegExp(COMMUNICATIONS.source, "gi"))];
+  const outletMatches = [...joined.matchAll(new RegExp(OUTLETS.source, "gi"))];
+  if (!message || !release || descriptions.length === 0 || outletMatches.length === 0) return null;
+
+  const commands = indexed.filter((line) => /^>\s*\S/.test(line.text));
+  const lastCommand = commands.at(-1);
+  const lastDescription = descriptions.at(-1);
+  const lastOutlets = outletMatches.at(-1);
+  if (!lastDescription || !lastOutlets) return null;
+  const isInitial = !lastCommand;
+  const isLook = lastCommand?.text.toUpperCase() === ">LOOK"
+    && lastCommand.index < terminalLine
+    && (lastDescription.index ?? -1) > joined.indexOf(lastCommand.text);
+  if (!isInitial && !isLook) return null;
+
+  const sourceLinesFor = (value: string) => indexed.filter((line) => value.includes(line.text) && line.text).map((line) => line.index);
+  const communicationText = lastDescription[0];
+  const outletsText = lastOutlets[0];
+  const blocks: StoryPresentationBlock[] = [];
+  if (isInitial) {
+    blocks.push(contentBlock("part1.initial.incoming-message", message, locale, sourceLinesFor(message)));
+    blocks.push(contentBlock("part1.initial.release", release, locale, sourceLinesFor(release)));
+  } else if (lastCommand) {
+    blocks.push({ kind: "command", text: "LOOK", canonicalText: "LOOK", sourceLines: [lastCommand.index] });
+  }
+  blocks.push(contentBlock("part1.initial.communications", communicationText, locale, sourceLinesFor(communicationText)));
+  blocks.push(contentBlock("part1.initial.outlets", outletsText, locale, sourceLinesFor(outletsText)));
+  return blocks;
+};
+
+export const storyPresentation = (presentation: BridgePresentation | null, locale: Locale) =>
+  openingPresentation(presentation, locale) ?? initialLineTurnPresentation(presentation, locale);

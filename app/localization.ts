@@ -52,3 +52,26 @@ export const localizeStoryTranscript = (rawEnglish: string, locale: Locale) => {
     rawEnglish,
   );
 };
+
+export type StoryContentId =
+  | "part1.initial.incoming-message"
+  | "part1.initial.release"
+  | "part1.initial.communications"
+  | "part1.initial.outlets";
+
+// Normal parser-turn localization is keyed by stable story IDs. Canonical
+// English is supplied by the recognizer and remains the per-block fallback.
+const STORY_CATALOG: Partial<Record<Locale, Partial<Record<StoryContentId, string>>>> = {
+  ja: {
+    "part1.initial.incoming-message": "公式メッセージ回線から、メッセージが届くのを「聞く」。\n\n「PRISM？ ペレルマンだ。心理テストはすべて100％で合格した。つまり、目覚めのあともトラウマや深刻な影響なく回復したということだ。まもなくシミュレーションを開始できる。ところで、君の記事が『Dakota Online』最新号に載っているよ。」",
+    "part1.initial.release": "Infocom インタラクティブ・フィクション ― SFストーリー\nCopyright (c) 1985 Infocom, Inc. All rights reserved.（著作権表示）\nA Mind Forever Voyaging は Infocom, Inc. の商標です。\nRelease 79 / Serial number 851122",
+    "part1.initial.communications": "通信モードに入りました。以下の場所には通信アウトレットが設置されています。",
+    "part1.initial.outlets": "PRISMプロジェクト管制センター (PPCC)\n屋上 (RCRO)\nペレルマンのオフィス (PEOF)\nカフェテリア (PCAF)\nメインコンピューター・コア (MACO)\nWNNフィード (WNNF)\n特定のアウトレットを起動するには、対応するコードを入力してください。",
+  },
+};
+
+export const localizeStoryContent = (
+  contentId: StoryContentId,
+  canonicalText: string,
+  locale: Locale,
+) => STORY_CATALOG[locale]?.[contentId] ?? canonicalText;
