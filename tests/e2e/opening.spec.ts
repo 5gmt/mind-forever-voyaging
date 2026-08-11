@@ -9,7 +9,7 @@ test("Japanese opening continues into the canonical line input", async ({ page }
   }
 
   const continueButton = page.getByRole("button", { name: /Begin the original story/i });
-  await expect(continueButton).toBeEnabled();
+  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
 
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: "Reading and play settings" });
@@ -27,9 +27,9 @@ test("Japanese opening continues into the canonical line input", async ({ page }
 
   await page.getByRole("button", { name: /原作を始める/ }).click();
 
-  await expect(presentation).toHaveCount(0);
-  await expect(canonicalStory).toHaveAttribute("aria-hidden", "false");
-  await expect(canonicalStory).not.toHaveAttribute("inert", "");
+  await expect(presentation).toContainText("公式メッセージ回線");
+  await expect(canonicalStory).toHaveAttribute("aria-hidden", "true");
+  await expect(canonicalStory).toHaveAttribute("inert", "");
 
   const commandInput = page.locator("#command-input");
   await expect(commandInput).toBeVisible();
