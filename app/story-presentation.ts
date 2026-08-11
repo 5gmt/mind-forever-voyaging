@@ -29,6 +29,7 @@ export type StoryPresentationBlock = {
 };
 
 const clean = (text: string) => text.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
+const commandText = (text: string) => clean(text).replace(/\s+/g, " ").toUpperCase();
 
 // This deliberately recognizes only Release 79's opening tableau. The raw
 // transcript remains the source of truth for all state detection; these lines
@@ -79,7 +80,6 @@ export const openingPresentation = (
   return blocks;
 };
 
-const commandText = (text: string) => clean(text).replace(/\s+/g, " ").toUpperCase();
 const INITIAL_MESSAGE = /You "hear" a message coming in on the official message line:[\s\S]*?current issue of Dakota Online\."/i;
 const RELEASE = /Infocom interactive fiction - a science fiction story[\s\S]*?Release 79\s*\/\s*Serial number 851122/i;
 const COMMUNICATIONS = /You have entered Communications Mode\.\s*The following locations are equipped with communication outlets:/i;
