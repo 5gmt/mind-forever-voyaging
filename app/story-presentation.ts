@@ -55,9 +55,10 @@ export const openingPresentation = (
   const promptSourceLine = visualLines[promptIndex].sourceLine;
   if (promptSourceLine !== terminalLine || activeInput.line !== promptSourceLine) return null;
 
-  const blocks: StoryPresentationBlock[] = [
-    { kind: "heading", text: headingIndex >= 0 ? visualLines[headingIndex].text : "* PART I *", sourceLines: headingIndex >= 0 ? [visualLines[headingIndex].sourceLine] : [] },
-  ];
+  const blocks: StoryPresentationBlock[] = [];
+  if (headingIndex >= 0) {
+    blocks.push({ kind: "heading", text: visualLines[headingIndex].text, sourceLines: [visualLines[headingIndex].sourceLine] });
+  }
 
   const attributionIndex = visualLines.findIndex((line, index) => index > quoteEnd && /^--\s*William Marsden$/i.test(line.text));
   const rawQuote = visualLines.slice(quoteStart, quoteEnd + 1).map((line) => line.text).join("\n");
