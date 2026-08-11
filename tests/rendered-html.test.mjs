@@ -272,7 +272,7 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
   assert.equal(blocks?.[1].attribution, "-- William Marsden");
   assert.match(blocks?.[2].text || "", /いずれかのキーを押して/);
 
-  assert.match(shell, /openingPresentation\(presentation, locale\)/);
+  assert.match(shell, /storyPresentation\(presentation, locale\)/);
   assert.match(shell, /className="story-presentation-heading"/);
   assert.match(shell, /className="story-presentation-quote"/);
   assert.match(shell, /className="story-presentation-prompt"/);
