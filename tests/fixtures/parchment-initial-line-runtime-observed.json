@@ -1,0 +1,512 @@
+{
+  "provenance": "Runtime-observed with Playwright against canonical Release 79 Parchment on 2026-08-11; sanitized deterministic BridgePresentation v2 payload immediately after continuing past the opening.",
+  "presentation": {
+    "version": 2,
+    "lines": [
+      {
+        "text": "You \"hear\" a message coming in on the official message line: \"PRISM? Perelman here. The psych tests have all checked out at 100%, which means that you've recovered from the, ah, awakening without any trauma or other serious effects. We'll be ready to begin the simulation soon. By the way, your piece is in the current issue of Dakota Online.\"",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "You \"hear\" a message coming in on the official message line: \"PRISM? Perelman here. The psych tests have all checked out at 100%, which means that you've recovered from the, ah, awakening without any trauma or other serious effects. We'll be ready to begin the simulation soon. By the way, your piece is in the current issue of Dakota Online.\"",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": " ",
+        "classes": [
+          "BufferLine",
+          "BlankPara"
+        ],
+        "runs": [
+          {
+            "text": " ",
+            "classes": [
+              "BlankLineSpace"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "A Mind Forever Voyaging",
+        "classes": [
+          "BufferLine",
+          "Style_emphasized_par"
+        ],
+        "runs": [
+          {
+            "text": "A",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": " ",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "Mind",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": " ",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "Forever",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": " ",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "Voyaging",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "Infocom interactive fiction - a science fiction story",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "Infocom interactive fiction - a science fiction story",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "Copyright (c) 1985 by Infocom, Inc. All rights reserved.",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "Copyright (c) 1985 by Infocom, Inc. All rights reserved.",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "A Mind Forever Voyaging is a trademark of Infocom, Inc.",
+        "classes": [
+          "BufferLine",
+          "Style_emphasized_par"
+        ],
+        "runs": [
+          {
+            "text": "A",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": " ",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "Mind",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": " ",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "Forever",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": " ",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "Voyaging",
+            "classes": [
+              "Style_emphasized"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": " is a trademark of Infocom, Inc.",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "Release 79 / Serial number 851122",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "Release 79 / Serial number 851122",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": " ",
+        "classes": [
+          "BufferLine",
+          "BlankPara"
+        ],
+        "runs": [
+          {
+            "text": " ",
+            "classes": [
+              "BlankLineSpace"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "You have entered Communications Mode. The following locations are equipped with communication outlets:",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "You have entered Communications Mode. The following locations are equipped with communication outlets:",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "   PRISM Project Control Center (PPCC)",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "   PRISM Project Control Center (PPCC)",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "    Research Center Rooftop (RCRO)",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "    Research Center Rooftop (RCRO)",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "    Dr. Perelman's Office (PEOF)",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "    Dr. Perelman's Office (PEOF)",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "    PRISM Facility Cafeteria (PCAF)",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "    PRISM Facility Cafeteria (PCAF)",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "    Maintenance Core (MACO)",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "    Maintenance Core (MACO)",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "    World News Network Feed (WNNF)",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "    World News Network Feed (WNNF)",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "To activate a specific outlet, submit the associated code.",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": "To activate a specific outlet, submit the associated code.",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": " ",
+        "classes": [
+          "BufferLine",
+          "BlankPara"
+        ],
+        "runs": [
+          {
+            "text": " ",
+            "classes": [
+              "BlankLineSpace"
+            ],
+            "tag": "span"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": ">",
+        "classes": [
+          "BufferLine",
+          "Style_normal_par"
+        ],
+        "runs": [
+          {
+            "text": ">",
+            "classes": [
+              "Style_normal"
+            ],
+            "tag": "span"
+          },
+          {
+            "text": "",
+            "classes": [
+              "Input",
+              "LineInput"
+            ],
+            "tag": "textarea"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      }
+    ],
+    "terminalLine": 17,
+    "activeInput": {
+      "kind": "line",
+      "line": 17,
+      "classes": [
+        "Input",
+        "LineInput"
+      ]
+    }
+  }
+}

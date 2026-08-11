@@ -297,6 +297,15 @@ test("shows the structured opening only for the live terminal character prompt",
   detachedInput.activeInput.line = null;
   assert.equal(openingPresentation(detachedInput, "ja"), null);
 
+  const liveBrowserSlice = structuredClone(payload.presentation);
+  liveBrowserSlice.lines.shift();
+  liveBrowserSlice.terminalLine -= 1;
+  liveBrowserSlice.activeInput.line -= 1;
+  liveBrowserSlice.lines.at(-1).text = "[Hit \nany \nkey \nto \ncontinue.]";
+  const browserBlocks = openingPresentation(liveBrowserSlice, "ja");
+  assert.deepEqual(browserBlocks?.map((block) => block.kind), ["quote", "prompt"]);
+  assert.match(browserBlocks?.[1].text || "", /いずれかのキーを押して/);
+
   const unrecognized = structuredClone(payload.presentation);
   unrecognized.lines[2].text = "A different story opening";
   assert.equal(openingPresentation(unrecognized, "ja"), null);
@@ -310,22 +319,17 @@ test("shows the structured opening only for the live terminal character prompt",
   groupedRuns.activeInput.line = 4;
   assert.deepEqual(openingPresentation(groupedRuns, "ja")?.map((block) => block.kind), ["heading", "quote", "prompt"]);
 
-  const detachedTerminalCharInput = structuredClone(payload.presentation);
-  detachedTerminalCharInput.lines.at(-1).runs.pop();
-  detachedTerminalCharInput.lines.push({
-    ...detachedTerminalCharInput.lines.at(-1),
-    text: "",
-    runs: [{ text: "", classes: ["Input"], tag: "textarea" }],
-  });
-  detachedTerminalCharInput.activeInput.line = detachedTerminalCharInput.lines.length - 1;
-  assert.deepEqual(openingPresentation(detachedTerminalCharInput, "ja")?.map((block) => block.kind), ["heading", "quote", "prompt"]);
 });
 
-test("presents only the source-derived initial line tableau and canonical LOOK turn", async () => {
+test("presents the source-derived and runtime-observed initial LOOK tableaux", async () => {
   const initialFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-initial-line-source-derived.json", import.meta.url), "utf8"));
   const lookFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-look-source-derived.json", import.meta.url), "utf8"));
+  const runtimeInitialFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-initial-line-runtime-observed.json", import.meta.url), "utf8"));
+  const runtimeLookFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-look-runtime-observed.json", import.meta.url), "utf8"));
   assert.match(initialFixture.provenance, /Source-derived/);
   assert.match(initialFixture.provenance, /not runtime-observed/);
+  assert.match(runtimeInitialFixture.provenance, /Runtime-observed with Playwright/);
+  assert.match(runtimeLookFixture.provenance, /Runtime-observed with Playwright/);
 
   const initial = initialLineTurnPresentation(initialFixture.presentation, "ja");
   assert.deepEqual(initial?.map((block) => block.contentId), [
@@ -343,24 +347,19 @@ test("presents only the source-derived initial line tableau and canonical LOOK t
   assert.match(look?.[1].text || "", /通信モード/);
   assert.equal(initialLineTurnPresentation(initialFixture.presentation, "en"), null);
 
-  // Actual GlkOte commits can keep the prompt and Style_input echo in adjacent
-  // BufferLines instead of producing one synthetic ">LOOK" line.
-  const splitEcho = structuredClone(lookFixture.presentation);
-  splitEcho.presentationSource = "runtime-shape regression";
-  splitEcho.lines[4].text = ">";
-  splitEcho.lines[4].classes = ["BufferLine", "Style_normal_par"];
-  splitEcho.lines.splice(5, 0, {
-    ...splitEcho.lines[4],
-    text: "LOOK",
-    classes: ["BufferLine", "Style_input_par"],
-    runs: [{ text: "LOOK", classes: ["Style_input"], tag: "span" }],
-  });
-  splitEcho.terminalLine += 1;
-  splitEcho.activeInput.line += 1;
-  const splitLook = initialLineTurnPresentation(splitEcho, "ja");
-  assert.equal(splitLook?.[0].kind, "command");
-  assert.equal(splitLook?.[0].text, "LOOK");
-  assert.deepEqual(splitLook?.[0].sourceLines, [4, 5]);
+  const runtimeInitial = initialLineTurnPresentation(runtimeInitialFixture.presentation, "ja");
+  assert.deepEqual(runtimeInitial?.map((block) => block.contentId), [
+    "part1.initial.incoming-message",
+    "part1.initial.release",
+    "part1.initial.communications",
+    "part1.initial.outlets",
+  ]);
+  const runtimeLook = initialLineTurnPresentation(runtimeLookFixture.presentation, "ja");
+  assert.deepEqual(runtimeLook?.map((block) => block.kind), ["command", "prose", "prose"]);
+  assert.equal(runtimeLook?.[0].text, "LOOK");
+  const runtimeEcho = runtimeLookFixture.presentation.lines.find((line) => line.text === ">LOOK");
+  assert.deepEqual(runtimeEcho?.runs.map((run) => run.text), [">", "LOOK"]);
+  assert.deepEqual(runtimeEcho?.runs[1].classes, ["Style_input"]);
 
   const detached = structuredClone(initialFixture.presentation);
   detached.activeInput.line = null;

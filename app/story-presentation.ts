@@ -28,7 +28,7 @@ export type StoryPresentationBlock = {
   sourceLines: number[];
 };
 
-const clean = (text: string) => text.replace(/\u00a0/g, " ").trim();
+const clean = (text: string) => text.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
 const commandText = (text: string) => clean(text).replace(/\s+/g, " ").toUpperCase();
 
 // This deliberately recognizes only Release 79's opening tableau. The raw
@@ -41,31 +41,27 @@ export const openingPresentation = (
   if (!presentation || presentation.version !== 2 || presentation.activeInput?.kind !== "char") return null;
   const { lines, terminalLine, activeInput } = presentation;
   if (!activeInput.classes.includes("Input") || activeInput.classes.includes("LineInput")) return null;
-  const visualLines = lines.flatMap((line, sourceLine) =>
-    line.text.replace(/\r/g, "").split("\n").map((text) => ({ text: clean(text), sourceLine })),
-  );
+  const visualLines = lines.flatMap((line, sourceLine) => {
+    const text = line.text.replace(/\r/g, "");
+    const fragments = line.runs.some((run) => run.classes.includes("Input")) ? [text] : text.split("\n");
+    return fragments.map((fragment) => ({ text: clean(fragment), sourceLine }));
+  });
   const headingIndex = visualLines.findIndex((line) => /^\*\s*PART I\s*\*$/i.test(line.text));
   const quoteStart = visualLines.findIndex((line) => /^"Tomorrow never yet$/i.test(line.text));
   const quoteEnd = visualLines.findIndex((line, index) => index > quoteStart && /^On any human being rose or set\."$/i.test(line.text));
   const promptIndex = visualLines.findIndex((line) => /^\[Hit any key to continue\.\]$/i.test(line.text));
 
-  if (headingIndex < 0 || quoteStart < 0 || quoteEnd < 0 || promptIndex < 0) return null;
+  if (quoteStart < 0 || quoteEnd < 0 || promptIndex < 0) return null;
   // Parchment appends its Input textarea to the current BufferLine. Requiring
   // both signals prevents an old opening prompt in scrollback from masking the
   // canonical interpreter after play continues.
   const promptSourceLine = visualLines[promptIndex].sourceLine;
-  const activeSourceLine = activeInput.line;
-  if (activeSourceLine === null || activeSourceLine !== lines.length - 1) return null;
-  // Depending on when GlkOte commits the character request, the textarea can
-  // occupy its own empty terminal BufferLine. In that runtime form,
-  // terminalLine (the last non-empty line) remains the immediately preceding
-  // prompt line.
-  if (promptSourceLine !== activeSourceLine
-    && !(promptSourceLine === terminalLine && activeSourceLine === promptSourceLine + 1)) return null;
+  if (promptSourceLine !== terminalLine || activeInput.line !== promptSourceLine) return null;
 
-  const blocks: StoryPresentationBlock[] = [
-    { kind: "heading", text: visualLines[headingIndex].text, sourceLines: [visualLines[headingIndex].sourceLine] },
-  ];
+  const blocks: StoryPresentationBlock[] = [];
+  if (headingIndex >= 0) {
+    blocks.push({ kind: "heading", text: visualLines[headingIndex].text, sourceLines: [visualLines[headingIndex].sourceLine] });
+  }
 
   const attributionIndex = visualLines.findIndex((line, index) => index > quoteEnd && /^--\s*William Marsden$/i.test(line.text));
   const rawQuote = visualLines.slice(quoteStart, quoteEnd + 1).map((line) => line.text).join("\n");
@@ -87,7 +83,7 @@ export const openingPresentation = (
 const INITIAL_MESSAGE = /You "hear" a message coming in on the official message line:[\s\S]*?current issue of Dakota Online\."/i;
 const RELEASE = /Infocom interactive fiction - a science fiction story[\s\S]*?Release 79\s*\/\s*Serial number 851122/i;
 const COMMUNICATIONS = /You have entered Communications Mode\.\s*The following locations are equipped with communication outlets:/i;
-const OUTLETS = /PRISM Project Control Center\s*\(PPCC\)[\s\S]*?WNN(?: Feed)?\s*\(WNNF\)[\s\S]*?submit the associated code\./i;
+const OUTLETS = /PRISM Project Control Center\s*\(PPCC\)[\s\S]*?(?:WNN(?: Feed)?|World News Network Feed)\s*\(WNNF\)[\s\S]*?submit the associated code\./i;
 
 const contentBlock = (
   contentId: StoryContentId,
@@ -126,10 +122,9 @@ export const initialLineTurnPresentation = (
   if (!message || !release || descriptions.length === 0 || outletMatches.length === 0) return null;
 
   const responseLine = indexed.findLastIndex((line) => COMMUNICATIONS.test(line.text));
-  const commandCandidates = indexed.slice(0, responseLine < 0 ? terminalLine : responseLine);
-  const echoedCommandLine = commandCandidates.findLast((line, index) => {
+  const echoedCommandLine = indexed.slice(0, terminalLine).findLast((line, index, candidates) => {
       if (/^>\s*\S/i.test(commandText(line.text))) return true;
-      const prior = commandCandidates[index - 1];
+      const prior = candidates[index - 1];
       const hasInputStyle = lines[line.index].classes.some((className) => /Style_input/i.test(className))
         || lines[line.index].runs.some((run) => run.classes.some((className) => /Style_input/i.test(className)));
       return Boolean(commandText(line.text)) && (hasInputStyle || commandText(prior?.text ?? "") === ">");
@@ -142,7 +137,7 @@ export const initialLineTurnPresentation = (
   const lastOutlets = outletMatches.at(-1);
   if (!lastDescription || !lastOutlets) return null;
   const isInitial = !echoedCommandLine;
-  const isLook = Boolean(echoedLookLine && echoedLookLine.index < terminalLine);
+  const isLook = Boolean(echoedLookLine && echoedLookLine.index < responseLine);
   if (!isInitial && !isLook) return null;
 
   const sourceLinesFor = (value: string) => indexed.filter((line) => value.includes(line.text) && line.text).map((line) => line.index);
