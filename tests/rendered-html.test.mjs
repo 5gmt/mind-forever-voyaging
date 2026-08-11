@@ -297,6 +297,15 @@ test("shows the structured opening only for the live terminal character prompt",
   detachedInput.activeInput.line = null;
   assert.equal(openingPresentation(detachedInput, "ja"), null);
 
+  const liveBrowserSlice = structuredClone(payload.presentation);
+  liveBrowserSlice.lines.shift();
+  liveBrowserSlice.terminalLine -= 1;
+  liveBrowserSlice.activeInput.line -= 1;
+  liveBrowserSlice.lines.at(-1).text = "[Hit \nany \nkey \nto \ncontinue.]";
+  const browserBlocks = openingPresentation(liveBrowserSlice, "ja");
+  assert.deepEqual(browserBlocks?.map((block) => block.kind), ["quote", "prompt"]);
+  assert.match(browserBlocks?.[1].text || "", /いずれかのキーを押して/);
+
   const unrecognized = structuredClone(payload.presentation);
   unrecognized.lines[2].text = "A different story opening";
   assert.equal(openingPresentation(unrecognized, "ja"), null);
