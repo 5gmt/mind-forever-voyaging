@@ -309,6 +309,16 @@ test("shows the structured opening only for the live terminal character prompt",
   groupedRuns.terminalLine = 4;
   groupedRuns.activeInput.line = 4;
   assert.deepEqual(openingPresentation(groupedRuns, "ja")?.map((block) => block.kind), ["heading", "quote", "prompt"]);
+
+  const detachedTerminalCharInput = structuredClone(payload.presentation);
+  detachedTerminalCharInput.lines.at(-1).runs.pop();
+  detachedTerminalCharInput.lines.push({
+    ...detachedTerminalCharInput.lines.at(-1),
+    text: "",
+    runs: [{ text: "", classes: ["Input"], tag: "textarea" }],
+  });
+  detachedTerminalCharInput.activeInput.line = detachedTerminalCharInput.lines.length - 1;
+  assert.deepEqual(openingPresentation(detachedTerminalCharInput, "ja")?.map((block) => block.kind), ["heading", "quote", "prompt"]);
 });
 
 test("presents only the source-derived initial line tableau and canonical LOOK turn", async () => {
@@ -332,6 +342,25 @@ test("presents only the source-derived initial line tableau and canonical LOOK t
   assert.equal(look?.[0].text, "LOOK");
   assert.match(look?.[1].text || "", /通信モード/);
   assert.equal(initialLineTurnPresentation(initialFixture.presentation, "en"), null);
+
+  // Actual GlkOte commits can keep the prompt and Style_input echo in adjacent
+  // BufferLines instead of producing one synthetic ">LOOK" line.
+  const splitEcho = structuredClone(lookFixture.presentation);
+  splitEcho.presentationSource = "runtime-shape regression";
+  splitEcho.lines[4].text = ">";
+  splitEcho.lines[4].classes = ["BufferLine", "Style_normal_par"];
+  splitEcho.lines.splice(5, 0, {
+    ...splitEcho.lines[4],
+    text: "LOOK",
+    classes: ["BufferLine", "Style_input_par"],
+    runs: [{ text: "LOOK", classes: ["Style_input"], tag: "span" }],
+  });
+  splitEcho.terminalLine += 1;
+  splitEcho.activeInput.line += 1;
+  const splitLook = initialLineTurnPresentation(splitEcho, "ja");
+  assert.equal(splitLook?.[0].kind, "command");
+  assert.equal(splitLook?.[0].text, "LOOK");
+  assert.deepEqual(splitLook?.[0].sourceLines, [4, 5]);
 
   const detached = structuredClone(initialFixture.presentation);
   detached.activeInput.line = null;

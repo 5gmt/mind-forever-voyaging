@@ -29,6 +29,7 @@ export type StoryPresentationBlock = {
 };
 
 const clean = (text: string) => text.replace(/\u00a0/g, " ").trim();
+const commandText = (text: string) => clean(text).replace(/\s+/g, " ").toUpperCase();
 
 // This deliberately recognizes only Release 79's opening tableau. The raw
 // transcript remains the source of truth for all state detection; these lines
@@ -53,7 +54,14 @@ export const openingPresentation = (
   // both signals prevents an old opening prompt in scrollback from masking the
   // canonical interpreter after play continues.
   const promptSourceLine = visualLines[promptIndex].sourceLine;
-  if (promptSourceLine !== terminalLine || activeInput.line !== promptSourceLine) return null;
+  const activeSourceLine = activeInput.line;
+  if (activeSourceLine === null || activeSourceLine !== lines.length - 1) return null;
+  // Depending on when GlkOte commits the character request, the textarea can
+  // occupy its own empty terminal BufferLine. In that runtime form,
+  // terminalLine (the last non-empty line) remains the immediately preceding
+  // prompt line.
+  if (promptSourceLine !== activeSourceLine
+    && !(promptSourceLine === terminalLine && activeSourceLine === promptSourceLine + 1)) return null;
 
   const blocks: StoryPresentationBlock[] = [
     { kind: "heading", text: visualLines[headingIndex].text, sourceLines: [visualLines[headingIndex].sourceLine] },
@@ -105,7 +113,7 @@ export const initialLineTurnPresentation = (
   if (locale !== "ja" || !presentation || presentation.version !== 2 || presentation.activeInput?.kind !== "line") return null;
   const { lines, terminalLine, activeInput } = presentation;
   if (!activeInput.classes.includes("Input") || !activeInput.classes.includes("LineInput")) return null;
-  if (terminalLine < 0 || activeInput.line !== terminalLine) return null;
+  if (terminalLine < 0 || activeInput.line !== terminalLine || activeInput.line !== lines.length - 1) return null;
 
   const indexed = lines.map((line, index) => ({ text: clean(line.text.replace(/\r/g, "")), index }));
   const terminalText = indexed[terminalLine]?.text ?? "";
@@ -117,15 +125,24 @@ export const initialLineTurnPresentation = (
   const outletMatches = [...joined.matchAll(new RegExp(OUTLETS.source, "gi"))];
   if (!message || !release || descriptions.length === 0 || outletMatches.length === 0) return null;
 
-  const commands = indexed.filter((line) => /^>\s*\S/.test(line.text));
-  const lastCommand = commands.at(-1);
+  const responseLine = indexed.findLastIndex((line) => COMMUNICATIONS.test(line.text));
+  const commandCandidates = indexed.slice(0, responseLine < 0 ? terminalLine : responseLine);
+  const echoedCommandLine = commandCandidates.findLast((line, index) => {
+      if (/^>\s*\S/i.test(commandText(line.text))) return true;
+      const prior = commandCandidates[index - 1];
+      const hasInputStyle = lines[line.index].classes.some((className) => /Style_input/i.test(className))
+        || lines[line.index].runs.some((run) => run.classes.some((className) => /Style_input/i.test(className)));
+      return Boolean(commandText(line.text)) && (hasInputStyle || commandText(prior?.text ?? "") === ">");
+    });
+  const echoedLookLine = echoedCommandLine
+    && commandText(echoedCommandLine.text).replace(/^>\s*/, "") === "LOOK"
+    ? echoedCommandLine
+    : undefined;
   const lastDescription = descriptions.at(-1);
   const lastOutlets = outletMatches.at(-1);
   if (!lastDescription || !lastOutlets) return null;
-  const isInitial = !lastCommand;
-  const isLook = lastCommand?.text.toUpperCase() === ">LOOK"
-    && lastCommand.index < terminalLine
-    && (lastDescription.index ?? -1) > joined.indexOf(lastCommand.text);
+  const isInitial = !echoedCommandLine;
+  const isLook = Boolean(echoedLookLine && echoedLookLine.index < terminalLine);
   if (!isInitial && !isLook) return null;
 
   const sourceLinesFor = (value: string) => indexed.filter((line) => value.includes(line.text) && line.text).map((line) => line.index);
@@ -135,8 +152,12 @@ export const initialLineTurnPresentation = (
   if (isInitial) {
     blocks.push(contentBlock("part1.initial.incoming-message", message, locale, sourceLinesFor(message)));
     blocks.push(contentBlock("part1.initial.release", release, locale, sourceLinesFor(release)));
-  } else if (lastCommand) {
-    blocks.push({ kind: "command", text: "LOOK", canonicalText: "LOOK", sourceLines: [lastCommand.index] });
+  } else if (echoedLookLine) {
+    const priorLine = indexed[echoedLookLine.index - 1];
+    const sourceLines = commandText(priorLine?.text ?? "") === ">"
+      ? [priorLine.index, echoedLookLine.index]
+      : [echoedLookLine.index];
+    blocks.push({ kind: "command", text: "LOOK", canonicalText: "LOOK", sourceLines });
   }
   blocks.push(contentBlock("part1.initial.communications", communicationText, locale, sourceLinesFor(communicationText)));
   blocks.push(contentBlock("part1.initial.outlets", outletsText, locale, sourceLinesFor(outletsText)));
