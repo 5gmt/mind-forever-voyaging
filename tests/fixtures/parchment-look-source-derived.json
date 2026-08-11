@@ -1,0 +1,138 @@
+{
+  "provenance": "Source-derived from source/misc.zil GO, source/verbs.zil V-VERSION and V-LOOK, and source/prism.zil MESSAGE-B and OUTLETS-F; not runtime-observed.",
+  "presentation": {
+    "version": 2,
+    "lines": [
+      {
+        "text": "You \"hear\" a message coming in on the official message line: \"PRISM? Perelman here. The psych tests have all checked out at 100%,\nwhich means that you've recovered from the, ah, awakening without any\ntrauma or other serious effects. We'll be ready to begin the simulation\nsoon. By the way, your piece is in the current issue of Dakota Online.\"",
+        "classes": [
+          "BufferLine",
+          "Style_normal"
+        ],
+        "runs": [],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "Infocom interactive fiction - a science fiction story\nCopyright (c) 1985 by Infocom, Inc. All rights reserved.\nA Mind Forever Voyaging is a trademark of Infocom, Inc.\nRelease 79 / Serial number 851122",
+        "classes": [
+          "BufferLine",
+          "Style_normal"
+        ],
+        "runs": [],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "You have entered Communications Mode. The following locations are equipped with communication outlets:",
+        "classes": [
+          "BufferLine",
+          "Style_normal"
+        ],
+        "runs": [],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "PRISM Project Control Center (PPCC)\nRooftop (RCRO)\nPerelman's Office (PEOF)\nCafeteria (PCAF)\nMain Computer Core (MACO)\nWNN Feed (WNNF)\nTo activate a specific outlet, submit the associated code.",
+        "classes": [
+          "BufferLine",
+          "Style_normal"
+        ],
+        "runs": [],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": ">LOOK",
+        "classes": [
+          "BufferLine",
+          "Style_input"
+        ],
+        "runs": [],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "You have entered Communications Mode. The following locations are equipped with communication outlets:",
+        "classes": [
+          "BufferLine",
+          "Style_normal"
+        ],
+        "runs": [],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": "PRISM Project Control Center (PPCC)\nRooftop (RCRO)\nPerelman's Office (PEOF)\nCafeteria (PCAF)\nMain Computer Core (MACO)\nWNN Feed (WNNF)\nTo activate a specific outlet, submit the associated code.",
+        "classes": [
+          "BufferLine",
+          "Style_normal"
+        ],
+        "runs": [],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      },
+      {
+        "text": ">",
+        "classes": [
+          "BufferLine",
+          "Style_input"
+        ],
+        "runs": [
+          {
+            "text": "",
+            "classes": [
+              "Input",
+              "LineInput"
+            ],
+            "tag": "textarea"
+          }
+        ],
+        "layout": {
+          "textAlign": "start",
+          "marginLeft": "0px",
+          "paddingLeft": "0px",
+          "whiteSpace": "pre-wrap"
+        }
+      }
+    ],
+    "terminalLine": 7,
+    "activeInput": {
+      "kind": "line",
+      "line": 7,
+      "classes": [
+        "Input",
+        "LineInput"
+      ]
+    }
+  }
+}

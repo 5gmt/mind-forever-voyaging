@@ -3,8 +3,8 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { localizeStoryTranscript } from "../app/localization.ts";
-import { openingPresentation } from "../app/story-presentation.ts";
+import { localizeStoryContent, localizeStoryTranscript } from "../app/localization.ts";
+import { initialLineTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 
 test("static export renders the finished unabridged edition", async () => {
   const html = await readFile(new URL("../out/index.html", import.meta.url), "utf8");
@@ -205,10 +205,10 @@ test("localizes only presentation while preserving raw English mechanics", async
     readFile(new URL("../public/amfv-r79-s851122.z4", import.meta.url)),
   ]);
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
-  assert.match(shell, /openingPresentation\(presentation, locale\)/);
-  assert.match(shell, /locale === "ja" && acceptsInput && inputKind === "char"/);
-  assert.match(shell, /aria-hidden=\{qaEnabled \|\| Boolean\(presentedOpening\)\}/);
-  assert.match(shell, /inert=\{presentedOpening \? true : undefined\}/);
+  assert.match(shell, /storyPresentation\(presentation, locale\)/);
+  assert.match(shell, /locale === "ja" && acceptsInput/);
+  assert.match(shell, /aria-hidden=\{qaEnabled \|\| Boolean\(presentedStory\)\}/);
+  assert.match(shell, /inert=\{presentedStory \? true : undefined\}/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
@@ -272,7 +272,7 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
   assert.equal(blocks?.[1].attribution, "-- William Marsden");
   assert.match(blocks?.[2].text || "", /いずれかのキーを押して/);
 
-  assert.match(shell, /openingPresentation\(presentation, locale\)/);
+  assert.match(shell, /storyPresentation\(presentation, locale\)/);
   assert.match(shell, /className="story-presentation-heading"/);
   assert.match(shell, /className="story-presentation-quote"/);
   assert.match(shell, /className="story-presentation-prompt"/);
@@ -318,4 +318,74 @@ test("shows the structured opening only for the live terminal character prompt",
   groupedRuns.terminalLine = 4;
   groupedRuns.activeInput.line = 4;
   assert.deepEqual(openingPresentation(groupedRuns, "ja")?.map((block) => block.kind), ["heading", "quote", "prompt"]);
+
+});
+
+test("presents the source-derived and runtime-observed initial LOOK tableaux", async () => {
+  const initialFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-initial-line-source-derived.json", import.meta.url), "utf8"));
+  const lookFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-look-source-derived.json", import.meta.url), "utf8"));
+  const runtimeInitialFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-initial-line-runtime-observed.json", import.meta.url), "utf8"));
+  const runtimeLookFixture = JSON.parse(await readFile(new URL("./fixtures/parchment-look-runtime-observed.json", import.meta.url), "utf8"));
+  assert.match(initialFixture.provenance, /Source-derived/);
+  assert.match(initialFixture.provenance, /not runtime-observed/);
+  assert.match(runtimeInitialFixture.provenance, /Runtime-observed with Playwright/);
+  assert.match(runtimeLookFixture.provenance, /Runtime-observed with Playwright/);
+
+  const initial = initialLineTurnPresentation(initialFixture.presentation, "ja");
+  assert.deepEqual(initial?.map((block) => block.contentId), [
+    "part1.initial.incoming-message",
+    "part1.initial.release",
+    "part1.initial.communications",
+    "part1.initial.outlets",
+  ]);
+  assert.match(initial?.[0].text || "", /公式メッセージ回線/);
+  assert.ok(initial?.every((block) => block.canonicalText && block.sourceLines.length));
+
+  const look = initialLineTurnPresentation(lookFixture.presentation, "ja");
+  assert.deepEqual(look?.map((block) => block.kind), ["command", "prose", "prose"]);
+  assert.equal(look?.[0].text, "LOOK");
+  assert.match(look?.[1].text || "", /通信モード/);
+  assert.equal(initialLineTurnPresentation(initialFixture.presentation, "en"), null);
+
+  const runtimeInitial = initialLineTurnPresentation(runtimeInitialFixture.presentation, "ja");
+  assert.deepEqual(runtimeInitial?.map((block) => block.contentId), [
+    "part1.initial.incoming-message",
+    "part1.initial.release",
+    "part1.initial.communications",
+    "part1.initial.outlets",
+  ]);
+  const runtimeLook = initialLineTurnPresentation(runtimeLookFixture.presentation, "ja");
+  assert.deepEqual(runtimeLook?.map((block) => block.kind), ["command", "prose", "prose"]);
+  assert.equal(runtimeLook?.[0].text, "LOOK");
+  const runtimeEcho = runtimeLookFixture.presentation.lines.find((line) => line.text === ">LOOK");
+  assert.deepEqual(runtimeEcho?.runs.map((run) => run.text), [">", "LOOK"]);
+  assert.deepEqual(runtimeEcho?.runs[1].classes, ["Style_input"]);
+
+  const detached = structuredClone(initialFixture.presentation);
+  detached.activeInput.line = null;
+  assert.equal(initialLineTurnPresentation(detached, "ja"), null);
+  const characterInput = structuredClone(initialFixture.presentation);
+  characterInput.activeInput.kind = "char";
+  assert.equal(initialLineTurnPresentation(characterInput, "ja"), null);
+
+  const unknown = structuredClone(initialFixture.presentation);
+  unknown.lines[2].text = "An unknown state";
+  assert.equal(initialLineTurnPresentation(unknown, "ja"), null);
+  const unsupported = structuredClone(lookFixture.presentation);
+  unsupported.lines[4].text = ">INVENTORY";
+  assert.equal(initialLineTurnPresentation(unsupported, "ja"), null);
+
+  const stale = structuredClone(initialFixture.presentation);
+  stale.lines.push({ ...stale.lines.at(-1), text: "A later unsupported state >" });
+  stale.terminalLine = stale.lines.length - 1;
+  stale.activeInput.line = stale.terminalLine;
+  assert.equal(initialLineTurnPresentation(stale, "ja"), null);
+});
+
+test("falls back per stable content ID without treating unknown source as recognized", () => {
+  const canonical = "Canonical English survives.";
+  assert.equal(localizeStoryContent("part1.initial.communications", canonical, "en"), canonical);
+  // Deliberately exercise a catalog miss at runtime: recognition and catalog
+  // lookup are separate responsibilities, and canonical text wins on a miss.
+  assert.equal(localizeStoryContent("part1.initial.catalog-gap", canonical, "ja"), canonical);
 });

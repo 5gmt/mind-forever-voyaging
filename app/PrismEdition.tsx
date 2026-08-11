@@ -6,7 +6,7 @@ import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 import { uiText, type Locale } from "./localization";
-import { openingPresentation, type BridgePresentation } from "./story-presentation";
+import { storyPresentation, type BridgePresentation } from "./story-presentation";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -1020,9 +1020,9 @@ export default function PrismEdition() {
   const assistedSecurity = assisted && Boolean(securityChallenge);
   const assistedYearSelector = assisted && yearSelectorActive;
   const blockingOverlayOpen = introOpen || qaWarningOpen || Boolean(packageItem) || fieldworkOpen;
-  const presentedOpening = useMemo(
-    () => locale === "ja" && acceptsInput && inputKind === "char" ? openingPresentation(presentation, locale) : null,
-    [acceptsInput, inputKind, locale, presentation],
+  const presentedStory = useMemo(
+    () => locale === "ja" && acceptsInput ? storyPresentation(presentation, locale) : null,
+    [acceptsInput, locale, presentation],
   );
 
   return (
@@ -1079,16 +1079,18 @@ export default function PrismEdition() {
 
         <div className="story-frame-wrap">
           {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
-          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || Boolean(presentedOpening)} inert={presentedOpening ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
+          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || Boolean(presentedStory)} inert={presentedStory ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
-          {presentedOpening && !qaEnabled && <section className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
-            {presentedOpening.map((block) => block.kind === "heading"
+          {presentedStory && !qaEnabled && <section className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
+            {presentedStory.map((block) => block.kind === "heading"
               ? <h2 key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-heading">{block.text}</h2>
               : block.kind === "quote"
                 ? <blockquote key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-quote"><p>{block.text}</p>{block.attribution && <cite>{block.attribution}</cite>}</blockquote>
                 : block.kind === "prompt"
                   ? <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-prompt">{block.text}</p>
-                  : <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-prose">{block.text}</p>)}
+                  : block.kind === "command"
+                    ? <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-command" lang="en"><code>&gt; {block.text}</code></p>
+                    : <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-prose">{block.text}</p>)}
           </section>}
           <div className="story-vignette" aria-hidden="true" />
         </div>
