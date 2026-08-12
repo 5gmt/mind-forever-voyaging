@@ -30,7 +30,7 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
     await introduction.getByRole("button", { name: /^Begin/ }).click();
   }
 
-  await expect(page.getByRole("button", { name: /Begin the original story/i })).toBeEnabled({ timeout: 40_000 });
+  await expect(page.getByRole("button", { name: /Begin the original story/i })).toBeEnabled({ timeout: 20_000 });
 
   await page.getByTitle("Reading and play settings").click();
   await page.getByRole("region", { name: "Reading and play settings" })
@@ -75,33 +75,6 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
     expectNear(wrapperStatusBox.width, canonicalStatusBox.width);
     expectNear(wrapperStatusBox.height, canonicalStatusBox.height);
   }
-  const canonicalStatusChrome = await frame.locator(".GridWindow").evaluate((element) => {
-    const style = getComputedStyle(element);
-    return {
-      backgroundColor: style.backgroundColor,
-      borderColor: style.borderTopColor,
-      borderStyle: style.borderTopStyle,
-      borderWidth: style.borderTopWidth,
-    };
-  });
-  await expect(wrapperStatus).toHaveCSS("background-color", canonicalStatusChrome.backgroundColor);
-  await expect(wrapperStatus).toHaveCSS("border-top-color", canonicalStatusChrome.borderColor);
-  await expect(wrapperStatus).toHaveCSS("border-top-style", canonicalStatusChrome.borderStyle);
-  await expect(wrapperStatus).toHaveCSS("border-top-width", canonicalStatusChrome.borderWidth);
-  const canonicalStatusContent = await frame.locator(".GridLine").first().evaluate((element) => {
-    const outer = element.parentElement!.getBoundingClientRect();
-    const box = element.getBoundingClientRect();
-    const fill = element.querySelector(".reverse") ?? element.firstElementChild!;
-    return { left: box.left - outer.left, top: box.top - outer.top, backgroundColor: getComputedStyle(fill).backgroundColor };
-  });
-  const wrapperStatusContent = wrapperStatus.locator(".story-presentation-status-content");
-  const wrapperStatusContentBox = await wrapperStatusContent.boundingBox();
-  if (wrapperStatusBox && wrapperStatusContentBox) {
-    expectNear(wrapperStatusContentBox.x - wrapperStatusBox.x, canonicalStatusContent.left);
-    expectNear(wrapperStatusContentBox.y - wrapperStatusBox.y, canonicalStatusContent.top);
-  }
-  await expect(wrapperStatusContent).toHaveCSS("background-color", canonicalStatusContent.backgroundColor);
-
   // Status geometry is live state, not a historical story snapshot. A second
   // report for the same active-input observation must update status chrome.
   const updatedStatusWidth = await frame.locator(".GridWindow").evaluate((element) => {
@@ -169,7 +142,7 @@ test("RESTORE entered directly in the canonical iframe invalidates Japanese disp
   if (await introduction.isVisible()) await introduction.getByRole("button", { name: /^Begin/ }).click();
 
   const continueButton = page.getByRole("button", { name: /Begin the original story/i });
-  await expect(continueButton).toBeEnabled({ timeout: 40_000 });
+  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: "Reading and play settings" });
   await settings.getByRole("button", { name: "日本語" }).click();

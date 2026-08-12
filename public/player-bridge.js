@@ -43,29 +43,18 @@
     const slicedInputLine = absoluteInputLine >= sliceStart ? absoluteInputLine - sliceStart : null;
     const terminalLine = lines.findLastIndex((line) => line.text.trim().length > 0);
 
-    const relativeBox = (element, container, includeChrome = false) => {
+    const relativeBox = (element, container, includeHeight = false) => {
       if (!element?.getBoundingClientRect || !container?.getBoundingClientRect) return null;
       const box = element.getBoundingClientRect();
       const origin = container.getBoundingClientRect();
       const geometry = { left: box.left - origin.left, width: box.width };
-      if (!includeChrome) return geometry;
-      const style = getStyle(element);
-      return {
-        ...geometry,
-        height: box.height,
-        backgroundColor: style.backgroundColor,
-        borderColor: style.borderTopColor,
-        borderStyle: style.borderTopStyle,
-        borderWidth: style.borderTopWidth,
-      };
+      return includeHeight ? { ...geometry, height: box.height } : geometry;
     };
     const gameport = documentRoot.querySelector?.("#gameport");
     // BufferLine's box is the canonical content column after the
     // BufferWindowInner padding has been applied.
     const buffer = documentRoot.querySelector?.("#gameport .BufferLine");
     const status = documentRoot.querySelector?.("#gameport .GridWindow");
-    const statusLine = status?.querySelector?.(".GridLine");
-    const statusFill = statusLine?.querySelector?.(".reverse") ?? statusLine?.firstElementChild;
 
     return {
       version: 3,
@@ -78,20 +67,7 @@
       } : null,
       geometry: gameport ? {
         buffer: relativeBox(buffer, gameport),
-        status: (() => {
-          const outer = relativeBox(status, gameport, true);
-          const content = relativeBox(statusLine, status);
-          if (!outer) return null;
-          const contentStyle = statusFill ? getStyle(statusFill) : null;
-          return {
-            ...outer,
-            content: content ? {
-              left: content.left,
-              top: statusLine.getBoundingClientRect().top - status.getBoundingClientRect().top,
-              backgroundColor: contentStyle?.backgroundColor ?? "transparent",
-            } : null,
-          };
-        })(),
+        status: relativeBox(status, gameport, true),
         activePrompt: relativeBox(inputLine, gameport),
       } : undefined,
     };

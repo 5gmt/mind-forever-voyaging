@@ -619,6 +619,8 @@ summary:focus-visible {
   overflow-x: auto;
   color: inherit;
   background: transparent;
+  font: 0.78rem/1.35 var(--font-geist-mono), monospace;
+  white-space: pre-wrap;
 }
 
 .story-presentation-shell[data-canonical-geometry="true"] .story-presentation-status {
@@ -627,24 +629,6 @@ summary:focus-visible {
   min-height: var(--story-status-height);
   padding-block: 0;
   box-sizing: border-box;
-  background-color: var(--story-status-background);
-  border-color: var(--story-status-border-color);
-  border-style: var(--story-status-border-style);
-  border-width: var(--story-status-border-width);
-}
-
-.story-presentation-status-content {
-  margin: 0;
-  font: 0.78rem/1.35 var(--font-geist-mono), monospace;
-  white-space: pre-wrap;
-}
-
-.story-presentation-shell[data-canonical-geometry="true"] .story-presentation-status-content {
-  position: relative;
-  left: var(--story-status-content-left);
-  top: var(--story-status-content-top);
-  width: calc(100% - var(--story-status-content-left));
-  background-color: var(--story-status-content-background);
 }
 
 .story-presentation {

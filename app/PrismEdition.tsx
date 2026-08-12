@@ -1060,13 +1060,6 @@ export default function PrismEdition() {
     "--story-status-left": `${liveGeometry?.status?.left ?? 0}px`,
     "--story-status-width": `${liveGeometry?.status?.width ?? 0}px`,
     "--story-status-height": `${liveGeometry?.status?.height ?? 0}px`,
-    "--story-status-background": liveGeometry?.status?.backgroundColor ?? "transparent",
-    "--story-status-border-color": liveGeometry?.status?.borderColor ?? "transparent",
-    "--story-status-border-style": liveGeometry?.status?.borderStyle ?? "none",
-    "--story-status-border-width": liveGeometry?.status?.borderWidth ?? "0px",
-    "--story-status-content-left": `${liveGeometry?.status?.content?.left ?? 0}px`,
-    "--story-status-content-top": `${liveGeometry?.status?.content?.top ?? 0}px`,
-    "--story-status-content-background": liveGeometry?.status?.content?.backgroundColor ?? "transparent",
     "--story-prompt-left": `${liveGeometry?.activePrompt?.left ?? liveGeometry?.buffer?.left ?? 0}px`,
   } as CSSProperties;
 
@@ -1132,7 +1125,7 @@ export default function PrismEdition() {
           <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || presentedStory.length > 0} inert={presentedStory.length > 0 ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
           {presentedStory.length > 0 && !qaEnabled && !presentationState.recovering && <div className="story-presentation-shell" data-canonical-geometry={liveGeometry ? "true" : "false"} style={geometryStyle}>
-          {canonicalStatusText.trim() && <div className="story-presentation-status" lang="en" aria-label="Canonical game status"><pre className="story-presentation-status-content">{canonicalStatusText}</pre></div>}
+          {canonicalStatusText.trim() && <pre className="story-presentation-status" lang="en" aria-label="Canonical game status">{canonicalStatusText}</pre>}
           <section ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
             {presentedStory.flatMap((entry) => entry.blocks.map((block, blockIndex) => block.kind === "heading"
               ? <h2 key={`${entry.entryId}-${blockIndex}`} className="story-presentation-heading">{block.text}</h2>
