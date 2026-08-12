@@ -568,6 +568,12 @@ export default function PrismEdition() {
       if (event.data.type === "command" && typeof event.data.command === "string") {
         const entered = event.data.command.trim();
         if (!entered) return;
+        // Commands entered directly in the visible canonical iframe bypass
+        // postCommand(). RESTORE is still a canonical timeline boundary, so
+        // invalidate the disposable display cache on this bridge path too.
+        if (!qaEnabled && /^restore$/i.test(entered)) {
+          setPresentationState({ history: [], recovering: true });
+        }
         if (/^(?:record|ron)$/i.test(entered)) setRecording(true);
         if (/^(?:record off|roff)$/i.test(entered)) setRecording(false);
         lastCommandRef.current = entered;
@@ -669,7 +675,10 @@ export default function PrismEdition() {
       const nextPresentation = [2, 3].includes(event.data.presentation?.version) && Array.isArray(event.data.presentation.lines)
         ? event.data.presentation
         : null;
-      if (!qaEnabled) {
+      // Ignore transient reports while the interpreter is processing. A
+      // stable active input can be projected or can deliberately request
+      // canonical recovery (for example an unsupported character prompt).
+      if (!qaEnabled && event.data.acceptsInput) {
         setPresentationState((previous) => {
           const reconciliation = reconcilePresentationHistory(previous.history, nextPresentation);
           return { history: reconciliation.history, recovering: !reconciliation.representable };

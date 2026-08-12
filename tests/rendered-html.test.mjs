@@ -208,6 +208,8 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
   assert.match(shell, /projectPresentationHistory\(presentationState\.history, locale\)/);
   assert.match(shell, /reconcilePresentationHistory\(previous\.history, nextPresentation\)/);
+  assert.match(shell, /event\.data\.type === "command"[\s\S]*\^restore\$[\s\S]*setPresentationState\(\{ history: \[\], recovering: true \}\)/i);
+  assert.match(shell, /!qaEnabled && event\.data\.acceptsInput/);
   assert.match(shell, /aria-hidden=\{qaEnabled \|\| presentedStory\.length > 0\}/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
