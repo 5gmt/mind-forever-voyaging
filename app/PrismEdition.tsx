@@ -2,7 +2,7 @@
 
 /* eslint-disable @next/next/no-img-element -- package thumbnails are scans, not responsive artwork */
 
-import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { CSSProperties, FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 import { uiText, type Locale } from "./localization";
@@ -1050,6 +1050,15 @@ export default function PrismEdition() {
   const presentedStory = useMemo(() => locale === "ja" && !presentationState.recovering
     ? projectPresentationHistory(presentationState.history, locale)
     : [], [locale, presentationState]);
+  const livePresentation = presentationState.history.at(-1)?.presentation;
+  const liveGeometry = livePresentation?.geometry;
+  const geometryStyle = {
+    "--story-buffer-left": `${liveGeometry?.buffer?.left ?? 0}px`,
+    "--story-buffer-width": `${liveGeometry?.buffer?.width ?? 0}px`,
+    "--story-status-left": `${liveGeometry?.status?.left ?? 0}px`,
+    "--story-status-width": `${liveGeometry?.status?.width ?? 0}px`,
+    "--story-prompt-left": `${liveGeometry?.activePrompt?.left ?? liveGeometry?.buffer?.left ?? 0}px`,
+  } as CSSProperties;
 
   useEffect(() => {
     const surface = presentationRef.current;
@@ -1112,7 +1121,7 @@ export default function PrismEdition() {
           {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
           <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || presentedStory.length > 0} inert={presentedStory.length > 0 ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
-          {presentedStory.length > 0 && !qaEnabled && !presentationState.recovering && <div className="story-presentation-shell">
+          {presentedStory.length > 0 && !qaEnabled && !presentationState.recovering && <div className="story-presentation-shell" data-canonical-geometry={liveGeometry ? "true" : "false"} style={geometryStyle}>
           {canonicalStatusText.trim() && <pre className="story-presentation-status" lang="en" aria-label="Canonical game status">{canonicalStatusText}</pre>}
           <section ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
             {presentedStory.flatMap((entry) => entry.blocks.map((block, blockIndex) => block.kind === "heading"
@@ -1130,7 +1139,9 @@ export default function PrismEdition() {
                       : block.kind === "list"
                         ? <ul key={`${entry.entryId}-${blockIndex}`} className="story-presentation-list">{block.items?.map((item, itemIndex) => <li key={`${entry.entryId}-${blockIndex}-${itemIndex}`} lang={item === block.canonicalItems?.[itemIndex] ? "en" : undefined}>{item}</li>)}</ul>
                         : <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prose" lang={block.text === block.canonicalText ? "en" : undefined}>{block.text}</p>))}
-          </section></div>}
+          </section>
+          {livePresentation?.activeInput?.kind === "line" && <div className="story-presentation-active-prompt" lang="en" aria-label="Current game prompt">&gt;</div>}
+          </div>}
           <div className="story-vignette" aria-hidden="true" />
         </div>
 

@@ -19,6 +19,9 @@ const attachPayload = async (testInfo: TestInfo, name: string, frame: FrameLocat
   return payload;
 };
 
+const expectNear = (actual: number, expected: number, tolerance = 2) =>
+  expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
+
 test("Japanese history retains localized turns when an unsupported turn falls back to English", async ({ page }, testInfo) => {
   await page.goto("/");
 
@@ -37,8 +40,20 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   const frame = canonicalFrame(page);
   await expect(presentation).toContainText("明日という日はまだ");
   const openingPayload = await attachPayload(testInfo, "opening-presentation-v3", frame) as { lines?: Array<{ text: string }> } | null;
-  if (openingPayload?.lines?.some((line) => /\*\s*PART I\s*\*/i.test(line.text))) await expect(presentation).toContainText("* PART I *");
+  const partOneObserved = openingPayload?.lines?.some((line) => /\*\s*PART I\s*\*/i.test(line.text));
+  if (partOneObserved) await expect(presentation).toContainText("* PART I *");
   await expect(presentation.locator(".story-presentation-spacer")).not.toHaveCount(0);
+  if (partOneObserved) {
+    const openingHeading = await presentation.locator(".story-presentation-heading").boundingBox();
+    const canonicalHeading = await frame.locator(".BufferLine", { hasText: /\*\s*PART I\s*\*/i }).boundingBox();
+    if (openingHeading && canonicalHeading) expectNear(openingHeading.x + openingHeading.width / 2, canonicalHeading.x + canonicalHeading.width / 2);
+  }
+  const openingBody = await presentation.boundingBox();
+  const canonicalOpeningLine = await frame.locator(".BufferLine", { hasText: /Tomorrow never yet/i }).boundingBox();
+  if (openingBody && canonicalOpeningLine) {
+    expectNear(openingBody.x, canonicalOpeningLine.x);
+    expectNear(openingBody.width, canonicalOpeningLine.width);
+  }
 
   await page.getByRole("button", { name: /原作を始める/ }).click();
   await expect(page.locator("#command-input")).toBeEnabled();
@@ -53,6 +68,23 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   const wrapperStatus = page.getByLabel("Canonical game status");
   await expect(wrapperStatus).toBeVisible();
   expect((await wrapperStatus.innerText()).replace(/\s+/g, " ").trim()).toBe(canonicalStatus.replace(/\s+/g, " ").trim());
+  const wrapperStatusBox = await wrapperStatus.boundingBox();
+  const canonicalStatusBox = await frame.locator(".GridWindow").boundingBox();
+  if (wrapperStatusBox && canonicalStatusBox) {
+    expectNear(wrapperStatusBox.x, canonicalStatusBox.x);
+    expectNear(wrapperStatusBox.width, canonicalStatusBox.width);
+  }
+  const wrapperBodyBox = await presentation.boundingBox();
+  const canonicalBodyBox = await frame.locator(".BufferLine", { hasText: /You have entered Communications Mode/ }).last().boundingBox();
+  if (wrapperBodyBox && canonicalBodyBox) {
+    expectNear(wrapperBodyBox.x, canonicalBodyBox.x);
+    expectNear(wrapperBodyBox.width, canonicalBodyBox.width);
+  }
+  const wrapperPrompt = page.getByLabel("Current game prompt");
+  await expect(wrapperPrompt).toHaveText(">");
+  const wrapperPromptBox = await wrapperPrompt.boundingBox();
+  const canonicalPromptBox = await frame.locator(".BufferLine", { has: frame.locator("textarea.LineInput") }).boundingBox();
+  if (wrapperPromptBox && canonicalPromptBox) expectNear(wrapperPromptBox.x, canonicalPromptBox.x);
 
   const commandInput = page.locator("#command-input");
   await commandInput.fill("LOOK");

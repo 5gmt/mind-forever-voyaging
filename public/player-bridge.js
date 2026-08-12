@@ -43,6 +43,18 @@
     const slicedInputLine = absoluteInputLine >= sliceStart ? absoluteInputLine - sliceStart : null;
     const terminalLine = lines.findLastIndex((line) => line.text.trim().length > 0);
 
+    const relativeBox = (element, container) => {
+      if (!element?.getBoundingClientRect || !container?.getBoundingClientRect) return null;
+      const box = element.getBoundingClientRect();
+      const origin = container.getBoundingClientRect();
+      return { left: box.left - origin.left, width: box.width };
+    };
+    const gameport = documentRoot.querySelector?.("#gameport");
+    // BufferLine's box is the canonical content column after the
+    // BufferWindowInner padding has been applied.
+    const buffer = documentRoot.querySelector?.("#gameport .BufferLine");
+    const status = documentRoot.querySelector?.("#gameport .GridWindow");
+
     return {
       version: 3,
       lines,
@@ -52,6 +64,11 @@
         line: slicedInputLine,
         classes: [...input.classList],
       } : null,
+      geometry: gameport ? {
+        buffer: relativeBox(buffer, gameport),
+        status: relativeBox(status, gameport),
+        activePrompt: relativeBox(inputLine, gameport),
+      } : undefined,
     };
   };
 

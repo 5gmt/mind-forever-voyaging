@@ -37,6 +37,7 @@ test("ships canonical Release 79 plus an isolated Release 900 QA story", async (
   assert.match(player, /"do_vm_autosave": qaBuild \? 0 : 1/);
   assert.match(bridge, /amfv:bridge/);
   assert.match(bridge, /inputKind/);
+  assert.match(bridge, /activePrompt/);
   assert.match(overrides, /--glkote-buffer-bg/);
 });
 

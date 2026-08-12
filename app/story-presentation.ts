@@ -12,6 +12,11 @@ export type BridgePresentation = {
   lines: BridgePresentationLine[];
   terminalLine: number;
   activeInput: { kind: "line" | "char"; line: number | null; classes: string[] } | null;
+  geometry?: {
+    buffer: { left: number; width: number } | null;
+    status: { left: number; width: number } | null;
+    activePrompt: { left: number; width: number } | null;
+  };
 };
 export type StoryPresentationBlock = {
   kind: "heading" | "title" | "prose" | "quote" | "prompt" | "command" | "spacer" | "list";
