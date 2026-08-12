@@ -49,10 +49,17 @@ Spoiler/debug tools live under **About**. After explicit confirmation they load 
 
 ## Local development
 
+This repository requires Node.js 22.13.0 or newer and npm 11.16.0 or newer. Dependency resolution uses a seven-day release-age cooldown, so older npm versions are intentionally rejected rather than silently ignoring that policy.
+
+Codespaces and other environments that ship an older npm can bootstrap the pinned development version without first invoking npm inside the repository:
+
 ```sh
-npm install
+bash scripts/bootstrap-npm.sh
+npm ci
 npm run dev
 ```
+
+If `npm --version` is already 11.16.0 or newer, the bootstrap step is optional. For reproducible installs, prefer `npm ci` with the committed lockfile instead of regenerating it with `npm install`.
 
 Build and verify the static export:
 
