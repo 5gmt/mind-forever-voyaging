@@ -6,7 +6,7 @@ import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 import { uiText, type Locale } from "./localization";
-import { storyPresentation, type BridgePresentation } from "./story-presentation";
+import { projectPresentationHistory, reconcilePresentationHistory, type PresentationHistory } from "./presentation-history";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -363,6 +363,8 @@ export default function PrismEdition() {
   const lastPackageCueRef = useRef(-1);
   const fieldworkLauncherRef = useRef<HTMLButtonElement>(null);
   const fieldworkCloseRef = useRef<HTMLButtonElement>(null);
+  const presentationRef = useRef<HTMLElement>(null);
+  const followPresentationRef = useRef(true);
 
   const [introOpen, setIntroOpen] = useState(true);
   const [returning, setReturning] = useState(false);
@@ -373,7 +375,9 @@ export default function PrismEdition() {
   const [recentText, setRecentText] = useState("");
   const [sceneText, setSceneText] = useState("");
   const [gridText, setGridText] = useState("");
-  const [presentation, setPresentation] = useState<BridgePresentation | null>(null);
+  const [presentationState, setPresentationState] = useState<{ history: PresentationHistory; recovering: boolean }>({
+    history: [], recovering: true,
+  });
   const [transcriptRevision, setTranscriptRevision] = useState(0);
   const [mode, setMode] = useState<Mode | null>(null);
   const [statusLocation, setStatusLocation] = useState<string | null>(null);
@@ -564,6 +568,12 @@ export default function PrismEdition() {
       if (event.data.type === "command" && typeof event.data.command === "string") {
         const entered = event.data.command.trim();
         if (!entered) return;
+        // Commands entered directly in the visible canonical iframe bypass
+        // postCommand(). RESTORE is still a canonical timeline boundary, so
+        // invalidate the disposable display cache on this bridge path too.
+        if (!qaEnabled && /^restore$/i.test(entered)) {
+          setPresentationState({ history: [], recovering: true });
+        }
         if (/^(?:record|ron)$/i.test(entered)) setRecording(true);
         if (/^(?:record off|roff)$/i.test(entered)) setRecording(false);
         lastCommandRef.current = entered;
@@ -662,9 +672,18 @@ export default function PrismEdition() {
       }
       setSceneText(sceneTextRef.current);
       setGridText(typeof event.data.gridText === "string" ? event.data.gridText : "");
-      setPresentation(event.data.presentation?.version === 2 && Array.isArray(event.data.presentation.lines)
+      const nextPresentation = [2, 3].includes(event.data.presentation?.version) && Array.isArray(event.data.presentation.lines)
         ? event.data.presentation
-        : null);
+        : null;
+      // Ignore transient reports while the interpreter is processing. A
+      // stable active input can be projected or can deliberately request
+      // canonical recovery (for example an unsupported character prompt).
+      if (!qaEnabled && event.data.acceptsInput) {
+        setPresentationState((previous) => {
+          const reconciliation = reconcilePresentationHistory(previous.history, nextPresentation);
+          return { history: reconciliation.history, recovering: !reconciliation.representable };
+        });
+      }
       setTranscriptRevision((revision) => revision + 1);
       setMode(nextMode);
       if (nextMode !== "Simulation Mode") setFieldworkOpen(false);
@@ -734,6 +753,12 @@ export default function PrismEdition() {
     if (!activeFrame?.contentWindow) return;
     const normalized = raw ? value : normalizeCommand(value);
     lastCommandRef.current = normalized.trim();
+    // RESTORE may replace the canonical timeline without retaining the command
+    // echo in the restored transcript. Drop the session-only display cache at
+    // submission, before Parchment opens its canonical file interaction.
+    if (!qaEnabled && /^restore$/i.test(normalized.trim())) {
+      setPresentationState({ history: [], recovering: true });
+    }
     setAcceptsInput(false);
     activeFrame.contentWindow.postMessage({ channel: BRIDGE_CHANNEL, type: "command", command: normalized }, window.location.origin);
     setTimeout(() => commandRef.current?.focus(), 120);
@@ -928,7 +953,7 @@ export default function PrismEdition() {
     sceneCacheRef.current.clear();
     setSceneText("");
     setGridText("");
-    setPresentation(null);
+    setPresentationState({ history: [], recovering: true });
     setKnownModes([]);
     setDiscovery(EMPTY_DISCOVERY);
     setCommand("");
@@ -1020,10 +1045,14 @@ export default function PrismEdition() {
   const assistedSecurity = assisted && Boolean(securityChallenge);
   const assistedYearSelector = assisted && yearSelectorActive;
   const blockingOverlayOpen = introOpen || qaWarningOpen || Boolean(packageItem) || fieldworkOpen;
-  const presentedStory = useMemo(
-    () => locale === "ja" && acceptsInput ? storyPresentation(presentation, locale) : null,
-    [acceptsInput, locale, presentation],
-  );
+  const presentedStory = useMemo(() => locale === "ja" && !presentationState.recovering
+    ? projectPresentationHistory(presentationState.history, locale)
+    : [], [locale, presentationState]);
+
+  useEffect(() => {
+    const surface = presentationRef.current;
+    if (surface && followPresentationRef.current) surface.scrollTop = surface.scrollHeight;
+  }, [presentedStory.length]);
 
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
@@ -1079,18 +1108,18 @@ export default function PrismEdition() {
 
         <div className="story-frame-wrap">
           {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
-          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || Boolean(presentedStory)} inert={presentedStory ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
+          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || presentedStory.length > 0} inert={presentedStory.length > 0 ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
-          {presentedStory && !qaEnabled && <section className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
-            {presentedStory.map((block) => block.kind === "heading"
-              ? <h2 key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-heading">{block.text}</h2>
+          {presentedStory.length > 0 && !qaEnabled && <section ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
+            {presentedStory.flatMap((entry) => entry.blocks.map((block, blockIndex) => block.kind === "heading"
+              ? <h2 key={`${entry.entryId}-${blockIndex}`} className="story-presentation-heading">{block.text}</h2>
               : block.kind === "quote"
-                ? <blockquote key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-quote"><p>{block.text}</p>{block.attribution && <cite>{block.attribution}</cite>}</blockquote>
+                ? <blockquote key={`${entry.entryId}-${blockIndex}`} className="story-presentation-quote"><p>{block.text}</p>{block.attribution && <cite>{block.attribution}</cite>}</blockquote>
                 : block.kind === "prompt"
-                  ? <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-prompt">{block.text}</p>
+                  ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prompt">{block.text}</p>
                   : block.kind === "command"
-                    ? <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-command" lang="en"><code>&gt; {block.text}</code></p>
-                    : <p key={`${block.kind}-${block.sourceLines[0]}`} className="story-presentation-prose">{block.text}</p>)}
+                    ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-command" lang="en"><code>&gt; {block.text}</code></p>
+                    : <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prose" lang={block.text === block.canonicalText ? "en" : undefined}>{block.text}</p>))}
           </section>}
           <div className="story-vignette" aria-hidden="true" />
         </div>

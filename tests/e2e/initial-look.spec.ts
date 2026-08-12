@@ -19,7 +19,7 @@ const attachPayload = async (testInfo: TestInfo, name: string, frame: FrameLocat
   return payload;
 };
 
-test("Japanese presentation covers the canonical initial LOOK turn and then falls back", async ({ page }, testInfo) => {
+test("Japanese history retains localized turns when an unsupported turn falls back to English", async ({ page }, testInfo) => {
   await page.goto("/");
 
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
@@ -60,8 +60,51 @@ test("Japanese presentation covers the canonical initial LOOK turn and then fall
   await page.getByRole("button", { name: /送信/ }).click();
   await expect(frame.locator("#gameport")).toContainText(/You have no appendages|INVENTORY/i);
   await attachPayload(testInfo, "unsupported-fallback-presentation-v2", frame);
-  await expect(presentation).toHaveCount(0);
+  await expect(presentation).toContainText("明日という日はまだ");
+  await expect(presentation).toContainText("通信モードに入りました");
+  await expect(presentation).toContainText(/INVENTORY/i);
+  await expect(presentation).toContainText(/You have no appendages/i);
 
+  const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
+  await expect(canonicalIframe).toHaveAttribute("aria-hidden", "true");
+  await expect(canonicalIframe).toHaveAttribute("inert", "");
+  await testInfo.attach("localized-history-with-english-fallback", { body: await page.screenshot(), contentType: "image/png" });
+
+  // RESTORE opens Parchment's canonical file interaction, which has no safe
+  // structured transcript representation. The accumulated display cache must
+  // not strand that canonical interaction behind the Japanese surface.
+  await commandInput.fill("RESTORE");
+  await page.getByRole("button", { name: /送信/ }).click();
+  await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
+  await expect(canonicalIframe).not.toHaveAttribute("inert", "");
+});
+
+test("RESTORE entered directly in the canonical iframe invalidates Japanese display history", async ({ page }) => {
+  await page.goto("/");
+  const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
+  if (await introduction.isVisible()) await introduction.getByRole("button", { name: /^Begin/ }).click();
+
+  const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
+  await page.getByTitle("Reading and play settings").click();
+  const settings = page.getByRole("region", { name: "Reading and play settings" });
+  await settings.getByRole("button", { name: "日本語" }).click();
+  const presentation = page.getByRole("log", { name: "日本語ストーリー表示" });
+  await expect(presentation).toContainText("明日という日はまだ");
+  await page.getByRole("button", { name: /原作を始める/ }).click();
+  await expect(page.locator("#command-input")).toBeEnabled();
+
+  // Switch to English so the canonical iframe is intentionally interactive,
+  // then submit RESTORE through Parchment rather than the wrapper controls.
+  await settings.getByRole("button", { name: "English" }).click();
+  const frame = canonicalFrame(page);
+  const canonicalInput = frame.locator("textarea.Input.LineInput");
+  await canonicalInput.fill("RESTORE");
+  await canonicalInput.press("Enter");
+
+  // Returning to Japanese must not resurrect the pre-RESTORE display cache.
+  await settings.getByRole("button", { name: "日本語" }).click();
+  await expect(presentation).toHaveCount(0);
   const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
   await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
   await expect(canonicalIframe).not.toHaveAttribute("inert", "");

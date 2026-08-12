@@ -1,6 +1,7 @@
 import { localizeStoryContent, localizeStoryTranscript, type Locale, type StoryContentId } from "./localization.ts";
 
 export type BridgePresentationLine = {
+  id?: string;
   text: string;
   classes: string[];
   runs: Array<{ text: string; classes: string[]; tag: string }>;
@@ -13,7 +14,7 @@ export type BridgePresentationLine = {
 };
 
 export type BridgePresentation = {
-  version: 2;
+  version: 2 | 3;
   lines: BridgePresentationLine[];
   terminalLine: number;
   activeInput: { kind: "line" | "char"; line: number | null; classes: string[] } | null;
@@ -38,7 +39,7 @@ export const openingPresentation = (
   presentation: BridgePresentation | null,
   locale: Locale,
 ): StoryPresentationBlock[] | null => {
-  if (!presentation || presentation.version !== 2 || presentation.activeInput?.kind !== "char") return null;
+  if (!presentation || ![2, 3].includes(presentation.version) || presentation.activeInput?.kind !== "char") return null;
   const { lines, terminalLine, activeInput } = presentation;
   if (!activeInput.classes.includes("Input") || activeInput.classes.includes("LineInput")) return null;
   const visualLines = lines.flatMap((line, sourceLine) => {
@@ -106,7 +107,7 @@ export const initialLineTurnPresentation = (
   presentation: BridgePresentation | null,
   locale: Locale,
 ): StoryPresentationBlock[] | null => {
-  if (locale !== "ja" || !presentation || presentation.version !== 2 || presentation.activeInput?.kind !== "line") return null;
+  if (locale !== "ja" || !presentation || ![2, 3].includes(presentation.version) || presentation.activeInput?.kind !== "line") return null;
   const { lines, terminalLine, activeInput } = presentation;
   if (!activeInput.classes.includes("Input") || !activeInput.classes.includes("LineInput")) return null;
   if (terminalLine < 0 || activeInput.line !== terminalLine || activeInput.line !== lines.length - 1) return null;
