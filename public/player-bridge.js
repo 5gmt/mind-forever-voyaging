@@ -64,6 +64,8 @@
     // BufferWindowInner padding has been applied.
     const buffer = documentRoot.querySelector?.("#gameport .BufferLine");
     const status = documentRoot.querySelector?.("#gameport .GridWindow");
+    const statusLine = status?.querySelector?.(".GridLine");
+    const statusFill = statusLine?.querySelector?.(".reverse") ?? statusLine?.firstElementChild;
 
     return {
       version: 3,
@@ -76,7 +78,20 @@
       } : null,
       geometry: gameport ? {
         buffer: relativeBox(buffer, gameport),
-        status: relativeBox(status, gameport, true),
+        status: (() => {
+          const outer = relativeBox(status, gameport, true);
+          const content = relativeBox(statusLine, status);
+          if (!outer) return null;
+          const contentStyle = statusFill ? getStyle(statusFill) : null;
+          return {
+            ...outer,
+            content: content ? {
+              left: content.left,
+              top: statusLine.getBoundingClientRect().top - status.getBoundingClientRect().top,
+              backgroundColor: contentStyle?.backgroundColor ?? "transparent",
+            } : null,
+          };
+        })(),
         activePrompt: relativeBox(inputLine, gameport),
       } : undefined,
     };

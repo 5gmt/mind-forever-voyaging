@@ -22,6 +22,7 @@ export type BridgePresentation = {
       borderColor?: string;
       borderStyle?: string;
       borderWidth?: string;
+      content?: { left: number; top: number; backgroundColor: string } | null;
     } | null;
     activePrompt: { left: number; width: number } | null;
   };

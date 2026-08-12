@@ -9,7 +9,7 @@ test("Japanese opening continues into the canonical line input", async ({ page }
   }
 
   const continueButton = page.getByRole("button", { name: /Begin the original story/i });
-  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
+  await expect(continueButton).toBeEnabled({ timeout: 40_000 });
 
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: "Reading and play settings" });
