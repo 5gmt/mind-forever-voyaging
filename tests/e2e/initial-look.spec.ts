@@ -69,4 +69,12 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(canonicalIframe).toHaveAttribute("aria-hidden", "true");
   await expect(canonicalIframe).toHaveAttribute("inert", "");
   await testInfo.attach("localized-history-with-english-fallback", { body: await page.screenshot(), contentType: "image/png" });
+
+  // RESTORE opens Parchment's canonical file interaction, which has no safe
+  // structured transcript representation. The accumulated display cache must
+  // not strand that canonical interaction behind the Japanese surface.
+  await commandInput.fill("RESTORE");
+  await page.getByRole("button", { name: /送信/ }).click();
+  await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
+  await expect(canonicalIframe).not.toHaveAttribute("inert", "");
 });

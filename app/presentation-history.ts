@@ -7,6 +7,10 @@ export type PresentationHistoryEntry = {
 };
 
 export type PresentationHistory = PresentationHistoryEntry[];
+export type PresentationReconciliation = {
+  history: PresentationHistory;
+  representable: boolean;
+};
 
 const clean = (value: string) => value.replace(/\u00a0/g, " ").replace(/\r/g, "").trim();
 
@@ -29,16 +33,24 @@ const isSafeObservation = (presentation: BridgePresentation | null): presentatio
 export const reconcilePresentationHistory = (
   previous: PresentationHistory,
   presentation: BridgePresentation | null,
-): PresentationHistory => {
-  if (!isSafeObservation(presentation)) return previous;
+): PresentationReconciliation => {
+  if (!isSafeObservation(presentation)) return { history: previous, representable: false };
   const localized = storyPresentation(presentation, "ja");
   const fallback = fallbackTurnPresentation(presentation);
-  if (!localized && !fallback) return previous;
+  if (!localized && !fallback) return { history: previous, representable: false };
 
   const id = observationId(presentation);
-  if (previous.some((entry) => entry.id === id)) return previous;
+  if (previous.some((entry) => entry.id === id)) return { history: previous, representable: true };
   const pristineOpening = presentation.activeInput?.kind === "char" && Boolean(localized);
-  return [...(pristineOpening ? [] : previous), { id, presentation }];
+  // RESTORE hands timeline selection back to canonical Parchment. Its result
+  // cannot safely inherit display entries from the pre-restore timeline, so
+  // discard that disposable cache and rebuild from canonical observations.
+  const restoreBoundary = fallback?.[0]?.kind === "command"
+    && /^RESTORE$/i.test(fallback[0].canonicalText ?? fallback[0].text);
+  return {
+    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation }],
+    representable: true,
+  };
 };
 
 export const fallbackTurnPresentation = (

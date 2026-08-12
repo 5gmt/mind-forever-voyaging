@@ -206,8 +206,8 @@ test("localizes only presentation while preserving raw English mechanics", async
     readFile(new URL("../public/amfv-r79-s851122.z4", import.meta.url)),
   ]);
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
-  assert.match(shell, /projectPresentationHistory\(presentationHistory, locale\)/);
-  assert.match(shell, /reconcilePresentationHistory\(previous, nextPresentation\)/);
+  assert.match(shell, /projectPresentationHistory\(presentationState\.history, locale\)/);
+  assert.match(shell, /reconcilePresentationHistory\(previous\.history, nextPresentation\)/);
   assert.match(shell, /aria-hidden=\{qaEnabled \|\| presentedStory\.length > 0\}/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
@@ -275,7 +275,7 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
   assert.equal(blocks?.[1].attribution, "-- William Marsden");
   assert.match(blocks?.[2].text || "", /いずれかのキーを押して/);
 
-  assert.match(shell, /projectPresentationHistory\(presentationHistory, locale\)/);
+  assert.match(shell, /projectPresentationHistory\(presentationState\.history, locale\)/);
   assert.match(shell, /className="story-presentation-heading"/);
   assert.match(shell, /className="story-presentation-quote"/);
   assert.match(shell, /className="story-presentation-prompt"/);
@@ -291,15 +291,16 @@ test("reconciles locale-neutral presentation history without duplicating observa
   initial.lines.forEach((line, index) => { line.id = `initial-${index}`; });
   look.lines.forEach((line, index) => { line.id = `look-one-${index}`; });
 
-  let history = reconcilePresentationHistory([], opening);
-  history = reconcilePresentationHistory(history, opening);
-  history = reconcilePresentationHistory(history, initial);
-  history = reconcilePresentationHistory(history, look);
+  const reconcile = (history, observation) => reconcilePresentationHistory(history, observation).history;
+  let history = reconcile([], opening);
+  history = reconcile(history, opening);
+  history = reconcile(history, initial);
+  history = reconcile(history, look);
   assert.equal(history.length, 3);
 
   const repeatedLook = structuredClone(look);
   repeatedLook.lines.forEach((line, index) => { line.id = `look-two-${index}`; });
-  history = reconcilePresentationHistory(history, repeatedLook);
+  history = reconcile(history, repeatedLook);
   assert.equal(history.length, 4, "distinct identical LOOK turns are retained");
 
   const inventory = structuredClone(look);
@@ -314,7 +315,7 @@ test("reconciles locale-neutral presentation history without duplicating observa
   });
   inventory.terminalLine += 1;
   inventory.activeInput.line += 1;
-  history = reconcilePresentationHistory(history, inventory);
+  history = reconcile(history, inventory);
 
   const japanese = projectPresentationHistory(history, "ja");
   const english = projectPresentationHistory(history, "en");
@@ -324,8 +325,34 @@ test("reconciles locale-neutral presentation history without duplicating observa
   assert.match(japanese.at(-1).blocks.map((block) => block.text).join("\n"), /INVENTORY[\s\S]*You have no appendages/);
   assert.ok(english.every((entry) => entry.blocks.every((block) => !block.text.includes("通信モードに入りました"))));
 
-  const reset = reconcilePresentationHistory(history, { ...opening, lines: opening.lines.map((line) => ({ ...line, id: `${line.id}-restart` })) });
+  const reset = reconcile(history, { ...opening, lines: opening.lines.map((line) => ({ ...line, id: `${line.id}-restart` })) });
   assert.equal(reset.length, 1, "a pristine opening starts a fresh presentation timeline");
+});
+
+test("recovers the canonical iframe for unsafe current observations and resets at RESTORE", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-look-runtime-observed.json", import.meta.url), "utf8")).presentation;
+  fixture.version = 3;
+  fixture.lines.forEach((line, index) => { line.id = `look-${index}`; });
+  const represented = reconcilePresentationHistory([], fixture);
+  assert.equal(represented.representable, true);
+
+  const unsupportedCharacterInput = structuredClone(fixture);
+  unsupportedCharacterInput.activeInput.kind = "char";
+  const recovery = reconcilePresentationHistory(represented.history, unsupportedCharacterInput);
+  assert.equal(recovery.representable, false);
+  assert.equal(recovery.history, represented.history, "unsafe observations retain only the disposable cache");
+
+  const invalid = reconcilePresentationHistory(represented.history, null);
+  assert.equal(invalid.representable, false);
+
+  const restore = structuredClone(fixture);
+  restore.lines.forEach((line, index) => { line.id = `restore-${index}`; });
+  const commandLine = restore.lines.find((line) => /^>LOOK/i.test(line.text));
+  commandLine.text = commandLine.text.replace(/LOOK/i, "RESTORE");
+  commandLine.runs.at(-1).text = "RESTORE";
+  const restored = reconcilePresentationHistory(represented.history, restore);
+  assert.equal(restored.representable, true);
+  assert.equal(restored.history.length, 1, "pre-restore display entries cannot survive the timeline boundary");
 });
 
 test("shows the structured opening only for the live terminal character prompt", async () => {

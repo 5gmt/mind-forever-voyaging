@@ -375,7 +375,9 @@ export default function PrismEdition() {
   const [recentText, setRecentText] = useState("");
   const [sceneText, setSceneText] = useState("");
   const [gridText, setGridText] = useState("");
-  const [presentationHistory, setPresentationHistory] = useState<PresentationHistory>([]);
+  const [presentationState, setPresentationState] = useState<{ history: PresentationHistory; recovering: boolean }>({
+    history: [], recovering: true,
+  });
   const [transcriptRevision, setTranscriptRevision] = useState(0);
   const [mode, setMode] = useState<Mode | null>(null);
   const [statusLocation, setStatusLocation] = useState<string | null>(null);
@@ -667,8 +669,11 @@ export default function PrismEdition() {
       const nextPresentation = [2, 3].includes(event.data.presentation?.version) && Array.isArray(event.data.presentation.lines)
         ? event.data.presentation
         : null;
-      if (!qaEnabled && event.data.acceptsInput) {
-        setPresentationHistory((previous) => reconcilePresentationHistory(previous, nextPresentation));
+      if (!qaEnabled) {
+        setPresentationState((previous) => {
+          const reconciliation = reconcilePresentationHistory(previous.history, nextPresentation);
+          return { history: reconciliation.history, recovering: !reconciliation.representable };
+        });
       }
       setTranscriptRevision((revision) => revision + 1);
       setMode(nextMode);
@@ -739,6 +744,12 @@ export default function PrismEdition() {
     if (!activeFrame?.contentWindow) return;
     const normalized = raw ? value : normalizeCommand(value);
     lastCommandRef.current = normalized.trim();
+    // RESTORE may replace the canonical timeline without retaining the command
+    // echo in the restored transcript. Drop the session-only display cache at
+    // submission, before Parchment opens its canonical file interaction.
+    if (!qaEnabled && /^restore$/i.test(normalized.trim())) {
+      setPresentationState({ history: [], recovering: true });
+    }
     setAcceptsInput(false);
     activeFrame.contentWindow.postMessage({ channel: BRIDGE_CHANNEL, type: "command", command: normalized }, window.location.origin);
     setTimeout(() => commandRef.current?.focus(), 120);
@@ -933,7 +944,7 @@ export default function PrismEdition() {
     sceneCacheRef.current.clear();
     setSceneText("");
     setGridText("");
-    setPresentationHistory([]);
+    setPresentationState({ history: [], recovering: true });
     setKnownModes([]);
     setDiscovery(EMPTY_DISCOVERY);
     setCommand("");
@@ -1025,9 +1036,9 @@ export default function PrismEdition() {
   const assistedSecurity = assisted && Boolean(securityChallenge);
   const assistedYearSelector = assisted && yearSelectorActive;
   const blockingOverlayOpen = introOpen || qaWarningOpen || Boolean(packageItem) || fieldworkOpen;
-  const presentedStory = useMemo(() => locale === "ja"
-    ? projectPresentationHistory(presentationHistory, locale)
-    : [], [locale, presentationHistory]);
+  const presentedStory = useMemo(() => locale === "ja" && !presentationState.recovering
+    ? projectPresentationHistory(presentationState.history, locale)
+    : [], [locale, presentationState]);
 
   useEffect(() => {
     const surface = presentationRef.current;
