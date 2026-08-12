@@ -19,7 +19,7 @@ const attachPayload = async (testInfo: TestInfo, name: string, frame: FrameLocat
   return payload;
 };
 
-test("Japanese presentation covers the canonical initial LOOK turn and then falls back", async ({ page }, testInfo) => {
+test("Japanese history retains localized turns when an unsupported turn falls back to English", async ({ page }, testInfo) => {
   await page.goto("/");
 
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
@@ -60,9 +60,13 @@ test("Japanese presentation covers the canonical initial LOOK turn and then fall
   await page.getByRole("button", { name: /送信/ }).click();
   await expect(frame.locator("#gameport")).toContainText(/You have no appendages|INVENTORY/i);
   await attachPayload(testInfo, "unsupported-fallback-presentation-v2", frame);
-  await expect(presentation).toHaveCount(0);
+  await expect(presentation).toContainText("明日という日はまだ");
+  await expect(presentation).toContainText("通信モードに入りました");
+  await expect(presentation).toContainText(/INVENTORY/i);
+  await expect(presentation).toContainText(/You have no appendages/i);
 
   const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
-  await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
-  await expect(canonicalIframe).not.toHaveAttribute("inert", "");
+  await expect(canonicalIframe).toHaveAttribute("aria-hidden", "true");
+  await expect(canonicalIframe).toHaveAttribute("inert", "");
+  await testInfo.attach("localized-history-with-english-fallback", { body: await page.screenshot(), contentType: "image/png" });
 });

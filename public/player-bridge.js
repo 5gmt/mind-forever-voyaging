@@ -1,5 +1,11 @@
 ((root) => {
   const normalize = (value) => (value || "").replace(/\u00a0/g, " ");
+  const lineIds = new WeakMap();
+  let nextLineId = 1;
+  const identityFor = (line) => {
+    if (!lineIds.has(line)) lineIds.set(line, `line-${nextLineId++}`);
+    return lineIds.get(line);
+  };
 
   const visibleInput = (documentRoot, getStyle) => {
     const inputs = [...documentRoot.querySelectorAll("#gameport textarea.Input, #gameport input[type='text'], #gameport textarea")];
@@ -14,6 +20,7 @@
     const lines = allLines.slice(-80).map((line) => {
       const style = getStyle(line);
       return {
+        id: identityFor(line),
         text: normalize(line.innerText || line.textContent),
         classes: [...line.classList],
         runs: [...line.children].map((run) => ({
@@ -37,7 +44,7 @@
     const terminalLine = lines.findLastIndex((line) => line.text.trim().length > 0);
 
     return {
-      version: 2,
+      version: 3,
       lines,
       terminalLine,
       activeInput: input ? {

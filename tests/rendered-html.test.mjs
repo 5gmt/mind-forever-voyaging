@@ -5,6 +5,7 @@ import test from "node:test";
 import vm from "node:vm";
 import { localizeStoryContent, localizeStoryTranscript } from "../app/localization.ts";
 import { initialLineTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
+import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
 test("static export renders the finished unabridged edition", async () => {
   const html = await readFile(new URL("../out/index.html", import.meta.url), "utf8");
@@ -205,10 +206,9 @@ test("localizes only presentation while preserving raw English mechanics", async
     readFile(new URL("../public/amfv-r79-s851122.z4", import.meta.url)),
   ]);
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
-  assert.match(shell, /storyPresentation\(presentation, locale\)/);
-  assert.match(shell, /locale === "ja" && acceptsInput/);
-  assert.match(shell, /aria-hidden=\{qaEnabled \|\| Boolean\(presentedStory\)\}/);
-  assert.match(shell, /inert=\{presentedStory \? true : undefined\}/);
+  assert.match(shell, /projectPresentationHistory\(presentationHistory, locale\)/);
+  assert.match(shell, /reconcilePresentationHistory\(previous, nextPresentation\)/);
+  assert.match(shell, /aria-hidden=\{qaEnabled \|\| presentedStory\.length > 0\}/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
@@ -263,7 +263,10 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
   const extracted = context.AMFVPresentationBridge.extract(fixtureDocument, () => ({
     display: "block", visibility: "visible", textAlign: "start", marginLeft: "0px", paddingLeft: "0px", whiteSpace: "pre-wrap",
   }));
-  assert.deepEqual(JSON.parse(JSON.stringify(extracted)), fixturePayload.presentation);
+  const expectedV3 = structuredClone(fixturePayload.presentation);
+  expectedV3.version = 3;
+  expectedV3.lines.forEach((line, index) => { line.id = `line-${index + 1}`; });
+  assert.deepEqual(JSON.parse(JSON.stringify(extracted)), expectedV3);
 
   const blocks = openingPresentation(fixturePayload.presentation, "ja");
   assert.deepEqual(blocks?.map((block) => block.kind), ["heading", "quote", "prompt"]);
@@ -272,11 +275,57 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
   assert.equal(blocks?.[1].attribution, "-- William Marsden");
   assert.match(blocks?.[2].text || "", /いずれかのキーを押して/);
 
-  assert.match(shell, /storyPresentation\(presentation, locale\)/);
+  assert.match(shell, /projectPresentationHistory\(presentationHistory, locale\)/);
   assert.match(shell, /className="story-presentation-heading"/);
   assert.match(shell, /className="story-presentation-quote"/);
   assert.match(shell, /className="story-presentation-prompt"/);
   assert.doesNotMatch(shell, /className="localized-story"|<pre ref=\{localizedStoryRef\}/);
+});
+
+test("reconciles locale-neutral presentation history without duplicating observations", async () => {
+  const opening = JSON.parse(await readFile(new URL("./fixtures/parchment-opening-payload.json", import.meta.url), "utf8")).presentation;
+  const initial = JSON.parse(await readFile(new URL("./fixtures/parchment-initial-line-runtime-observed.json", import.meta.url), "utf8")).presentation;
+  const look = JSON.parse(await readFile(new URL("./fixtures/parchment-look-runtime-observed.json", import.meta.url), "utf8")).presentation;
+  opening.version = initial.version = look.version = 3;
+  opening.lines.forEach((line, index) => { line.id = `opening-${index}`; });
+  initial.lines.forEach((line, index) => { line.id = `initial-${index}`; });
+  look.lines.forEach((line, index) => { line.id = `look-one-${index}`; });
+
+  let history = reconcilePresentationHistory([], opening);
+  history = reconcilePresentationHistory(history, opening);
+  history = reconcilePresentationHistory(history, initial);
+  history = reconcilePresentationHistory(history, look);
+  assert.equal(history.length, 3);
+
+  const repeatedLook = structuredClone(look);
+  repeatedLook.lines.forEach((line, index) => { line.id = `look-two-${index}`; });
+  history = reconcilePresentationHistory(history, repeatedLook);
+  assert.equal(history.length, 4, "distinct identical LOOK turns are retained");
+
+  const inventory = structuredClone(look);
+  inventory.lines.forEach((line, index) => { line.id = `inventory-${index}`; });
+  const commandLine = inventory.lines.find((line) => /^>LOOK/i.test(line.text));
+  commandLine.text = commandLine.text.replace(/LOOK/i, "INVENTORY");
+  commandLine.runs.at(-1).text = "INVENTORY";
+  const commandIndex = inventory.lines.indexOf(commandLine);
+  inventory.lines.splice(commandIndex + 1, 0, {
+    ...inventory.lines[commandIndex + 1], id: "inventory-response",
+    text: "You have no appendages to carry anything with.", runs: [],
+  });
+  inventory.terminalLine += 1;
+  inventory.activeInput.line += 1;
+  history = reconcilePresentationHistory(history, inventory);
+
+  const japanese = projectPresentationHistory(history, "ja");
+  const english = projectPresentationHistory(history, "en");
+  const japaneseAgain = projectPresentationHistory(history, "ja");
+  assert.deepEqual(japaneseAgain, japanese);
+  assert.ok(japanese.flatMap((entry) => entry.blocks).some((block) => /通信モード/.test(block.text)));
+  assert.match(japanese.at(-1).blocks.map((block) => block.text).join("\n"), /INVENTORY[\s\S]*You have no appendages/);
+  assert.ok(english.every((entry) => entry.blocks.every((block) => !block.text.includes("通信モードに入りました"))));
+
+  const reset = reconcilePresentationHistory(history, { ...opening, lines: opening.lines.map((line) => ({ ...line, id: `${line.id}-restart` })) });
+  assert.equal(reset.length, 1, "a pristine opening starts a fresh presentation timeline");
 });
 
 test("shows the structured opening only for the live terminal character prompt", async () => {

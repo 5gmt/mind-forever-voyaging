@@ -610,8 +610,7 @@ summary:focus-visible {
   border: 0;
   color: var(--paper);
   background: var(--ink);
-  display: grid;
-  grid-template-rows: auto 1fr auto;
+  display: block;
   font-family: Georgia, "Times New Roman", serif;
   line-height: 1.45;
 }
@@ -623,6 +622,10 @@ summary:focus-visible {
   font-family: var(--font-geist-mono), monospace;
   font-size: 1em;
   letter-spacing: 0.06em;
+}
+
+.story-presentation > * + * {
+  margin-top: 1.2rem;
 }
 
 .story-presentation-quote {
