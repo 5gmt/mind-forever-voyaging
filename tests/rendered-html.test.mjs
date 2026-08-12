@@ -271,11 +271,11 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
   assert.deepEqual(JSON.parse(JSON.stringify(extracted)), expectedV3);
 
   const blocks = openingPresentation(fixturePayload.presentation, "ja");
-  assert.deepEqual(blocks?.map((block) => block.kind), ["heading", "quote", "prompt"]);
+  assert.deepEqual(blocks?.map((block) => block.kind), ["heading", "spacer", "quote", "spacer", "prompt"]);
   assert.equal(blocks?.[0].text, "* PART I *");
-  assert.match(blocks?.[1].text || "", /明日という日はまだ/);
-  assert.equal(blocks?.[1].attribution, "-- William Marsden");
-  assert.match(blocks?.[2].text || "", /いずれかのキーを押して/);
+  assert.match(blocks?.[2].text || "", /明日という日はまだ/);
+  assert.equal(blocks?.[2].attribution, "-- William Marsden");
+  assert.match(blocks?.[4].text || "", /いずれかのキーを押して/);
 
   assert.match(shell, /projectPresentationHistory\(presentationState\.history, locale\)/);
   assert.match(shell, /className="story-presentation-heading"/);
@@ -299,6 +299,19 @@ test("reconciles locale-neutral presentation history without duplicating observa
   history = reconcile(history, initial);
   history = reconcile(history, look);
   assert.equal(history.length, 3);
+
+  const truncatedOpening = structuredClone(opening);
+  truncatedOpening.lines.splice(0, 2);
+  truncatedOpening.terminalLine -= 2;
+  truncatedOpening.activeInput.line -= 2;
+  truncatedOpening.lines.at(-1).id = opening.lines.at(-1).id;
+  let enriched = reconcile([], truncatedOpening);
+  enriched = reconcile(enriched, opening);
+  assert.equal(enriched.length, 1);
+  assert.match(enriched[0].presentation.lines[0].text, /PART I/);
+  enriched = reconcile(enriched, truncatedOpening);
+  assert.equal(enriched.length, 1);
+  assert.match(enriched[0].presentation.lines[0].text, /PART I/);
 
   const repeatedLook = structuredClone(look);
   repeatedLook.lines.forEach((line, index) => { line.id = `look-two-${index}`; });
@@ -381,8 +394,8 @@ test("shows the structured opening only for the live terminal character prompt",
   liveBrowserSlice.activeInput.line -= 1;
   liveBrowserSlice.lines.at(-1).text = "[Hit \nany \nkey \nto \ncontinue.]";
   const browserBlocks = openingPresentation(liveBrowserSlice, "ja");
-  assert.deepEqual(browserBlocks?.map((block) => block.kind), ["quote", "prompt"]);
-  assert.match(browserBlocks?.[1].text || "", /いずれかのキーを押して/);
+  assert.deepEqual(browserBlocks?.map((block) => block.kind), ["spacer", "quote", "spacer", "prompt"]);
+  assert.match(browserBlocks?.[3].text || "", /いずれかのキーを押して/);
 
   const unrecognized = structuredClone(payload.presentation);
   unrecognized.lines[2].text = "A different story opening";
@@ -395,7 +408,7 @@ test("shows the structured opening only for the live terminal character prompt",
   });
   groupedRuns.terminalLine = 4;
   groupedRuns.activeInput.line = 4;
-  assert.deepEqual(openingPresentation(groupedRuns, "ja")?.map((block) => block.kind), ["heading", "quote", "prompt"]);
+  assert.deepEqual(openingPresentation(groupedRuns, "ja")?.map((block) => block.kind), ["heading", "spacer", "quote", "spacer", "prompt"]);
 
 });
 
@@ -409,31 +422,17 @@ test("presents the source-derived and runtime-observed initial LOOK tableaux", a
   assert.match(runtimeInitialFixture.provenance, /Runtime-observed with Playwright/);
   assert.match(runtimeLookFixture.provenance, /Runtime-observed with Playwright/);
 
-  const initial = initialLineTurnPresentation(initialFixture.presentation, "ja");
-  assert.deepEqual(initial?.map((block) => block.contentId), [
-    "part1.initial.incoming-message",
-    "part1.initial.release",
-    "part1.initial.communications",
-    "part1.initial.outlets",
-  ]);
-  assert.match(initial?.[0].text || "", /公式メッセージ回線/);
-  assert.ok(initial?.every((block) => block.canonicalText && block.sourceLines.length));
-
-  const look = initialLineTurnPresentation(lookFixture.presentation, "ja");
-  assert.deepEqual(look?.map((block) => block.kind), ["command", "prose", "prose"]);
-  assert.equal(look?.[0].text, "LOOK");
-  assert.match(look?.[1].text || "", /通信モード/);
+  assert.equal(initialLineTurnPresentation(initialFixture.presentation, "ja"), null, "source-derived grouped lines are not treated as browser evidence");
+  assert.equal(initialLineTurnPresentation(lookFixture.presentation, "ja"), null);
   assert.equal(initialLineTurnPresentation(initialFixture.presentation, "en"), null);
 
   const runtimeInitial = initialLineTurnPresentation(runtimeInitialFixture.presentation, "ja");
-  assert.deepEqual(runtimeInitial?.map((block) => block.contentId), [
-    "part1.initial.incoming-message",
-    "part1.initial.release",
-    "part1.initial.communications",
-    "part1.initial.outlets",
-  ]);
+  assert.deepEqual(runtimeInitial?.map((block) => block.kind), ["prose", "spacer", "title", "prose", "prose", "prose", "prose", "spacer", "prose", "list", "prose", "spacer"]);
+  assert.equal(runtimeInitial?.find((block) => block.kind === "list")?.items?.length, 6);
+  assert.equal(runtimeInitial?.find((block) => block.kind === "title")?.canonicalText, "A Mind Forever Voyaging");
+  assert.ok(runtimeInitial?.filter((block) => block.kind === "spacer").every((block) => block.sourceLines.length));
   const runtimeLook = initialLineTurnPresentation(runtimeLookFixture.presentation, "ja");
-  assert.deepEqual(runtimeLook?.map((block) => block.kind), ["command", "prose", "prose"]);
+  assert.deepEqual(runtimeLook?.map((block) => block.kind), ["command", "prose", "list", "prose", "spacer"]);
   assert.equal(runtimeLook?.[0].text, "LOOK");
   const runtimeEcho = runtimeLookFixture.presentation.lines.find((line) => line.text === ">LOOK");
   assert.deepEqual(runtimeEcho?.runs.map((run) => run.text), [">", "LOOK"]);

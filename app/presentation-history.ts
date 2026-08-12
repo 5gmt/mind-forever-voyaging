@@ -23,6 +23,11 @@ const observationId = (presentation: BridgePresentation) => {
     .join("\n");
 };
 
+const observationRichness = (presentation: BridgePresentation) => presentation.lines.reduce(
+  (score, line) => score + (clean(line.text) ? 1 : 0) + (/^\*\s*PART I\s*\*$/i.test(clean(line.text)) ? 100 : 0),
+  0,
+);
+
 const isSafeObservation = (presentation: BridgePresentation | null): presentation is BridgePresentation =>
   Boolean(presentation
     && (presentation.version === 2 || presentation.version === 3)
@@ -40,7 +45,14 @@ export const reconcilePresentationHistory = (
   if (!localized && !fallback) return { history: previous, representable: false };
 
   const id = observationId(presentation);
-  if (previous.some((entry) => entry.id === id)) return { history: previous, representable: true };
+  const existingIndex = previous.findIndex((entry) => entry.id === id);
+  if (existingIndex >= 0) {
+    if (observationRichness(presentation) <= observationRichness(previous[existingIndex].presentation)) return { history: previous, representable: true };
+    return {
+      history: previous.map((entry, index) => index === existingIndex ? { id, presentation } : entry),
+      representable: true,
+    };
+  }
   const pristineOpening = presentation.activeInput?.kind === "char" && Boolean(localized);
   // RESTORE hands timeline selection back to canonical Parchment. Its result
   // cannot safely inherit display entries from the pre-restore timeline, so

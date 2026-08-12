@@ -36,13 +36,23 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   const presentation = page.getByRole("log", { name: "日本語ストーリー表示" });
   const frame = canonicalFrame(page);
   await expect(presentation).toContainText("明日という日はまだ");
-  await attachPayload(testInfo, "opening-presentation-v2", frame);
+  const openingPayload = await attachPayload(testInfo, "opening-presentation-v3", frame) as { lines?: Array<{ text: string }> } | null;
+  if (openingPayload?.lines?.some((line) => /\*\s*PART I\s*\*/i.test(line.text))) await expect(presentation).toContainText("* PART I *");
+  await expect(presentation.locator(".story-presentation-spacer")).not.toHaveCount(0);
 
   await page.getByRole("button", { name: /原作を始める/ }).click();
   await expect(page.locator("#command-input")).toBeEnabled();
-  await attachPayload(testInfo, "initial-line-presentation-v2", frame);
+  await attachPayload(testInfo, "initial-line-presentation-v3", frame);
   await expect(presentation).toContainText("公式メッセージ回線");
   await expect(presentation).toContainText("通信モードに入りました");
+  await expect(presentation.locator(".story-presentation-title")).toContainText("A Mind Forever Voyaging");
+  await expect(presentation.locator(".story-presentation-list li")).toHaveCount(6);
+  await expect(presentation.locator(".story-presentation-list")).not.toContainText("特定のアウトレットを起動するには");
+  await expect(presentation.locator(".story-presentation-prose", { hasText: "特定のアウトレットを起動するには" })).toHaveCount(1);
+  const canonicalStatus = await frame.locator(".GridWindow").innerText();
+  const wrapperStatus = page.getByLabel("Canonical game status");
+  await expect(wrapperStatus).toBeVisible();
+  expect((await wrapperStatus.innerText()).replace(/\s+/g, " ").trim()).toBe(canonicalStatus.replace(/\s+/g, " ").trim());
 
   const commandInput = page.locator("#command-input");
   await commandInput.fill("LOOK");
@@ -53,7 +63,11 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(presentation.locator(".story-presentation-command")).toHaveText(/LOOK/);
   await expect(presentation.locator(".story-presentation-command")).toHaveAttribute("lang", "en");
   await expect(presentation).toContainText("通信モードに入りました");
-  await attachPayload(testInfo, "look-presentation-v2", frame);
+  await expect(presentation.locator(".story-presentation-list")).toHaveCount(2);
+  await expect(presentation.locator(".story-presentation-list").last().locator("li")).toHaveCount(6);
+  await attachPayload(testInfo, "look-presentation-v3", frame);
+  const lookCanonicalStatus = await frame.locator(".GridWindow").innerText();
+  expect((await wrapperStatus.innerText()).replace(/\s+/g, " ").trim()).toBe(lookCanonicalStatus.replace(/\s+/g, " ").trim());
   await testInfo.attach("localized-look", { body: await page.screenshot(), contentType: "image/png" });
 
   await commandInput.fill("INVENTORY");

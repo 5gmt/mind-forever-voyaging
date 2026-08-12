@@ -75,3 +75,34 @@ export const localizeStoryContent = (
   canonicalText: string,
   locale: Locale,
 ) => STORY_CATALOG[locale]?.[contentId] ?? canonicalText;
+
+// Structured projections keep the stable catalog IDs above while replacing
+// only leaves that canonical Parchment actually supplied. A missing translated
+// leaf therefore falls back to that observed English leaf, never a story
+// literal manufactured by the wrapper.
+const STRUCTURED_STORY_CATALOG: Partial<Record<Locale, Partial<Record<StoryContentId, readonly string[]>>>> = {
+  ja: {
+    "part1.initial.release": [
+      "A Mind Forever Voyaging",
+      "Infocom インタラクティブ・フィクション ― SFストーリー",
+      "Copyright (c) 1985 Infocom, Inc. All rights reserved.（著作権表示）",
+      "A Mind Forever Voyaging は Infocom, Inc. の商標です。",
+      "Release 79 / Serial number 851122",
+    ],
+    "part1.initial.outlets": [
+      "PRISMプロジェクト管制センター (PPCC)",
+      "屋上 (RCRO)",
+      "ペレルマンのオフィス (PEOF)",
+      "カフェテリア (PCAF)",
+      "メインコンピューター・コア (MACO)",
+      "WNNフィード (WNNF)",
+      "特定のアウトレットを起動するには、対応するコードを入力してください。",
+    ],
+  },
+};
+
+export const localizeStoryLeaves = (
+  contentId: StoryContentId,
+  canonicalLeaves: readonly string[],
+  locale: Locale,
+) => canonicalLeaves.map((leaf, index) => STRUCTURED_STORY_CATALOG[locale]?.[contentId]?.[index] ?? leaf);

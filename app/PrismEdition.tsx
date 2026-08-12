@@ -375,6 +375,7 @@ export default function PrismEdition() {
   const [recentText, setRecentText] = useState("");
   const [sceneText, setSceneText] = useState("");
   const [gridText, setGridText] = useState("");
+  const [canonicalStatusText, setCanonicalStatusText] = useState("");
   const [presentationState, setPresentationState] = useState<{ history: PresentationHistory; recovering: boolean }>({
     history: [], recovering: true,
   });
@@ -593,6 +594,7 @@ export default function PrismEdition() {
       const nextTranscript = typeof event.data.text === "string" ? event.data.text : "";
       const nextRecent = typeof event.data.recentText === "string" ? event.data.recentText : nextTranscript.slice(-5000);
       const status = typeof event.data.statusText === "string" ? event.data.statusText : "";
+      setCanonicalStatusText(status);
       const freshCanonicalOpening = !qaEnabled && nextTranscript.length < 2000 && nextTranscript.includes("Tomorrow never yet");
       const pristineOpening = nextTranscript.includes("Tomorrow never yet") && /Hit\s+any\s+key\s+to\s+continue/i.test(nextTranscript);
       const priorMode = modeRef.current;
@@ -1110,17 +1112,25 @@ export default function PrismEdition() {
           {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
           <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || presentedStory.length > 0} inert={presentedStory.length > 0 ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
-          {presentedStory.length > 0 && !qaEnabled && <section ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
+          {presentedStory.length > 0 && !qaEnabled && !presentationState.recovering && <div className="story-presentation-shell">
+          {canonicalStatusText.trim() && <pre className="story-presentation-status" lang="en" aria-label="Canonical game status">{canonicalStatusText}</pre>}
+          <section ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
             {presentedStory.flatMap((entry) => entry.blocks.map((block, blockIndex) => block.kind === "heading"
               ? <h2 key={`${entry.entryId}-${blockIndex}`} className="story-presentation-heading">{block.text}</h2>
-              : block.kind === "quote"
+              : block.kind === "title"
+                ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-title" lang={block.text === block.canonicalText ? "en" : undefined}><strong>{block.text}</strong></p>
+                : block.kind === "quote"
                 ? <blockquote key={`${entry.entryId}-${blockIndex}`} className="story-presentation-quote"><p>{block.text}</p>{block.attribution && <cite>{block.attribution}</cite>}</blockquote>
                 : block.kind === "prompt"
                   ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prompt">{block.text}</p>
                   : block.kind === "command"
                     ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-command" lang="en"><code>&gt; {block.text}</code></p>
-                    : <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prose" lang={block.text === block.canonicalText ? "en" : undefined}>{block.text}</p>))}
-          </section>}
+                    : block.kind === "spacer"
+                      ? <div key={`${entry.entryId}-${blockIndex}`} className="story-presentation-spacer" aria-hidden="true" />
+                      : block.kind === "list"
+                        ? <ul key={`${entry.entryId}-${blockIndex}`} className="story-presentation-list">{block.items?.map((item, itemIndex) => <li key={`${entry.entryId}-${blockIndex}-${itemIndex}`} lang={item === block.canonicalItems?.[itemIndex] ? "en" : undefined}>{item}</li>)}</ul>
+                        : <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prose" lang={block.text === block.canonicalText ? "en" : undefined}>{block.text}</p>))}
+          </section></div>}
           <div className="story-vignette" aria-hidden="true" />
         </div>
 
