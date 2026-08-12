@@ -635,19 +635,18 @@ summary:focus-visible {
 }
 
 .story-presentation-heading {
-  align-self: start;
-  justify-self: center;
   margin: clamp(1rem, 5vh, 3.5rem) 0 0;
   font-family: var(--font-geist-mono), monospace;
   font-size: 1em;
   letter-spacing: 0.06em;
+  text-align: center;
 }
 
 .story-presentation > * { margin-block: 0; }
 
 .story-presentation-spacer { height: 1.2rem; }
 
-.story-presentation-title { text-align: center; letter-spacing: 0.04em; }
+.story-presentation-title { letter-spacing: 0.04em; }
 
 .story-presentation-list { padding-inline-start: 1.5rem; }
 

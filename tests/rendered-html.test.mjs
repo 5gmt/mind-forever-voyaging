@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { localizeStoryContent, localizeStoryTranscript } from "../app/localization.ts";
+import { localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript } from "../app/localization.ts";
 import { initialLineTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -437,6 +437,25 @@ test("presents the source-derived and runtime-observed initial LOOK tableaux", a
   const runtimeEcho = runtimeLookFixture.presentation.lines.find((line) => line.text === ">LOOK");
   assert.deepEqual(runtimeEcho?.runs.map((run) => run.text), [">", "LOOK"]);
   assert.deepEqual(runtimeEcho?.runs[1].classes, ["Style_input"]);
+
+  const missingTitle = structuredClone(runtimeInitialFixture.presentation);
+  missingTitle.lines.splice(2, 1);
+  missingTitle.terminalLine -= 1;
+  missingTitle.activeInput.line -= 1;
+  const withoutTitle = initialLineTurnPresentation(missingTitle, "ja");
+  assert.ok(withoutTitle);
+  assert.equal(withoutTitle.some((block) => block.text === "A Mind Forever Voyaging"), false, "an unobserved release title is never synthesized");
+  assert.equal(withoutTitle.some((block) => block.kind === "title"), false);
+
+  const reorderedOutlets = structuredClone(runtimeInitialFixture.presentation);
+  [reorderedOutlets.lines[9], reorderedOutlets.lines[10]] = [reorderedOutlets.lines[10], reorderedOutlets.lines[9]];
+  const reorderedList = initialLineTurnPresentation(reorderedOutlets, "ja")?.find((block) => block.kind === "list");
+  assert.deepEqual(reorderedList?.items?.slice(0, 2), ["屋上 (RCRO)", "PRISMプロジェクト管制センター (PPCC)"], "translations follow observed outlet identity, not array position");
+
+  assert.deepEqual(
+    localizeStoryLeaves("part1.initial.release", ["Infocom interactive fiction - a science fiction story", "An untranslated observed release leaf"], "ja"),
+    ["Infocom インタラクティブ・フィクション ― SFストーリー", "An untranslated observed release leaf"],
+  );
 
   const detached = structuredClone(initialFixture.presentation);
   detached.activeInput.line = null;

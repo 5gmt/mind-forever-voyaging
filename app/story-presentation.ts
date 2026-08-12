@@ -97,7 +97,7 @@ export const initialLineTurnPresentation = (presentation: BridgePresentation | n
     const releaseIndexes = Array.from({ length: releaseEnd - releaseStart + 1 }, (_, index) => releaseStart + index);
     const canonicalLeaves = releaseIndexes.map((index) => texts[index]);
     const translated = localizeStoryLeaves("part1.initial.release", canonicalLeaves, locale);
-    releaseIndexes.forEach((sourceLine, index) => blocks.push(block(index === 0 ? "title" : "prose", "part1.initial.release", canonicalLeaves[index], translated[index], [sourceLine])));
+    releaseIndexes.forEach((sourceLine, index) => blocks.push(block(canonicalLeaves[index] === "A Mind Forever Voyaging" ? "title" : "prose", "part1.initial.release", canonicalLeaves[index], translated[index], [sourceLine])));
     if (blank(lines[releaseEnd + 1])) blocks.push(spacer(releaseEnd + 1));
   } else {
     blocks.push({ kind: "command", text: "LOOK", canonicalText: texts[commandIndex].replace(/^>\s*/, ""), sourceLines: [commandIndex] });
