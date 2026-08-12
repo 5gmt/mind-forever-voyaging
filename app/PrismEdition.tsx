@@ -1057,6 +1057,11 @@ export default function PrismEdition() {
     "--story-buffer-width": `${liveGeometry?.buffer?.width ?? 0}px`,
     "--story-status-left": `${liveGeometry?.status?.left ?? 0}px`,
     "--story-status-width": `${liveGeometry?.status?.width ?? 0}px`,
+    "--story-status-height": `${liveGeometry?.status?.height ?? 0}px`,
+    "--story-status-background": liveGeometry?.status?.backgroundColor ?? "transparent",
+    "--story-status-border-color": liveGeometry?.status?.borderColor ?? "transparent",
+    "--story-status-border-style": liveGeometry?.status?.borderStyle ?? "none",
+    "--story-status-border-width": liveGeometry?.status?.borderWidth ?? "0px",
     "--story-prompt-left": `${liveGeometry?.activePrompt?.left ?? liveGeometry?.buffer?.left ?? 0}px`,
   } as CSSProperties;
 

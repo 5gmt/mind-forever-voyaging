@@ -73,7 +73,21 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   if (wrapperStatusBox && canonicalStatusBox) {
     expectNear(wrapperStatusBox.x, canonicalStatusBox.x);
     expectNear(wrapperStatusBox.width, canonicalStatusBox.width);
+    expectNear(wrapperStatusBox.height, canonicalStatusBox.height);
   }
+  const canonicalStatusChrome = await frame.locator(".GridWindow").evaluate((element) => {
+    const style = getComputedStyle(element);
+    return {
+      backgroundColor: style.backgroundColor,
+      borderColor: style.borderTopColor,
+      borderStyle: style.borderTopStyle,
+      borderWidth: style.borderTopWidth,
+    };
+  });
+  await expect(wrapperStatus).toHaveCSS("background-color", canonicalStatusChrome.backgroundColor);
+  await expect(wrapperStatus).toHaveCSS("border-top-color", canonicalStatusChrome.borderColor);
+  await expect(wrapperStatus).toHaveCSS("border-top-style", canonicalStatusChrome.borderStyle);
+  await expect(wrapperStatus).toHaveCSS("border-top-width", canonicalStatusChrome.borderWidth);
   const wrapperBodyBox = await presentation.boundingBox();
   const canonicalBodyBox = await frame.locator(".BufferLine", { hasText: /You have entered Communications Mode/ }).last().boundingBox();
   if (wrapperBodyBox && canonicalBodyBox) {

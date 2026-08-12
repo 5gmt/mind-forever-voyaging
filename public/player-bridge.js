@@ -43,11 +43,21 @@
     const slicedInputLine = absoluteInputLine >= sliceStart ? absoluteInputLine - sliceStart : null;
     const terminalLine = lines.findLastIndex((line) => line.text.trim().length > 0);
 
-    const relativeBox = (element, container) => {
+    const relativeBox = (element, container, includeChrome = false) => {
       if (!element?.getBoundingClientRect || !container?.getBoundingClientRect) return null;
       const box = element.getBoundingClientRect();
       const origin = container.getBoundingClientRect();
-      return { left: box.left - origin.left, width: box.width };
+      const geometry = { left: box.left - origin.left, width: box.width };
+      if (!includeChrome) return geometry;
+      const style = getStyle(element);
+      return {
+        ...geometry,
+        height: box.height,
+        backgroundColor: style.backgroundColor,
+        borderColor: style.borderTopColor,
+        borderStyle: style.borderTopStyle,
+        borderWidth: style.borderTopWidth,
+      };
     };
     const gameport = documentRoot.querySelector?.("#gameport");
     // BufferLine's box is the canonical content column after the
@@ -66,7 +76,7 @@
       } : null,
       geometry: gameport ? {
         buffer: relativeBox(buffer, gameport),
-        status: relativeBox(status, gameport),
+        status: relativeBox(status, gameport, true),
         activePrompt: relativeBox(inputLine, gameport),
       } : undefined,
     };

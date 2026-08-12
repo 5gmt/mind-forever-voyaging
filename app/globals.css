@@ -626,7 +626,13 @@ summary:focus-visible {
 .story-presentation-shell[data-canonical-geometry="true"] .story-presentation-status {
   margin-left: var(--story-status-left);
   width: var(--story-status-width);
+  min-height: var(--story-status-height);
+  padding-block: 0;
   box-sizing: border-box;
+  background-color: var(--story-status-background);
+  border-color: var(--story-status-border-color);
+  border-style: var(--story-status-border-style);
+  border-width: var(--story-status-border-width);
 }
 
 .story-presentation {

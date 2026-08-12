@@ -14,7 +14,15 @@ export type BridgePresentation = {
   activeInput: { kind: "line" | "char"; line: number | null; classes: string[] } | null;
   geometry?: {
     buffer: { left: number; width: number } | null;
-    status: { left: number; width: number } | null;
+    status: {
+      left: number;
+      width: number;
+      height?: number;
+      backgroundColor?: string;
+      borderColor?: string;
+      borderStyle?: string;
+      borderWidth?: string;
+    } | null;
     activePrompt: { left: number; width: number } | null;
   };
 };
