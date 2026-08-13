@@ -200,12 +200,42 @@ Issue #13 が完了するまで、GitHub Actions が green であることだけ
 
 ## 12. 変更の進め方
 
-- 通常の feature/maintenance work は task-specific branch と draft Pull Request で行う。
-- 差分は小さく保ち、翻訳拡大、bridge protocol、history semantics、window architecture、deployment adaptation を可能な限り別々にレビューする。
-- 実装は runtime-observed fixture、source evidence、real-browser evidence のいずれに基づくかを明記する。
-- 認識できない状態、安全に fallback できない状態、canonical player を操作できない状態を、成功として扱わない。
-- 戦略変更はこの憲章を、実務上のガードレール変更は `AGENTS.md` を、利用・開発手順の変更は `README.md` を同じ Pull Request で更新する。
-- 一時的な妥協は、何を保証しないかと、解消を追跡する Issue を記録する。
+変更は、**design/review role** と **implementation role** を区別して進める。特定の人物、製品、エージェントに恒久的な役割を割り当てるものではない。同じ主体が複数の役割を担う場合でも、設計の確定、実装、証拠に基づくレビューを別の checkpoint として扱う。
+
+### 12.1 設計、実装、レビュー
+
+1. Design/review role は実装開始前に、Issue または design note で scope、acceptance criteria、守るべき既存保証、意図的な非目標を固める。未決のアーキテクチャ判断を implementation role に暗黙に委ねない。
+2. Implementation role は合意した設計を task-specific branch と draft Pull Request 上で実装する。実行した verification command と結果、runtime observation、既知の制約を Pull Request に残す。
+3. Design/review role は差分だけでなく、runtime evidence、回帰テスト、acceptance criteria、既存設計との整合を確認する。証拠や保証が不足している場合は merge せず、具体的な follow-up task を implementation role へ返す。
+4. 差分は小さく保ち、翻訳拡大、bridge protocol、history semantics、window architecture、deployment adaptation を可能な限り別々にレビューする。
+5. 実装は runtime-observed fixture、source evidence、real-browser evidence のいずれに基づくかを明記する。
+6. 認識できない状態、安全に fallback できない状態、canonical player を操作できない状態を、成功として扱わない。
+
+### 12.2 Merge-ready の条件
+
+Pull Request は、少なくとも次を満たしてから merge-ready とする。
+
+- 最新の target branch を取り込み、`behind = 0` である。
+- GitHub 上で mergeable であり、未解決の conflict がない。
+- 変更種別に必要な verification が最新の head commit で通っている。
+- review 中に target branch が進んだ場合は、更新後の base 上で task-specific regression を再確認している。
+- acceptance criteria、既存保証、既知の制約が Pull Request の証拠と一致している。
+
+単に差分が局所的に正しいことや、古い base 上で一度テストが通ったことだけでは merge-ready としない。
+
+### 12.3 回帰修正の証拠
+
+回帰修正では、可能な範囲で次の順序を記録する。
+
+1. 失敗を再現する automated test または runtime observation
+2. 修正前に失敗することの確認（RED）
+3. 最小限の修正
+4. task-specific test または observation の成功（GREEN）
+5. 変更範囲に応じた lint、type check、unit/build、E2E、canonical story SHA-256 の再確認
+
+自動テストで再現できない visual、timing、browser integration の問題では、修正前後の real-browser observation を RED/GREEN の証拠としてよい。環境上実行できない検証は成功扱いにせず、未実行の理由と代替証拠を明記する。
+
+戦略変更はこの憲章を、実務上のガードレール変更は `AGENTS.md` を、利用・開発手順の変更は `README.md` を同じ Pull Request で更新する。一時的な妥協は、何を保証しないかと、解消を追跡する Issue を記録する。
 
 ## 13. 成功の定義
 
