@@ -10,6 +10,12 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 # Project-specific instructions
 
+## How to read these instructions
+
+- Rules that protect the canonical artifact, runtime authority, observed output, safe fallback, or accessibility are hard guardrails. Do not weaken them unless a task explicitly changes that project-level guarantee and defines acceptance criteria for the change.
+- Rules that describe observation, input, or presentation mechanisms are current architectural defaults, not permanent bans on redesign. A task may change a mechanism when that boundary is explicitly in scope, provided the applicable hard guardrails remain intact and these instructions are updated with the new default.
+- Commands, CI expectations, dependency and deployment constraints, and branch and review rules describe the repository's current operating procedure. Follow them for ordinary work; when a task changes the workflow, update these instructions in the same change.
+
 ## Canonical story integrity
 
 - Never modify `public/amfv-r79-s851122.z4` unless a task explicitly requires replacing the canonical release artifact.
@@ -17,9 +23,9 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Do not modify the historical ZIL sources under `source/` unless a task explicitly requires historical-source work.
 - The canonical Release 79 interpreter remains the authority for game state and parser behavior.
 
-## Localization architecture
+## Current localization architecture
 
-- State detection must operate on raw English transcript and status output from the canonical interpreter.
+- Unless a task explicitly redesigns the observation boundary, state detection must operate on raw English transcript and status output from the canonical interpreter.
 - Localization is a presentation concern. Do not feed localized Japanese text into state detection or other game-state derivation.
 - Parser commands sent to Parchment must remain English unless a task explicitly changes the parser architecture.
 - Untranslated story output must safely fall back to the original English.
@@ -29,7 +35,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 - Before implementation, ensure the task defines its scope, acceptance criteria, existing guarantees, and intentional non-goals. Stop and clarify material ambiguity rather than choosing an architecture implicitly.
 - Prefer small, reviewable changes and avoid unrelated refactors.
-- Keep translation expansion, bridge protocol changes, history semantics, window architecture, and deployment adaptation separate when practical.
+- Keep translation expansion, canonical-runtime observation, history and recovery semantics, presentation and window architecture, and deployment adaptation separate when practical.
 - Preserve existing accessibility and reading-preference behavior when adding alternate presentation layers.
 - State whether a change is grounded in runtime-observed fixtures, historical source evidence, or real-browser evidence.
 
@@ -49,7 +55,7 @@ Before completing implementation work, run the applicable checks:
 - `npx tsc --noEmit`
 - `npm test`
 
-For localization, wrapper, bridge, or layout work, also run `npm run test:e2e` and verify the canonical story SHA-256. For layout, status, scrolling, or focus changes, record real-browser observations in addition to automated checks.
+For changes affecting localization presentation, canonical-runtime observation, or layout, also run `npm run test:e2e` and verify the canonical story SHA-256. For layout, status, scrolling, or focus changes, record real-browser observations in addition to automated checks.
 
 For regression fixes, preserve evidence in this order when practical:
 
@@ -71,7 +77,7 @@ When automation cannot reproduce a visual, timing, or browser-integration proble
 - Review the runtime evidence, regression coverage, acceptance criteria, and consistency with existing design—not only the textual diff.
 - Return missing evidence or guarantees as explicit follow-up work rather than treating the pull request as merge-ready.
 
-A pull request is merge-ready only when:
+Under the repository's current branch-based GitHub workflow, a pull request is merge-ready only when:
 
 - it contains the latest target branch (`behind = 0`);
 - GitHub reports it mergeable with no unresolved conflict;
