@@ -16,6 +16,15 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 - Rules that describe observation, input, or presentation mechanisms are current architectural defaults, not permanent bans on redesign. A task may change a mechanism when that boundary is explicitly in scope, provided the applicable hard guardrails remain intact and these instructions are updated with the new default.
 - Commands, CI expectations, dependency and deployment constraints, and branch and review rules describe the repository's current operating procedure. Follow them for ordinary work; when a task changes the workflow, update these instructions in the same change.
 
+## Project context routing
+
+This file defines how agents work in this repository. It does not replace task-specific scope, current project direction, or durable project principles.
+
+- For a well-scoped implementation or review task, use these instructions together with the task's Issue, Pull Request, or design note. Do not load broader project documents by default.
+- Read `PROJECT_STATUS.md` when selecting or sequencing work, assessing the current frontier, or updating milestones, CI, implementation, or delivery status.
+- Read `PROJECT_CHARTER.md` when interpreting or changing the project's mission, canonical authority, player guarantees, decision priorities, or non-goals.
+- Read only the documents selected by these conditions; do not treat the three files as a mandatory reading chain. A task may require both broader documents when both conditions apply.
+
 ## Canonical story integrity
 
 - Never modify `public/amfv-r79-s851122.z4` unless a task explicitly requires replacing the canonical release artifact.
