@@ -85,6 +85,7 @@
   let presentationMode = "canonical";
   let localizedBuffer;
   let localizedInner;
+  let canonicalScrollState;
 
   const restoreCanonicalBuffer = () => {
     if (localizedInner) {
@@ -93,9 +94,15 @@
     }
     if (localizedBuffer) {
       localizedBuffer.classList.remove("AMFVLocalizedBuffer");
+      if (canonicalScrollState?.buffer === localizedBuffer) {
+        localizedBuffer.scrollTop = canonicalScrollState.followsTail
+          ? localizedBuffer.scrollHeight
+          : Math.min(canonicalScrollState.scrollTop, Math.max(0, localizedBuffer.scrollHeight - localizedBuffer.clientHeight));
+      }
     }
     localizedBuffer = undefined;
     localizedInner = undefined;
+    canonicalScrollState = undefined;
   };
 
   // Option 2a prototype boundary: Parchment continues to own the BufferWindow
@@ -118,9 +125,16 @@
     }
     const inner = buffer.querySelector(":scope > .BufferWindowInner");
     if (presentationMode === "localized") {
-      if (localizedBuffer && localizedBuffer !== buffer) restoreCanonicalBuffer();
-      localizedBuffer = buffer;
-      localizedInner = inner || undefined;
+      if (localizedBuffer !== buffer) {
+        if (localizedBuffer) restoreCanonicalBuffer();
+        canonicalScrollState = {
+          buffer,
+          followsTail: buffer.scrollHeight - buffer.scrollTop - buffer.clientHeight < 48,
+          scrollTop: buffer.scrollTop,
+        };
+        localizedBuffer = buffer;
+        localizedInner = inner || undefined;
+      }
       buffer.classList.add("AMFVLocalizedBuffer");
       buffer.scrollTop = 0;
       inner?.setAttribute("aria-hidden", "true");

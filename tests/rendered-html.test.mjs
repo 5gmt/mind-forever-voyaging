@@ -219,6 +219,8 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(bridge, /inner\?\.setAttribute\("aria-hidden", "true"\)/);
   assert.match(bridge, /inner\?\.setAttribute\("inert", ""\)/);
   assert.match(bridge, /localized-host-ready/);
+  assert.match(bridge, /canonicalScrollState\.followsTail/);
+  assert.match(bridge, /canonicalScrollState\.scrollTop/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");

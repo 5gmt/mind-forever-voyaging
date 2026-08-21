@@ -107,16 +107,24 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await settings.getByRole("button", { name: "English" }).click();
   await expect(presentation).toBeHidden();
   await expect(frame.locator(".BufferWindowInner")).not.toHaveAttribute("inert", "");
+  const canonicalScroll = frame.locator(".BufferWindow");
+  await expect.poll(async () => canonicalScroll.evaluate((node) => node.scrollHeight - node.scrollTop - node.clientHeight < 48)).toBe(true);
   await settings.getByRole("button", { name: "日本語" }).click();
   await expect(presentation).toContainText(/You have no appendages/i);
 
-  // When the reader has moved upward, switching languages does not force the
-  // reconstructed Japanese viewport back to the tail.
-  await scrollSurface.evaluate((node) => { node.scrollTop = 0; });
+  // A canonical English viewport that was intentionally moved upward keeps
+  // that semantic position across an EN → JA → EN round-trip.
   await settings.getByRole("button", { name: "English" }).click();
+  await canonicalScroll.evaluate((node) => { node.scrollTop = 0; });
+  await expect.poll(async () => canonicalScroll.evaluate((node) => node.scrollTop)).toBe(0);
   await settings.getByRole("button", { name: "日本語" }).click();
+  await scrollSurface.evaluate((node) => { node.scrollTop = 0; });
   await expect(presentation).toContainText("明日という日はまだ");
   await expect.poll(async () => scrollSurface.evaluate((node) => node.scrollTop < node.scrollHeight - node.clientHeight)).toBe(true);
+  await settings.getByRole("button", { name: "English" }).click();
+  await expect(presentation).toBeHidden();
+  await expect.poll(async () => canonicalScroll.evaluate((node) => node.scrollTop)).toBe(0);
+  await settings.getByRole("button", { name: "日本語" }).click();
 
   await settings.getByRole("button", { name: "XL" }).click();
   await page.setViewportSize({ width: 900, height: 760 });
