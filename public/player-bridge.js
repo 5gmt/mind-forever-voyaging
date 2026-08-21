@@ -81,14 +81,69 @@
   const CHANNEL = "amfv:bridge";
   let observer;
   let updateTimer;
+  const LOCALIZED_HOST_ID = "amfv-localized-presentation-host";
+  let presentationMode = "canonical";
+  let localizedBuffer;
+  let localizedInner;
+
+  const restoreCanonicalBuffer = () => {
+    if (localizedInner) {
+      localizedInner.removeAttribute("aria-hidden");
+      localizedInner.removeAttribute("inert");
+    }
+    if (localizedBuffer) {
+      localizedBuffer.classList.remove("AMFVLocalizedBuffer");
+    }
+    localizedBuffer = undefined;
+    localizedInner = undefined;
+  };
+
+  // Option 2a prototype boundary: Parchment continues to own the BufferWindow
+  // and its canonical children. The bridge owns only this separate host and
+  // the accessibility switch that prevents duplicate English/Japanese output.
+  const ensureLocalizedHost = () => {
+    const buffer = [...document.querySelectorAll("#gameport .BufferWindow")].at(-1);
+    if (!buffer) return null;
+    let host = buffer.querySelector(`:scope > #${LOCALIZED_HOST_ID}`);
+    if (!host) {
+      host = document.createElement("div");
+      host.id = LOCALIZED_HOST_ID;
+      host.className = "AMFVLocalizedPresentationHost";
+      host.lang = "ja";
+      host.setAttribute("role", "log");
+      host.setAttribute("aria-live", "polite");
+      host.setAttribute("aria-label", "日本語ストーリー表示");
+      buffer.append(host);
+      post("localized-host-ready");
+    }
+    const inner = buffer.querySelector(":scope > .BufferWindowInner");
+    if (presentationMode === "localized") {
+      if (localizedBuffer && localizedBuffer !== buffer) restoreCanonicalBuffer();
+      localizedBuffer = buffer;
+      localizedInner = inner || undefined;
+      buffer.classList.add("AMFVLocalizedBuffer");
+      buffer.scrollTop = 0;
+      inner?.setAttribute("aria-hidden", "true");
+      inner?.setAttribute("inert", "");
+      host.removeAttribute("hidden");
+    } else {
+      host.setAttribute("hidden", "");
+      restoreCanonicalBuffer();
+    }
+    return host;
+  };
 
   const post = (type, detail = {}) => {
     window.parent.postMessage({ channel: CHANNEL, type, ...detail }, window.location.origin);
   };
 
   const gameText = () => {
-    const port = document.getElementById("gameport");
-    const text = (port?.innerText || document.body.innerText || "").replace(/\u00a0/g, " ");
+    // The localized host is deliberately excluded: all detection continues to
+    // consume canonical English owned by Parchment.
+    const text = [...document.querySelectorAll("#gameport .BufferWindowInner")]
+      .map((inner) => inner.innerText)
+      .join("\n")
+      .replace(/\u00a0/g, " ");
     return text.slice(-20000);
   };
 
@@ -134,7 +189,10 @@
 
   const announceUpdate = () => {
     clearTimeout(updateTimer);
-    updateTimer = setTimeout(reportState, 90);
+    updateTimer = setTimeout(() => {
+      ensureLocalizedHost();
+      reportState();
+    }, 90);
   };
 
   const pressEnter = (input) => {
@@ -196,6 +254,9 @@
       document.documentElement.dataset.readingMode = readingMode === "mono" ? "mono" : "serif";
       document.documentElement.dataset.contrast = highContrast ? "high" : "standard";
       document.documentElement.dataset.reduceMotion = reduceMotion ? "true" : "false";
+    } else if (type === "presentation-mode") {
+      presentationMode = event.data.mode === "localized" ? "localized" : "canonical";
+      ensureLocalizedHost();
     }
   });
 
@@ -221,6 +282,7 @@
     }
     observer = new MutationObserver(announceUpdate);
     observer.observe(root, { childList: true, subtree: true, characterData: true });
+    ensureLocalizedHost();
     post("ready");
     announceUpdate();
   };
@@ -228,5 +290,8 @@
   if (document.readyState === "complete") startBridge();
   else window.addEventListener("load", startBridge, { once: true });
 
-  window.addEventListener("beforeunload", () => observer?.disconnect());
+  window.addEventListener("beforeunload", () => {
+    restoreCanonicalBuffer();
+    observer?.disconnect();
+  });
 })();

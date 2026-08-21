@@ -2,7 +2,8 @@
 
 /* eslint-disable @next/next/no-img-element -- package thumbnails are scans, not responsive artwork */
 
-import { CSSProperties, FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 import { uiText, type Locale } from "./localization";
@@ -363,7 +364,7 @@ export default function PrismEdition() {
   const lastPackageCueRef = useRef(-1);
   const fieldworkLauncherRef = useRef<HTMLButtonElement>(null);
   const fieldworkCloseRef = useRef<HTMLButtonElement>(null);
-  const presentationRef = useRef<HTMLElement>(null);
+  const presentationRef = useRef<HTMLDivElement>(null);
   const followPresentationRef = useRef(true);
 
   const [introOpen, setIntroOpen] = useState(true);
@@ -375,7 +376,6 @@ export default function PrismEdition() {
   const [recentText, setRecentText] = useState("");
   const [sceneText, setSceneText] = useState("");
   const [gridText, setGridText] = useState("");
-  const [canonicalStatusText, setCanonicalStatusText] = useState("");
   const [liveCanonicalPresentation, setLiveCanonicalPresentation] = useState<PresentationHistory[number]["presentation"] | null>(null);
   const [presentationState, setPresentationState] = useState<{ history: PresentationHistory; recovering: boolean }>({
     history: [], recovering: true,
@@ -418,6 +418,7 @@ export default function PrismEdition() {
   const [iframeNonce, setIframeNonce] = useState(0);
   const [debugQueue, setDebugQueue] = useState<string[]>([]);
   const [debugMessage, setDebugMessage] = useState("");
+  const [localizedHost, setLocalizedHost] = useState<HTMLElement | null>(null);
 
   const phase = phaseFor(discovery);
   const guide = mode ? MODE_COPY[mode] : { label: "Incoming transmission", copy: "Read the message. When the prompt appears, LOOK repeats your surroundings and HELP lists useful commands." };
@@ -561,11 +562,23 @@ export default function PrismEdition() {
   }, [locale]);
 
   useEffect(() => {
+    const currentLocalizedHost = (frame: HTMLIFrameElement | null) => {
+      const buffers = [...(frame?.contentDocument?.querySelectorAll("#gameport .BufferWindow") ?? [])];
+      return buffers.at(-1)?.querySelector<HTMLElement>(":scope > #amfv-localized-presentation-host") ?? null;
+    };
     const onMessage = (event: MessageEvent) => {
       if (event.origin !== window.location.origin || event.data?.channel !== BRIDGE_CHANNEL) return;
       const activeFrame = qaEnabled ? qaIframeRef.current : canonicalIframeRef.current;
       if (event.source !== activeFrame?.contentWindow) return;
-      if (event.data.type === "ready") { setPlayerReady(true); return; }
+      if (event.data.type === "ready") {
+        setLocalizedHost(currentLocalizedHost(activeFrame));
+        setPlayerReady(true);
+        return;
+      }
+      if (event.data.type === "localized-host-ready") {
+        setLocalizedHost(currentLocalizedHost(activeFrame));
+        return;
+      }
       if (event.data.type === "busy") { setAcceptsInput(false); return; }
       if (event.data.type === "command" && typeof event.data.command === "string") {
         const entered = event.data.command.trim();
@@ -591,11 +604,13 @@ export default function PrismEdition() {
         return;
       }
       if (event.data.type !== "transcript") return;
+      // Parchment may replace its window tree during startup or rearrange.
+      // Rebind the portal target from the same observed lifecycle report.
+      setLocalizedHost(currentLocalizedHost(activeFrame));
 
       const nextTranscript = typeof event.data.text === "string" ? event.data.text : "";
       const nextRecent = typeof event.data.recentText === "string" ? event.data.recentText : nextTranscript.slice(-5000);
       const status = typeof event.data.statusText === "string" ? event.data.statusText : "";
-      setCanonicalStatusText(status);
       const freshCanonicalOpening = !qaEnabled && nextTranscript.length < 2000 && nextTranscript.includes("Tomorrow never yet");
       const pristineOpening = nextTranscript.includes("Tomorrow never yet") && /Hit\s+any\s+key\s+to\s+continue/i.test(nextTranscript);
       const priorMode = modeRef.current;
@@ -1053,15 +1068,16 @@ export default function PrismEdition() {
     ? projectPresentationHistory(presentationState.history, locale)
     : [], [locale, presentationState]);
   const livePresentation = liveCanonicalPresentation;
-  const liveGeometry = livePresentation?.geometry;
-  const geometryStyle = {
-    "--story-buffer-left": `${liveGeometry?.buffer?.left ?? 0}px`,
-    "--story-buffer-width": `${liveGeometry?.buffer?.width ?? 0}px`,
-    "--story-status-left": `${liveGeometry?.status?.left ?? 0}px`,
-    "--story-status-width": `${liveGeometry?.status?.width ?? 0}px`,
-    "--story-status-height": `${liveGeometry?.status?.height ?? 0}px`,
-    "--story-prompt-left": `${liveGeometry?.activePrompt?.left ?? liveGeometry?.buffer?.left ?? 0}px`,
-  } as CSSProperties;
+  const localizedMode = presentedStory.length > 0 && !qaEnabled && !presentationState.recovering;
+
+  useEffect(() => {
+    const frame = canonicalIframeRef.current;
+    frame?.contentWindow?.postMessage({
+      channel: BRIDGE_CHANNEL,
+      type: "presentation-mode",
+      mode: localizedMode ? "localized" : "canonical",
+    }, window.location.origin);
+  }, [localizedMode]);
 
   useEffect(() => {
     const surface = presentationRef.current;
@@ -1122,11 +1138,11 @@ export default function PrismEdition() {
 
         <div className="story-frame-wrap">
           {!playerReady && <div className="player-loading"><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
-          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled || presentedStory.length > 0} inert={presentedStory.length > 0 ? true : undefined} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
+          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
-          {presentedStory.length > 0 && !qaEnabled && !presentationState.recovering && <div className="story-presentation-shell" data-canonical-geometry={liveGeometry ? "true" : "false"} style={geometryStyle}>
-          {canonicalStatusText.trim() && <pre className="story-presentation-status" lang="en" aria-label="Canonical game status">{canonicalStatusText}</pre>}
-          <section ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation" lang="ja" role="log" aria-live="polite" aria-label="日本語ストーリー表示" style={{ fontSize: `${fontScale}px` }}>
+          {localizedMode && localizedHost && createPortal(<>
+          <div ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation-scroll">
+          <div className="story-presentation-content">
             {presentedStory.flatMap((entry) => entry.blocks.map((block, blockIndex) => block.kind === "heading"
               ? <h2 key={`${entry.entryId}-${blockIndex}`} className="story-presentation-heading">{block.text}</h2>
               : block.kind === "title"
@@ -1142,9 +1158,10 @@ export default function PrismEdition() {
                       : block.kind === "list"
                         ? <ul key={`${entry.entryId}-${blockIndex}`} className="story-presentation-list">{block.items?.map((item, itemIndex) => <li key={`${entry.entryId}-${blockIndex}-${itemIndex}`} lang={item === block.canonicalItems?.[itemIndex] ? "en" : undefined}>{item}</li>)}</ul>
                         : <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prose" lang={block.text === block.canonicalText ? "en" : undefined}>{block.text}</p>))}
-          </section>
+          </div>
           {livePresentation?.activeInput?.kind === "line" && <div className="story-presentation-active-prompt" lang="en" aria-label="Current game prompt">&gt;</div>}
-          </div>}
+          </div>
+          </>, localizedHost)}
           <div className="story-vignette" aria-hidden="true" />
         </div>
 
