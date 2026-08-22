@@ -23,11 +23,16 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await page.goto("/");
 
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
-  if (await introduction.isVisible()) {
+  const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
+  // The dialog is stable until its button is activated. Prefer the already
+  // advanced state so a transition cannot race a stale dialog visibility read.
+  if (!(await continueButton.isVisible())) {
+    await expect(introduction).toBeVisible();
     await introduction.getByRole("button", { name: /^Begin/ }).click();
   }
 
-  await expect(page.getByRole("button", { name: /Begin the original story/i })).toBeEnabled({ timeout: 20_000 });
+  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
 
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: "Reading and play settings" });
@@ -110,7 +115,13 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(presentation).toContainText("明日という日はまだ");
   await expect(presentation).toContainText("通信モードに入りました");
   await expect(presentation).toContainText(/INVENTORY/i);
-  await expect(presentation).toContainText(/You have no appendages/i);
+  await expect(presentation).toContainText("手足はないことを忘れたのか？");
+
+  // A neighboring turn without catalog leaves remains canonical English.
+  await commandInput.fill("SCORE");
+  await page.getByRole("button", { name: /送信/ }).click();
+  await expect(presentation.locator(".story-presentation-command")).toContainText(["LOOK", "INVENTORY", "SCORE"]);
+  await expect(presentation).toContainText(/I don't know the word "score\."/i);
 
   const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
   await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
@@ -119,7 +130,7 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   for (let turn = 0; turn < 10; turn += 1) {
     await commandInput.fill("INVENTORY");
     await page.getByRole("button", { name: /送信/ }).click();
-    await expect(presentation.locator(".story-presentation-command")).toHaveCount(3 + turn);
+    await expect(presentation.locator(".story-presentation-command")).toHaveCount(4 + turn);
   }
   const scrollSurface = presentation.locator(".story-presentation-scroll");
   await expect.poll(async () => scrollSurface.evaluate((node) => node.scrollHeight > node.clientHeight)).toBe(true);
@@ -132,7 +143,7 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   const canonicalScroll = frame.locator(".BufferWindow");
   await expect.poll(async () => canonicalScroll.evaluate((node) => node.scrollHeight - node.scrollTop - node.clientHeight < 48)).toBe(true);
   await settings.getByRole("button", { name: "日本語" }).click();
-  await expect(presentation).toContainText(/You have no appendages/i);
+  await expect(presentation).toContainText("手足はないことを忘れたのか？");
 
   // A canonical English viewport that was intentionally moved upward keeps
   // that semantic position across an EN → JA → EN round-trip.

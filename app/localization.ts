@@ -57,7 +57,8 @@ export type StoryContentId =
   | "part1.initial.incoming-message"
   | "part1.initial.release"
   | "part1.initial.communications"
-  | "part1.initial.outlets";
+  | "part1.initial.outlets"
+  | "part1.communications.inventory-empty";
 
 // Normal parser-turn localization is keyed by stable story IDs. Canonical
 // English is supplied by the recognizer and remains the per-block fallback.
@@ -101,6 +102,29 @@ const STRUCTURED_STORY_CATALOG: Partial<Record<Locale, Partial<Record<StoryConte
   },
 };
 
+type ObservedStoryTranslation = Readonly<{ contentId: StoryContentId; text: string }>;
+
+// Option 2b prototype catalog. Unlike passage-owned structured catalogs, its
+// key is the exact canonical leaf observed at runtime. Keeping this catalog
+// separate prevents context-specific leaves from being selected accidentally.
+const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<readonly [string, ObservedStoryTranslation]>>> = {
+  ja: [[
+    "You have no appendages, remember?",
+    { contentId: "part1.communications.inventory-empty", text: "手足はないことを忘れたのか？" },
+  ]],
+};
+
+const OBSERVED_STORY_INDEX: Partial<Record<Locale, ReadonlyMap<string, ObservedStoryTranslation>>> = Object.fromEntries(
+  Object.entries(OBSERVED_STORY_CATALOG).map(([locale, entries]) => {
+    const index = new Map<string, ObservedStoryTranslation>();
+    for (const [canonicalLeaf, translation] of entries ?? []) {
+      if (index.has(canonicalLeaf)) throw new Error(`Duplicate observed story leaf for locale ${locale}: ${canonicalLeaf}`);
+      index.set(canonicalLeaf, translation);
+    }
+    return [locale, index];
+  }),
+);
+
 const storyLeafIdentity = (contentId: StoryContentId, canonicalLeaf: string) => {
   if (contentId === "part1.initial.outlets") return canonicalLeaf.match(/\((PPCC|RCRO|PEOF|PCAF|MACO|WNNF)\)$/i)?.[1].toUpperCase() ?? canonicalLeaf;
   return canonicalLeaf;
@@ -111,3 +135,7 @@ export const localizeStoryLeaves = (
   canonicalLeaves: readonly string[],
   locale: Locale,
 ) => canonicalLeaves.map((leaf) => STRUCTURED_STORY_CATALOG[locale]?.[contentId]?.[storyLeafIdentity(contentId, leaf)] ?? leaf);
+
+export const observedStoryLeafTranslation = (canonicalLeaf: string, locale: Locale) => {
+  return OBSERVED_STORY_INDEX[locale]?.get(canonicalLeaf);
+};
