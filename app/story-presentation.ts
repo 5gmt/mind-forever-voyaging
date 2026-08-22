@@ -35,6 +35,8 @@ export type StoryPresentationBlock = {
 
 const clean = (text: string) => text.replace(/\u00a0/g, " ").replace(/\s+/g, " ").trim();
 const commandText = (text: string) => clean(text).toUpperCase();
+const INPUT_STYLE_PATTERN = /Style_input/i;
+const HEADING_STYLE_PATTERN = /Style_(?:header|subheader)|Heading/i;
 const blank = (line: BridgePresentationLine) => line.classes.includes("BlankPara");
 const spacer = (sourceLine: number): StoryPresentationBlock => ({ kind: "spacer", text: "", sourceLines: [sourceLine] });
 
@@ -127,12 +129,12 @@ export const initialLineTurnPresentation = (presentation: BridgePresentation | n
 // no command or passage-specific recognizer is involved. The whole turn fails
 // closed to the canonical fallback unless at least one observed leaf translates.
 export const observedOrdinaryTurnPresentation = (presentation: BridgePresentation | null, locale: Locale): StoryPresentationBlock[] | null => {
-  if (locale !== "ja" || !presentation || presentation.version !== 3 || presentation.activeInput?.kind !== "line") return null;
+  if (locale === "en" || !presentation || presentation.version !== 3 || presentation.activeInput?.kind !== "line") return null;
   const end = presentation.activeInput.line;
   if (end === null || end !== presentation.terminalLine || end !== presentation.lines.length - 1) return null;
   const commandIndex = presentation.lines.slice(0, end).findLastIndex((line) => {
     const text = clean(line.text);
-    return /^>\s*\S/.test(text) || line.runs.some((run) => run.classes.some((name) => /Style_input/i.test(name)));
+    return /^>\s*\S/.test(text) || line.runs.some((run) => run.classes.some((name) => INPUT_STYLE_PATTERN.test(name)));
   });
   if (commandIndex < 0) return null;
   const command = clean(presentation.lines[commandIndex].text).replace(/^>\s*/, "");
@@ -141,7 +143,8 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
   if (!translations.some(Boolean)) return null;
 
   const blocks: StoryPresentationBlock[] = [{
-    kind: "command", text: command.toUpperCase(), canonicalText: command, sourceLines: [commandIndex],
+    // Use the same display normalization as the passage-specific projections.
+    kind: "command", text: commandText(command), canonicalText: command, sourceLines: [commandIndex],
   }];
   response.forEach((line, offset) => {
     const sourceLine = commandIndex + offset + 1;
@@ -153,12 +156,14 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
     if (!canonicalText) return;
     const translation = translations[offset];
     const semanticClasses = [...line.classes, ...line.runs.flatMap((run) => run.classes)];
-    const kind = semanticClasses.some((name) => /Style_(?:header|subheader)|Heading/i.test(name)) ? "title" : "prose";
+    const kind = semanticClasses.some((name) => HEADING_STYLE_PATTERN.test(name)) ? "title" : "prose";
     blocks.push({ kind, text: translation?.text ?? canonicalText, canonicalText, contentId: translation?.contentId, sourceLines: [sourceLine] });
   });
   return blocks;
 };
 
+// Preserve the richer, evidence-backed passage projections first. The generic
+// prototype is deliberately last so catalog leaf matches cannot supersede them.
 export const storyPresentation = (presentation: BridgePresentation | null, locale: Locale) => openingPresentation(presentation, locale)
   ?? initialLineTurnPresentation(presentation, locale)
   ?? observedOrdinaryTurnPresentation(presentation, locale);

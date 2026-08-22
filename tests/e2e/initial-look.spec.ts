@@ -25,7 +25,10 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
   const continueButton = page.getByRole("button", { name: /Begin the original story/i });
   await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
-  if (await introduction.isVisible()) {
+  // The dialog is stable until its button is activated. Prefer the already
+  // advanced state so a transition cannot race a stale dialog visibility read.
+  if (!(await continueButton.isVisible())) {
+    await expect(introduction).toBeVisible();
     await introduction.getByRole("button", { name: /^Begin/ }).click();
   }
 

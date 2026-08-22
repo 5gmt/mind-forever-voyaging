@@ -2,7 +2,7 @@
 
 ## Scope and observed turn
 
-The probe translates `INVENTORY` in the initial Communications Mode. It is an ordinary line-input parser turn, was untranslated before this experiment, is adjacent to other unsupported commands, and has the common shape “input-styled command, one plain response line, prompt”. The canonical response observed in Chromium from Release 79 was `You have no appendages, remember?`.
+The probe translates `INVENTORY` in the initial Communications Mode. It is an ordinary line-input parser turn, was untranslated before this experiment, is adjacent to other unsupported commands, and has the common shape “input-styled command, one plain response line, prompt”. The canonical response observed in Chromium from the committed [Release 79 artifact](../public/amfv-r79-s851122.z4) was `You have no appendages, remember?`.
 
 This is prototype-only code for Issue #20. It does not select Option 2b for the production architecture.
 
@@ -18,7 +18,7 @@ After that projector exists, another ordinary turn with the same plain line stru
 
 ## Reused structure and new ownership
 
-The projector reuses the observed active prompt to delimit the turn, the most recent Parchment input run to delimit its command, BufferLine order and blank-line boundaries, and existing header/subheader semantic classes. Line IDs remain the history identity; exact observed English leaves are catalog identity and canonical fallback. It neither manufactures unobserved story text nor mutates canonical nodes.
+The projector reuses the observed active prompt to delimit the turn, the most recent Parchment input run to delimit its command, BufferLine order and blank-line boundaries, and existing header/subheader semantic classes. Line IDs remain the history identity; exact observed English leaves are catalog identity and canonical fallback. A prebuilt reverse index makes leaf lookup constant-time and rejects duplicate locale/English-leaf identities instead of selecting by catalog order. It neither manufactures unobserved story text nor mutates canonical nodes.
 
 Compared with 2a, wrapper code now owns these additional presentation rules: mapping observed heading classes to title blocks, retaining each response line and canonical blank line in order, and treating an only-partially-translated turn as a structural projection with per-leaf English fallback. Those rules require fixture and browser tests when expanded.
 

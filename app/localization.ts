@@ -83,11 +83,6 @@ export const localizeStoryContent = (
 // literal manufactured by the wrapper.
 const STRUCTURED_STORY_CATALOG: Partial<Record<Locale, Partial<Record<StoryContentId, Readonly<Record<string, string>>>>>> = {
   ja: {
-    // Option 2b probe: this key is an observed canonical leaf, rather than a
-    // passage recognizer. Further plain ordinary turns only add catalog leaves.
-    "part1.communications.inventory-empty": {
-      "You have no appendages, remember?": "手足はないことを忘れたのか？",
-    },
     "part1.initial.release": {
       "A Mind Forever Voyaging": "A Mind Forever Voyaging",
       "Infocom interactive fiction - a science fiction story": "Infocom インタラクティブ・フィクション ― SFストーリー",
@@ -107,6 +102,29 @@ const STRUCTURED_STORY_CATALOG: Partial<Record<Locale, Partial<Record<StoryConte
   },
 };
 
+type ObservedStoryTranslation = Readonly<{ contentId: StoryContentId; text: string }>;
+
+// Option 2b prototype catalog. Unlike passage-owned structured catalogs, its
+// key is the exact canonical leaf observed at runtime. Keeping this catalog
+// separate prevents context-specific leaves from being selected accidentally.
+const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<readonly [string, ObservedStoryTranslation]>>> = {
+  ja: [[
+    "You have no appendages, remember?",
+    { contentId: "part1.communications.inventory-empty", text: "手足はないことを忘れたのか？" },
+  ]],
+};
+
+const OBSERVED_STORY_INDEX: Partial<Record<Locale, ReadonlyMap<string, ObservedStoryTranslation>>> = Object.fromEntries(
+  Object.entries(OBSERVED_STORY_CATALOG).map(([locale, entries]) => {
+    const index = new Map<string, ObservedStoryTranslation>();
+    for (const [canonicalLeaf, translation] of entries ?? []) {
+      if (index.has(canonicalLeaf)) throw new Error(`Duplicate observed story leaf for locale ${locale}: ${canonicalLeaf}`);
+      index.set(canonicalLeaf, translation);
+    }
+    return [locale, index];
+  }),
+);
+
 const storyLeafIdentity = (contentId: StoryContentId, canonicalLeaf: string) => {
   if (contentId === "part1.initial.outlets") return canonicalLeaf.match(/\((PPCC|RCRO|PEOF|PCAF|MACO|WNNF)\)$/i)?.[1].toUpperCase() ?? canonicalLeaf;
   return canonicalLeaf;
@@ -119,10 +137,5 @@ export const localizeStoryLeaves = (
 ) => canonicalLeaves.map((leaf) => STRUCTURED_STORY_CATALOG[locale]?.[contentId]?.[storyLeafIdentity(contentId, leaf)] ?? leaf);
 
 export const observedStoryLeafTranslation = (canonicalLeaf: string, locale: Locale) => {
-  if (locale === "en") return undefined;
-  for (const [contentId, leaves] of Object.entries(STRUCTURED_STORY_CATALOG[locale] ?? {})) {
-    const translated = leaves?.[storyLeafIdentity(contentId as StoryContentId, canonicalLeaf)];
-    if (translated !== undefined) return { contentId: contentId as StoryContentId, text: translated };
-  }
-  return undefined;
+  return OBSERVED_STORY_INDEX[locale]?.get(canonicalLeaf);
 };

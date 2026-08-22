@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript } from "../app/localization.ts";
+import { localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -353,6 +353,10 @@ test("reconciles locale-neutral presentation history without duplicating observa
   assert.deepEqual(japaneseAgain, japanese);
   assert.ok(japanese.flatMap((entry) => entry.blocks).some((block) => /通信モード/.test(block.text)));
   assert.match(japanese.at(-1).blocks.map((block) => block.text).join("\n"), /INVENTORY[\s\S]*手足はないことを忘れたのか/);
+  assert.deepEqual(observedStoryLeafTranslation("You have no appendages, remember?", "ja"), {
+    contentId: "part1.communications.inventory-empty", text: "手足はないことを忘れたのか？",
+  });
+  assert.equal(observedStoryLeafTranslation("You have no appendages, remember?", "en"), undefined);
   assert.equal(observedOrdinaryTurnPresentation(inventory, "en"), null);
   assert.deepEqual(observedOrdinaryTurnPresentation(inventory, "ja")?.slice(0, 2).map((block) => block.kind), ["command", "prose"]);
   assert.equal(observedOrdinaryTurnPresentation(inventory, "ja")?.[1].sourceLines[0], commandIndex + 1);
