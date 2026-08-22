@@ -4,7 +4,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript } from "../app/localization.ts";
-import { initialLineTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
+import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
 test("static export renders the finished unabridged edition", async () => {
@@ -341,7 +341,7 @@ test("reconciles locale-neutral presentation history without duplicating observa
   const commandIndex = inventory.lines.indexOf(commandLine);
   inventory.lines.splice(commandIndex + 1, 0, {
     ...inventory.lines[commandIndex + 1], id: "inventory-response",
-    text: "You have no appendages to carry anything with.", runs: [],
+    text: "You have no appendages, remember?", runs: [],
   });
   inventory.terminalLine += 1;
   inventory.activeInput.line += 1;
@@ -352,7 +352,10 @@ test("reconciles locale-neutral presentation history without duplicating observa
   const japaneseAgain = projectPresentationHistory(history, "ja");
   assert.deepEqual(japaneseAgain, japanese);
   assert.ok(japanese.flatMap((entry) => entry.blocks).some((block) => /通信モード/.test(block.text)));
-  assert.match(japanese.at(-1).blocks.map((block) => block.text).join("\n"), /INVENTORY[\s\S]*You have no appendages/);
+  assert.match(japanese.at(-1).blocks.map((block) => block.text).join("\n"), /INVENTORY[\s\S]*手足はないことを忘れたのか/);
+  assert.equal(observedOrdinaryTurnPresentation(inventory, "en"), null);
+  assert.deepEqual(observedOrdinaryTurnPresentation(inventory, "ja")?.slice(0, 2).map((block) => block.kind), ["command", "prose"]);
+  assert.equal(observedOrdinaryTurnPresentation(inventory, "ja")?.[1].sourceLines[0], commandIndex + 1);
   assert.ok(english.every((entry) => entry.blocks.every((block) => !block.text.includes("通信モードに入りました"))));
 
   const reset = reconcile(history, { ...opening, lines: opening.lines.map((line) => ({ ...line, id: `${line.id}-restart` })) });

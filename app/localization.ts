@@ -57,7 +57,8 @@ export type StoryContentId =
   | "part1.initial.incoming-message"
   | "part1.initial.release"
   | "part1.initial.communications"
-  | "part1.initial.outlets";
+  | "part1.initial.outlets"
+  | "part1.communications.inventory-empty";
 
 // Normal parser-turn localization is keyed by stable story IDs. Canonical
 // English is supplied by the recognizer and remains the per-block fallback.
@@ -82,6 +83,11 @@ export const localizeStoryContent = (
 // literal manufactured by the wrapper.
 const STRUCTURED_STORY_CATALOG: Partial<Record<Locale, Partial<Record<StoryContentId, Readonly<Record<string, string>>>>>> = {
   ja: {
+    // Option 2b probe: this key is an observed canonical leaf, rather than a
+    // passage recognizer. Further plain ordinary turns only add catalog leaves.
+    "part1.communications.inventory-empty": {
+      "You have no appendages, remember?": "手足はないことを忘れたのか？",
+    },
     "part1.initial.release": {
       "A Mind Forever Voyaging": "A Mind Forever Voyaging",
       "Infocom interactive fiction - a science fiction story": "Infocom インタラクティブ・フィクション ― SFストーリー",
@@ -111,3 +117,12 @@ export const localizeStoryLeaves = (
   canonicalLeaves: readonly string[],
   locale: Locale,
 ) => canonicalLeaves.map((leaf) => STRUCTURED_STORY_CATALOG[locale]?.[contentId]?.[storyLeafIdentity(contentId, leaf)] ?? leaf);
+
+export const observedStoryLeafTranslation = (canonicalLeaf: string, locale: Locale) => {
+  if (locale === "en") return undefined;
+  for (const [contentId, leaves] of Object.entries(STRUCTURED_STORY_CATALOG[locale] ?? {})) {
+    const translated = leaves?.[storyLeafIdentity(contentId as StoryContentId, canonicalLeaf)];
+    if (translated !== undefined) return { contentId: contentId as StoryContentId, text: translated };
+  }
+  return undefined;
+};
