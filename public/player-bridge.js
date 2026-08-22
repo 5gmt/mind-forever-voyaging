@@ -135,8 +135,12 @@
           scrollTop: buffer.scrollTop,
         };
         localizedBuffer = buffer;
-        localizedInner = inner || undefined;
       }
+      if (localizedInner && localizedInner !== inner) {
+        localizedInner.removeAttribute("aria-hidden");
+        localizedInner.removeAttribute("inert");
+      }
+      localizedInner = inner || undefined;
       buffer.classList.add("AMFVLocalizedBuffer");
       buffer.scrollTop = 0;
       inner?.setAttribute("aria-hidden", "true");

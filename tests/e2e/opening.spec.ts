@@ -37,4 +37,16 @@ test("Japanese opening continues into the canonical line input", async ({ page }
   await expect(commandInput).toBeEnabled();
   await commandInput.fill("inventory");
   await expect(commandInput).toHaveValue("inventory");
+
+  // Parchment can replace only BufferWindowInner while retaining its window.
+  // The accessibility handoff must follow the new inner and release it again.
+  await frame.locator(".BufferWindowInner").evaluate((inner) => {
+    inner.replaceWith(inner.cloneNode(true));
+  });
+  const replacementInner = frame.locator(".BufferWindowInner");
+  await expect(replacementInner).toHaveAttribute("aria-hidden", "true");
+  await expect(replacementInner).toHaveAttribute("inert", "");
+  await settings.getByRole("button", { name: "English" }).click();
+  await expect(replacementInner).not.toHaveAttribute("aria-hidden", "true");
+  await expect(replacementInner).not.toHaveAttribute("inert", "");
 });

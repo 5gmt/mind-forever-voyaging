@@ -222,6 +222,8 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(bridge, /canonicalScrollState\.followsTail/);
   assert.match(bridge, /canonicalScrollState\.scrollTop/);
   assert.match(bridge, /localizedHost\.parentElement !== buffer/);
+  assert.match(bridge, /localizedInner !== inner/);
+  assert.match(bridge, /localizedInner = inner \|\| undefined/);
   assert.match(bridge, /new MutationObserver\(\(\) => \{[\s\S]*ensureLocalizedHost\(\);[\s\S]*announceUpdate\(\)/);
   assert.match(bridge, /dataset\.amfvPresentationMode = "localized"/);
   assert.match(shell, /command: normalized/);
