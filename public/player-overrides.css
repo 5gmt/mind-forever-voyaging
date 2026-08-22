@@ -34,6 +34,89 @@ body {
   padding: clamp(18px, 4vw, 42px) clamp(20px, 5vw, 72px) 48px;
 }
 
+/* Option 2a prototype: a separate localized surface hosted by the canonical
+   BufferWindow. Parchment still owns this window's bounds and clipping. */
+.BufferWindow.AMFVLocalizedBuffer {
+  overflow: hidden !important;
+}
+
+/* Fail closed across Parchment window rebuilds: a newly inserted canonical
+   inner is hidden by document mode before the persistent host is reparented. */
+html[data-amfv-presentation-mode="localized"] .BufferWindowInner {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+.AMFVLocalizedPresentationHost {
+  position: absolute;
+  z-index: 2;
+  inset: 0;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  height: 100%;
+  max-height: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
+  color: var(--glkote-buffer-fg);
+  background: var(--glkote-buffer-bg);
+  font-family: var(--glkote-prop-family);
+  font-size: var(--glkote-buffer-size);
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
+.AMFVLocalizedPresentationHost[hidden] {
+  display: none;
+}
+
+.AMFVLocalizedPresentationHost .story-presentation-scroll {
+  box-sizing: border-box;
+  height: 100%;
+  overflow: auto;
+  padding: clamp(18px, 4vw, 42px) clamp(20px, 5vw, 72px) 48px;
+}
+.AMFVLocalizedPresentationHost .story-presentation-content > * { margin-block: 0; }
+.AMFVLocalizedPresentationHost .story-presentation-spacer { height: 1.2rem; }
+.AMFVLocalizedPresentationHost .story-presentation-title { letter-spacing: 0.04em; }
+.AMFVLocalizedPresentationHost .story-presentation-list { padding-inline-start: 1.5rem; }
+.AMFVLocalizedPresentationHost .story-presentation-list li + li { margin-top: 0.35rem; }
+.AMFVLocalizedPresentationHost .story-presentation-heading {
+  margin: clamp(1rem, 5vh, 3.5rem) auto 0;
+  width: fit-content;
+  font-family: var(--glkote-grid-mono-family);
+  font-size: 1em;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+.AMFVLocalizedPresentationHost .story-presentation-quote {
+  margin: 0 auto;
+  max-width: 34rem;
+}
+.AMFVLocalizedPresentationHost .story-presentation-quote p { white-space: pre-line; }
+.AMFVLocalizedPresentationHost .story-presentation-quote cite {
+  display: block;
+  margin-top: 0.35em;
+  text-align: right;
+  font-style: normal;
+}
+.AMFVLocalizedPresentationHost .story-presentation-prompt {
+  margin-bottom: clamp(1rem, 8vh, 5rem);
+  font-family: var(--glkote-grid-mono-family);
+  white-space: nowrap;
+}
+.AMFVLocalizedPresentationHost .story-presentation-command,
+.AMFVLocalizedPresentationHost .story-presentation-active-prompt {
+  font-family: var(--glkote-grid-mono-family);
+}
+.AMFVLocalizedPresentationHost .story-presentation-active-prompt {
+  padding-block: 0.15rem 0.4rem;
+}
+
+html[data-reading-mode="mono"] .AMFVLocalizedPresentationHost {
+  font-family: var(--glkote-mono-family);
+}
+
 .BufferLine {
   letter-spacing: 0.005em;
 }
@@ -87,7 +170,8 @@ html[data-contrast="high"] {
 }
 
 @media (max-width: 760px) {
-  .BufferWindowInner {
+  .BufferWindowInner,
+  .AMFVLocalizedPresentationHost .story-presentation-scroll {
     padding: 18px 18px 86px;
   }
 

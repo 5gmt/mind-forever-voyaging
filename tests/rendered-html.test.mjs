@@ -201,9 +201,10 @@ test("ships the physical package materials beside the story", async () => {
 });
 
 test("localizes only presentation while preserving raw English mechanics", async () => {
-  const [shell, localization, story] = await Promise.all([
+  const [shell, localization, bridge, story] = await Promise.all([
     readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8"),
     readFile(new URL("../app/localization.ts", import.meta.url), "utf8"),
+    readFile(new URL("../public/player-bridge.js", import.meta.url), "utf8"),
     readFile(new URL("../public/amfv-r79-s851122.z4", import.meta.url)),
   ]);
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
@@ -211,7 +212,20 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(shell, /reconcilePresentationHistory\(previous\.history, nextPresentation\)/);
   assert.match(shell, /event\.data\.type === "command"[\s\S]*\^restore\$[\s\S]*setPresentationState\(\{ history: \[\], recovering: true \}\)/i);
   assert.match(shell, /!qaEnabled && event\.data\.acceptsInput/);
-  assert.match(shell, /aria-hidden=\{qaEnabled \|\| presentedStory\.length > 0\}/);
+  assert.match(shell, /createPortal\(/);
+  assert.match(shell, /mode: localizedMode \? "localized" : "canonical"/);
+  assert.match(shell, /aria-hidden=\{qaEnabled\}/);
+  assert.match(bridge, /#gameport \.BufferWindowInner/);
+  assert.match(bridge, /inner\?\.setAttribute\("aria-hidden", "true"\)/);
+  assert.match(bridge, /inner\?\.setAttribute\("inert", ""\)/);
+  assert.match(bridge, /localized-host-ready/);
+  assert.match(bridge, /canonicalScrollState\.followsTail/);
+  assert.match(bridge, /canonicalScrollState\.scrollTop/);
+  assert.match(bridge, /localizedHost\.parentElement !== buffer/);
+  assert.match(bridge, /localizedInner !== inner/);
+  assert.match(bridge, /localizedInner = inner \|\| undefined/);
+  assert.match(bridge, /new MutationObserver\(\(\) => \{[\s\S]*ensureLocalizedHost\(\);[\s\S]*announceUpdate\(\)/);
+  assert.match(bridge, /dataset\.amfvPresentationMode = "localized"/);
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");

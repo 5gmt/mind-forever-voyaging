@@ -81,14 +81,89 @@
   const CHANNEL = "amfv:bridge";
   let observer;
   let updateTimer;
+  const LOCALIZED_HOST_ID = "amfv-localized-presentation-host";
+  let presentationMode = "canonical";
+  let localizedBuffer;
+  let localizedInner;
+  let localizedHost;
+  let canonicalScrollState;
+
+  const restoreCanonicalBuffer = () => {
+    if (localizedInner) {
+      localizedInner.removeAttribute("aria-hidden");
+      localizedInner.removeAttribute("inert");
+    }
+    if (localizedBuffer) {
+      localizedBuffer.classList.remove("AMFVLocalizedBuffer");
+      if (canonicalScrollState?.buffer === localizedBuffer) {
+        localizedBuffer.scrollTop = canonicalScrollState.followsTail
+          ? localizedBuffer.scrollHeight
+          : Math.min(canonicalScrollState.scrollTop, Math.max(0, localizedBuffer.scrollHeight - localizedBuffer.clientHeight));
+      }
+    }
+    localizedBuffer = undefined;
+    localizedInner = undefined;
+    canonicalScrollState = undefined;
+  };
+
+  // Option 2a prototype boundary: Parchment continues to own the BufferWindow
+  // and its canonical children. The bridge owns only this separate host and
+  // the accessibility switch that prevents duplicate English/Japanese output.
+  const ensureLocalizedHost = () => {
+    const buffer = [...document.querySelectorAll("#gameport .BufferWindow")].at(-1);
+    if (!buffer) return null;
+    if (!localizedHost) {
+      localizedHost = document.createElement("div");
+      localizedHost.id = LOCALIZED_HOST_ID;
+      localizedHost.className = "AMFVLocalizedPresentationHost";
+      localizedHost.lang = "ja";
+      localizedHost.setAttribute("role", "log");
+      localizedHost.setAttribute("aria-live", "polite");
+      localizedHost.setAttribute("aria-label", "日本語ストーリー表示");
+    }
+    if (localizedHost.parentElement !== buffer) {
+      buffer.append(localizedHost);
+      post("localized-host-ready");
+    }
+    const inner = buffer.querySelector(":scope > .BufferWindowInner");
+    if (presentationMode === "localized") {
+      if (localizedBuffer !== buffer) {
+        if (localizedBuffer) restoreCanonicalBuffer();
+        canonicalScrollState = {
+          buffer,
+          followsTail: buffer.scrollHeight - buffer.scrollTop - buffer.clientHeight < 48,
+          scrollTop: buffer.scrollTop,
+        };
+        localizedBuffer = buffer;
+      }
+      if (localizedInner && localizedInner !== inner) {
+        localizedInner.removeAttribute("aria-hidden");
+        localizedInner.removeAttribute("inert");
+      }
+      localizedInner = inner || undefined;
+      buffer.classList.add("AMFVLocalizedBuffer");
+      buffer.scrollTop = 0;
+      inner?.setAttribute("aria-hidden", "true");
+      inner?.setAttribute("inert", "");
+      localizedHost.removeAttribute("hidden");
+    } else {
+      localizedHost.setAttribute("hidden", "");
+      restoreCanonicalBuffer();
+    }
+    return localizedHost;
+  };
 
   const post = (type, detail = {}) => {
     window.parent.postMessage({ channel: CHANNEL, type, ...detail }, window.location.origin);
   };
 
   const gameText = () => {
-    const port = document.getElementById("gameport");
-    const text = (port?.innerText || document.body.innerText || "").replace(/\u00a0/g, " ");
+    // The localized host is deliberately excluded: all detection continues to
+    // consume canonical English owned by Parchment.
+    const text = [...document.querySelectorAll("#gameport .BufferWindowInner")]
+      .map((inner) => inner.innerText)
+      .join("\n")
+      .replace(/\u00a0/g, " ");
     return text.slice(-20000);
   };
 
@@ -134,7 +209,10 @@
 
   const announceUpdate = () => {
     clearTimeout(updateTimer);
-    updateTimer = setTimeout(reportState, 90);
+    updateTimer = setTimeout(() => {
+      ensureLocalizedHost();
+      reportState();
+    }, 90);
   };
 
   const pressEnter = (input) => {
@@ -196,6 +274,16 @@
       document.documentElement.dataset.readingMode = readingMode === "mono" ? "mono" : "serif";
       document.documentElement.dataset.contrast = highContrast ? "high" : "standard";
       document.documentElement.dataset.reduceMotion = reduceMotion ? "true" : "false";
+    } else if (type === "presentation-mode") {
+      if (event.data.mode === "localized") {
+        presentationMode = "localized";
+        document.documentElement.dataset.amfvPresentationMode = "localized";
+        ensureLocalizedHost();
+      } else {
+        presentationMode = "canonical";
+        ensureLocalizedHost();
+        delete document.documentElement.dataset.amfvPresentationMode;
+      }
     }
   });
 
@@ -219,8 +307,14 @@
       window.requestAnimationFrame(startBridge);
       return;
     }
-    observer = new MutationObserver(announceUpdate);
+    observer = new MutationObserver(() => {
+      // Host ownership follows Parchment's live window tree synchronously.
+      // Transcript reconciliation remains debounced independently.
+      ensureLocalizedHost();
+      announceUpdate();
+    });
     observer.observe(root, { childList: true, subtree: true, characterData: true });
+    ensureLocalizedHost();
     post("ready");
     announceUpdate();
   };
@@ -228,5 +322,8 @@
   if (document.readyState === "complete") startBridge();
   else window.addEventListener("load", startBridge, { once: true });
 
-  window.addEventListener("beforeunload", () => observer?.disconnect());
+  window.addEventListener("beforeunload", () => {
+    restoreCanonicalBuffer();
+    observer?.disconnect();
+  });
 })();

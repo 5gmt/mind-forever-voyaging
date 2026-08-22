@@ -19,9 +19,6 @@ const attachPayload = async (testInfo: TestInfo, name: string, frame: FrameLocat
   return payload;
 };
 
-const expectNear = (actual: number, expected: number, tolerance = 2) =>
-  expect(Math.abs(actual - expected)).toBeLessThanOrEqual(tolerance);
-
 test("Japanese history retains localized turns when an unsupported turn falls back to English", async ({ page }, testInfo) => {
   await page.goto("/");
 
@@ -33,26 +30,23 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(page.getByRole("button", { name: /Begin the original story/i })).toBeEnabled({ timeout: 20_000 });
 
   await page.getByTitle("Reading and play settings").click();
-  await page.getByRole("region", { name: "Reading and play settings" })
-    .getByRole("button", { name: "日本語" }).click();
+  const settings = page.getByRole("region", { name: "Reading and play settings" });
+  await settings.getByRole("button", { name: "日本語" }).click();
 
-  const presentation = page.getByRole("log", { name: "日本語ストーリー表示" });
   const frame = canonicalFrame(page);
+  const presentation = frame.getByRole("log", { name: "日本語ストーリー表示" });
   await expect(presentation).toContainText("明日という日はまだ");
   const openingPayload = await attachPayload(testInfo, "opening-presentation-v3", frame) as { lines?: Array<{ text: string }> } | null;
   const partOneObserved = openingPayload?.lines?.some((line) => /\*\s*PART I\s*\*/i.test(line.text));
   if (partOneObserved) await expect(presentation).toContainText("* PART I *");
   await expect(presentation.locator(".story-presentation-spacer")).not.toHaveCount(0);
-  if (partOneObserved) {
-    const openingHeading = await presentation.locator(".story-presentation-heading").boundingBox();
-    const canonicalHeading = await frame.locator(".BufferLine", { hasText: /\*\s*PART I\s*\*/i }).boundingBox();
-    if (openingHeading && canonicalHeading) expectNear(openingHeading.x + openingHeading.width / 2, canonicalHeading.x + canonicalHeading.width / 2);
-  }
   const openingBody = await presentation.boundingBox();
-  const canonicalOpeningLine = await frame.locator(".BufferLine", { hasText: /Tomorrow never yet/i }).boundingBox();
-  if (openingBody && canonicalOpeningLine) {
-    expectNear(openingBody.x, canonicalOpeningLine.x);
-    expectNear(openingBody.width, canonicalOpeningLine.width);
+  const canonicalBuffer = await frame.locator(".BufferWindow").boundingBox();
+  if (openingBody && canonicalBuffer) {
+    expect(openingBody.x).toBeGreaterThanOrEqual(canonicalBuffer.x);
+    expect(openingBody.y).toBeGreaterThanOrEqual(canonicalBuffer.y);
+    expect(openingBody.x + openingBody.width).toBeLessThanOrEqual(canonicalBuffer.x + canonicalBuffer.width);
+    expect(openingBody.y + openingBody.height).toBeLessThanOrEqual(canonicalBuffer.y + canonicalBuffer.height);
   }
 
   await page.getByRole("button", { name: /原作を始める/ }).click();
@@ -64,40 +58,29 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(presentation.locator(".story-presentation-list li")).toHaveCount(6);
   await expect(presentation.locator(".story-presentation-list")).not.toContainText("特定のアウトレットを起動するには");
   await expect(presentation.locator(".story-presentation-prose", { hasText: "特定のアウトレットを起動するには" })).toHaveCount(1);
-  const canonicalStatus = await frame.locator(".GridWindow").innerText();
-  const wrapperStatus = page.getByLabel("Canonical game status");
-  await expect(wrapperStatus).toBeVisible();
-  expect((await wrapperStatus.innerText()).replace(/\s+/g, " ").trim()).toBe(canonicalStatus.replace(/\s+/g, " ").trim());
-  const wrapperStatusBox = await wrapperStatus.boundingBox();
-  const canonicalStatusBox = await frame.locator(".GridWindow").boundingBox();
-  if (wrapperStatusBox && canonicalStatusBox) {
-    expectNear(wrapperStatusBox.x, canonicalStatusBox.x);
-    expectNear(wrapperStatusBox.width, canonicalStatusBox.width);
-    expectNear(wrapperStatusBox.height, canonicalStatusBox.height);
-  }
-  // Status geometry is live state, not a historical story snapshot. A second
-  // report for the same active-input observation must update status chrome.
-  const updatedStatusWidth = await frame.locator(".GridWindow").evaluate((element) => {
-    const original = element.getBoundingClientRect().width;
-    (element as HTMLElement).style.width = `${original - 12}px`;
-    return original - 12;
-  });
-  await page.locator('iframe[title*="canonical Release 79 story"]').evaluate((iframe: HTMLIFrameElement) =>
-    iframe.contentWindow?.postMessage({ channel: "amfv:bridge", type: "request-state" }, location.origin));
-  await expect.poll(async () => (await wrapperStatus.boundingBox())?.width).toBe(updatedStatusWidth);
-  const wrapperBodyBox = await presentation.boundingBox();
-  const canonicalBodyBox = await frame.locator(".BufferLine", { hasText: /You have entered Communications Mode/ }).last().boundingBox();
-  if (wrapperBodyBox && canonicalBodyBox) {
-    expectNear(wrapperBodyBox.x, canonicalBodyBox.x);
-    expectNear(wrapperBodyBox.width, canonicalBodyBox.width);
-  }
-  const wrapperPrompt = page.getByLabel("Current game prompt");
-  await expect(wrapperPrompt).toHaveText(">");
-  const wrapperPromptBox = await wrapperPrompt.boundingBox();
-  const canonicalPromptBox = await frame.locator(".BufferLine", { has: frame.locator("textarea.LineInput") }).boundingBox();
-  if (wrapperPromptBox && canonicalPromptBox) expectNear(wrapperPromptBox.x, canonicalPromptBox.x);
+  const canonicalStatus = frame.locator(".GridWindow");
+  await expect(canonicalStatus).toBeVisible();
+  await expect(canonicalStatus).toContainText(/Communications Mode/i);
+  await expect(canonicalStatus.locator(".reverse")).not.toHaveCount(0);
+  await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
+  await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");
+  await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
 
   const commandInput = page.locator("#command-input");
+  await frame.locator("body").evaluate(() => {
+    const state = { exposedFrames: 0, sampledFrames: 0, raf: 0 };
+    const sample = () => {
+      state.sampledFrames += 1;
+      const inner = document.querySelector<HTMLElement>("#gameport .BufferWindowInner");
+      if (inner) {
+        const style = getComputedStyle(inner);
+        if (style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0) state.exposedFrames += 1;
+      }
+      state.raf = requestAnimationFrame(sample);
+    };
+    state.raf = requestAnimationFrame(sample);
+    (window as typeof window & { AMFVExposureSampler?: typeof state }).AMFVExposureSampler = state;
+  });
   await commandInput.fill("LOOK");
   await page.getByRole("button", { name: /送信/ }).click();
 
@@ -108,9 +91,16 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(presentation).toContainText("通信モードに入りました");
   await expect(presentation.locator(".story-presentation-list")).toHaveCount(2);
   await expect(presentation.locator(".story-presentation-list").last().locator("li")).toHaveCount(6);
+  const exposure = await frame.locator("body").evaluate(() => {
+    const state = (window as typeof window & { AMFVExposureSampler?: { exposedFrames: number; sampledFrames: number; raf: number } }).AMFVExposureSampler;
+    if (!state) return null;
+    cancelAnimationFrame(state.raf);
+    return { exposedFrames: state.exposedFrames, sampledFrames: state.sampledFrames };
+  });
+  expect(exposure?.sampledFrames).toBeGreaterThan(0);
+  expect(exposure?.exposedFrames).toBe(0);
   await attachPayload(testInfo, "look-presentation-v3", frame);
-  const lookCanonicalStatus = await frame.locator(".GridWindow").innerText();
-  expect((await wrapperStatus.innerText()).replace(/\s+/g, " ").trim()).toBe(lookCanonicalStatus.replace(/\s+/g, " ").trim());
+  await expect(canonicalStatus).toContainText(/Communications Mode/i);
   await testInfo.attach("localized-look", { body: await page.screenshot(), contentType: "image/png" });
 
   await commandInput.fill("INVENTORY");
@@ -123,8 +113,52 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(presentation).toContainText(/You have no appendages/i);
 
   const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
-  await expect(canonicalIframe).toHaveAttribute("aria-hidden", "true");
-  await expect(canonicalIframe).toHaveAttribute("inert", "");
+  await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
+
+  // The Japanese surface owns its scroll state inside the canonical window.
+  for (let turn = 0; turn < 10; turn += 1) {
+    await commandInput.fill("INVENTORY");
+    await page.getByRole("button", { name: /送信/ }).click();
+    await expect(presentation.locator(".story-presentation-command")).toHaveCount(3 + turn);
+  }
+  const scrollSurface = presentation.locator(".story-presentation-scroll");
+  await expect.poll(async () => scrollSurface.evaluate((node) => node.scrollHeight > node.clientHeight)).toBe(true);
+  await expect.poll(async () => scrollSurface.evaluate((node) => node.scrollHeight - node.scrollTop - node.clientHeight < 48)).toBe(true);
+
+  // Tail-following survives a semantic locale round-trip.
+  await settings.getByRole("button", { name: "English" }).click();
+  await expect(presentation).toBeHidden();
+  await expect(frame.locator(".BufferWindowInner")).not.toHaveAttribute("inert", "");
+  const canonicalScroll = frame.locator(".BufferWindow");
+  await expect.poll(async () => canonicalScroll.evaluate((node) => node.scrollHeight - node.scrollTop - node.clientHeight < 48)).toBe(true);
+  await settings.getByRole("button", { name: "日本語" }).click();
+  await expect(presentation).toContainText(/You have no appendages/i);
+
+  // A canonical English viewport that was intentionally moved upward keeps
+  // that semantic position across an EN → JA → EN round-trip.
+  await settings.getByRole("button", { name: "English" }).click();
+  await canonicalScroll.evaluate((node) => { node.scrollTop = 0; });
+  await expect.poll(async () => canonicalScroll.evaluate((node) => node.scrollTop)).toBe(0);
+  await settings.getByRole("button", { name: "日本語" }).click();
+  await scrollSurface.evaluate((node) => { node.scrollTop = 0; });
+  await expect(presentation).toContainText("明日という日はまだ");
+  await expect.poll(async () => scrollSurface.evaluate((node) => node.scrollTop < node.scrollHeight - node.clientHeight)).toBe(true);
+  await settings.getByRole("button", { name: "English" }).click();
+  await expect(presentation).toBeHidden();
+  await expect.poll(async () => canonicalScroll.evaluate((node) => node.scrollTop)).toBe(0);
+  await settings.getByRole("button", { name: "日本語" }).click();
+
+  await settings.getByRole("button", { name: "XL" }).click();
+  await page.setViewportSize({ width: 900, height: 760 });
+  await expect.poll(async () => {
+    const resizedHost = await presentation.boundingBox();
+    const resizedBuffer = await frame.locator(".BufferWindow").boundingBox();
+    return Boolean(resizedHost && resizedBuffer
+      && resizedHost.x >= resizedBuffer.x
+      && resizedHost.y >= resizedBuffer.y
+      && resizedHost.x + resizedHost.width <= resizedBuffer.x + resizedBuffer.width
+      && resizedHost.y + resizedHost.height <= resizedBuffer.y + resizedBuffer.height);
+  }).toBe(true);
   await testInfo.attach("localized-history-with-english-fallback", { body: await page.screenshot(), contentType: "image/png" });
 
   // RESTORE opens Parchment's canonical file interaction, which has no safe
@@ -133,7 +167,7 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await commandInput.fill("RESTORE");
   await page.getByRole("button", { name: /送信/ }).click();
   await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
-  await expect(canonicalIframe).not.toHaveAttribute("inert", "");
+  await expect(frame.locator(".BufferWindowInner")).not.toHaveAttribute("inert", "");
 });
 
 test("RESTORE entered directly in the canonical iframe invalidates Japanese display history", async ({ page }) => {
@@ -146,7 +180,8 @@ test("RESTORE entered directly in the canonical iframe invalidates Japanese disp
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: "Reading and play settings" });
   await settings.getByRole("button", { name: "日本語" }).click();
-  const presentation = page.getByRole("log", { name: "日本語ストーリー表示" });
+  const frame = canonicalFrame(page);
+  const presentation = frame.getByRole("log", { name: "日本語ストーリー表示" });
   await expect(presentation).toContainText("明日という日はまだ");
   await page.getByRole("button", { name: /原作を始める/ }).click();
   await expect(page.locator("#command-input")).toBeEnabled();
@@ -154,14 +189,13 @@ test("RESTORE entered directly in the canonical iframe invalidates Japanese disp
   // Switch to English so the canonical iframe is intentionally interactive,
   // then submit RESTORE through Parchment rather than the wrapper controls.
   await settings.getByRole("button", { name: "English" }).click();
-  const frame = canonicalFrame(page);
   const canonicalInput = frame.locator("textarea.Input.LineInput");
   await canonicalInput.fill("RESTORE");
   await canonicalInput.press("Enter");
 
   // Returning to Japanese must not resurrect the pre-RESTORE display cache.
   await settings.getByRole("button", { name: "日本語" }).click();
-  await expect(presentation).toHaveCount(0);
+  await expect(presentation).toBeHidden();
   const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
   await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
   await expect(canonicalIframe).not.toHaveAttribute("inert", "");
