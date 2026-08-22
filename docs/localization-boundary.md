@@ -39,9 +39,14 @@ Grid renderer, or take ownership of Parchment's DOM lifecycle.
 The wrapper owns its localized host inside the live `BufferWindow`, the semantic
 Japanese projection rendered there, Japanese typography, and scrolling of that
 localized reading surface. When Parchment replaces `.BufferWindowInner` or its
-children, the wrapper reconnects its persistent host from the observed
-lifecycle report, refreshes accessibility ownership, and fails closed to the
-canonical surface if a safe localized host is not available.
+children while localized mode remains active, document-level localized-mode CSS
+hides the newly inserted canonical inner before it can flash or become
+interactive. The `MutationObserver` then synchronously reparents the persistent
+host into the live `BufferWindow` and refreshes accessibility ownership;
+transcript reconciliation remains independently debounced. The wrapper makes
+the canonical surface visible and interactive again only when it explicitly
+leaves localized mode at a recovery boundary, such as an observation that the
+localized presentation cannot safely represent.
 
 ## Projection priority and ordinary-turn reuse
 
@@ -66,11 +71,13 @@ boundaries such as `RESTORE` invalidate display entries from the previous
 timeline; localized history must not make those entries appear current.
 
 Japanese mode owns the localized surface's reading position. When localized
-presentation is unavailable or the canonical surface must be restored, recovery
-uses the observed semantic/line relationship to restore the corresponding
-canonical scroll position instead of treating two independent pixel offsets as
-equivalent. The interpreter and canonical surface remain usable throughout the
-fallback.
+mode begins, the bridge separately records whether the canonical `BufferWindow`
+was following its tail and its current `scrollTop`. When the canonical surface
+is restored, a tail-following buffer moves to the current tail; otherwise the
+saved `scrollTop` is clamped to the buffer's current scroll range. Japanese and
+canonical scroll positions remain independent, and neither is derived from an
+observed semantic or line anchor. The interpreter and canonical surface remain
+usable throughout the fallback.
 
 ## Observed-leaf catalog identity and limitation
 
