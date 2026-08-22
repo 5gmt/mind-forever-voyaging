@@ -40,6 +40,13 @@ body {
   overflow: hidden !important;
 }
 
+/* Fail closed across Parchment window rebuilds: a newly inserted canonical
+   inner is hidden by document mode before the persistent host is reparented. */
+html[data-amfv-presentation-mode="localized"] .BufferWindowInner {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 .AMFVLocalizedPresentationHost {
   position: absolute;
   z-index: 2;

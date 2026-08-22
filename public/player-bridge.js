@@ -85,6 +85,7 @@
   let presentationMode = "canonical";
   let localizedBuffer;
   let localizedInner;
+  let localizedHost;
   let canonicalScrollState;
 
   const restoreCanonicalBuffer = () => {
@@ -111,16 +112,17 @@
   const ensureLocalizedHost = () => {
     const buffer = [...document.querySelectorAll("#gameport .BufferWindow")].at(-1);
     if (!buffer) return null;
-    let host = buffer.querySelector(`:scope > #${LOCALIZED_HOST_ID}`);
-    if (!host) {
-      host = document.createElement("div");
-      host.id = LOCALIZED_HOST_ID;
-      host.className = "AMFVLocalizedPresentationHost";
-      host.lang = "ja";
-      host.setAttribute("role", "log");
-      host.setAttribute("aria-live", "polite");
-      host.setAttribute("aria-label", "日本語ストーリー表示");
-      buffer.append(host);
+    if (!localizedHost) {
+      localizedHost = document.createElement("div");
+      localizedHost.id = LOCALIZED_HOST_ID;
+      localizedHost.className = "AMFVLocalizedPresentationHost";
+      localizedHost.lang = "ja";
+      localizedHost.setAttribute("role", "log");
+      localizedHost.setAttribute("aria-live", "polite");
+      localizedHost.setAttribute("aria-label", "日本語ストーリー表示");
+    }
+    if (localizedHost.parentElement !== buffer) {
+      buffer.append(localizedHost);
       post("localized-host-ready");
     }
     const inner = buffer.querySelector(":scope > .BufferWindowInner");
@@ -139,12 +141,12 @@
       buffer.scrollTop = 0;
       inner?.setAttribute("aria-hidden", "true");
       inner?.setAttribute("inert", "");
-      host.removeAttribute("hidden");
+      localizedHost.removeAttribute("hidden");
     } else {
-      host.setAttribute("hidden", "");
+      localizedHost.setAttribute("hidden", "");
       restoreCanonicalBuffer();
     }
-    return host;
+    return localizedHost;
   };
 
   const post = (type, detail = {}) => {
@@ -269,8 +271,15 @@
       document.documentElement.dataset.contrast = highContrast ? "high" : "standard";
       document.documentElement.dataset.reduceMotion = reduceMotion ? "true" : "false";
     } else if (type === "presentation-mode") {
-      presentationMode = event.data.mode === "localized" ? "localized" : "canonical";
-      ensureLocalizedHost();
+      if (event.data.mode === "localized") {
+        presentationMode = "localized";
+        document.documentElement.dataset.amfvPresentationMode = "localized";
+        ensureLocalizedHost();
+      } else {
+        presentationMode = "canonical";
+        ensureLocalizedHost();
+        delete document.documentElement.dataset.amfvPresentationMode;
+      }
     }
   });
 
@@ -294,7 +303,12 @@
       window.requestAnimationFrame(startBridge);
       return;
     }
-    observer = new MutationObserver(announceUpdate);
+    observer = new MutationObserver(() => {
+      // Host ownership follows Parchment's live window tree synchronously.
+      // Transcript reconciliation remains debounced independently.
+      ensureLocalizedHost();
+      announceUpdate();
+    });
     observer.observe(root, { childList: true, subtree: true, characterData: true });
     ensureLocalizedHost();
     post("ready");

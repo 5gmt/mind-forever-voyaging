@@ -67,6 +67,20 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
 
   const commandInput = page.locator("#command-input");
+  await frame.locator("body").evaluate(() => {
+    const state = { exposedFrames: 0, sampledFrames: 0, raf: 0 };
+    const sample = () => {
+      state.sampledFrames += 1;
+      const inner = document.querySelector<HTMLElement>("#gameport .BufferWindowInner");
+      if (inner) {
+        const style = getComputedStyle(inner);
+        if (style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0) state.exposedFrames += 1;
+      }
+      state.raf = requestAnimationFrame(sample);
+    };
+    state.raf = requestAnimationFrame(sample);
+    (window as typeof window & { AMFVExposureSampler?: typeof state }).AMFVExposureSampler = state;
+  });
   await commandInput.fill("LOOK");
   await page.getByRole("button", { name: /送信/ }).click();
 
@@ -77,6 +91,14 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(presentation).toContainText("通信モードに入りました");
   await expect(presentation.locator(".story-presentation-list")).toHaveCount(2);
   await expect(presentation.locator(".story-presentation-list").last().locator("li")).toHaveCount(6);
+  const exposure = await frame.locator("body").evaluate(() => {
+    const state = (window as typeof window & { AMFVExposureSampler?: { exposedFrames: number; sampledFrames: number; raf: number } }).AMFVExposureSampler;
+    if (!state) return null;
+    cancelAnimationFrame(state.raf);
+    return { exposedFrames: state.exposedFrames, sampledFrames: state.sampledFrames };
+  });
+  expect(exposure?.sampledFrames).toBeGreaterThan(0);
+  expect(exposure?.exposedFrames).toBe(0);
   await attachPayload(testInfo, "look-presentation-v3", frame);
   await expect(canonicalStatus).toContainText(/Communications Mode/i);
   await testInfo.attach("localized-look", { body: await page.screenshot(), contentType: "image/png" });
@@ -128,14 +150,15 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
 
   await settings.getByRole("button", { name: "XL" }).click();
   await page.setViewportSize({ width: 900, height: 760 });
-  const resizedHost = await presentation.boundingBox();
-  const resizedBuffer = await frame.locator(".BufferWindow").boundingBox();
-  if (resizedHost && resizedBuffer) {
-    expect(resizedHost.x).toBeGreaterThanOrEqual(resizedBuffer.x);
-    expect(resizedHost.y).toBeGreaterThanOrEqual(resizedBuffer.y);
-    expect(resizedHost.x + resizedHost.width).toBeLessThanOrEqual(resizedBuffer.x + resizedBuffer.width);
-    expect(resizedHost.y + resizedHost.height).toBeLessThanOrEqual(resizedBuffer.y + resizedBuffer.height);
-  }
+  await expect.poll(async () => {
+    const resizedHost = await presentation.boundingBox();
+    const resizedBuffer = await frame.locator(".BufferWindow").boundingBox();
+    return Boolean(resizedHost && resizedBuffer
+      && resizedHost.x >= resizedBuffer.x
+      && resizedHost.y >= resizedBuffer.y
+      && resizedHost.x + resizedHost.width <= resizedBuffer.x + resizedBuffer.width
+      && resizedHost.y + resizedHost.height <= resizedBuffer.y + resizedBuffer.height);
+  }).toBe(true);
   await testInfo.attach("localized-history-with-english-fallback", { body: await page.screenshot(), contentType: "image/png" });
 
   // RESTORE opens Parchment's canonical file interaction, which has no safe
