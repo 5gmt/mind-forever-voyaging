@@ -6,6 +6,10 @@ The probe translates `INVENTORY` in the initial Communications Mode. It is an or
 
 This is prototype-only code for Issue #20. It does not select Option 2b for the production architecture.
 
+The subsequent production decision is recorded in
+[Localization presentation boundary](./localization-boundary.md). This document
+remains the evidence captured by the prototype rather than the decision record.
+
 ## Change cost
 
 Before the structural path, a translated passage required catalog data plus a passage-specific recognizer/projection in `app/story-presentation.ts`. The probe adds:

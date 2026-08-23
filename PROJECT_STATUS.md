@@ -19,9 +19,9 @@ PR #19 / Issue #18 で Option 2a の host-reuse prototype を実装し、localiz
 
 2a は browser/correctness gate を通過した。Parchment が `BufferWindow` 配下の child や `.BufferWindowInner` を差し替える lifecycle も、persistent host の再接続、fail-closed visual mode、accessibility ownership refresh、canonical scroll の semantic restoration として明示・テスト済みである。
 
-一方、translation expansion はまだ data-only ではない。`app/story-presentation.ts` は opening と initial tableau / `LOOK` に対する narrow recognizer/projection を持ち、ordinary new turn の翻訳追加には catalog だけでなく recognizer/projection 側の変更が必要になる。このコストを下げられるかを Issue #20 の Option 2b prototype で評価中である。
+PR #21 / Issue #20 では、runtime-observed の `BufferLine` 順序、input run、blank-line boundary、既存 semantic class を再利用する Option 2b を `INVENTORY` turn で検証した。plain ordinary line-input turn では、exact observed English leaf の catalog entry と fixture/browser evidence を追加する nearly data-only な expansion が可能になった。
 
-この実装構造は現在の説明であり、将来の必須アーキテクチャではない。最終 reuse boundary は Issue #17 で #20 の evidence をレビューした後に選定する。
+最終方針は、Option 2a の host/window boundary を維持し、plain ordinary turn に Option 2b の observed structure を利用する **2a+2b boundary** である。opening、initial tableau、`LOOK` や structurally richer な turn は specialized projection を優先する。ordinary-turn catalog の現在の identity は exact English leaf であり、同じ English leaf に文脈依存の異なる訳が必要な場合は、より狭い identity または specialized path が必要になる。責任分界、fallback、scroll recovery、deferred alternatives の詳細は [localization presentation boundary](./docs/localization-boundary.md) に記録している。
 
 ## 完了した milestone
 
@@ -34,30 +34,20 @@ PR #19 / Issue #18 で Option 2a の host-reuse prototype を実装し、localiz
 - [PR #12](https://github.com/5gmt/mind-forever-voyaging/pull/12): semantic blocks、opening enrichment、canonical status の保持
 - [PR #15](https://github.com/5gmt/mind-forever-voyaging/pull/15): npm 7-day release-age cooldown、fail-closed version boundary、共通 bootstrap
 - [PR #19](https://github.com/5gmt/mind-forever-voyaging/pull/19): Option 2a — canonical `BufferWindow` 内 localized host、Japanese scroll ownership、fail-closed lifecycle/accessibility handling
+- [PR #21](https://github.com/5gmt/mind-forever-voyaging/pull/21): Option 2b — observed `BufferLine` / run structure を利用する plain ordinary-turn projection と runtime/browser evidence
+- [PR #23](https://github.com/5gmt/mind-forever-voyaging/pull/23): Issues #22 / #17 / #14 — 2a+2b localization boundary の選定と durable decision record
 
 ## 現在の frontier
 
-### [Issue #14: Reuse canonical Parchment window chrome for localized presentation](https://github.com/5gmt/mind-forever-voyaging/issues/14)
-
-Localized presentation の window/chrome/scroll ownership 設計は Issue #17 の umbrella evaluation で進行中である。
-
-- [Issue #18](https://github.com/5gmt/mind-forever-voyaging/issues/18): Option 2a は完了。canonical `BufferWindow` host reuse は viable と判断済み。
-- [Issue #17](https://github.com/5gmt/mind-forever-voyaging/issues/17): 2a evidence を記録し、final reuse boundary を選ぶ umbrella decision issue。
-- [Issue #20](https://github.com/5gmt/mind-forever-voyaging/issues/20): 現在の実行 task。observed canonical `BufferLine` / run structure を利用する Option 2b が ordinary translation expansion cost を実質的に下げるか、一つの representative turn で評価する。
-
-Option 1 は isolation/control baseline として残るが、2a が hard correctness gate を通過したため現時点で fallback する根拠はない。Option 3（semantic GridWindow renderer）は simpler reuse boundary が concrete browser evidence で失敗した場合だけ再検討する escape hatch である。
-
 ### [Issue #13: Run Playwright presentation fidelity acceptance in CI](https://github.com/5gmt/mind-forever-voyaging/issues/13)
 
-Playwright acceptance は repository に存在するが、現在の GitHub Actions `verify` job は canonical SHA、lint、type check、`npm test` までで、`npm run test:e2e` を実行していない。Browser-only regression はまだ CI の正式な gate ではない。
+Issues #22 / #17 / #14 の architecture work は完了し、current execution frontier は Issue #13 へ移った。Playwright acceptance は repository に存在するが、現在の GitHub Actions `verify` job は canonical SHA、lint、type check、`npm test` までで、`npm run test:e2e` を実行していない。Browser-only regression はまだ CI の正式な gate ではない。
 
 ## 基本的な作業順
 
-1. Issue #20 の Option 2b experiment を完了し、evidence を Issue #17 に戻す。
-2. Issue #17 で 2a / 2b の reuse boundary を選定・文書化し、Issue #14 の architecture decision を完了する。
-3. Issue #13 で Playwright acceptance を CI の可視かつ失敗可能な gate にする。
-4. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
-5. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
+1. Issue #13 で Playwright acceptance を CI の可視かつ失敗可能な gate にする。
+2. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
+3. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
 
 緊急の regression や canonical integrity の問題はこの順序より優先する。順序を変える場合は、その task の Issue または design note に依存関係と失う保証を記録する。
 
