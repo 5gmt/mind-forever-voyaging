@@ -44,9 +44,10 @@ hides the newly inserted canonical inner before it can flash or become
 interactive. The `MutationObserver` then synchronously reparents the persistent
 host into the live `BufferWindow` and refreshes accessibility ownership;
 transcript reconciliation remains independently debounced. The wrapper makes
-the canonical surface visible and interactive again only when it explicitly
-leaves localized mode at a recovery boundary, such as an observation that the
-localized presentation cannot safely represent.
+the canonical surface visible and interactive again when it explicitly leaves
+localized mode, either through a normal switch to the English locale or at a
+recovery boundary such as an observation that the localized presentation cannot
+safely represent. A Parchment rebuild alone does not trigger that fallback.
 
 ## Projection priority and ordinary-turn reuse
 
