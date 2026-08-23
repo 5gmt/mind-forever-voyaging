@@ -1,0 +1,68 @@
+import { expect, test, type FrameLocator, type TestInfo } from "@playwright/test";
+
+const canonicalFrame = (page: import("@playwright/test").Page) =>
+  page.frameLocator('iframe[title*="canonical Release 79 story"]');
+
+const attachPayload = async (testInfo: TestInfo, frame: FrameLocator) => {
+  const payload = await frame.locator("body").evaluate(() => {
+    const bridge = (window as typeof window & {
+      AMFVPresentationBridge?: { extract: (documentRoot: Document, getStyle: typeof getComputedStyle) => unknown };
+    }).AMFVPresentationBridge;
+    return bridge?.extract(document, (element) => getComputedStyle(element)) ?? null;
+  });
+  await testInfo.attach("peof-presentation-v3", {
+    body: Buffer.from(JSON.stringify(payload, null, 2)),
+    contentType: "application/json",
+  });
+};
+
+test("fresh Japanese session presents the observed PEOF office scene and recovers input", async ({ page }, testInfo) => {
+  await page.goto("/");
+  const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
+  if (await introduction.isVisible()) await introduction.getByRole("button", { name: /^Begin/ }).click();
+
+  const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
+  await page.getByTitle("Reading and play settings").click();
+  const settings = page.getByRole("region", { name: "Reading and play settings" });
+  await settings.getByRole("button", { name: "日本語" }).click();
+
+  const frame = canonicalFrame(page);
+  const presentation = frame.getByRole("log", { name: "日本語ストーリー表示" });
+  await expect(presentation).toContainText("明日という日はまだ");
+  await page.getByRole("button", { name: /原作を始める/ }).click();
+  await expect(presentation).toContainText("通信モードに入りました");
+
+  const commandInput = page.locator("#command-input");
+  await expect(commandInput).toBeEnabled();
+  await commandInput.fill("PEOF");
+  await page.getByRole("button", { name: /送信/ }).click();
+
+  await expect(presentation.locator(".story-presentation-command")).toHaveText(/PEOF/);
+  await expect(presentation.locator(".story-presentation-command")).toHaveAttribute("lang", "en");
+  await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" })).toHaveText("ペレルマン博士のオフィス");
+  await expect(presentation.locator(".story-presentation-prose", { hasText: "エイブラハム・ペレルマン博士" })).toHaveCount(1);
+  await expect(presentation).toContainText("ペレルマン博士は机に向かい、仕事をしている。");
+  await expect(presentation).toContainText("通信モードに入りました");
+  await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
+  await expect(frame.locator(".GridWindow")).toContainText(/Dr\. Perelman's Office/i);
+  await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
+  await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");
+  await attachPayload(testInfo, frame);
+
+  await commandInput.fill("SCORE");
+  await page.getByRole("button", { name: /送信/ }).click();
+  await expect(presentation).toContainText(/I don't know the word "score\."/i);
+  await expect(presentation.locator(".story-presentation-command")).toContainText(["PEOF", "SCORE"]);
+
+  await settings.getByRole("button", { name: "English" }).click();
+  await expect(presentation).toBeHidden();
+  await expect(frame.locator(".BufferWindowInner")).not.toHaveAttribute("inert", "");
+  await settings.getByRole("button", { name: "日本語" }).click();
+  await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" })).toHaveText("ペレルマン博士のオフィス");
+  await expect(commandInput).toBeEnabled();
+  await commandInput.fill("LOOK");
+  await expect(commandInput).toHaveValue("LOOK");
+
+  await testInfo.attach("localized-peof-scene", { body: await page.screenshot(), contentType: "image/png" });
+});

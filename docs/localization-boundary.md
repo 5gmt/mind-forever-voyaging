@@ -59,8 +59,12 @@ The generic path is limited to plain ordinary line-input turns. It uses the
 active prompt to delimit the current turn, the most recent Parchment input run
 to delimit the command, and observed `BufferLine` order and blank lines to retain
 the response structure. It may map already exported header/subheader classes to
-the corresponding semantic presentation blocks. It activates only when the
-turn is safely delimited and at least one response leaf has a translation.
+the corresponding semantic presentation blocks. When the canonical runtime
+emits a room title with the same normal style as prose, an exact observed-leaf
+catalog entry may carry that narrow title identity; this must remain
+runtime-backed and cannot be inferred from source-only room data or command
+position. It activates only when the turn is safely delimited and at least one
+response leaf has a translation.
 Structurally richer output, including semantics that cannot be preserved by
 these rules, requires a specialized projection and explicit fixture/browser
 evidence rather than an implicit extension of the generic renderer.

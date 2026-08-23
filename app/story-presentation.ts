@@ -156,7 +156,7 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
     if (!canonicalText) return;
     const translation = translations[offset];
     const semanticClasses = [...line.classes, ...line.runs.flatMap((run) => run.classes)];
-    const kind = semanticClasses.some((name) => HEADING_STYLE_PATTERN.test(name)) ? "title" : "prose";
+    const kind = translation?.kind === "title" || semanticClasses.some((name) => HEADING_STYLE_PATTERN.test(name)) ? "title" : "prose";
     blocks.push({ kind, text: translation?.text ?? canonicalText, canonicalText, contentId: translation?.contentId, sourceLines: [sourceLine] });
   });
   return blocks;

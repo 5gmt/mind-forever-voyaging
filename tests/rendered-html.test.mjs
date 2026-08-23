@@ -507,3 +507,27 @@ test("falls back per stable content ID without treating unknown source as recogn
   // lookup are separate responsibilities, and canonical text wins on a miss.
   assert.equal(localizeStoryContent("part1.initial.catalog-gap", canonical, "ja"), canonical);
 });
+
+test("projects the runtime-observed PEOF office scene through exact leaf identity", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-peof-runtime-observed.json", import.meta.url), "utf8"));
+  assert.match(fixture.provenance, /Runtime-observed with Playwright against canonical Release 79/);
+  const presentation = fixture.presentation;
+  const blocks = observedOrdinaryTurnPresentation(presentation, "ja");
+
+  assert.deepEqual(blocks?.map((block) => block.kind), ["command", "title", "prose", "prose", "spacer"]);
+  assert.equal(blocks?.[0].text, "PEOF");
+  assert.equal(blocks?.[0].canonicalText, "PEOF");
+  assert.equal(blocks?.[1].canonicalText, "Dr. Perelman's Office");
+  assert.equal(blocks?.[1].text, "ペレルマン博士のオフィス");
+  assert.match(blocks?.[2].text ?? "", /エイブラハム・ペレルマン博士/);
+  assert.equal(blocks?.[3].text, "ペレルマン博士は机に向かい、仕事をしている。");
+  assert.equal(blocks?.[4].sourceLines[0], presentation.terminalLine - 1);
+  assert.equal(observedOrdinaryTurnPresentation(presentation, "en"), null);
+
+  const untranslated = structuredClone(presentation);
+  untranslated.lines[presentation.terminalLine - 2].text = "An adjacent untranslated canonical leaf.";
+  untranslated.lines[presentation.terminalLine - 2].runs[0].text = "An adjacent untranslated canonical leaf.";
+  const fallbackBlocks = observedOrdinaryTurnPresentation(untranslated, "ja");
+  assert.equal(fallbackBlocks?.[3].text, "An adjacent untranslated canonical leaf.");
+  assert.equal(fallbackBlocks?.[3].canonicalText, "An adjacent untranslated canonical leaf.");
+});

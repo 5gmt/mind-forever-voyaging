@@ -11,7 +11,7 @@
 
 ## 現在の到達点
 
-日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK` まで到達している。
+日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、そして最初の実 story progression である `PEOF` の Dr. Perelman office scene まで到達している。
 
 現在の実装は Parchment の raw English transcript、status、input state、表示行を観測し、wrapper 側で状態認識と presentation history の照合を行い、対応済み部分を semantic blocks として日本語表示する。入力と assisted controls は canonical English command を Parchment へ送る。
 
@@ -39,21 +39,19 @@ Issue #13 で、既存の Chromium Playwright acceptance を GitHub Actions の�
 - [PR #21](https://github.com/5gmt/mind-forever-voyaging/pull/21): Option 2b — observed `BufferLine` / run structure を利用する plain ordinary-turn projection と runtime/browser evidence
 - [PR #23](https://github.com/5gmt/mind-forever-voyaging/pull/23): Issues #22 / #17 / #14 — 2a+2b localization boundary の選定と durable decision record
 - [Issue #13](https://github.com/5gmt/mind-forever-voyaging/issues/13): Chromium Playwright presentation-fidelity acceptance を独立した GitHub Actions `browser-e2e` gate として導入
+- [Issue #24](https://github.com/5gmt/mind-forever-voyaging/issues/24): fresh Communications Mode の `PEOF` から runtime-observed な Dr. Perelman office scene を exact observed-leaf catalog と既存 2a+2b path で日本語化
 
 ## 現在の frontier
 
-### [Issue #24: Localize the first real Communications Mode scene via PEOF](https://github.com/5gmt/mind-forever-voyaging/issues/24)
+### [Issue #25: Localize core wrapper controls and accessible names](https://github.com/5gmt/mind-forever-voyaging/issues/25)
 
-CI の browser gate を前提として、次は最初の実際の story progression を翻訳する。fresh canonical session から Communications Mode の `PEOF` を実行し、runtime-observed な Dr. Perelman office scene を既存の 2a+2b boundary で表現できるか確認しながら、日本語 coverage を拡張する。
-
-その後の [Issue #25](https://github.com/5gmt/mind-forever-voyaging/issues/25) で、story translation とは分離して core wrapper controls と accessible names の日本語化を扱う。
+`PEOF` の実 scene で 2a+2b boundary による ordinary-turn expansion を確認できた。次は story translation とは分離して core wrapper controls と accessible names の日本語化を扱う。parser command、state recognition、canonical runtime output は引き続き英語のまま維持する。
 
 ## 基本的な作業順
 
-1. Issue #24 で最初の実 scene (`PEOF`) を runtime/browser evidence に基づいて日本語化する。
-2. Issue #25 で wrapper-owned controls と accessible names の日本語化を行う。
-3. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
-4. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
+1. Issue #25 で wrapper-owned controls と accessible names の日本語化を行う。
+2. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
+3. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
 
 緊急の regression や canonical integrity の問題はこの順序より優先する。順序を変える場合は、その task の Issue または design note に依存関係と失う保証を記録する。
 

@@ -58,7 +58,10 @@ export type StoryContentId =
   | "part1.initial.release"
   | "part1.initial.communications"
   | "part1.initial.outlets"
-  | "part1.communications.inventory-empty";
+  | "part1.communications.inventory-empty"
+  | "part1.communications.peof.title"
+  | "part1.communications.peof.description"
+  | "part1.communications.peof.perelman-working";
 
 // Normal parser-turn localization is keyed by stable story IDs. Canonical
 // English is supplied by the recognizer and remains the per-block fallback.
@@ -102,16 +105,36 @@ const STRUCTURED_STORY_CATALOG: Partial<Record<Locale, Partial<Record<StoryConte
   },
 };
 
-type ObservedStoryTranslation = Readonly<{ contentId: StoryContentId; text: string }>;
+type ObservedStoryTranslation = Readonly<{
+  contentId: StoryContentId;
+  text: string;
+  // Some canonical room titles use the same Parchment style as prose. The
+  // exact observed leaf may therefore carry its narrow semantic identity.
+  kind?: "title";
+}>;
 
 // Option 2b prototype catalog. Unlike passage-owned structured catalogs, its
 // key is the exact canonical leaf observed at runtime. Keeping this catalog
 // separate prevents context-specific leaves from being selected accidentally.
 const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<readonly [string, ObservedStoryTranslation]>>> = {
-  ja: [[
-    "You have no appendages, remember?",
-    { contentId: "part1.communications.inventory-empty", text: "手足はないことを忘れたのか？" },
-  ]],
+  ja: [
+    [
+      "You have no appendages, remember?",
+      { contentId: "part1.communications.inventory-empty", text: "手足はないことを忘れたのか？" },
+    ],
+    [
+      "Dr. Perelman's Office",
+      { contentId: "part1.communications.peof.title", text: "ペレルマン博士のオフィス", kind: "title" },
+    ],
+    [
+      "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+      { contentId: "part1.communications.peof.description", text: "ここは、あなたの創造者であるエイブラハム・ペレルマン博士のオフィスだ。室内は物であふれ、散らかっている。ぎっしり詰まった本棚が部屋を囲んでいる。ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。" },
+    ],
+    [
+      "Dr. Perelman is sitting at his desk, working.",
+      { contentId: "part1.communications.peof.perelman-working", text: "ペレルマン博士は机に向かい、仕事をしている。" },
+    ],
+  ],
 };
 
 const OBSERVED_STORY_INDEX: Partial<Record<Locale, ReadonlyMap<string, ObservedStoryTranslation>>> = Object.fromEntries(
