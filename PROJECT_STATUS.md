@@ -1,7 +1,7 @@
 # AMFV 日本語化プロジェクト状況
 
 > 種別: Living roadmap / project status  
-> 最終確認日: 2026-08-22
+> 最終確認日: 2026-08-24
 
 ## この文書の責任範囲
 
@@ -23,6 +23,8 @@ PR #21 / Issue #20 では、runtime-observed の `BufferLine` 順序、input run
 
 最終方針は、Option 2a の host/window boundary を維持し、plain ordinary turn に Option 2b の observed structure を利用する **2a+2b boundary** である。opening、initial tableau、`LOOK` や structurally richer な turn は specialized projection を優先する。ordinary-turn catalog の現在の identity は exact English leaf であり、同じ English leaf に文脈依存の異なる訳が必要な場合は、より狭い identity または specialized path が必要になる。責任分界、fallback、scroll recovery、deferred alternatives の詳細は [localization presentation boundary](./docs/localization-boundary.md) に記録している。
 
+Issue #13 で、既存の Chromium Playwright acceptance を GitHub Actions の独立した `browser-e2e` job に組み込んだ。通常の `verify` が成功した後だけ browser setup を行い、既存3テストを `npm run test:e2e` で実行する。失敗時の screenshot/trace は短期 Actions artifact として保持し、browser-only presentation regression も PR 上で可視かつ失敗可能な CI gate になった。
+
 ## 完了した milestone
 
 - [PR #1](https://github.com/5gmt/mind-forever-voyaging/pull/1): canonical game を変更しない toggleable な日本語 UI/story PoC
@@ -36,18 +38,22 @@ PR #21 / Issue #20 では、runtime-observed の `BufferLine` 順序、input run
 - [PR #19](https://github.com/5gmt/mind-forever-voyaging/pull/19): Option 2a — canonical `BufferWindow` 内 localized host、Japanese scroll ownership、fail-closed lifecycle/accessibility handling
 - [PR #21](https://github.com/5gmt/mind-forever-voyaging/pull/21): Option 2b — observed `BufferLine` / run structure を利用する plain ordinary-turn projection と runtime/browser evidence
 - [PR #23](https://github.com/5gmt/mind-forever-voyaging/pull/23): Issues #22 / #17 / #14 — 2a+2b localization boundary の選定と durable decision record
+- [Issue #13](https://github.com/5gmt/mind-forever-voyaging/issues/13): Chromium Playwright presentation-fidelity acceptance を独立した GitHub Actions `browser-e2e` gate として導入
 
 ## 現在の frontier
 
-### [Issue #13: Run Playwright presentation fidelity acceptance in CI](https://github.com/5gmt/mind-forever-voyaging/issues/13)
+### [Issue #24: Localize the first real Communications Mode scene via PEOF](https://github.com/5gmt/mind-forever-voyaging/issues/24)
 
-Issues #22 / #17 / #14 の architecture work は完了し、current execution frontier は Issue #13 へ移った。Playwright acceptance は repository に存在するが、現在の GitHub Actions `verify` job は canonical SHA、lint、type check、`npm test` までで、`npm run test:e2e` を実行していない。Browser-only regression はまだ CI の正式な gate ではない。
+CI の browser gate を前提として、次は最初の実際の story progression を翻訳する。fresh canonical session から Communications Mode の `PEOF` を実行し、runtime-observed な Dr. Perelman office scene を既存の 2a+2b boundary で表現できるか確認しながら、日本語 coverage を拡張する。
+
+その後の [Issue #25](https://github.com/5gmt/mind-forever-voyaging/issues/25) で、story translation とは分離して core wrapper controls と accessible names の日本語化を扱う。
 
 ## 基本的な作業順
 
-1. Issue #13 で Playwright acceptance を CI の可視かつ失敗可能な gate にする。
-2. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
-3. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
+1. Issue #24 で最初の実 scene (`PEOF`) を runtime/browser evidence に基づいて日本語化する。
+2. Issue #25 で wrapper-owned controls と accessible names の日本語化を行う。
+3. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
+4. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
 
 緊急の regression や canonical integrity の問題はこの順序より優先する。順序を変える場合は、その task の Issue または design note に依存関係と失う保証を記録する。
 
@@ -57,7 +63,7 @@ Issues #22 / #17 / #14 の architecture work は完了し、current execution fr
 - Current delivery baseline は Next.js static export と Netlify である。
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
-- CI は canonical story checksum、lint、TypeScript、build/unit path を検証する。E2E の CI 組み込みは Issue #13 で追跡している。
+- CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。Playwright failure artifacts は短期 retention で保持する。
 
 ## 更新の契機
 
