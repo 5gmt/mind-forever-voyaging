@@ -52,6 +52,7 @@ This file defines how agents work in this repository. It does not replace task-s
 
 - Follow the committed `package.json` engine boundary and `.npmrc` policy. Use `scripts/bootstrap-npm.sh` before repository npm commands when the environment's npm is too old.
 - Use `npm ci` with the committed lockfile for reproducible installs.
+- Pin third-party GitHub Actions to reviewed full commit SHAs, keeping the release tag in an adjacent comment for maintainability.
 - Do not add production dependencies unless they are necessary for the requested task.
 - Do not modify `package.json` or `package-lock.json` merely for convenience.
 - Do not add or replace a deployment adapter, framework, build target, or dependency graph unless deployment work is explicitly in scope.
@@ -65,6 +66,8 @@ Before completing implementation work, run the applicable checks:
 - `npm test`
 
 For changes affecting localization presentation, canonical-runtime observation, or layout, also run `npm run test:e2e` and verify the canonical story SHA-256. For layout, status, scrolling, or focus changes, record real-browser observations in addition to automated checks.
+
+GitHub CI runs the ordinary `verify` job first, then the Chromium-only `browser-e2e` job. A browser assertion failure must fail the CI job, and Playwright failure traces/screenshots under `test-results/` are retained briefly as Actions artifacts.
 
 For regression fixes, preserve evidence in this order when practical:
 
