@@ -35,31 +35,19 @@ PR #21 / Issue #20 では、runtime-observed の `BufferLine` 順序、input run
 - [PR #15](https://github.com/5gmt/mind-forever-voyaging/pull/15): npm 7-day release-age cooldown、fail-closed version boundary、共通 bootstrap
 - [PR #19](https://github.com/5gmt/mind-forever-voyaging/pull/19): Option 2a — canonical `BufferWindow` 内 localized host、Japanese scroll ownership、fail-closed lifecycle/accessibility handling
 - [PR #21](https://github.com/5gmt/mind-forever-voyaging/pull/21): Option 2b — observed `BufferLine` / run structure を利用する plain ordinary-turn projection と runtime/browser evidence
+- [PR #23](https://github.com/5gmt/mind-forever-voyaging/pull/23): Issues #22 / #17 / #14 — 2a+2b localization boundary の選定と durable decision record
 
 ## 現在の frontier
 
-### [Issue #14: Reuse canonical Parchment window chrome for localized presentation](https://github.com/5gmt/mind-forever-voyaging/issues/14)
-
-Localized presentation の window/chrome/scroll ownership 設計は、Issue #17 の umbrella evaluation を経て 2a+2b boundary に決定した。
-
-- [Issue #18](https://github.com/5gmt/mind-forever-voyaging/issues/18): Option 2a は完了。canonical `BufferWindow` host reuse は viable と判断済み。
-- [Issue #20](https://github.com/5gmt/mind-forever-voyaging/issues/20): 完了。representative な `INVENTORY` turn で Option 2b が plain ordinary-turn expansion cost を実質的に下げることを確認した。
-- [Issue #22](https://github.com/5gmt/mind-forever-voyaging/issues/22): 現在の実行 task。選定した 2a+2b boundary と deferred alternatives を durable design note と roadmap に反映する。
-- [Issue #17](https://github.com/5gmt/mind-forever-voyaging/issues/17): Issue #22 の decision record を結果として戻した後に完了できる umbrella decision issue。
-
-Option 1 は isolation/control baseline として残るが、2a が hard correctness gate を通過したため現時点で fallback する根拠はない。Option 3（semantic GridWindow renderer）は simpler reuse boundary が concrete browser evidence で失敗した場合だけ再検討する escape hatch である。
-
 ### [Issue #13: Run Playwright presentation fidelity acceptance in CI](https://github.com/5gmt/mind-forever-voyaging/issues/13)
 
-Playwright acceptance は repository に存在するが、現在の GitHub Actions `verify` job は canonical SHA、lint、type check、`npm test` までで、`npm run test:e2e` を実行していない。Browser-only regression はまだ CI の正式な gate ではない。
+Issues #22 / #17 / #14 の architecture work は完了し、current execution frontier は Issue #13 へ移った。Playwright acceptance は repository に存在するが、現在の GitHub Actions `verify` job は canonical SHA、lint、type check、`npm test` までで、`npm run test:e2e` を実行していない。Browser-only regression はまだ CI の正式な gate ではない。
 
 ## 基本的な作業順
 
-1. Issue #22 で選定済みの 2a+2b boundary を文書化し、結果を Issue #17 に戻す。
-2. Issue #17 と親 Issue #14 の architecture decision を完了する。
-3. Issue #13 で Playwright acceptance を CI の可視かつ失敗可能な gate にする。
-4. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
-5. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
+1. Issue #13 で Playwright acceptance を CI の可視かつ失敗可能な gate にする。
+2. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
+3. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
 
 緊急の regression や canonical integrity の問題はこの順序より優先する。順序を変える場合は、その task の Issue または design note に依存関係と失う保証を記録する。
 
