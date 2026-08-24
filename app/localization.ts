@@ -113,36 +113,49 @@ type ObservedStoryTranslation = Readonly<{
   kind?: "title";
 }>;
 
+type ObservedStoryCatalogEntry = Readonly<{
+  canonicalLeaf: string;
+  // Optional raw-English command context narrows identity when one observed
+  // transition is not evidence that the leaf owns this role globally.
+  canonicalCommand?: string;
+  translation: ObservedStoryTranslation;
+}>;
+
 // Option 2b prototype catalog. Unlike passage-owned structured catalogs, its
-// key is the exact canonical leaf observed at runtime. Keeping this catalog
-// separate prevents context-specific leaves from being selected accidentally.
-const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<readonly [string, ObservedStoryTranslation]>>> = {
+// identity is the exact canonical leaf observed at runtime, optionally narrowed
+// by its canonical command. Keeping this catalog separate prevents unrelated
+// ordinary-turn contexts from acquiring translations or semantic roles.
+const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStoryCatalogEntry>>> = {
   ja: [
-    [
-      "You have no appendages, remember?",
-      { contentId: "part1.communications.inventory-empty", text: "手足はないことを忘れたのか？" },
-    ],
-    [
-      "Dr. Perelman's Office",
-      { contentId: "part1.communications.peof.title", text: "ペレルマン博士のオフィス", kind: "title" },
-    ],
-    [
-      "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
-      { contentId: "part1.communications.peof.description", text: "ここは、あなたの創造者であるエイブラハム・ペレルマン博士のオフィスだ。室内は物であふれ、散らかっている。ぎっしり詰まった本棚が部屋を囲んでいる。ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。" },
-    ],
-    [
-      "Dr. Perelman is sitting at his desk, working.",
-      { contentId: "part1.communications.peof.perelman-working", text: "ペレルマン博士は机に向かい、仕事をしている。" },
-    ],
+    {
+      canonicalLeaf: "You have no appendages, remember?",
+      translation: { contentId: "part1.communications.inventory-empty", text: "手足はないことを忘れたのか？" },
+    },
+    {
+      canonicalCommand: "PEOF",
+      canonicalLeaf: "Dr. Perelman's Office",
+      translation: { contentId: "part1.communications.peof.title", text: "ペレルマン博士のオフィス", kind: "title" },
+    },
+    {
+      canonicalCommand: "PEOF",
+      canonicalLeaf: "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+      translation: { contentId: "part1.communications.peof.description", text: "ここは、あなたの創造者であるエイブラハム・ペレルマン博士のオフィスだ。室内は物であふれ、散らかっている。ぎっしり詰まった本棚が部屋を囲んでいる。ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。" },
+    },
+    {
+      canonicalCommand: "PEOF",
+      canonicalLeaf: "Dr. Perelman is sitting at his desk, working.",
+      translation: { contentId: "part1.communications.peof.perelman-working", text: "ペレルマン博士は机に向かい、仕事をしている。" },
+    },
   ],
 };
 
 const OBSERVED_STORY_INDEX: Partial<Record<Locale, ReadonlyMap<string, ObservedStoryTranslation>>> = Object.fromEntries(
   Object.entries(OBSERVED_STORY_CATALOG).map(([locale, entries]) => {
     const index = new Map<string, ObservedStoryTranslation>();
-    for (const [canonicalLeaf, translation] of entries ?? []) {
-      if (index.has(canonicalLeaf)) throw new Error(`Duplicate observed story leaf for locale ${locale}: ${canonicalLeaf}`);
-      index.set(canonicalLeaf, translation);
+    for (const { canonicalCommand, canonicalLeaf, translation } of entries ?? []) {
+      const identity = `${canonicalCommand?.toUpperCase() ?? "*"}\u0000${canonicalLeaf}`;
+      if (index.has(identity)) throw new Error(`Duplicate observed story identity for locale ${locale}: ${identity}`);
+      index.set(identity, translation);
     }
     return [locale, index];
   }),
@@ -159,6 +172,8 @@ export const localizeStoryLeaves = (
   locale: Locale,
 ) => canonicalLeaves.map((leaf) => STRUCTURED_STORY_CATALOG[locale]?.[contentId]?.[storyLeafIdentity(contentId, leaf)] ?? leaf);
 
-export const observedStoryLeafTranslation = (canonicalLeaf: string, locale: Locale) => {
-  return OBSERVED_STORY_INDEX[locale]?.get(canonicalLeaf);
+export const observedStoryLeafTranslation = (canonicalLeaf: string, locale: Locale, canonicalCommand?: string) => {
+  const index = OBSERVED_STORY_INDEX[locale];
+  return index?.get(`${canonicalCommand?.toUpperCase() ?? "*"}\u0000${canonicalLeaf}`)
+    ?? index?.get(`*\u0000${canonicalLeaf}`);
 };

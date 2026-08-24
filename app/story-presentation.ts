@@ -139,7 +139,7 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
   if (commandIndex < 0) return null;
   const command = clean(presentation.lines[commandIndex].text).replace(/^>\s*/, "");
   const response = presentation.lines.slice(commandIndex + 1, end);
-  const translations = response.map((line) => observedStoryLeafTranslation(clean(line.text), locale));
+  const translations = response.map((line) => observedStoryLeafTranslation(clean(line.text), locale, command));
   if (!translations.some(Boolean)) return null;
 
   const blocks: StoryPresentationBlock[] = [{

@@ -524,6 +524,16 @@ test("projects the runtime-observed PEOF office scene through exact leaf identit
   assert.equal(blocks?.[4].sourceLines[0], presentation.terminalLine - 1);
   assert.equal(observedOrdinaryTurnPresentation(presentation, "en"), null);
 
+  const unrelatedTurn = structuredClone(presentation);
+  const commandLine = unrelatedTurn.lines.find((line) => /^>PEOF/i.test(line.text));
+  commandLine.text = commandLine.text.replace(/PEOF/i, "LOOK");
+  commandLine.runs.at(-1).text = "LOOK";
+  assert.equal(
+    observedOrdinaryTurnPresentation(unrelatedTurn, "ja"),
+    null,
+    "PEOF leaves do not acquire translations or title semantics outside the observed command context",
+  );
+
   const untranslated = structuredClone(presentation);
   untranslated.lines[presentation.terminalLine - 2].text = "An adjacent untranslated canonical leaf.";
   untranslated.lines[presentation.terminalLine - 2].runs[0].text = "An adjacent untranslated canonical leaf.";

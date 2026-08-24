@@ -19,9 +19,12 @@ const attachPayload = async (testInfo: TestInfo, frame: FrameLocator) => {
 test("fresh Japanese session presents the observed PEOF office scene and recovers input", async ({ page }, testInfo) => {
   await page.goto("/");
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
-  if (await introduction.isVisible()) await introduction.getByRole("button", { name: /^Begin/ }).click();
-
   const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
+  if (!(await continueButton.isVisible())) {
+    await expect(introduction).toBeVisible();
+    await introduction.getByRole("button", { name: /^Begin/ }).click();
+  }
   await expect(continueButton).toBeEnabled({ timeout: 20_000 });
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: "Reading and play settings" });
@@ -35,6 +38,20 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
 
   const commandInput = page.locator("#command-input");
   await expect(commandInput).toBeEnabled();
+  await frame.locator("body").evaluate(() => {
+    const state = { exposedFrames: 0, sampledFrames: 0, raf: 0 };
+    const sample = () => {
+      state.sampledFrames += 1;
+      const inner = document.querySelector<HTMLElement>("#gameport .BufferWindowInner");
+      if (inner) {
+        const style = getComputedStyle(inner);
+        if (style.display !== "none" && style.visibility !== "hidden" && Number(style.opacity) !== 0) state.exposedFrames += 1;
+      }
+      state.raf = requestAnimationFrame(sample);
+    };
+    state.raf = requestAnimationFrame(sample);
+    (window as typeof window & { AMFVExposureSampler?: typeof state }).AMFVExposureSampler = state;
+  });
   await commandInput.fill("PEOF");
   await page.getByRole("button", { name: /送信/ }).click();
 
@@ -48,6 +65,14 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await expect(frame.locator(".GridWindow")).toContainText(/Dr\. Perelman's Office/i);
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");
+  const exposure = await frame.locator("body").evaluate(() => {
+    const state = (window as typeof window & { AMFVExposureSampler?: { exposedFrames: number; sampledFrames: number; raf: number } }).AMFVExposureSampler;
+    if (!state) return null;
+    cancelAnimationFrame(state.raf);
+    return { exposedFrames: state.exposedFrames, sampledFrames: state.sampledFrames };
+  });
+  expect(exposure?.sampledFrames).toBeGreaterThan(0);
+  expect(exposure?.exposedFrames).toBe(0);
   await attachPayload(testInfo, frame);
 
   await commandInput.fill("SCORE");
@@ -58,11 +83,19 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await settings.getByRole("button", { name: "English" }).click();
   await expect(presentation).toBeHidden();
   await expect(frame.locator(".BufferWindowInner")).not.toHaveAttribute("inert", "");
+  const canonicalInput = frame.locator("textarea.Input.LineInput");
+  await canonicalInput.fill("LOOK");
+  await canonicalInput.press("Enter");
+  await expect.poll(async () => frame.locator("#gameport .BufferLine").allTextContents())
+    .toEqual(expect.arrayContaining([expect.stringMatching(/LOOK/i)]));
   await settings.getByRole("button", { name: "日本語" }).click();
   await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" })).toHaveText("ペレルマン博士のオフィス");
-  await expect(commandInput).toBeEnabled();
-  await commandInput.fill("LOOK");
-  await expect(commandInput).toHaveValue("LOOK");
+  await expect(presentation).toContainText(/LOOK/i);
+  await settings.getByRole("button", { name: "English" }).click();
+  await expect(presentation).toBeHidden();
+  await expect(frame.locator(".BufferWindowInner")).not.toHaveAttribute("inert", "");
+  await expect(canonicalInput).toBeVisible();
+  await expect(canonicalInput).toBeEnabled();
 
   await testInfo.attach("localized-peof-scene", { body: await page.screenshot(), contentType: "image/png" });
 });
