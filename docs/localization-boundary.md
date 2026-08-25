@@ -59,8 +59,14 @@ The generic path is limited to plain ordinary line-input turns. It uses the
 active prompt to delimit the current turn, the most recent Parchment input run
 to delimit the command, and observed `BufferLine` order and blank lines to retain
 the response structure. It may map already exported header/subheader classes to
-the corresponding semantic presentation blocks. It activates only when the
-turn is safely delimited and at least one response leaf has a translation.
+the corresponding semantic presentation blocks. When the canonical runtime
+emits a room title with the same normal style as prose, a catalog entry may
+combine the exact observed leaf with the raw-English command context and carry
+that narrow title identity. The command qualification prevents one observed
+transition from assigning that semantic role to the same leaf globally. This
+must remain runtime-backed and cannot be inferred from source-only room data or
+line position. The ordinary path activates only when the turn is safely
+delimited and at least one response leaf has a translation.
 Structurally richer output, including semantics that cannot be preserved by
 these rules, requires a specialized projection and explicit fixture/browser
 evidence rather than an implicit extension of the generic renderer.
@@ -82,17 +88,19 @@ usable throughout the fallback.
 
 ## Observed-leaf catalog identity and limitation
 
-For the ordinary-turn path, catalog identity is currently the exact English
-leaf observed at runtime. The same leaf is also the canonical per-leaf fallback;
-catalog order is never used to resolve duplicate meanings. A reverse index
-rejects duplicate locale/English-leaf identities rather than selecting one
-arbitrarily.
+For the ordinary-turn path, catalog identity is the exact English leaf observed
+at runtime, optionally qualified by its raw-English command when the evidence
+supports a role or translation only in that turn context. The same leaf is also
+the canonical per-leaf fallback; catalog order is never used to resolve duplicate
+meanings. A reverse index rejects duplicate locale/command/English-leaf
+identities rather than selecting one arbitrarily.
 
-This identity cannot represent two context-dependent Japanese translations for
-identical English leaves. When that case is observed, the translation must use
-a narrower identity containing the required turn, passage, or line context, or
-the output must take a specialized projection path. Broad translation expansion
-must not work around the ambiguity by relying on catalog order.
+Command qualification does not claim to distinguish every context. If identical
+English leaves within the same command require different translations or roles,
+the identity must be narrowed further with runtime-backed passage or sequence
+context, or the output must take a specialized projection path. Broad
+translation expansion must not work around the ambiguity by relying on catalog
+order.
 
 ## Rejected and deferred alternatives
 

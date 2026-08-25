@@ -139,7 +139,7 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
   if (commandIndex < 0) return null;
   const command = clean(presentation.lines[commandIndex].text).replace(/^>\s*/, "");
   const response = presentation.lines.slice(commandIndex + 1, end);
-  const translations = response.map((line) => observedStoryLeafTranslation(clean(line.text), locale));
+  const translations = response.map((line) => observedStoryLeafTranslation(clean(line.text), locale, command));
   if (!translations.some(Boolean)) return null;
 
   const blocks: StoryPresentationBlock[] = [{
@@ -156,7 +156,7 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
     if (!canonicalText) return;
     const translation = translations[offset];
     const semanticClasses = [...line.classes, ...line.runs.flatMap((run) => run.classes)];
-    const kind = semanticClasses.some((name) => HEADING_STYLE_PATTERN.test(name)) ? "title" : "prose";
+    const kind = translation?.kind === "title" || semanticClasses.some((name) => HEADING_STYLE_PATTERN.test(name)) ? "title" : "prose";
     blocks.push({ kind, text: translation?.text ?? canonicalText, canonicalText, contentId: translation?.contentId, sourceLines: [sourceLine] });
   });
   return blocks;
