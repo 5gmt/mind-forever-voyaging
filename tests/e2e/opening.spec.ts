@@ -15,6 +15,9 @@ test("Japanese opening continues into the canonical line input", async ({ page }
   const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
   await settings.getByRole("button", { name: "日本語" }).click();
   await expect(settings).toHaveAccessibleName("読書とプレイの設定");
+  await expect(settings.getByRole("button", { name: "English" })).toHaveAttribute("lang", "en");
+  await expect(settings.getByRole("button", { name: "日本語" })).toHaveAttribute("lang", "ja");
+  await expect(page.locator("main")).not.toHaveAttribute("lang");
   await expect(page.getByRole("button", { name: "読書とプレイの設定" })).toHaveAttribute("title", "読書とプレイの設定");
   await expect(page.getByRole("button", { name: "ガイドの表示を切り替える" })).toContainText("ガイド");
   await expect(page.getByRole("button", { name: "オリジナルの付属資料を開く" })).toContainText("付属資料");
@@ -59,7 +62,12 @@ test("Japanese opening continues into the canonical line input", async ({ page }
   await expect(commandInput).toBeEnabled();
   await expect(page.getByLabel(/物語に応答する|コマンドを入力/)).toHaveAttribute("placeholder", "英語でコマンドを入力…");
   await expect(page.locator("#command-help")).toContainText("以前のコマンドを呼び出せます");
-  await expect(page.getByRole("button", { name: /ペレルマンのオフィス/ })).toContainText("PEOF");
+  await expect(page.locator(".command-deck")).not.toHaveAttribute("lang");
+  await expect(page.locator(".command-form")).toHaveAttribute("lang", "ja");
+  await expect(commandInput).toHaveAttribute("lang", "en");
+  const peofOutlet = page.getByRole("button", { name: /ペレルマンのオフィス/ });
+  await expect(peofOutlet).toContainText("PEOF");
+  expect(await peofOutlet.evaluate((element) => element.closest("[lang]")?.getAttribute("lang"))).toBe("ja");
   await expect(page.getByRole("button", { name: /送信/ })).toBeDisabled();
   await commandInput.fill("inventory");
   await expect(page.getByRole("button", { name: /送信/ })).toBeEnabled();
