@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { localizeOutletLabel, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -161,7 +161,7 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /navigator\.share/);
   assert.match(shell, /https:\/\/mind-forever-voyaging\.netlify\.app\//);
   assert.match(shell, /Share this edition/);
-  assert.match(shell, /resetWrapperForStory[\s\S]*setCommand\(""\)[\s\S]*setAliasNotice\(""\)[\s\S]*setMapDestinationId\(null\)/);
+  assert.match(shell, /resetWrapperForStory[\s\S]*setCommand\(""\)[\s\S]*setAliasNotice\(null\)[\s\S]*setMapDestinationId\(null\)/);
   assert.match(shell, /Begin the requested observations/);
   assert.match(shell, /Perelman’s brief · nine requested observations/);
   assert.match(shell, /\["wait for 28 minutes", "wait"\]/);
@@ -238,6 +238,10 @@ test("localizes the core wrapper UI catalog in both directions", () => {
   assert.equal(uiText("ja", "share"), "共有");
   assert.equal(uiText("en", "issueCommand"), "Issue a command");
   assert.equal(uiText("ja", "issueCommand"), "コマンドを入力");
+  assert.equal(uiText("ja", "commandHistoryHelp"), "↑ で以前のコマンドを呼び出せます。");
+  assert.equal(uiText("ja", "linkCopied"), "リンクをコピーしました");
+  assert.equal(localizeOutletLabel("ja", "PEOF", "Dr. Perelman's Office"), "ペレルマンのオフィス");
+  assert.equal(localizeOutletLabel("en", "PEOF", "Dr. Perelman's Office"), "Dr. Perelman's Office");
 });
 
 test("localizes the real opening whitespace and falls back deterministically", () => {

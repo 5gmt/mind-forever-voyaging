@@ -40,6 +40,18 @@ const UI = {
     refreshOutlets: "Refresh list",
     look: "Look",
     displayOutlets: "Display outlets",
+    commandHistoryHelp: "↑ recalls your previous commands.",
+    shorterNounHelp: "Try a shorter noun or a different verb.",
+    shorterCommandHelp: "Try a shorter command, or choose a word mentioned below.",
+    specificNounHelp: "Use a more specific noun.",
+    exactObjectHelp: "Choose the exact person or object mentioned below.",
+    absentObjectHelp: "That is not present now. LOOK repeats your surroundings.",
+    understoodAs: "Understood as: {command}",
+    draftedFromPassage: "Drafted from a word in the passage. Edit it or press Send.",
+    routeDrafted: "Route to {destination}: edit this step or press Send.",
+    shared: "Shared",
+    linkCopied: "Link copied",
+    linkCopyFailed: "Couldn’t copy the link",
   },
   ja: {
     language: "言語",
@@ -80,11 +92,37 @@ const UI = {
     refreshOutlets: "一覧を更新",
     look: "周囲を見る",
     displayOutlets: "アウトレット一覧",
+    commandHistoryHelp: "↑ で以前のコマンドを呼び出せます。",
+    shorterNounHelp: "より短い名詞か別の動詞を試してください。",
+    shorterCommandHelp: "より短いコマンドを試すか、下に表示された言葉を選んでください。",
+    specificNounHelp: "より具体的な名詞を使ってください。",
+    exactObjectHelp: "下に表示された人物または物を正確に選んでください。",
+    absentObjectHelp: "それは現在ここにありません。LOOK で周囲を再表示できます。",
+    understoodAs: "{command} として受け付けました",
+    draftedFromPassage: "本文の言葉から下書きしました。編集するか、送信を押してください。",
+    routeDrafted: "{destination} への経路：この手順を編集するか、送信を押してください。",
+    shared: "共有しました",
+    linkCopied: "リンクをコピーしました",
+    linkCopyFailed: "リンクをコピーできませんでした",
   },
 } as const;
 
 export type UiKey = keyof typeof UI.en;
 export const uiText = (locale: Locale, key: UiKey) => UI[locale][key];
+
+const OUTLET_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
+  ja: {
+    PPCC: "PRISMプロジェクト管制センター",
+    RCRO: "屋上",
+    PEOF: "ペレルマンのオフィス",
+    PCAF: "カフェテリア",
+    MACO: "メインコンピューター・コア",
+    WNNF: "WNNフィード",
+  },
+};
+
+export const localizeOutletLabel = (locale: Locale, code: string, canonicalLabel: string) =>
+  OUTLET_LABELS[locale]?.[code.toUpperCase()] ?? canonicalLabel;
 
 // Intentionally tiny and exact: this PoC only presents deterministic translations
 // of the canonical opening. Anything not listed remains verbatim English.
