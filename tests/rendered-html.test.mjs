@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -122,7 +122,7 @@ test("preserves the historical source and derives modern context from it", async
     for (const adjective of words.slice(0, -1)) assert.ok(object.adjectives.some((word) => adjective === word || adjective.startsWith(word)), `${object.id} must use parser adjectives`);
   }
   assert.match(shell, /Map & routes/);
-  assert.match(shell, /Communication outlets/);
+  assert.match(shell, /communicationOutlets/);
   assert.match(shell, /InterfaceWorkbench/);
   assert.match(shell, /SceneActions/);
   assert.match(shell, /Classic/);
@@ -229,6 +229,15 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(shell, /command: normalized/);
   assert.match(localization, /if \(locale === "en"\) return rawEnglish/);
   assert.equal(createHash("sha256").update(story).digest("hex"), "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+});
+
+test("localizes the core wrapper UI catalog in both directions", () => {
+  assert.equal(uiText("en", "readingSettings"), "Reading and play settings");
+  assert.equal(uiText("ja", "readingSettings"), "読書とプレイの設定");
+  assert.equal(uiText("en", "share"), "Share");
+  assert.equal(uiText("ja", "share"), "共有");
+  assert.equal(uiText("en", "issueCommand"), "Issue a command");
+  assert.equal(uiText("ja", "issueCommand"), "コマンドを入力");
 });
 
 test("localizes the real opening whitespace and falls back deterministically", () => {

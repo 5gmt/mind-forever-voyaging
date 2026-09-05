@@ -27,7 +27,7 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   }
   await expect(continueButton).toBeEnabled({ timeout: 20_000 });
   await page.getByTitle("Reading and play settings").click();
-  const settings = page.getByRole("region", { name: "Reading and play settings" });
+  const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
   await settings.getByRole("button", { name: "日本語" }).click();
 
   const frame = canonicalFrame(page);
