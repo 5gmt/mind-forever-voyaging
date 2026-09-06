@@ -27,7 +27,7 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   }
   await expect(continueButton).toBeEnabled({ timeout: 20_000 });
   await page.getByTitle("Reading and play settings").click();
-  const settings = page.getByRole("region", { name: "Reading and play settings" });
+  const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
   await settings.getByRole("button", { name: "日本語" }).click();
 
   const frame = canonicalFrame(page);
@@ -61,6 +61,9 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await expect(presentation.locator(".story-presentation-prose", { hasText: "エイブラハム・ペレルマン博士" })).toHaveCount(1);
   await expect(presentation).toContainText("ペレルマン博士は机に向かい、仕事をしている。");
   await expect(presentation).toContainText("通信モードに入りました");
+  const deferredSceneActions = page.locator(".scene-actions").first();
+  await expect(deferredSceneActions).toBeVisible();
+  expect(await deferredSceneActions.evaluate((element) => element.closest("[lang]")?.getAttribute("lang"))).toBe("en");
   await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
   await expect(frame.locator(".GridWindow")).toContainText(/Dr\. Perelman's Office/i);
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");

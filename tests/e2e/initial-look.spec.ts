@@ -35,7 +35,7 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(continueButton).toBeEnabled({ timeout: 20_000 });
 
   await page.getByTitle("Reading and play settings").click();
-  const settings = page.getByRole("region", { name: "Reading and play settings" });
+  const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
   await settings.getByRole("button", { name: "日本語" }).click();
 
   const frame = canonicalFrame(page);
@@ -184,12 +184,15 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
 test("RESTORE entered directly in the canonical iframe invalidates Japanese display history", async ({ page }) => {
   await page.goto("/");
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
-  if (await introduction.isVisible()) await introduction.getByRole("button", { name: /^Begin/ }).click();
-
   const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
+  if (!(await continueButton.isVisible())) {
+    await expect(introduction).toBeVisible();
+    await introduction.getByRole("button", { name: /^Begin/ }).click();
+  }
   await expect(continueButton).toBeEnabled({ timeout: 20_000 });
   await page.getByTitle("Reading and play settings").click();
-  const settings = page.getByRole("region", { name: "Reading and play settings" });
+  const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
   await settings.getByRole("button", { name: "日本語" }).click();
   const frame = canonicalFrame(page);
   const presentation = frame.getByRole("log", { name: "日本語ストーリー表示" });

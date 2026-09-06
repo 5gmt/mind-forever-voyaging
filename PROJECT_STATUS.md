@@ -43,13 +43,13 @@ Issue #13 で、既存の Chromium Playwright acceptance を GitHub Actions の�
 
 ## 現在の frontier
 
-### [Issue #25: Localize core wrapper controls and accessible names](https://github.com/5gmt/mind-forever-voyaging/issues/25)
+Issue #25 で、header、reading/play settings、opening から最初の Communications Mode と `PEOF` scene までの command controls について、visible label と wrapper-owned accessible name を EN / JA で切り替える core UI localization slice を実装した。parser command、state recognition、canonical runtime output は英語のまま維持している。
 
-`PEOF` の実 scene で 2a+2b boundary による ordinary-turn expansion を確認できた。次は story translation とは分離して core wrapper controls と accessible names の日本語化を扱う。parser command、state recognition、canonical runtime output は引き続き英語のまま維持する。
+次の story translation coverage は、runtime-observed evidence を個別 Issue で定義してから段階的に選定する。
 
 ## 基本的な作業順
 
-1. Issue #25 で wrapper-owned controls と accessible names の日本語化を行う。
+1. 次の runtime-observed story translation slice を選定する。
 2. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
 3. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
 
