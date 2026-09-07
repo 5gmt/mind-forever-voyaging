@@ -57,7 +57,7 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
 
   await expect(presentation.locator(".story-presentation-command")).toHaveText(/PEOF/);
   await expect(presentation.locator(".story-presentation-command")).toHaveAttribute("lang", "en");
-  await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" })).toHaveText("ペレルマン博士のオフィス");
+  await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" }).last()).toHaveText("ペレルマン博士のオフィス");
   await expect(presentation.locator(".story-presentation-prose", { hasText: "エイブラハム・ペレルマン博士" })).toHaveCount(1);
   await expect(presentation).toContainText("ペレルマン博士は机に向かい、仕事をしている。");
   await expect(presentation).toContainText("通信モードに入りました");
@@ -92,7 +92,7 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await expect.poll(async () => frame.locator("#gameport .BufferLine").allTextContents())
     .toEqual(expect.arrayContaining([expect.stringMatching(/LOOK/i)]));
   await settings.getByRole("button", { name: "日本語" }).click();
-  await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" })).toHaveText("ペレルマン博士のオフィス");
+  await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" }).last()).toHaveText("ペレルマン博士のオフィス");
   await expect(presentation).toContainText(/LOOK/i);
   await settings.getByRole("button", { name: "English" }).click();
   await expect(presentation).toBeHidden();

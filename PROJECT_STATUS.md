@@ -1,7 +1,7 @@
 # AMFV 日本語化プロジェクト状況
 
 > 種別: Living roadmap / project status  
-> 最終確認日: 2026-08-24
+> 最終確認日: 2026-09-07
 
 ## この文書の責任範囲
 
@@ -11,7 +11,7 @@
 
 ## 現在の到達点
 
-日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、そして最初の実 story progression である `PEOF` の Dr. Perelman office scene まで到達している。
+日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、そして最初の実 story progression である `PEOF` の Dr. Perelman office scene と、同室での deterministic inspection packet（`LOOK`、机、ペレルマン博士、デコーダー、地図、ペン、雑誌記事の観察）まで到達している。
 
 現在の実装は Parchment の raw English transcript、status、input state、表示行を観測し、wrapper 側で状態認識と presentation history の照合を行い、対応済み部分を semantic blocks として日本語表示する。入力と assisted controls は canonical English command を Parchment へ送る。
 
@@ -40,12 +40,13 @@ Issue #13 で、既存の Chromium Playwright acceptance を GitHub Actions の�
 - [PR #23](https://github.com/5gmt/mind-forever-voyaging/pull/23): Issues #22 / #17 / #14 — 2a+2b localization boundary の選定と durable decision record
 - [Issue #13](https://github.com/5gmt/mind-forever-voyaging/issues/13): Chromium Playwright presentation-fidelity acceptance を独立した GitHub Actions `browser-e2e` gate として導入
 - [Issue #24](https://github.com/5gmt/mind-forever-voyaging/issues/24): fresh Communications Mode の `PEOF` から runtime-observed な Dr. Perelman office scene を exact observed-leaf catalog と既存 2a+2b path で日本語化
+- [Issue #30](https://github.com/5gmt/mind-forever-voyaging/issues/30): fresh `PEOF` baseline から runtime-observed な deterministic inspection packet を command-qualified exact observed-leaf catalog と既存 ordinary-turn projector で日本語化
 
 ## 現在の frontier
 
 Issue #25 で、header、reading/play settings、opening から最初の Communications Mode と `PEOF` scene までの command controls について、visible label と wrapper-owned accessible name を EN / JA で切り替える core UI localization slice を実装した。parser command、state recognition、canonical runtime output は英語のまま維持している。
 
-次の story translation coverage は、runtime-observed evidence を個別 Issue で定義してから段階的に選定する。
+次の大規模 gameplay milestone と story translation frontier は [Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) で選定する。PEOF inspection coverage の追加はその推奨を先取りしない。
 
 ## 基本的な作業順
 

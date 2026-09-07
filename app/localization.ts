@@ -149,7 +149,13 @@ export type StoryContentId =
   | "part1.communications.inventory-empty"
   | "part1.communications.peof.title"
   | "part1.communications.peof.description"
-  | "part1.communications.peof.perelman-working";
+  | "part1.communications.peof.perelman-working"
+  | "part1.communications.peof.desk-description"
+  | "part1.communications.peof.perelman-description"
+  | "part1.communications.peof.decoder-package-note"
+  | "part1.communications.peof.map-package-note"
+  | "part1.communications.peof.pen-package-note"
+  | "part1.communications.peof.magazine-article-package-note";
 
 // Normal parser-turn localization is keyed by stable story IDs. Canonical
 // English is supplied by the recognizer and remains the per-block fallback.
@@ -233,6 +239,51 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
       canonicalCommand: "PEOF",
       canonicalLeaf: "Dr. Perelman is sitting at his desk, working.",
       translation: { contentId: "part1.communications.peof.perelman-working", text: "ペレルマン博士は机に向かい、仕事をしている。" },
+    },
+    {
+      canonicalCommand: "LOOK",
+      canonicalLeaf: "Dr. Perelman's Office",
+      translation: { contentId: "part1.communications.peof.title", text: "ペレルマン博士のオフィス", kind: "title" },
+    },
+    {
+      canonicalCommand: "LOOK",
+      canonicalLeaf: "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+      translation: { contentId: "part1.communications.peof.description", text: "ここは、あなたの創造者であるエイブラハム・ペレルマン博士のオフィスだ。室内は物であふれ、散らかっている。ぎっしり詰まった本棚が部屋を囲んでいる。ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。" },
+    },
+    {
+      canonicalCommand: "LOOK",
+      canonicalLeaf: "Dr. Perelman is sitting at his desk, working.",
+      translation: { contentId: "part1.communications.peof.perelman-working", text: "ペレルマン博士は机に向かい、仕事をしている。" },
+    },
+    {
+      canonicalCommand: "EXAMINE DESK",
+      canonicalLeaf: "Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+      translation: { contentId: "part1.communications.peof.desk-description", text: "ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。" },
+    },
+    {
+      canonicalCommand: "EXAMINE DR PERELMAN",
+      canonicalLeaf: "Perelman is an older man, in his late fifties, and has a white goatee.",
+      translation: { contentId: "part1.communications.peof.perelman-description", text: "ペレルマンは50代後半の年配の男性で、白い山羊ひげをたくわえている。" },
+    },
+    {
+      canonicalCommand: "EXAMINE DECODER",
+      canonicalLeaf: "[This is the decoder that you'll find in your A Mind Forever Voyaging package.]",
+      translation: { contentId: "part1.communications.peof.decoder-package-note", text: "［これは、あなたの『A Mind Forever Voyaging』パッケージに入っているデコーダーです。］" },
+    },
+    {
+      canonicalCommand: "EXAMINE MAP",
+      canonicalLeaf: "[This is the map that you'll find in your A Mind Forever Voyaging package.]",
+      translation: { contentId: "part1.communications.peof.map-package-note", text: "［これは、あなたの『A Mind Forever Voyaging』パッケージに入っている地図です。］" },
+    },
+    {
+      canonicalCommand: "EXAMINE PEN",
+      canonicalLeaf: "[This is the pen that you'll find in your A Mind Forever Voyaging package.]",
+      translation: { contentId: "part1.communications.peof.pen-package-note", text: "［これは、あなたの『A Mind Forever Voyaging』パッケージに入っているペンです。］" },
+    },
+    {
+      canonicalCommand: "EXAMINE MAGAZINE ARTICLE",
+      canonicalLeaf: "[This is the magazine article that you'll find in your A Mind Forever Voyaging package.]",
+      translation: { contentId: "part1.communications.peof.magazine-article-package-note", text: "［これは、あなたの『A Mind Forever Voyaging』パッケージに入っている雑誌記事です。］" },
     },
   ],
 };

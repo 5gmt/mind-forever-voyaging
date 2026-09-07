@@ -379,6 +379,55 @@ test("reconciles locale-neutral presentation history without duplicating observa
   assert.equal(reset.length, 1, "a pristine opening starts a fresh presentation timeline");
 });
 
+test("projects the runtime-observed PEOF inspection packet with command-qualified leaves", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-peof-inspection-runtime-observed.json", import.meta.url), "utf8"));
+  assert.match(fixture.provenance, /Runtime-observed with Playwright/);
+  assert.match(fixture.provenance, /canonical Release 79/);
+
+  const expectedResponses = new Map([
+    ["LOOK", ["ペレルマン博士のオフィス", "ここは、あなたの創造者であるエイブラハム・ペレルマン博士のオフィスだ。室内は物であふれ、散らかっている。ぎっしり詰まった本棚が部屋を囲んでいる。ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。", "ペレルマン博士は机に向かい、仕事をしている。"]],
+    ["EXAMINE DESK", ["ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。"]],
+    ["EXAMINE DR PERELMAN", ["ペレルマンは50代後半の年配の男性で、白い山羊ひげをたくわえている。"]],
+    ["EXAMINE DECODER", ["［これは、あなたの『A Mind Forever Voyaging』パッケージに入っているデコーダーです。］"]],
+    ["EXAMINE MAP", ["［これは、あなたの『A Mind Forever Voyaging』パッケージに入っている地図です。］"]],
+    ["EXAMINE PEN", ["［これは、あなたの『A Mind Forever Voyaging』パッケージに入っているペンです。］"]],
+    ["EXAMINE MAGAZINE ARTICLE", ["［これは、あなたの『A Mind Forever Voyaging』パッケージに入っている雑誌記事です。］"]],
+  ]);
+
+  assert.deepEqual(fixture.observations.map(({ command }) => command), [...expectedResponses.keys()]);
+  for (const observation of fixture.observations) {
+    assert.equal(observation.presentation.version, 3);
+    assert.equal(observation.presentation.terminalLine, observation.presentation.lines.length - 1);
+    assert.equal(observation.presentation.activeInput.line, observation.presentation.terminalLine);
+    assert.equal(observation.presentation.lines[0].text, `>${observation.command}`);
+    assert.equal(observation.presentation.lines.at(-1).text, ">");
+    assert.deepEqual(observation.status, {
+      mode: "Communications Mode",
+      time: observation.status.time,
+      location: "Dr. Perelman's Office",
+      date: "3/16/2031",
+    });
+
+    const blocks = observedOrdinaryTurnPresentation(observation.presentation, "ja");
+    assert.ok(blocks, `${observation.command} is representable by the ordinary-turn projector`);
+    assert.equal(blocks[0].kind, "command");
+    assert.equal(blocks[0].canonicalText, observation.command);
+    assert.equal(blocks[0].text, observation.command);
+    assert.deepEqual(
+      blocks.filter(({ kind }) => kind === "title" || kind === "prose").map(({ text }) => text),
+      expectedResponses.get(observation.command),
+    );
+    assert.equal(blocks.at(-1).kind, "spacer");
+    assert.equal(observedOrdinaryTurnPresentation(observation.presentation, "en"), null);
+
+    const canonicalLeaf = observation.presentation.lines[1].text;
+    assert.ok(observedStoryLeafTranslation(canonicalLeaf, "ja", observation.command));
+    assert.equal(observedStoryLeafTranslation(canonicalLeaf, "ja", "SCORE"), undefined);
+  }
+
+  assert.equal(observedStoryLeafTranslation("An unobserved office detail.", "ja", "LOOK"), undefined);
+});
+
 test("recovers the canonical iframe for unsafe current observations and resets at RESTORE", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-look-runtime-observed.json", import.meta.url), "utf8")).presentation;
   fixture.version = 3;
@@ -539,8 +588,8 @@ test("projects the runtime-observed PEOF office scene through exact leaf identit
 
   const unrelatedTurn = structuredClone(presentation);
   const commandLine = unrelatedTurn.lines.find((line) => /^>PEOF/i.test(line.text));
-  commandLine.text = commandLine.text.replace(/PEOF/i, "LOOK");
-  commandLine.runs.at(-1).text = "LOOK";
+  commandLine.text = commandLine.text.replace(/PEOF/i, "SCORE");
+  commandLine.runs.at(-1).text = "SCORE";
   assert.equal(
     observedOrdinaryTurnPresentation(unrelatedTurn, "ja"),
     null,
