@@ -2,23 +2,16 @@ import { expect, test, type FrameLocator, type Page, type TestInfo } from "@play
 
 const canonicalFrame = (page: Page) => page.frameLocator('iframe[title*="canonical Release 79 story"]');
 
-test.setTimeout(120_000);
-
 const startFreshJapanesePeof = async (page: Page) => {
-  let storyReady = false;
-  for (let attempt = 0; attempt < 3 && !storyReady; attempt += 1) {
-    await page.goto("/");
-    const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
-    const continueButton = page.locator("button.continue-button");
-    await expect.poll(async () => await introduction.isVisible() || await continueButton.isVisible(), { timeout: 20_000 }).toBe(true);
-    if (await introduction.isVisible()) {
-      await introduction.getByRole("button", { name: /^Begin/ }).click();
-    }
-    storyReady = await continueButton.waitFor({ state: "attached", timeout: 20_000 }).then(() => true, () => false);
+  await page.goto("/");
+  const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
+  const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
+  if (!(await continueButton.isVisible())) {
+    await expect(introduction).toBeVisible();
+    await introduction.getByRole("button", { name: /^Begin/ }).click();
   }
-  const continueButton = page.locator("button.continue-button");
-  expect(storyReady).toBe(true);
-  await expect(continueButton).toBeEnabled({ timeout: 40_000 });
+  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
   await settings.getByRole("button", { name: "日本語" }).click();
@@ -42,16 +35,22 @@ const submitAndExpect = async (
   commandInput: ReturnType<Page["locator"]>,
   presentation: ReturnType<FrameLocator["getByRole"]>,
   command: string,
-  japanese: string,
+  japaneseLeaves: string | readonly string[],
 ) => {
   const commandCount = await presentation.locator(".story-presentation-command").count();
   const spacerCount = await presentation.locator(".story-presentation-spacer").count();
+  const responseBlocks = presentation.locator(".story-presentation-title, .story-presentation-prose");
+  const responseCount = await responseBlocks.count();
+  const expectedLeaves = typeof japaneseLeaves === "string" ? [japaneseLeaves] : japaneseLeaves;
   await commandInput.fill(command);
   await page.getByRole("button", { name: /送信/ }).click();
   const echo = presentation.locator(".story-presentation-command").nth(commandCount);
   await expect(echo).toHaveText(`> ${command}`);
   await expect(echo).toHaveAttribute("lang", "en");
-  await expect(presentation).toContainText(japanese);
+  await expect(responseBlocks).toHaveCount(responseCount + expectedLeaves.length);
+  for (const [offset, japanese] of expectedLeaves.entries()) {
+    await expect(responseBlocks.nth(responseCount + offset)).toHaveText(japanese);
+  }
   await expect(presentation.locator(".story-presentation-spacer")).toHaveCount(spacerCount + 1);
 };
 
@@ -82,8 +81,11 @@ test("localizes LOOK, desk, and Perelman inspection from a fresh PEOF session", 
     (window as typeof window & { AMFVExposureSampler?: typeof state }).AMFVExposureSampler = state;
   });
 
-  await submitAndExpect(page, commandInput, presentation, "LOOK", "ここは、あなたの創造者であるエイブラハム・ペレルマン博士のオフィスだ。");
-  await expect(presentation.locator(".story-presentation-title").last()).toHaveText("ペレルマン博士のオフィス");
+  await submitAndExpect(page, commandInput, presentation, "LOOK", [
+    "ペレルマン博士のオフィス",
+    "ここは、あなたの創造者であるエイブラハム・ペレルマン博士のオフィスだ。室内は物であふれ、散らかっている。ぎっしり詰まった本棚が部屋を囲んでいる。ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。",
+    "ペレルマン博士は机に向かい、仕事をしている。",
+  ]);
   await submitAndExpect(page, commandInput, presentation, "EXAMINE DESK", "ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。");
   await submitAndExpect(page, commandInput, presentation, "EXAMINE DR PERELMAN", "ペレルマンは50代後半の年配の男性で、白い山羊ひげをたくわえている。");
 
