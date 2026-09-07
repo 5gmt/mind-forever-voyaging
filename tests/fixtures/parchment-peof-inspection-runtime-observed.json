@@ -1,0 +1,1155 @@
+{
+  "provenance": "Runtime-observed with Playwright against canonical Release 79 Parchment on 2026-09-07; sanitized deterministic BridgePresentation v3 turn slices. LOOK through EXAMINE DECODER were observed sequentially from one fresh PEOF baseline. The runtime advanced one minute per command and removed ordinary line input after the fourth inspection; EXAMINE MAP, EXAMINE PEN, and EXAMINE MAGAZINE ARTICLE were therefore isolated in fresh PEOF sessions at 7:08pm.",
+  "observations": [
+    {
+      "command": "LOOK",
+      "status": {
+        "mode": "Communications Mode",
+        "time": "7:08pm",
+        "location": "Dr. Perelman's Office",
+        "date": "3/16/2031"
+      },
+      "presentation": {
+        "version": 3,
+        "lines": [
+          {
+            "text": ">LOOK",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "LOOK",
+                "classes": [
+                  "Style_input"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "Dr. Perelman's Office",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "Dr. Perelman's Office",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "Dr. Perelman is sitting at his desk, working.",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "Dr. Perelman is sitting at his desk, working.",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": " ",
+            "classes": [
+              "BufferLine",
+              "BlankPara"
+            ],
+            "runs": [
+              {
+                "text": " ",
+                "classes": [
+                  "BlankLineSpace"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": ">",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "",
+                "classes": [
+                  "Input",
+                  "LineInput"
+                ],
+                "tag": "textarea"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          }
+        ],
+        "terminalLine": 5,
+        "activeInput": {
+          "kind": "line",
+          "line": 5,
+          "classes": [
+            "Input",
+            "LineInput"
+          ]
+        }
+      }
+    },
+    {
+      "command": "EXAMINE DESK",
+      "status": {
+        "mode": "Communications Mode",
+        "time": "7:09pm",
+        "location": "Dr. Perelman's Office",
+        "date": "3/16/2031"
+      },
+      "presentation": {
+        "version": 3,
+        "lines": [
+          {
+            "text": ">EXAMINE DESK",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "EXAMINE DESK",
+                "classes": [
+                  "Style_input"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": " ",
+            "classes": [
+              "BufferLine",
+              "BlankPara"
+            ],
+            "runs": [
+              {
+                "text": " ",
+                "classes": [
+                  "BlankLineSpace"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": ">",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "",
+                "classes": [
+                  "Input",
+                  "LineInput"
+                ],
+                "tag": "textarea"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          }
+        ],
+        "terminalLine": 3,
+        "activeInput": {
+          "kind": "line",
+          "line": 3,
+          "classes": [
+            "Input",
+            "LineInput"
+          ]
+        }
+      }
+    },
+    {
+      "command": "EXAMINE DR PERELMAN",
+      "status": {
+        "mode": "Communications Mode",
+        "time": "7:10pm",
+        "location": "Dr. Perelman's Office",
+        "date": "3/16/2031"
+      },
+      "presentation": {
+        "version": 3,
+        "lines": [
+          {
+            "text": ">EXAMINE DR PERELMAN",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "EXAMINE DR PERELMAN",
+                "classes": [
+                  "Style_input"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "Perelman is an older man, in his late fifties, and has a white goatee.",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "Perelman is an older man, in his late fifties, and has a white goatee.",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": " ",
+            "classes": [
+              "BufferLine",
+              "BlankPara"
+            ],
+            "runs": [
+              {
+                "text": " ",
+                "classes": [
+                  "BlankLineSpace"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": ">",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "",
+                "classes": [
+                  "Input",
+                  "LineInput"
+                ],
+                "tag": "textarea"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          }
+        ],
+        "terminalLine": 3,
+        "activeInput": {
+          "kind": "line",
+          "line": 3,
+          "classes": [
+            "Input",
+            "LineInput"
+          ]
+        }
+      }
+    },
+    {
+      "command": "EXAMINE DECODER",
+      "status": {
+        "mode": "Communications Mode",
+        "time": "7:11pm",
+        "location": "Dr. Perelman's Office",
+        "date": "3/16/2031"
+      },
+      "presentation": {
+        "version": 3,
+        "lines": [
+          {
+            "text": ">EXAMINE DECODER",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "EXAMINE DECODER",
+                "classes": [
+                  "Style_input"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "[This is the decoder that you'll find in your A Mind Forever Voyaging package.]",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "[This is the decoder that you'll find in your ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "A",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Mind",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Forever",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Voyaging",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " package.]",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": " ",
+            "classes": [
+              "BufferLine",
+              "BlankPara"
+            ],
+            "runs": [
+              {
+                "text": " ",
+                "classes": [
+                  "BlankLineSpace"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": ">",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "",
+                "classes": [
+                  "Input",
+                  "LineInput"
+                ],
+                "tag": "textarea"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          }
+        ],
+        "terminalLine": 3,
+        "activeInput": {
+          "kind": "line",
+          "line": 3,
+          "classes": [
+            "Input",
+            "LineInput"
+          ]
+        }
+      }
+    },
+    {
+      "command": "EXAMINE MAP",
+      "status": {
+        "mode": "Communications Mode",
+        "time": "7:08pm",
+        "location": "Dr. Perelman's Office",
+        "date": "3/16/2031"
+      },
+      "presentation": {
+        "version": 3,
+        "lines": [
+          {
+            "text": ">EXAMINE MAP",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "EXAMINE MAP",
+                "classes": [
+                  "Style_input"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "[This is the map that you'll find in your A Mind Forever Voyaging package.]",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "[This is the map that you'll find in your ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "A",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Mind",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Forever",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Voyaging",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " package.]",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": " ",
+            "classes": [
+              "BufferLine",
+              "BlankPara"
+            ],
+            "runs": [
+              {
+                "text": " ",
+                "classes": [
+                  "BlankLineSpace"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": ">",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "",
+                "classes": [
+                  "Input",
+                  "LineInput"
+                ],
+                "tag": "textarea"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          }
+        ],
+        "terminalLine": 3,
+        "activeInput": {
+          "kind": "line",
+          "line": 3,
+          "classes": [
+            "Input",
+            "LineInput"
+          ]
+        }
+      }
+    },
+    {
+      "command": "EXAMINE PEN",
+      "status": {
+        "mode": "Communications Mode",
+        "time": "7:08pm",
+        "location": "Dr. Perelman's Office",
+        "date": "3/16/2031"
+      },
+      "presentation": {
+        "version": 3,
+        "lines": [
+          {
+            "text": ">EXAMINE PEN",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "EXAMINE PEN",
+                "classes": [
+                  "Style_input"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "[This is the pen that you'll find in your A Mind Forever Voyaging package.]",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "[This is the pen that you'll find in your ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "A",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Mind",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Forever",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Voyaging",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " package.]",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": " ",
+            "classes": [
+              "BufferLine",
+              "BlankPara"
+            ],
+            "runs": [
+              {
+                "text": " ",
+                "classes": [
+                  "BlankLineSpace"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": ">",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "",
+                "classes": [
+                  "Input",
+                  "LineInput"
+                ],
+                "tag": "textarea"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          }
+        ],
+        "terminalLine": 3,
+        "activeInput": {
+          "kind": "line",
+          "line": 3,
+          "classes": [
+            "Input",
+            "LineInput"
+          ]
+        }
+      }
+    },
+    {
+      "command": "EXAMINE MAGAZINE ARTICLE",
+      "status": {
+        "mode": "Communications Mode",
+        "time": "7:08pm",
+        "location": "Dr. Perelman's Office",
+        "date": "3/16/2031"
+      },
+      "presentation": {
+        "version": 3,
+        "lines": [
+          {
+            "text": ">EXAMINE MAGAZINE ARTICLE",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "EXAMINE MAGAZINE ARTICLE",
+                "classes": [
+                  "Style_input"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": "[This is the magazine article that you'll find in your A Mind Forever Voyaging package.]",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": "[This is the magazine article that you'll find in your ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "A",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Mind",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Forever",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " ",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "Voyaging",
+                "classes": [
+                  "Style_emphasized"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": " package.]",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": " ",
+            "classes": [
+              "BufferLine",
+              "BlankPara"
+            ],
+            "runs": [
+              {
+                "text": " ",
+                "classes": [
+                  "BlankLineSpace"
+                ],
+                "tag": "span"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          },
+          {
+            "text": ">",
+            "classes": [
+              "BufferLine",
+              "Style_normal_par"
+            ],
+            "runs": [
+              {
+                "text": ">",
+                "classes": [
+                  "Style_normal"
+                ],
+                "tag": "span"
+              },
+              {
+                "text": "",
+                "classes": [
+                  "Input",
+                  "LineInput"
+                ],
+                "tag": "textarea"
+              }
+            ],
+            "layout": {
+              "textAlign": "start",
+              "marginLeft": "0px",
+              "paddingLeft": "0px",
+              "whiteSpace": "pre-wrap"
+            }
+          }
+        ],
+        "terminalLine": 3,
+        "activeInput": {
+          "kind": "line",
+          "line": 3,
+          "classes": [
+            "Input",
+            "LineInput"
+          ]
+        }
+      }
+    }
+  ]
+}
