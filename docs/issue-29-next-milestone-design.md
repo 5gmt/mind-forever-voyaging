@@ -26,8 +26,8 @@
 
 - 全 capture で canonical command echo は English のまま独立 leaf だった。response 後は `activeInput.kind = "line"` に戻った。今回の範囲に character-input transition はなかった。
 - Fresh capture の assignment run は `Eating a meal` から `Visiting your own home or living quarters` まで **9 leaves** だった。message routine の odd indices 1..17 という historical enumeration と一致し、9件すべてを一つの list boundary 内で保持する必要がある。
-- Security challenge は Parchment 上では一つの prompt line に challenge と textarea が同居し、bridge-v3 では narrow layout による語ごとの run/newline が見えた。これは geometry を翻訳 identity にしてはならない具体例である。既存 `parseSecurityChallenge` / security-decoder は assisted interaction level の command-deck control にすぎず、localized story surface の projection ではない。ordinary projector は active-input line の直前までを切り出すため、この prompt 自体を表示できず、Classic には補助 decoder もない。したがって dynamic challenge shell と canonical values を保持する narrow story projection、または明示的 canonical-surface recovery が必要である。本 milestone は end-to-end 日本語表示を目指すため、前者を follow-up design dependency とする。
-- 初回 simulation の観測例では challenge は `BLACK 60` / answer `78` だったが、色・inner number・answer は fresh run ごとに変わる。正答後の例は `Kennedy Park`, 2/10/2041, 11:16AM で、date/time も random だった。一方、初回が 10 years hence / 2041 で Kennedy Park から始まることは observed flow と historical branch enumeration が一致した。
+- Security challenge は Parchment 上では一つの prompt line に challenge と textarea が同居し、bridge-v3 では narrow layout による語ごとの run/newline が見えた。これは geometry を翻訳 identity にしてはならない具体例である。既存 `parseSecurityChallenge` / security-decoder は assisted interaction level の command-deck control にすぎず、localized story surface の projection ではない。ordinary projector は active-input line の直前までを切り出すため、この prompt 自体を表示できず、Classic には補助 decoder もない。したがって localized challenge shell と canonical color/inner number だけを保持する narrow story projection、または明示的 canonical-surface recovery が必要である。computed outer answer は story output ではなくプレイヤーが求めて入力する解答なので、この projection に含めない。本 milestone は end-to-end 日本語表示を目指すため、前者を follow-up design dependency とする。
+- 初回 simulation の観測例では story challenge は `BLACK 60` で、decoder から求めて入力した answer は `78` だったが、色・inner number・answer は fresh run ごとに変わる。story が表示したのは color/inner number までで、outer answer は表示していない。正答後の例は `Kennedy Park`, 2/10/2041, 11:16AM で、date/time も random だった。一方、初回が 10 years hence / 2041 で Kennedy Park から始まることは observed flow と historical branch enumeration が一致した。
 - `RECORD` 後、Grid mode は `SIMULATION MODE (RECORDING)`、`RECORD OFF` 後は `SIMULATION MODE` に戻った。buffer はそれぞれ `Record feature activated.` / `Record feature deactivated.` という普通の prose turn で、間の `WAIT` は `Time passes...` だった。
 - PEOF で待機した観測では status time が 7:07PM → 7:17PM → 7:19PM → 7:29PM → 7:35PM と進んだ。2 回目は secretary interrupt、4 回目は simulation-ready message によって 10 分未満で中断された。したがって「4 回の WAIT」はこの fresh observed route の再現手順であって、一般化された時刻条件ではない。
 
@@ -53,13 +53,13 @@
 
 ### 2. `Design narrow projections for the simulation brief and security prompt`
 
-- **Scope:** runtime fixture に基づき、(a) indented 9-assignment run を一つの semantic `list` block として順序・list boundary・canonical identity ごと保持する projection、(b) active-input line に同居する security shell を dynamic color/inner number/answer と分離し、Classic を含む localized story surface に提示する projectionを設計・testする。既存 assisted decoder は入力補助として再利用できるが story output の代替とはしない。
+- **Scope:** runtime fixture に基づき、(a) indented 9-assignment run を一つの semantic `list` block として順序・list boundary・canonical identity ごと保持する projection、(b) active-input line に同居する security shell を dynamic color/inner number と分離し、Classic と assisted の両 localized story surface に提示する projectionを設計・testする。story projection は computed outer answer を受け取らず、表示しない。既存 assisted decoder は入力補助として再利用できるが story output の代替とはしない。
 - **Dependencies:** Follow-up 1。
-- **Acceptance boundary:** この2つの observed shape だけに限定する。leading indentation を ordinary `clean()` に渡して失わない。security values と送信値は canonical のまま、未知形は original-English canonical surface へ fail closed する。general list/security framework、GridWindow renderer、geometry identity は作らない。
+- **Acceptance boundary:** この2つの observed shape だけに限定する。leading indentation を ordinary `clean()` に渡して失わない。story projection は両 mode とも localized shell + canonical color/inner number だけを表示する。Classic は outer answer を表示せず、player が package decoder で求めた canonical numeric input を送る。assisted だけは既存 command-deck control が computed outer answer を表示・送信してよい。未知形は original-English canonical surface へ fail closed する。general list/security framework、GridWindow renderer、geometry identity は作らない。
 
 ### 3. `Translate the first simulation brief and Kennedy Park recording loop`
 
-- **Scope:** Follow-up 1 で確定した stable English leavesだけの日本語 copy。4 `WAIT` の ordinary response、secretary scene、Perelman leaves/returns、private-line brief、**9 assignment leavesすべて**、security shell の presentation copy、10-years-hence、Kennedy Park、record on/off を含む。command、dynamic challenge values、numeric answer は English/canonical のまま。
+- **Scope:** Follow-up 1 で確定した stable English leavesだけの日本語 copy。4 `WAIT` の ordinary response、secretary scene、Perelman leaves/returns、private-line brief、**9 assignment leavesすべて**、security shell の presentation copy、10-years-hence、Kennedy Park、record on/off を含む。command、dynamic color/inner number、player が入力する numeric answer は English/canonical のまま。copy に outer answer は含めない。
 - **Dependencies:** 草案は Follow-up 1 と並行可能だが、copy approval と catalog identity は Follow-up 1 の runtime evidence を待つ。
 - **Acceptance boundary:** exact observed-leaf / command-qualified catalog、per-leaf English fallback。新 framework、source-only leaf、status の日本語化、他 room は含めない。必須 path に未翻訳の deterministic English gap を残さない。
 
@@ -67,7 +67,7 @@
 
 - **Scope:** Follow-up 1 の fixtures、Follow-up 2 の narrow projections、Follow-up 3 の approved copy を catalog/unit test と Chromium E2E に統合する。
 - **Dependencies:** 1、2、3 のすべて。
-- **Acceptance boundary:** 4 `WAIT` の echo/ordinary response、secretary、Perelman leaves/returns、通知 prose、9-item semantic list の順序と boundary、English command echo、Classic と assisted の dynamic security challenge/answer、Kennedy Park、recording status toggle、最後の line-input recovery、EN/JA switch、history identity、canonical buffer accessibility exclusivity、RESTORE-safe fallback を検証する。specialized projection は Follow-up 2 で承認した2形状だけに限定する。
+- **Acceptance boundary:** 4 `WAIT` の echo/ordinary response、secretary、Perelman leaves/returns、通知 prose、9-item semantic list の順序と boundary、English command echo、両 mode の story surface に localized security shell + canonical color/inner number だけが出ること、Classic では outer answer が非表示であること、assisted でのみ既存 command-deck が outer answer を表示・送信できること、Kennedy Park、recording status toggle、最後の line-input recovery、EN/JA switch、history identity、canonical buffer accessibility exclusivity、RESTORE-safe fallback を検証する。specialized projection は Follow-up 2 で承認した2形状だけに限定する。
 
 ```mermaid
 graph LR
