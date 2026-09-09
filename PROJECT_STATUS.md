@@ -46,12 +46,12 @@ Issue #13 で、既存の Chromium Playwright acceptance を GitHub Actions の�
 
 Issue #25 で、header、reading/play settings、opening から最初の Communications Mode と `PEOF` scene までの command controls について、visible label と wrapper-owned accessible name を EN / JA で切り替える core UI localization slice を実装した。parser command、state recognition、canonical runtime output は英語のまま維持している。
 
-次の大規模 gameplay milestone と story translation frontier は [Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) で選定する。PEOF inspection coverage の追加はその推奨を先取りしない。
+[Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) では、次の大規模 gameplay milestone と story translation frontier を **Simulation Mode への初回移行と最初の recording loop**（simulation-ready brief、security challenge、Kennedy Park、`RECORD` → `WAIT` → `RECORD OFF`）に選定した。次の実行 frontier は、fresh canonical session からこの必須経路を採取し、secretary / Perelman timed leaves、9-item assignment list、dynamic security prompt、status/input transition の stable identity と dynamic fields を確定する runtime-capture Issue である。その evidence の後、9-item list と active-input security prompt に限定した narrow projection design、Japanese copy、integration/browser verification を進める。
 
 ## 基本的な作業順
 
-1. 次の runtime-observed story translation slice を選定する。
-2. 確立した presentation/history/window/structure model の上で story translation coverage を段階的に広げる。
+1. 選定済みの初回 Simulation Mode loop を fresh canonical runtime で capture し、dynamic identity と structurally richer な2形状の境界を確定する。
+2. 9-item assignment list と active-input security prompt の narrow projection を設計し、runtime-observed Japanese copy と browser verificationを段階的に統合する。
 3. 十分な canonical command corpus と曖昧性処理を設計した後、日本語入力 adapter を検討する。
 
 緊急の regression や canonical integrity の問題はこの順序より優先する。順序を変える場合は、その task の Issue または design note に依存関係と失う保証を記録する。
