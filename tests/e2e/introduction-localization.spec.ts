@@ -1,25 +1,20 @@
 import { expect, test } from "@playwright/test";
 
-test("the introduction switches exact copy in both directions without changing its behavior", async ({ page }) => {
+test("the fresh introduction presents exact Japanese copy and all three Begin variants", async ({ page }) => {
   await page.goto("/");
 
-  let introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
+  // Keep the introduction in its fresh state while selecting the otherwise
+  // inert settings control behind the modal solely as test setup.
+  await page.locator(".header-actions button").nth(2).evaluate((button: HTMLButtonElement) => button.click());
+  await page.locator('.access-panel button[lang="ja"]').evaluate((button: HTMLButtonElement) => button.click());
+
+  const introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
   await expect(introduction).toHaveAttribute("aria-modal", "true");
-  await expect(introduction).toHaveAttribute("lang", "en");
+  await expect(introduction).toHaveAttribute("lang", "ja");
+  await expect(introduction.locator("#intro-title")).toHaveAttribute("lang", "en");
   await expect(introduction.locator(".intro-art, .intro-grid")).toHaveCount(2);
   await expect(introduction.locator(".intro-art")).toHaveAttribute("aria-hidden", "true");
   await expect(introduction.locator(".intro-grid")).toHaveAttribute("aria-hidden", "true");
-  await expect(introduction).toContainText("Read closely. Wander. Talk to people. Notice the ordinary things.");
-  await expect(introduction.getByRole("button", { name: "Begin · Guided" })).toBeVisible();
-
-  await introduction.getByRole("button", { name: "Begin · Guided" }).click();
-  await page.getByRole("button", { name: "Reading and play settings" }).click();
-  const settings = page.getByRole("region", { name: "Reading and play settings" });
-  await settings.getByRole("button", { name: "日本語" }).click();
-  await page.getByRole("button", { name: "Open title and edition information" }).click();
-
-  introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
-  await expect(introduction).toHaveAttribute("lang", "ja");
   await expect(introduction).toContainText("完全収録・1985年のインタラクティブ小説 · Release 79");
   await expect(introduction).toContainText("よく読み、歩き回り、人と話し、ありふれたものに目を留めてください。");
   await expect(introduction).toContainText("著：Steve Meretzky · オリジナル版：Infocom · インタープリター：Parchment");
@@ -45,15 +40,46 @@ test("the introduction switches exact copy in both directions without changing i
   });
   await introduction.getByRole("button", { name: "このエディションを共有" }).click();
   await expect(page.getByRole("status")).toHaveText("リンクをコピーしました");
+});
 
-  await introduction.getByRole("button", { name: "始める · アクションメニュー" }).click();
-  await page.getByRole("region", { name: "読書とプレイの設定" }).getByRole("button", { name: "English" }).click();
+test("the settled introduction localizes Return and restores command focus in both directions", async ({ page }) => {
+  test.setTimeout(60_000);
+  await page.goto("/");
+
+  let introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
+  await expect(introduction.locator("#intro-title")).toHaveAttribute("lang", "en");
+  await introduction.getByRole("button", { name: "Begin · Guided" }).click();
+
+  const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  await expect(continueButton).toBeEnabled({ timeout: 30_000 });
+  await continueButton.click();
+  const commandInput = page.locator("#command-input");
+  await expect(commandInput).toBeEnabled({ timeout: 30_000 });
+
   await page.getByRole("button", { name: "Open title and edition information" }).click();
+  introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
+  await expect(introduction.getByRole("button", { name: "Return to story" })).toBeVisible();
+  await introduction.getByRole("button", { name: "Return to story" }).click();
+  await expect(commandInput).toBeFocused();
 
+  await page.getByRole("button", { name: "Reading and play settings" }).click();
+  let settings = page.getByRole("region", { name: "Reading and play settings" });
+  await settings.getByRole("button", { name: "日本語" }).click();
+  await page.getByRole("button", { name: "Open title and edition information" }).click();
+  introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
+  await expect(introduction).toHaveAttribute("lang", "ja");
+  await expect(introduction.locator("#intro-title")).toHaveAttribute("lang", "en");
+  await expect(introduction.getByRole("button", { name: "物語に戻る" })).toBeVisible();
+  await introduction.getByRole("button", { name: "物語に戻る" }).click();
+  await expect(commandInput).toBeFocused();
+
+  settings = page.getByRole("region", { name: "読書とプレイの設定" });
+  await settings.getByRole("button", { name: "English" }).click();
+  await page.getByRole("button", { name: "Open title and edition information" }).click();
   introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
   await expect(introduction).toHaveAttribute("lang", "en");
   await expect(introduction).toContainText("THE COMPLETE 1985 INTERACTIVE NOVEL · RELEASE 79");
   await expect(introduction).toContainText("Read closely. Wander. Talk to people. Notice the ordinary things.");
   await expect(introduction).toContainText("Written by Steve Meretzky · Original release by Infocom · Interpreter by Parchment");
-  await expect(introduction.getByRole("button", { name: "Begin · Action menus" })).toBeVisible();
+  await expect(introduction.getByRole("button", { name: "Return to story" })).toBeVisible();
 });

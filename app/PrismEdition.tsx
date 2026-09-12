@@ -1272,7 +1272,7 @@ export default function PrismEdition() {
         <div className="intro-art" aria-hidden="true" /><div className="intro-grid" aria-hidden="true" />
         <div className="intro-content">
           <span className="intro-kicker">{uiText(locale, "introKicker")}</span>
-          <h1 id="intro-title"><span>A Mind</span><span>Forever</span><span>Voyaging</span></h1>
+          <h1 id="intro-title" lang="en"><span>A Mind</span><span>Forever</span><span>Voyaging</span></h1>
           <p className="intro-lede">{uiText(locale, "introLede")}</p>
           <div className="intro-principles"><div><span>01</span><strong>{uiText(locale, "introRead")}</strong><p>{uiText(locale, "introReadDescription")}</p></div><div><span>02</span><strong>{uiText(locale, "introExplore")}</strong><p>{uiText(locale, "introExploreDescription")}</p></div><div><span>03</span><strong>{uiText(locale, "introRemember")}</strong><p>{uiText(locale, "introRememberDescription")}</p></div></div>
           <fieldset className="intro-play-style"><legend>{uiText(locale, "introPlayStyle")}</legend><div>{([['classic', 'classic', 'introClassicDescription'], ['guided', 'guided', 'introGuidedDescription'], ['actions', 'actionMenus', 'introActionMenusDescription']] as Array<[InteractionLevel, UiKey, UiKey]>).map(([value, labelKey, copyKey]) => <button type="button" key={value} aria-pressed={interactionLevel === value} className={interactionLevel === value ? "active" : ""} onClick={() => chooseInteractionLevel(value)}><strong>{uiText(locale, labelKey)}</strong><span>{uiText(locale, copyKey)}</span></button>)}</div></fieldset>
