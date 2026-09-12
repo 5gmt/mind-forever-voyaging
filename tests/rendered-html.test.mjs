@@ -128,7 +128,7 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /Classic/);
   assert.match(shell, /Guided/);
   assert.match(shell, /Action menus/);
-  assert.match(shell, /How would you like to play/);
+  assert.match(shell, /uiText\(locale, "introPlayStyle"\)/);
   assert.match(shell, /setIntroOpen\(true\)/);
   assert.doesNotMatch(shell, /setIntroOpen\(!hasVisited\)/);
   assert.doesNotMatch(shell, /localStorage\.getItem\("amfv:(?:designation|modes|years|discoveries)"\)/);
@@ -160,7 +160,7 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /role="dialog" aria-modal="true" aria-labelledby="fieldwork-title"/);
   assert.match(shell, /navigator\.share/);
   assert.match(shell, /https:\/\/mind-forever-voyaging\.netlify\.app\//);
-  assert.match(shell, /Share this edition/);
+  assert.match(shell, /uiText\(locale, "shareEdition"\)/);
   assert.match(shell, /resetWrapperForStory[\s\S]*setCommand\(""\)[\s\S]*setAliasNotice\(null\)[\s\S]*setMapDestinationId\(null\)/);
   assert.match(shell, /Begin the requested observations/);
   assert.match(shell, /Perelman’s brief · nine requested observations/);
@@ -170,7 +170,7 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /canonicalIframeRef/);
   assert.match(shell, /qaIframeRef/);
   assert.doesNotMatch(shell, /You are PRISM, the world’s first sentient computer/);
-  assert.match(shell, /Historical content note/);
+  assert.match(shell, /uiText\(locale, "introContentNote"\)/);
   assert.match(shell, /aria-live="polite"/);
 });
 
@@ -242,6 +242,36 @@ test("localizes the core wrapper UI catalog in both directions", () => {
   assert.equal(uiText("ja", "linkCopied"), "リンクをコピーしました");
   assert.equal(localizeOutletLabel("ja", "PEOF", "Dr. Perelman's Office"), "ペレルマンのオフィス");
   assert.equal(localizeOutletLabel("en", "PEOF", "Dr. Perelman's Office"), "Dr. Perelman's Office");
+});
+
+test("localizes the complete introduction catalog and preserves its English copy", () => {
+  const expected = {
+    introKicker: ["THE COMPLETE 1985 INTERACTIVE NOVEL · RELEASE 79", "完全収録・1985年のインタラクティブ小説 · Release 79"],
+    introLede: ["Read closely. Wander. Talk to people. Notice the ordinary things.", "よく読み、歩き回り、人と話し、ありふれたものに目を留めてください。"],
+    introRead: ["Read", "読む"],
+    introReadDescription: ["Names and small details matter.", "名前や細かな点も重要です。"],
+    introExplore: ["Explore", "探索する"],
+    introExploreDescription: ["People, places, and objects are interactive.", "人、場所、物と関わることができます。"],
+    introRemember: ["Remember", "覚えておく"],
+    introRememberDescription: ["Keep what you think matters.", "大切だと思うことを覚えておいてください。"],
+    introPlayStyle: ["How would you like to play?", "どのようにプレイしますか？"],
+    introClassicDescription: ["The original command line.", "原作どおりのコマンド入力です。"],
+    introGuidedDescription: ["Clickable navigation and editable hints.", "クリック可能な移動操作と、編集できるヒントを表示します。"],
+    introActionMenusDescription: ["Direct actions for useful scene details.", "場面内の有用な対象に直接アクションできます。"],
+    introBegin: ["Begin", "始める"],
+    introReturn: ["Return to story", "物語に戻る"],
+    introOpenPackage: ["Open the original package", "オリジナル版の付属資料を開く"],
+    introContentNote: ["Historical content note", "歴史的内容に関する注意"],
+    introContentWarning: ["The unaltered 1985 text includes depictions and language involving authoritarianism, poverty, racism, religious extremism, suicide, and violence.", "改変していない1985年の本文には、権威主義、貧困、人種差別、宗教的過激主義、自殺、暴力に関する描写と言葉が含まれます。"],
+    introCredits: ["Written by Steve Meretzky · Original release by Infocom · Interpreter by Parchment", "著：Steve Meretzky · オリジナル版：Infocom · インタープリター：Parchment"],
+  };
+
+  for (const [key, [english, japanese]] of Object.entries(expected)) {
+    assert.equal(uiText("en", key), english);
+    assert.equal(uiText("ja", key), japanese);
+  }
+  assert.equal(uiText("en", "shareEdition"), "Share this edition");
+  assert.equal(uiText("ja", "shareEdition"), "このエディションを共有");
 });
 
 test("localizes the real opening whitespace and falls back deterministically", () => {
