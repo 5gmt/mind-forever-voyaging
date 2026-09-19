@@ -127,7 +127,7 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /SceneActions/);
   assert.match(shell, /Classic/);
   assert.match(shell, /Guided/);
-  assert.match(shell, /Action menus/);
+  assert.match(shell, /actionMenus/);
   assert.match(shell, /uiText\(locale, "introPlayStyle"\)/);
   assert.match(shell, /setIntroOpen\(true\)/);
   assert.doesNotMatch(shell, /setIntroOpen\(!hasVisited\)/);
@@ -240,8 +240,16 @@ test("localizes the core wrapper UI catalog in both directions", () => {
   assert.equal(uiText("ja", "issueCommand"), "コマンドを入力");
   assert.equal(uiText("ja", "commandHistoryHelp"), "↑ で以前のコマンドを呼び出せます。");
   assert.equal(uiText("ja", "linkCopied"), "リンクをコピーしました");
-  assert.equal(localizeOutletLabel("ja", "PEOF", "Dr. Perelman's Office"), "ペレルマンのオフィス");
+  assert.equal(localizeOutletLabel("ja", "PEOF", "Dr. Perelman's Office"), "ペレルマン博士のオフィス");
   assert.equal(localizeOutletLabel("en", "PEOF", "Dr. Perelman's Office"), "Dr. Perelman's Office");
+});
+
+test("localizes the approved opening and Communications companion copy", () => {
+  assert.equal(uiText("ja", "carrierLocked"), "信号を捕捉");
+  assert.equal(uiText("ja", "readerCompanion"), "読者ガイド");
+  assert.equal(uiText("ja", "communicationsGuideCopy"), "アウトレットを選ぶと、その場所の映像と音声に接続します。DISPLAY OUTLETS で現在の一覧を再表示します。");
+  assert.equal(uiText("ja", "criticalContextCopy"), "この作品は、記憶、証拠、政治的な約束、そしてインタラクティブな表現が、単に物語を伝えるだけでなく、私たちに何を感じさせうるかを探究しています。");
+  assert.equal(uiText("en", "criticalContextCopy"), "The work explores memory, evidence, political promises, and what interactivity can make us feel rather than merely tell us.");
 });
 
 test("localizes the complete introduction catalog and preserves its English copy", () => {

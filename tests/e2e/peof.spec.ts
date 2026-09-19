@@ -36,6 +36,10 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await page.getByRole("button", { name: /原作を始める/ }).click();
   await expect(presentation).toContainText("通信モードに入りました");
 
+  await page.getByRole("button", { name: "ガイドの表示を切り替える" }).click();
+  const companion = page.getByRole("complementary", { name: "読者ガイド" });
+  await companion.getByRole("tab", { name: "通信" }).click();
+
   const commandInput = page.locator("#command-input");
   await expect(commandInput).toBeEnabled();
   await frame.locator("body").evaluate(() => {
@@ -60,6 +64,9 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await expect(presentation.locator(".story-presentation-title", { hasText: "ペレルマン博士のオフィス" }).last()).toHaveText("ペレルマン博士のオフィス");
   await expect(presentation.locator(".story-presentation-prose", { hasText: "エイブラハム・ペレルマン博士" })).toHaveCount(1);
   await expect(presentation).toContainText("ペレルマン博士は机に向かい、仕事をしている。");
+  await expect(page.locator(".location-block")).toContainText("ペレルマン博士のオフィス");
+  await expect(companion.getByRole("heading", { name: "ペレルマン博士のオフィス" })).toBeVisible();
+  await expect(companion.getByRole("button", { name: /PEOF ペレルマン博士のオフィス 接続済み/ })).toBeVisible();
   await expect(presentation).toContainText("通信モードに入りました");
   const deferredSceneActions = page.locator(".scene-actions").first();
   await expect(deferredSceneActions).toBeVisible();
