@@ -405,6 +405,7 @@ export default function PrismEdition() {
   const [highContrast, setHighContrast] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [locale, setLocale] = useState<Locale>("en");
+  const [preferencesLoaded, setPreferencesLoaded] = useState(false);
   const [recording, setRecording] = useState(false);
   const [activeOutletCode, setActiveOutletCode] = useState<string | null>(null);
   const [packageItem, setPackageItem] = useState<PackageItem | null>(null);
@@ -559,12 +560,15 @@ export default function PrismEdition() {
       setLocale(localStorage.getItem("amfv:locale") === "ja" ? "ja" : "en");
     } catch {
       // Storage improves continuity but never blocks the story.
+    } finally {
+      setPreferencesLoaded(true);
     }
   }, []);
 
   useEffect(() => {
+    if (!preferencesLoaded) return;
     try { localStorage.setItem("amfv:locale", locale); } catch { /* optional */ }
-  }, [locale]);
+  }, [locale, preferencesLoaded]);
 
   useEffect(() => {
     const currentLocalizedHost = (frame: HTMLIFrameElement | null) => {

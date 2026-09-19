@@ -1,12 +1,8 @@
 import { expect, test } from "@playwright/test";
 
 test("the fresh introduction presents exact Japanese copy and all three Begin variants", async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem("amfv:locale", "ja"));
   await page.goto("/");
-
-  // Keep the introduction in its fresh state while selecting the otherwise
-  // inert settings control behind the modal solely as test setup.
-  await page.locator(".header-actions button").nth(2).evaluate((button: HTMLButtonElement) => button.click());
-  await page.locator('.access-panel button[lang="ja"]').evaluate((button: HTMLButtonElement) => button.click());
 
   const introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
   await expect(introduction).toHaveAttribute("aria-modal", "true");
