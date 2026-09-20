@@ -1,6 +1,6 @@
 import { expect, test, type FrameLocator, type Page, type TestInfo } from "@playwright/test";
 
-const canonicalFrame = (page: Page) => page.frameLocator('iframe[title*="canonical Release 79 story"]');
+const canonicalFrame = (page: Page) => page.frameLocator('iframe[src="/player.html"]');
 
 const startFreshJapanesePeof = async (page: Page) => {
   await page.goto("/");
@@ -89,7 +89,7 @@ test("localizes LOOK, desk, and Perelman inspection from a fresh PEOF session", 
   await submitAndExpect(page, commandInput, presentation, "EXAMINE DESK", "ペレルマンの机の上には、デコーダー、街の地図、ボールペン、雑誌記事のプリントアウトなど、さまざまな品が置かれている。");
   await submitAndExpect(page, commandInput, presentation, "EXAMINE DR PERELMAN", "ペレルマンは50代後半の年配の男性で、白い山羊ひげをたくわえている。");
 
-  await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
+  await expect(frame.getByLabel(/Current game prompt|現在のゲームプロンプト/)).toHaveText(">");
   await expect(frame.locator(".GridWindow")).toContainText(/Communications Mode[\s\S]*Dr\. Perelman's Office/i);
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");

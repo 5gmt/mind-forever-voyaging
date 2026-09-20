@@ -260,10 +260,44 @@ test("localizes the approved opening and Communications companion copy", () => {
   assert.equal(uiText("en", "criticalContextCopy"), "The work explores memory, evidence, political promises, and what interactivity can make us feel rather than merely tell us.");
 });
 
+test("contains the complete approved identity rail and general shell copy packet", () => {
+  const approved = {
+    storyContext: ["Story context", "作品情報"],
+    openTitleInformation: ["Open title and edition information", "作品名と版の情報を開く"],
+    editionSubtitle: ["INTERACTIVE NOVEL · RELEASE 79", "インタラクティブ小説 · Release 79"],
+    communicationChannel: ["COMMUNICATION CHANNEL", "通信チャンネル"],
+    prismOnlineCaption: ["PRISM / ONLINE", "PRISM / オンライン"],
+    carrier: ["Carrier", "搬送波"], receiving: ["Receiving", "受信中"],
+    designation: ["Designation", "識別名"],
+    communicationsActive: ["Communications active", "通信機能稼働中"],
+    cognitiveSystemOnline: ["Cognitive system online", "認知システム稼働中"],
+    currentMode: ["Current mode", "現在のモード"],
+    communications: ["Communications", "通信"],
+    releaseSerial: ["RELEASE 79 · SERIAL 851122", "RELEASE 79 · SERIAL 851122"],
+    aboutRelease: ["About this release", "この版について"],
+    skipInteractionControls: ["Skip to interaction controls", "ストーリー操作へスキップ"],
+    interactiveStory: ["Interactive story", "インタラクティブな物語"],
+    prismOnline: ["PRISM online", "PRISM オンライン"],
+    projectDate2031: ["Project date · 2031", "計画年 · 2031"],
+    initializing: ["INITIALIZING", "初期化中"], keyRequested: ["KEY REQUESTED", "キー入力待機中"],
+    awaitingInput: ["AWAITING INPUT", "入力待機中"], processing: ["PROCESSING", "処理中"],
+    canonicalStoryTitle: ["A Mind Forever Voyaging — canonical Release 79 story", "A Mind Forever Voyaging — オリジナル版 Release 79"],
+    currentGamePrompt: ["Current game prompt", "現在のゲームプロンプト"],
+    answerQuestion: ["Answer the question", "質問に答える"], answer: ["Answer", "回答"],
+    yes: ["Yes", "はい"], no: ["No", "いいえ"],
+    openLibrary: ["Open library", "ライブラリを開く"],
+    inspectInterfaces: ["Inspect interfaces", "インターフェースを確認"],
+  };
+  for (const [key, [english, japanese]] of Object.entries(approved)) {
+    assert.equal(uiText("en", key), english, `${key} English`);
+    assert.equal(uiText("ja", key), japanese, `${key} Japanese`);
+  }
+});
+
 test("keeps accessible Japanese names and excluded later-mode English in their own language boundaries", async () => {
   const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");
   assert.match(shell, /className="system-state" lang=\{locale\} aria-label=\{uiText/);
-  assert.match(shell, /<span lang="en">\{systemActivity\}<\/span>/);
+  assert.match(shell, /<span>\{systemActivity\}<\/span>/);
   assert.match(shell, /className="companion-panel" lang=\{locale\} aria-label=\{uiText\(locale, "readerCompanion"\)\}/);
   for (const className of ["library-section", "systems-section", "map-section", "evidence-section", "debug-section"]) {
     assert.match(shell, new RegExp(`className="companion-section ${className}" lang="en"`));
