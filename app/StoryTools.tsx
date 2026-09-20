@@ -2,8 +2,8 @@
 
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
-import { FormEvent, useEffect, useMemo, useState, type CSSProperties } from "react";
-import { localizeSceneActionLabel, localizeSceneObjectName, sceneActionsLocale, sceneActionUiText, type Locale } from "./localization";
+import { FormEvent, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { localizeSceneActionLabel, localizeSceneObjectName, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -249,23 +249,32 @@ export function InterfaceWorkbench({ portIds, sendCommand, disabled }: { portIds
   </div>;
 }
 
-export function PackageOverlay({ item, onSelect, onClose, interactiveMap = false, currentRoomId = null, routePreview = null, routeStepDisabled = false, routeStepLabel = "Use next step", onSelectLandmark, onRouteStep }: { item: PackageItem | null; onSelect: (item: PackageItem) => void; onClose: () => void; interactiveMap?: boolean; currentRoomId?: string | null; routePreview?: MapRoutePreview | null; routeStepDisabled?: boolean; routeStepLabel?: string; onSelectLandmark?: (landmark: RockvilLandmark) => void; onRouteStep?: () => void }) {
+export function PackageOverlay({ item, locale, onSelect, onClose, interactiveMap = false, currentRoomId = null, routePreview = null, routeStepDisabled = false, routeStepLabel = "Use next step", onSelectLandmark, onRouteStep }: { item: PackageItem | null; locale: Locale; onSelect: (item: PackageItem) => void; onClose: () => void; interactiveMap?: boolean; currentRoomId?: string | null; routePreview?: MapRoutePreview | null; routeStepDisabled?: boolean; routeStepLabel?: string; onSelectLandmark?: (landmark: RockvilLandmark) => void; onRouteStep?: () => void }) {
+  const returnFocusRef = useRef<HTMLElement | null>(null);
+  const interactiveLocale = packageInteractiveLocale(locale, interactiveMap);
   useEffect(() => {
     if (!item) return;
+    returnFocusRef.current ??= document.activeElement instanceof HTMLElement ? document.activeElement : null;
     const closeOnEscape = (event: KeyboardEvent) => { if (event.key === "Escape") onClose(); };
     window.addEventListener("keydown", closeOnEscape);
-    return () => window.removeEventListener("keydown", closeOnEscape);
+    return () => {
+      window.removeEventListener("keydown", closeOnEscape);
+      if (!document.querySelector(".package-overlay")) {
+        returnFocusRef.current?.focus();
+        returnFocusRef.current = null;
+      }
+    };
   }, [item, onClose]);
   if (!item) return null;
 
-  return <section className="package-overlay" role="dialog" aria-modal="true" aria-labelledby="package-title">
+  return <section className="package-overlay" role="dialog" aria-modal="true" aria-labelledby="package-title" lang={locale}>
     <div className="package-viewer">
-      <header><div><span className="section-kicker">In the original box</span><h2 id="package-title">AMFV package</h2></div><button type="button" onClick={onClose} aria-label="Close package materials">×</button></header>
-      <nav aria-label="Package materials"><button type="button" aria-current={item === "map"} onClick={() => onSelect("map")}>Rockvil map</button><button type="button" aria-current={item === "decoder"} onClick={() => onSelect("decoder")}>Security decoder</button><button type="button" aria-current={item === "manual"} onClick={() => onSelect("manual")}>Magazine & manual</button></nav>
-      {item === "map" && <figure><div className={`package-image-scroll ${interactiveMap ? "interactive-rockvil-map" : ""}`}><div className="rockvil-map-stage"><img src="/package/rockvil-map-back.jpg" alt="Original 1985 promotional street map of downtown Rockvil, South Dakota, with landmarks and a visitor guide" />{interactiveMap && <div className="map-hotspots" aria-label="Rockvil landmarks">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelectLandmark?.(landmark)} aria-label={`${landmark.label}${landmark.kind === "fieldwork" ? ", fieldwork destination" : ""}${currentRoomId === landmark.targetId ? ", current location" : ""}`}><span>{landmark.label}</span></button>)}</div>}</div></div><figcaption>{interactiveMap ? "Choose a destination on the original map to plot a walking route. Square markers correspond to Perelman’s field brief." : "The 2031 street map supplied with the original game. Zoom your browser or open the image directly for fine print."} <a href="/package/rockvil-map-back.jpg" target="_blank">Open full size ↗</a></figcaption>{interactiveMap && routePreview && <div className="map-route-card"><span>Route</span><strong>{routePreview.destination.label}</strong>{routePreview.arrived ? <p>You have reached the destination.</p> : routePreview.nextCommand ? <><p>{routePreview.steps} {routePreview.steps === 1 ? "step" : "steps"} away. Next: <b>{routePreview.nextCommand.toUpperCase()}</b>{routePreview.nextPlace ? ` toward ${routePreview.nextPlace}` : ""}.</p><button type="button" onClick={onRouteStep} disabled={routeStepDisabled}>{routeStepLabel}</button></> : <p>No reliable walking route starts from the current location. Move to a named street and try again.</p>}</div>}</figure>}
-      {item === "decoder" && <figure><div className="package-image-scroll decoder-image"><img src="/package/security-decoder.jpg" alt="Original PRISM Project Facility Class One Security Mode Access Decoder wheel" /></div><figcaption>The physical decoder supplied in 1985. When the game requests a code, the command deck also offers an accessible digital equivalent.</figcaption></figure>}
-      {item === "manual" && <div className="manual-card"><span aria-hidden="true">D/O</span><div><h3>Dakota Online · April 2031</h3><p>The original magazine, short story, advertising, and instruction manual are preserved together in this scan.</p><a href="/package/amfv-manual.pdf" target="_blank">Read the original PDF ↗</a></div></div>}
-      <footer>Scans preserved by <a href="https://gallery.guetech.org/amfv/amfv.html" target="_blank" rel="noreferrer">The Infocom Gallery</a> and <a href="https://www.mocagh.org/loadpage.php?getgame=amfv" target="_blank" rel="noreferrer">Museum of Computer Adventure Game History</a>.</footer>
+      <header><div><span className="section-kicker">{uiText(locale, "packageDialogKicker")}</span><h2 id="package-title">{uiText(locale, "packageDialogTitle")}</h2></div><button type="button" onClick={onClose} aria-label={uiText(locale, "closePackageMaterials")}>×</button></header>
+      <nav aria-label={uiText(locale, "packageMaterials")}><button type="button" aria-current={item === "map"} onClick={() => onSelect("map")}>{uiText(locale, "rockvilMap")}</button><button type="button" aria-current={item === "decoder"} onClick={() => onSelect("decoder")}>{uiText(locale, "securityDecoder")}</button><button type="button" aria-current={item === "manual"} onClick={() => onSelect("manual")}>{uiText(locale, "magazineManual")}</button></nav>
+      {item === "map" && <figure><div className={`package-image-scroll ${interactiveMap ? "interactive-rockvil-map" : ""}`}><div className="rockvil-map-stage"><img src="/package/rockvil-map-back.jpg" alt={uiText(locale, "packageMapAlt")} />{interactiveMap && <div className="map-hotspots" lang={interactiveLocale} aria-label="Rockvil landmarks">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelectLandmark?.(landmark)} aria-label={`${landmark.label}${landmark.kind === "fieldwork" ? ", fieldwork destination" : ""}${currentRoomId === landmark.targetId ? ", current location" : ""}`}><span>{landmark.label}</span></button>)}</div>}</div></div><figcaption>{interactiveMap ? <span lang={interactiveLocale}>Choose a destination on the original map to plot a walking route. Square markers correspond to Perelman’s field brief.</span> : uiText(locale, "packageMapCaption")} <a href="/package/rockvil-map-back.jpg" target="_blank">{uiText(locale, "openFullSize")}</a></figcaption>{interactiveMap && routePreview && <div className="map-route-card" lang={interactiveLocale}><span>Route</span><strong>{routePreview.destination.label}</strong>{routePreview.arrived ? <p>You have reached the destination.</p> : routePreview.nextCommand ? <><p>{routePreview.steps} {routePreview.steps === 1 ? "step" : "steps"} away. Next: <b>{routePreview.nextCommand.toUpperCase()}</b>{routePreview.nextPlace ? ` toward ${routePreview.nextPlace}` : ""}.</p><button type="button" onClick={onRouteStep} disabled={routeStepDisabled}>{routeStepLabel}</button></> : <p>No reliable walking route starts from the current location. Move to a named street and try again.</p>}</div>}</figure>}
+      {item === "decoder" && <figure><div className="package-image-scroll decoder-image"><img src="/package/security-decoder.jpg" alt={uiText(locale, "packageDecoderAlt")} /></div><figcaption>{uiText(locale, "packageDecoderCaption")}</figcaption></figure>}
+      {item === "manual" && <div className="manual-card"><span aria-hidden="true">D/O</span><div><h3>{uiText(locale, "packageManualHeading")}</h3><p>{uiText(locale, "packageManualDescription")}</p><a href="/package/amfv-manual.pdf" target="_blank">{uiText(locale, "readOriginalPdf")}</a></div></div>}
+      <footer>{uiText(locale, "packageAttributionPrefix")} <a href="https://gallery.guetech.org/amfv/amfv.html" target="_blank" rel="noreferrer">The Infocom Gallery</a> {uiText(locale, "packageAttributionAnd")} <a href="https://www.mocagh.org/loadpage.php?getgame=amfv" target="_blank" rel="noreferrer">Museum of Computer Adventure Game History</a>{uiText(locale, "packageAttributionSuffix")}</footer>
     </div>
   </section>;
 }

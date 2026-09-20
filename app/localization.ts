@@ -132,6 +132,22 @@ const UI = {
     historicalSource: "View the historical source ↗",
     parchmentAbout: "About the Parchment interpreter ↗",
     copyrightNote: "A Mind Forever Voyaging © 1985 Infocom, Inc. Package scans are credited in the Package panel.",
+    packageDialogKicker: "In the original box",
+    packageDialogTitle: "AMFV package",
+    closePackageMaterials: "Close package materials",
+    packageMaterials: "Package materials",
+    magazineManual: "Magazine & manual",
+    packageMapAlt: "Original 1985 promotional street map of downtown Rockvil, South Dakota, with landmarks and a visitor guide",
+    packageMapCaption: "The 2031 street map supplied with the original game. Zoom your browser or open the image directly for fine print.",
+    openFullSize: "Open full size ↗",
+    packageDecoderAlt: "Original PRISM Project Facility Class One Security Mode Access Decoder wheel",
+    packageDecoderCaption: "The physical decoder supplied in 1985. When the game requests a code, the command deck also offers an accessible digital equivalent.",
+    packageManualHeading: "Dakota Online · April 2031",
+    packageManualDescription: "The original magazine, short story, advertising, and instruction manual are preserved together in this scan.",
+    readOriginalPdf: "Read the original PDF ↗",
+    packageAttributionPrefix: "Scans preserved by",
+    packageAttributionAnd: "and",
+    packageAttributionSuffix: ".",
   },
   ja: {
     language: "言語",
@@ -264,11 +280,28 @@ const UI = {
     historicalSource: "歴史的ソースを見る ↗",
     parchmentAbout: "Parchment インタープリターについて ↗",
     copyrightNote: "A Mind Forever Voyaging © 1985 Infocom, Inc. 付属資料のスキャンは「付属資料」パネルでクレジットしています。",
+    packageDialogKicker: "オリジナル版の箱に同梱",
+    packageDialogTitle: "AMFV 付属資料",
+    closePackageMaterials: "付属資料を閉じる",
+    packageMaterials: "付属資料",
+    magazineManual: "雑誌とマニュアル",
+    packageMapAlt: "ランドマークと案内情報を掲載した、サウスダコタ州ロックヴィル中心街の1985年オリジナル販促用街路地図",
+    packageMapCaption: "原作ゲームに同梱された2031年の街路地図です。細かい文字は、ブラウザを拡大するか画像を直接開いて確認してください。",
+    openFullSize: "原寸で開く ↗",
+    packageDecoderAlt: "オリジナルの PRISM Project Facility クラス1セキュリティモード用アクセス・デコーダー・ホイール",
+    packageDecoderCaption: "1985年に同梱された実物のデコーダーです。ゲームがコードを求めるときは、コマンド操作部にもアクセシビリティ対応のデジタル版が表示されます。",
+    packageManualHeading: "Dakota Online · 2031年4月",
+    packageManualDescription: "オリジナルの雑誌、短編小説、広告、操作マニュアルを、このスキャンにまとめて収録しています。",
+    readOriginalPdf: "オリジナルPDFを読む ↗",
+    packageAttributionPrefix: "スキャン資料は",
+    packageAttributionAnd: "および",
+    packageAttributionSuffix: " により保存されています。",
   },
 } as const;
 
 export type UiKey = keyof typeof UI.en;
 export const uiText = (locale: Locale, key: UiKey) => UI[locale][key];
+export const packageInteractiveLocale = (locale: Locale, interactiveMap: boolean): Locale => interactiveMap ? "en" : locale;
 
 const SCENE_ACTION_UI = {
   en: {

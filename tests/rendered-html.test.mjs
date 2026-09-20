@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -181,11 +181,14 @@ test("ships the physical package materials beside the story", async () => {
     access(new URL("../public/package/security-decoder.jpg", import.meta.url)),
     access(new URL("../public/package/amfv-manual.pdf", import.meta.url)),
   ]);
-  const tools = await readFile(new URL("../app/StoryTools.tsx", import.meta.url), "utf8");
-  assert.match(tools, /Original 1985 promotional street map/);
+  const [tools, localization] = await Promise.all([
+    readFile(new URL("../app/StoryTools.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/localization.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(localization, /Original 1985 promotional street map/);
   assert.match(tools, /ROCKVIL_LANDMARKS/);
   assert.match(tools, /map-hotspots/);
-  assert.match(tools, /Dakota Online/);
+  assert.match(localization, /Dakota Online/);
   assert.match(tools, /HVAC Controller/);
   assert.match(tools, /traffic computer, set/);
   assert.match(tools, /\$\{noun\}, hello/);
@@ -195,6 +198,11 @@ test("ships the physical package materials beside the story", async () => {
   assert.match(tools, /refusalOnlyVerbs/);
   assert.match(tools, /RockvilNavigator/);
   assert.match(tools, /fieldwork destination/);
+  assert.equal(packageInteractiveLocale("ja", true), "en");
+  assert.equal(packageInteractiveLocale("ja", false), "ja");
+  assert.match(tools, /className="map-hotspots" lang=\{interactiveLocale\} aria-label="Rockvil landmarks"/);
+  assert.match(tools, /<span lang=\{interactiveLocale\}>Choose a destination/);
+  assert.match(tools, /className="map-route-card" lang=\{interactiveLocale\}/);
   assert.doesNotMatch(tools, /article\|book\|directory/);
   assert.match(tools, /!hasFlag\(object, "TRYTAKEBIT"\)/);
   assert.doesNotMatch(tools, /hasFlag\(object, "CONTBIT"\).*Open/);

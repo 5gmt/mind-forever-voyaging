@@ -1293,7 +1293,7 @@ export default function PrismEdition() {
 
       {qaWarningOpen && <section className="qa-warning-overlay" role="dialog" aria-modal="true" aria-labelledby="qa-warning-title"><div className="qa-warning-card"><span className="section-kicker">Explicit consent required</span><h2 id="qa-warning-title">This reveals the whole structure.</h2><p>Debug mode names future years, later acts, and the ending. It opens a separate noncanonical interpreter with the original developers’ dormant shortcuts restored. QA autosave is disabled; your live Release 79 session waits in memory until you return.</p><div><button type="button" onClick={enableQa}>Enable spoilers & load QA build</button><button type="button" onClick={() => setQaWarningOpen(false)}>Cancel</button></div></div></section>}
 
-      <PackageOverlay item={packageItem} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
+      <PackageOverlay item={packageItem} locale={locale} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
 
       <div className="screen-reader-status" aria-live="polite" aria-hidden={introOpen || qaWarningOpen}>{openingOrCommunications ? <span lang={locale}>{mode === "Communications Mode" ? uiText(locale, "communicationsAnnouncement") : uiText(locale, "storyOpeningAnnouncement")} {currentPlace || ""}</span> : <span lang="en">{mode}. {currentPlace || ""} {displayYear || ""}</span>}</div>
       <div className="era-index" aria-hidden="true" style={{ "--era-index": Math.max(0, eraIndex) } as React.CSSProperties} />
