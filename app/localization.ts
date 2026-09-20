@@ -270,6 +270,14 @@ const UI = {
 export type UiKey = keyof typeof UI.en;
 export const uiText = (locale: Locale, key: UiKey) => UI[locale][key];
 
+const ENGLISH_PHASE_TITLES = new Set(["origin", "comparative", "witness", "lockdown", "epilogue"]);
+
+// Later-phase headings remain English even when the canonical interpreter has
+// returned to Communications Mode. The visible branch, not the mode alone,
+// determines the language inherited by assistive technology.
+export const companionHeaderLanguage = (locale: Locale, mode: string | null, phase: string): Locale =>
+  ENGLISH_PHASE_TITLES.has(phase) || (mode !== null && mode !== "Communications Mode") ? "en" : locale;
+
 const OUTLET_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
     PPCC: "PRISMプロジェクト管制センター",

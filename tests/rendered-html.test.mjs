@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { localizeOutletLabel, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -262,6 +262,12 @@ test("keeps accessible Japanese names and excluded later-mode English in their o
   }
   assert.match(shell, /className="debug-entry" lang="en"/);
   assert.match(shell, /openingOrCommunications \? <span lang=\{locale\}>[\s\S]*: <span lang="en">\{mode\}/);
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "signal"), "ja");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "comparative"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "witness"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "lockdown"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "epilogue"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Simulation Mode", "field"), "en");
 });
 
 test("localizes the complete introduction catalog and preserves its English copy", () => {
