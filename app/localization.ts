@@ -291,6 +291,7 @@ const SCENE_ACTION_UI = {
 
 export type SceneActionUiKey = keyof typeof SCENE_ACTION_UI.en;
 export const sceneActionUiText = (locale: Locale, key: SceneActionUiKey) => SCENE_ACTION_UI[locale][key];
+export const sceneActionsLocale = (locale: Locale, roomId: string | null | undefined): Locale => roomId === "OFFICE" ? locale : "en";
 
 type PeofSceneObjectId = "PERELMAN" | "DESK" | "PERELMAN-DESK" | "DECODER" | "MAP" | "PEN" | "MAGAZINE-ARTICLE";
 type PeofSceneActionId = "talk" | "examine" | "read" | "look-inside";

@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -302,6 +302,11 @@ test("localizes the complete introduction catalog and preserves its English copy
 });
 
 test("localizes only the approved PEOF SceneActions display copy", () => {
+  assert.equal(sceneActionsLocale("ja", "OFFICE"), "ja");
+  assert.equal(sceneActionsLocale("en", "OFFICE"), "en");
+  assert.equal(sceneActionsLocale("ja", "KENNEDY-PARK"), "en");
+  assert.equal(sceneActionsLocale("ja", null), "en");
+
   const shellCopy = {
     guidedLandmark: ["Words mentioned here", "この場面で言及された語"],
     guidedHeading: ["Worth trying", "試してみる"],
@@ -340,6 +345,13 @@ test("localizes only the approved PEOF SceneActions display copy", () => {
   }
   assert.equal(localizeSceneActionLabel("ja", "OFFICE", "LATER-OBJECT", "read", "Read"), "Read");
   assert.equal(localizeSceneActionLabel("ja", "LATER-ROOM", "MAP", "read", "Read"), "Read");
+});
+
+test("keeps both later-scene SceneActions shells and language boundaries in English", async () => {
+  const tools = await readFile(new URL("../app/StoryTools.tsx", import.meta.url), "utf8");
+  assert.match(tools, /const displayLocale = sceneActionsLocale\(locale, roomId\)/);
+  assert.match(tools, /scene-actions scene-words" lang=\{displayLocale\} aria-label=\{sceneActionUiText\(displayLocale, "guidedLandmark"\)\}/);
+  assert.match(tools, /className="scene-actions" lang=\{displayLocale\} aria-label=\{sceneActionUiText\(displayLocale, "actionsLandmark"\)\}/);
 });
 
 test("localizes the real opening whitespace and falls back deterministically", () => {

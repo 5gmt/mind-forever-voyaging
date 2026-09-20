@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
 import { FormEvent, useEffect, useMemo, useState, type CSSProperties } from "react";
-import { localizeSceneActionLabel, localizeSceneObjectName, sceneActionUiText, type Locale } from "./localization";
+import { localizeSceneActionLabel, localizeSceneObjectName, sceneActionsLocale, sceneActionUiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -160,20 +160,21 @@ export function SceneActions({ objects, roomId, level, locale, sendCommand, draf
     hasUsefulSceneAction(object, roomId) && (roomId !== "OFFICE" || PEOF_SCENE_NOUNS.has(object.commandNoun!)),
   ), [objects, roomId]);
   if (!usableObjects.length || level === "classic") return null;
+  const displayLocale = sceneActionsLocale(locale, roomId);
 
-  if (level === "guided") return <section className="scene-actions scene-words" lang={locale} aria-label={sceneActionUiText(locale, "guidedLandmark")}>
-    <div className="scene-actions-heading"><span>{sceneActionUiText(locale, "guidedHeading")}</span><small>{sceneActionUiText(locale, "guidedInstruction")}</small></div>
-    <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{localizeSceneObjectName(locale, roomId, object.id, object.name)}<small>{localizeSceneActionLabel(locale, roomId, object.id, action.id, action.label)}</small></button>; })}</div>
+  if (level === "guided") return <section className="scene-actions scene-words" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "guidedLandmark")}>
+    <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "guidedHeading")}</span><small>{sceneActionUiText(displayLocale, "guidedInstruction")}</small></div>
+    <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{localizeSceneObjectName(displayLocale, roomId, object.id, object.name)}<small>{localizeSceneActionLabel(displayLocale, roomId, object.id, action.id, action.label)}</small></button>; })}</div>
   </section>;
 
   return (
-    <section className="scene-actions" lang={locale} aria-label={sceneActionUiText(locale, "actionsLandmark")}>
-      <div className="scene-actions-heading"><span>{sceneActionUiText(locale, "actionsHeading")}</span><small>{sceneActionUiText(locale, "actionsInstruction")}</small></div>
+    <section className="scene-actions" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "actionsLandmark")}>
+      <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "actionsHeading")}</span><small>{sceneActionUiText(displayLocale, "actionsInstruction")}</small></div>
       <div className="scene-object-grid">
         {usableObjects.map((object) => {
           return <article className="scene-object" key={object.id}>
-            <strong>{localizeSceneObjectName(locale, roomId, object.id, object.name)}</strong>
-            <div>{visibleActionsFor(object, roomId).map((action) => <button type="button" key={action.id} onClick={() => sendCommand(actionCommand(object, action))} disabled={disabled}>{localizeSceneActionLabel(locale, roomId, object.id, action.id, action.label)}</button>)}</div>
+            <strong>{localizeSceneObjectName(displayLocale, roomId, object.id, object.name)}</strong>
+            <div>{visibleActionsFor(object, roomId).map((action) => <button type="button" key={action.id} onClick={() => sendCommand(actionCommand(object, action))} disabled={disabled}>{localizeSceneActionLabel(displayLocale, roomId, object.id, action.id, action.label)}</button>)}</div>
           </article>;
         })}
       </div>
