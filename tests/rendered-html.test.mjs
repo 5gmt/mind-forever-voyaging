@@ -264,6 +264,7 @@ test("keeps accessible Japanese names and excluded later-mode English in their o
   assert.match(shell, /openingOrCommunications \? <span lang=\{locale\}>[\s\S]*: <span lang="en">\{mode\}/);
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "signal"), "ja");
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "comparative"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "comparative", true), "ja");
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "witness"), "en");
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "lockdown"), "en");
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "epilogue"), "en");

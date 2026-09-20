@@ -275,8 +275,17 @@ const ENGLISH_PHASE_TITLES = new Set(["origin", "comparative", "witness", "lockd
 // Later-phase headings remain English even when the canonical interpreter has
 // returned to Communications Mode. The visible branch, not the mode alone,
 // determines the language inherited by assistive technology.
-export const companionHeaderLanguage = (locale: Locale, mode: string | null, phase: string): Locale =>
-  ENGLISH_PHASE_TITLES.has(phase) || (mode !== null && mode !== "Communications Mode") ? "en" : locale;
+export const companionHeaderLanguage = (
+  locale: Locale,
+  mode: string | null,
+  phase: string,
+  hasLocalizedCurrentPlace = false,
+): Locale => {
+  // The rendered heading chooses currentPlace before every phase-owned title,
+  // so its localized outlet name must win here in the same order.
+  if (hasLocalizedCurrentPlace) return locale;
+  return ENGLISH_PHASE_TITLES.has(phase) || (mode !== null && mode !== "Communications Mode") ? "en" : locale;
+};
 
 const OUTLET_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
