@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -198,6 +198,11 @@ test("ships the physical package materials beside the story", async () => {
   assert.match(tools, /refusalOnlyVerbs/);
   assert.match(tools, /RockvilNavigator/);
   assert.match(tools, /fieldwork destination/);
+  assert.equal(packageInteractiveLocale("ja", true), "en");
+  assert.equal(packageInteractiveLocale("ja", false), "ja");
+  assert.match(tools, /className="map-hotspots" lang=\{interactiveLocale\} aria-label="Rockvil landmarks"/);
+  assert.match(tools, /<span lang=\{interactiveLocale\}>Choose a destination/);
+  assert.match(tools, /className="map-route-card" lang=\{interactiveLocale\}/);
   assert.doesNotMatch(tools, /article\|book\|directory/);
   assert.match(tools, /!hasFlag\(object, "TRYTAKEBIT"\)/);
   assert.doesNotMatch(tools, /hasFlag\(object, "CONTBIT"\).*Open/);

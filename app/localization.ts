@@ -301,6 +301,7 @@ const UI = {
 
 export type UiKey = keyof typeof UI.en;
 export const uiText = (locale: Locale, key: UiKey) => UI[locale][key];
+export const packageInteractiveLocale = (locale: Locale, interactiveMap: boolean): Locale => interactiveMap ? "en" : locale;
 
 const SCENE_ACTION_UI = {
   en: {
