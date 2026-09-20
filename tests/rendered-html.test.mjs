@@ -252,6 +252,18 @@ test("localizes the approved opening and Communications companion copy", () => {
   assert.equal(uiText("en", "criticalContextCopy"), "The work explores memory, evidence, political promises, and what interactivity can make us feel rather than merely tell us.");
 });
 
+test("keeps accessible Japanese names and excluded later-mode English in their own language boundaries", async () => {
+  const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");
+  assert.match(shell, /className="system-state" lang=\{locale\} aria-label=\{uiText/);
+  assert.match(shell, /<span lang="en">\{systemActivity\}<\/span>/);
+  assert.match(shell, /className="companion-panel" lang=\{locale\} aria-label=\{uiText\(locale, "readerCompanion"\)\}/);
+  for (const className of ["library-section", "systems-section", "map-section", "evidence-section", "debug-section"]) {
+    assert.match(shell, new RegExp(`className="companion-section ${className}" lang="en"`));
+  }
+  assert.match(shell, /className="debug-entry" lang="en"/);
+  assert.match(shell, /openingOrCommunications \? <span lang=\{locale\}>[\s\S]*: <span lang="en">\{mode\}/);
+});
+
 test("localizes the complete introduction catalog and preserves its English copy", () => {
   const expected = {
     introKicker: ["THE COMPLETE 1985 INTERACTIVE NOVEL · RELEASE 79", "完全収録・1985年のインタラクティブ小説 · Release 79"],
