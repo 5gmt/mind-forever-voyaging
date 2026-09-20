@@ -57,14 +57,14 @@ test("Japanese opening continues into the canonical line input", async ({ page }
   await expect(companion).toContainText("私たちに何を感じさせうるかを探究しています。");
   await companion.getByRole("tab", { name: "ガイド" }).click();
 
-  const frame = page.frameLocator('iframe[title*="canonical Release 79 story"]');
+  const frame = page.frameLocator('iframe[src="/player.html"]');
   const presentation = frame.getByRole("log", { name: "日本語ストーリー表示" });
   await expect(presentation).toHaveAttribute("lang", "ja");
   await expect(presentation).toContainText("［いずれかのキーを押して続けてください。］");
   await expect(presentation).toContainText("明日という日はまだ");
   await expect(presentation).toContainText("William Marsden");
 
-  const canonicalStory = page.locator('iframe[title*="canonical Release 79 story"]');
+  const canonicalStory = page.locator('iframe[src="/player.html"]');
   await expect(canonicalStory).toHaveAttribute("aria-hidden", "false");
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");
@@ -141,7 +141,7 @@ test("fresh Japanese Classic session reaches Communications and PEOF with canoni
   await expect(commandInput).toHaveAttribute("lang", "en");
   await expect(page.locator(".system-state")).toHaveAttribute("lang", "ja");
   await expect(page.locator(".system-state")).toHaveAccessibleName("物語は入力を受け付けています");
-  await expect(page.locator(".system-state").getByText("AWAITING INPUT")).toHaveAttribute("lang", "en");
+  await expect(page.locator(".system-state").getByText("入力待機中")).not.toHaveAttribute("lang", /.+/);
   await expect(companion.getByRole("tab", { name: "通信" })).toHaveCount(0);
   await expect(page.locator(".outlet-switcher")).toHaveCount(0);
 

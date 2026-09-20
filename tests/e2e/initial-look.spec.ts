@@ -1,7 +1,7 @@
 import { expect, test, type FrameLocator, type TestInfo } from "@playwright/test";
 
 const canonicalFrame = (page: import("@playwright/test").Page) =>
-  page.frameLocator('iframe[title*="canonical Release 79 story"]');
+  page.frameLocator('iframe[src="/player.html"]');
 
 const presentationPayload = async (frame: FrameLocator) => frame.locator("body").evaluate(() => {
   const bridge = (window as typeof window & {
@@ -69,7 +69,7 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(canonicalStatus.locator(".reverse")).not.toHaveCount(0);
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");
-  await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
+  await expect(frame.getByLabel(/Current game prompt|現在のゲームプロンプト/)).toHaveText(">");
 
   const commandInput = page.locator("#command-input");
   await frame.locator("body").evaluate(() => {
@@ -123,7 +123,7 @@ test("Japanese history retains localized turns when an unsupported turn falls ba
   await expect(presentation.locator(".story-presentation-command")).toContainText(["LOOK", "INVENTORY", "SCORE"]);
   await expect(presentation).toContainText(/I don't know the word "score\."/i);
 
-  const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
+  const canonicalIframe = page.locator('iframe[src="/player.html"]');
   await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
 
   // The Japanese surface owns its scroll state inside the canonical window.
@@ -210,7 +210,7 @@ test("RESTORE entered directly in the canonical iframe invalidates Japanese disp
   // Returning to Japanese must not resurrect the pre-RESTORE display cache.
   await settings.getByRole("button", { name: "日本語" }).click();
   await expect(presentation).toBeHidden();
-  const canonicalIframe = page.locator('iframe[title*="canonical Release 79 story"]');
+  const canonicalIframe = page.locator('iframe[src="/player.html"]');
   await expect(canonicalIframe).toHaveAttribute("aria-hidden", "false");
   await expect(canonicalIframe).not.toHaveAttribute("inert", "");
 });

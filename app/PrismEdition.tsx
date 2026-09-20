@@ -1046,8 +1046,8 @@ export default function PrismEdition() {
     : mode === "Interface Mode" ? [["Look", "look"], ["Read active ports", "read list of active ports"]]
     : mode === "Sleep Mode" ? [["Return to signals", "enter communications mode"]]
     : [[uiText(locale, "look"), "look"], [uiText(locale, "displayOutlets"), "display outlets"]];
-  if (mode === "Communications Mode" && libraryDiscovered) baseActions.push(["Open library", "enter library mode"]);
-  if (mode === "Communications Mode" && interfaceDiscovered) baseActions.push(["Inspect interfaces", "enter interface mode"]);
+  if (mode === "Communications Mode" && libraryDiscovered) baseActions.push([uiText(locale, "openLibrary"), "enter library mode"]);
+  if (mode === "Communications Mode" && interfaceDiscovered) baseActions.push([uiText(locale, "inspectInterfaces"), "enter interface mode"]);
   for (const knownMode of knownModes) {
     if (knownMode !== mode && knownMode !== "Simulation Mode" && !baseActions.some(([, command]) => command === `enter ${knownMode.toLowerCase()}`)) {
       baseActions.push([knownMode.replace(" Mode", ""), `enter ${knownMode.toLowerCase()}`]);
@@ -1062,7 +1062,7 @@ export default function PrismEdition() {
 
   const phaseLabel: Record<Phase, string> = {
     signal: uiText(locale, "incoming"),
-    awakened: "PRISM online",
+    awakened: uiText(locale, "prismOnline"),
     origin: "Personal archive",
     field: "Simulation",
     comparative: "Simulation archive",
@@ -1070,7 +1070,7 @@ export default function PrismEdition() {
     lockdown: "Restricted",
     epilogue: "Epilogue",
   };
-  const systemActivity = acceptsInput ? (inputKind === "char" ? "KEY REQUESTED" : "AWAITING INPUT") : (playerReady ? "PROCESSING" : "INITIALIZING");
+  const systemActivity = uiText(locale, acceptsInput ? (inputKind === "char" ? "keyRequested" : "awaitingInput") : (playerReady ? "processing" : "initializing"));
   const currentRoomName = displayLocationName(statusLocation) || room?.name || null;
   const currentPlace = mode === "Simulation Mode" ? currentRoomName : mode === "Communications Mode" && activeOutlet ? localizeOutletLabel(locale, activeOutlet.code, activeOutlet.name) : null;
   const openingOrCommunications = !mode || mode === "Communications Mode";
@@ -1100,22 +1100,22 @@ export default function PrismEdition() {
 
   return (
     <main className="prism-edition" data-era={displayYear ?? "system"} data-phase={phase} data-mode={(mode || "opening").replace(" Mode", "").toLowerCase()} data-context-open={contextOpen} data-contrast={highContrast ? "high" : "standard"} data-reduce-motion={reduceMotion} data-qa={qaEnabled ? "true" : "false"}>
-      <a className="skip-link" href="#command-input">Skip to interaction controls</a>
+      <a className="skip-link" href="#command-input" lang={locale}>{uiText(locale, "skipInteractionControls")}</a>
 
-      <aside className="identity-rail" aria-label="Story context" aria-hidden={blockingOverlayOpen} inert={blockingOverlayOpen ? true : undefined}>
-        <button className="wordmark" type="button" onClick={() => setIntroOpen(true)} aria-label="Open title and edition information">
-          <span>A MIND</span><span>FOREVER</span><span>VOYAGING</span>
+      <aside className="identity-rail" aria-label={uiText(locale, "storyContext")} aria-hidden={blockingOverlayOpen} inert={blockingOverlayOpen ? true : undefined}>
+        <button className="wordmark" lang={locale} type="button" onClick={() => setIntroOpen(true)} aria-label={uiText(locale, "openTitleInformation")}>
+          <span lang="en">A MIND</span><span lang="en">FOREVER</span><span lang="en">VOYAGING</span>
         </button>
-        <p className="edition-mark">INTERACTIVE NOVEL · RELEASE 79</p>
-        <div className="era-art" aria-hidden="true"><div className="era-art-image" /><div className="scanline" /><span className="era-caption">{phase === "signal" ? "COMMUNICATION CHANNEL" : phase === "awakened" ? "PRISM / ONLINE" : phase === "origin" ? "PERSONAL / ARCHIVE" : phase === "field" ? `${displayYear || "LIVE"} / ROCKVIL` : phase === "comparative" ? "SIMULATION / ARCHIVE" : phase === "lockdown" ? "CHANNELS / RESTRICTED" : phase === "epilogue" ? "MEMORY / CONTINUING" : "EVIDENCE / REVIEW"}</span></div>
+        <p className="edition-mark" lang={locale}>{locale === "ja" ? <>インタラクティブ小説 · <span lang="en">Release 79</span></> : uiText(locale, "editionSubtitle")}</p>
+        <div className="era-art" aria-hidden="true"><div className="era-art-image" /><div className="scanline" /><span className="era-caption" lang={phase === "signal" || phase === "awakened" ? locale : "en"}>{phase === "signal" ? uiText(locale, "communicationChannel") : phase === "awakened" ? uiText(locale, "prismOnlineCaption") : phase === "origin" ? "PERSONAL / ARCHIVE" : phase === "field" ? `${displayYear || "LIVE"} / ROCKVIL` : phase === "comparative" ? "SIMULATION / ARCHIVE" : phase === "lockdown" ? "CHANNELS / RESTRICTED" : phase === "epilogue" ? "MEMORY / CONTINUING" : "EVIDENCE / REVIEW"}</span></div>
 
         {designationKnown || discovery.identityKnown ? <section className="rail-section" aria-labelledby="identity-heading">
-          <div className="section-kicker" id="identity-heading">Designation</div>
-          <div className="identity-readout"><span className="pulse-dot" /><div><strong>PRISM</strong><small>{discovery.identityKnown ? "Cognitive system online" : "Communications active"}</small></div></div>
-        </section> : <section className="rail-section carrier-readout"><span className="pulse-dot" /><div><span className="section-kicker">Carrier</span><strong>Receiving</strong></div></section>}
+          <div className="section-kicker" id="identity-heading" lang={locale}>{uiText(locale, "designation")}</div>
+          <div className="identity-readout"><span className="pulse-dot" /><div><strong lang="en">PRISM</strong><small lang={locale}>{uiText(locale, discovery.identityKnown ? "cognitiveSystemOnline" : "communicationsActive")}</small></div></div>
+        </section> : <section className="rail-section carrier-readout"><span className="pulse-dot" /><div lang={locale}><span className="section-kicker">{uiText(locale, "carrier")}</span><strong>{uiText(locale, "receiving")}</strong></div></section>}
         {mode && <section className="rail-section" aria-labelledby="mode-heading">
-          <div className="section-kicker" id="mode-heading">Current mode</div>
-          <strong className="mode-readout">{mode.replace(" Mode", "")}</strong><span className="mode-subreadout">{guide.label}</span>
+          <div className="section-kicker" id="mode-heading" lang={locale}>{uiText(locale, "currentMode")}</div>
+          <strong className="mode-readout" lang={mode === "Communications Mode" ? locale : "en"}>{mode === "Communications Mode" ? uiText(locale, "communications") : mode.replace(" Mode", "")}</strong><span className="mode-subreadout" lang={openingOrCommunications ? locale : "en"}>{guide.label}</span>
         </section>}
         {visitedYears.length > 0 && <section className="rail-section timeline-section" aria-labelledby="timeline-heading">
           <div className="section-kicker" id="timeline-heading">Observed horizons</div>
@@ -1124,14 +1124,14 @@ export default function PrismEdition() {
           </ol>
           {availableYears.filter((available) => !visitedYears.includes(available)).length > 0 && <p className="timeline-available">Available by the story: {availableYears.filter((available) => !visitedYears.includes(available)).join(" · ")}</p>}
         </section>}
-        <div className="rail-footer"><span>{qaEnabled ? "NONCANONICAL QA BUILD" : "RELEASE 79 · SERIAL 851122"}</span><button type="button" onClick={() => { setActivePanel("about"); setContextOpen(true); }}>About this release</button></div>
+        <div className="rail-footer"><span lang="en">{qaEnabled ? "NONCANONICAL QA BUILD" : uiText(locale, "releaseSerial")}</span><button lang={locale} type="button" onClick={() => { setActivePanel("about"); setContextOpen(true); }}>{uiText(locale, "aboutRelease")}</button></div>
       </aside>
 
-      <section className="experience-shell" aria-label="Interactive story" aria-hidden={blockingOverlayOpen} inert={blockingOverlayOpen ? true : undefined}>
+      <section className="experience-shell" aria-label={uiText(locale, "interactiveStory")} aria-hidden={blockingOverlayOpen} inert={blockingOverlayOpen ? true : undefined}>
         <header className="console-header">
-          <div className="location-block" aria-live="polite"><span className="section-kicker" lang={phase === "signal" ? locale : "en"}>{phaseLabel[phase]}</span><strong lang={companionHeaderLanguage(locale, mode, phase, mode === "Communications Mode" && Boolean(currentPlace))}>{currentPlace || (phase === "origin" ? "Personal archive" : phase === "comparative" ? "Simulation archive" : phase === "witness" ? "Review channel" : phase === "lockdown" ? "Restricted system" : phase === "epilogue" ? "A final voyage" : mode ? guide.label : uiText(locale, "openingTransmission"))}</strong><span lang={!displayYear && !activeOutlet && !discovery.identityKnown && mode !== "Simulation Mode" && !["origin", "comparative", "witness", "lockdown", "epilogue"].includes(phase) ? locale : "en"}>{displayYear ? `${displayYear} · ${currentPlace || "Rockvil"}` : activeOutlet ? `OUTLET ${activeOutlet.code}` : phase === "origin" ? "Memory files" : phase === "comparative" ? "Visited horizons" : phase === "witness" ? "Findings received" : phase === "lockdown" ? "External control detected" : phase === "epilogue" ? "Memory continuing" : mode === "Simulation Mode" ? "Locating…" : discovery.identityKnown ? "Project date · 2031" : uiText(locale, "carrierLocked")}</span></div>
+          <div className="location-block" aria-live="polite"><span className="section-kicker" lang={phase === "signal" || phase === "awakened" ? locale : "en"}>{phaseLabel[phase]}</span><strong lang={companionHeaderLanguage(locale, mode, phase, mode === "Communications Mode" && Boolean(currentPlace))}>{currentPlace || (phase === "origin" ? "Personal archive" : phase === "comparative" ? "Simulation archive" : phase === "witness" ? "Review channel" : phase === "lockdown" ? "Restricted system" : phase === "epilogue" ? "A final voyage" : mode ? guide.label : uiText(locale, "openingTransmission"))}</strong><span lang={!displayYear && !activeOutlet && mode !== "Simulation Mode" && !["origin", "comparative", "witness", "lockdown", "epilogue"].includes(phase) ? locale : "en"}>{displayYear ? `${displayYear} · ${currentPlace || "Rockvil"}` : activeOutlet ? <>{locale === "ja" ? "アウトレット " : "OUTLET "}<span lang="en">{activeOutlet.code}</span></> : phase === "origin" ? "Memory files" : phase === "comparative" ? "Visited horizons" : phase === "witness" ? "Findings received" : phase === "lockdown" ? "External control detected" : phase === "epilogue" ? "Memory continuing" : mode === "Simulation Mode" ? "Locating…" : discovery.identityKnown ? uiText(locale, "projectDate2031") : uiText(locale, "carrierLocked")}</span></div>
           {phase === "lockdown" && <div className="lockdown-banner">CHANNELS RESTRICTED</div>}
-          <div className="system-state" lang={locale} aria-label={uiText(locale, acceptsInput ? "storyReady" : "storyProcessing")}><span className={acceptsInput ? "state-light ready" : "state-light"}></span><span lang="en">{systemActivity}</span></div>
+          <div className="system-state" lang={locale} aria-label={uiText(locale, acceptsInput ? "storyReady" : "storyProcessing")}><span className={acceptsInput ? "state-light ready" : "state-light"}></span><span>{systemActivity}</span></div>
           <div className="header-actions" lang={locale}>
             <button type="button" onClick={() => setContextOpen((value) => !value)} aria-pressed={contextOpen} aria-label={uiText(locale, "toggleCompanion")} title={uiText(locale, "toggleCompanion")}>◫<span>{uiText(locale, "companion")}</span></button>
             <button type="button" onClick={() => setPackageItem("map")} aria-label={uiText(locale, "openPackage")} title={uiText(locale, "openPackage")}>▧<span>{uiText(locale, "package")}</span></button>
@@ -1152,7 +1152,7 @@ export default function PrismEdition() {
 
         <div className="story-frame-wrap">
           {!playerReady && <div className="player-loading" lang={locale}><span className="loading-prism">◇</span><p>{uiText(locale, "opening")}</p></div>}
-          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title="A Mind Forever Voyaging — canonical Release 79 story" aria-hidden={qaEnabled} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
+          <iframe ref={canonicalIframeRef} className={`story-frame${qaEnabled ? " story-frame-hidden" : ""}`} src="/player.html" title={uiText(locale, "canonicalStoryTitle")} aria-hidden={qaEnabled} sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />
           {qaEnabled && <iframe key={`qa-${iframeNonce}`} ref={qaIframeRef} className="story-frame" src={`/player.html?qa=1&run=${iframeNonce}`} title="A Mind Forever Voyaging — noncanonical QA story" sandbox="allow-scripts allow-same-origin allow-downloads allow-modals" />}
           {localizedMode && localizedHost && createPortal(<>
           <div ref={presentationRef} onScroll={(event) => { const node = event.currentTarget; followPresentationRef.current = node.scrollHeight - node.scrollTop - node.clientHeight < 48; }} className="story-presentation-scroll">
@@ -1173,7 +1173,7 @@ export default function PrismEdition() {
                         ? <ul key={`${entry.entryId}-${blockIndex}`} className="story-presentation-list">{block.items?.map((item, itemIndex) => <li key={`${entry.entryId}-${blockIndex}-${itemIndex}`} lang={item === block.canonicalItems?.[itemIndex] ? "en" : undefined}>{item}</li>)}</ul>
                         : <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prose" lang={block.text === block.canonicalText ? "en" : undefined}>{block.text}</p>))}
           </div>
-          {livePresentation?.activeInput?.kind === "line" && <div className="story-presentation-active-prompt" lang="en" aria-label="Current game prompt">&gt;</div>}
+          {livePresentation?.activeInput?.kind === "line" && <div className="story-presentation-active-prompt" lang="en" aria-label={uiText(locale, "currentGamePrompt")}>&gt;</div>}
           </div>
           </>, localizedHost)}
           <div className="story-vignette" aria-hidden="true" />
@@ -1218,7 +1218,7 @@ export default function PrismEdition() {
             <div>{interfacePortIds.map((id) => { const port = INTERFACE_PORTS.find((candidate) => candidate.id === id)!; return <button type="button" key={id} onClick={() => sendCommand(`${port.name}, status`)} disabled={!acceptsInput}><span className="system-node" /><strong>{port.name}</strong><small>Status</small></button>; })}</div>
           </section>}
 
-          {!assistedSecurity && !assistedYearSelector && yesNoPrompt && <div className="answer-buttons" aria-label="Answer the question"><span>Answer</span><button type="button" onClick={() => postCommand("y", true)} disabled={!acceptsInput}>Yes</button><button type="button" onClick={() => postCommand("n", true)} disabled={!acceptsInput}>No</button></div>}
+          {!assistedSecurity && !assistedYearSelector && yesNoPrompt && <div className="answer-buttons" lang={locale} aria-label={uiText(locale, "answerQuestion")}><span>{uiText(locale, "answer")}</span><button type="button" onClick={() => postCommand("y", true)} disabled={!acceptsInput}>{uiText(locale, "yes")}</button><button type="button" onClick={() => postCommand("n", true)} disabled={!acceptsInput}>{uiText(locale, "no")}</button></div>}
 
           {!assistedSecurity && !assistedYearSelector && !yesNoPrompt && assisted && inputKind === "line" && simulationReady && <section className="simulation-ready" aria-label="Simulation Mode available">
             <div><span className="section-kicker">{simulationPrompt.kicker}</span><strong>{simulationPrompt.title}</strong><small>{simulationPrompt.detail}</small></div>
@@ -1233,7 +1233,7 @@ export default function PrismEdition() {
               <div className="command-field"><span aria-hidden="true">›</span><input ref={commandRef} id="command-input" lang="en" value={command} onChange={(event) => { setCommand(event.target.value); setAliasNotice(null); }} onKeyDown={navigateHistory} placeholder={mode === "Simulation Mode" ? uiText(locale, "simulationPlaceholder") : mode === "Library Mode" ? uiText(locale, "libraryPlaceholder") : uiText(locale, "commandPlaceholder")} autoComplete="off" spellCheck="false" aria-describedby="command-help" /><button type="submit" disabled={!command.trim() || !acceptsInput}>{uiText(locale, "send")} <span aria-hidden="true">↵</span></button></div>
               <div className="command-meta" id="command-help"><span>{commandHelp}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
-            {assisted && <div className="quick-actions" lang={locale} aria-label={uiText(locale, "commonActions")}>{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput} lang={["look", "display outlets"].includes(value) ? locale : "en"}>{label}</button>)}</div>}
+            {assisted && <div className="quick-actions" lang={locale} aria-label={uiText(locale, "commonActions")}>{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput} lang={["look", "display outlets", "enter library mode", "enter interface mode"].includes(value) ? locale : "en"}>{label}</button>)}</div>}
             {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={contextualObjects} roomId={mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : room?.id} level={interactionLevel} locale={locale} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
           </>)}
         </section>

@@ -1,7 +1,7 @@
 import { expect, test, type FrameLocator, type TestInfo } from "@playwright/test";
 
 const canonicalFrame = (page: import("@playwright/test").Page) =>
-  page.frameLocator('iframe[title*="canonical Release 79 story"]');
+  page.frameLocator('iframe[src="/player.html"]');
 
 const attachPayload = async (testInfo: TestInfo, frame: FrameLocator) => {
   const payload = await frame.locator("body").evaluate(() => {
@@ -102,7 +102,7 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   }
   await actionMenus.locator(".scene-object", { has: page.getByText("机", { exact: true }) }).getByRole("button", { name: "中をのぞく" }).click();
   await expect(presentation.locator(".story-presentation-command").last()).toHaveText(/^> LOOK INSIDE DESK$/i);
-  await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
+  await expect(frame.getByLabel(/Current game prompt|現在のゲームプロンプト/)).toHaveText(">");
   await expect(frame.locator(".GridWindow")).toContainText(/Dr\. Perelman's Office/i);
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");

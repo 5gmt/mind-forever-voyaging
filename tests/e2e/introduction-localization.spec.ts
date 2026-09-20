@@ -61,7 +61,7 @@ test("the settled introduction localizes Return and restores command focus in bo
   await page.getByRole("button", { name: "Reading and play settings" }).click();
   let settings = page.getByRole("region", { name: "Reading and play settings" });
   await settings.getByRole("button", { name: "日本語" }).click();
-  await page.getByRole("button", { name: "Open title and edition information" }).click();
+  await page.getByRole("button", { name: "作品名と版の情報を開く" }).click();
   introduction = page.getByRole("dialog", { name: "A Mind Forever Voyaging" });
   await expect(introduction).toHaveAttribute("lang", "ja");
   await expect(introduction.locator("#intro-title")).toHaveAttribute("lang", "en");
