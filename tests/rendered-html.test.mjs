@@ -181,11 +181,14 @@ test("ships the physical package materials beside the story", async () => {
     access(new URL("../public/package/security-decoder.jpg", import.meta.url)),
     access(new URL("../public/package/amfv-manual.pdf", import.meta.url)),
   ]);
-  const tools = await readFile(new URL("../app/StoryTools.tsx", import.meta.url), "utf8");
-  assert.match(tools, /Original 1985 promotional street map/);
+  const [tools, localization] = await Promise.all([
+    readFile(new URL("../app/StoryTools.tsx", import.meta.url), "utf8"),
+    readFile(new URL("../app/localization.ts", import.meta.url), "utf8"),
+  ]);
+  assert.match(localization, /Original 1985 promotional street map/);
   assert.match(tools, /ROCKVIL_LANDMARKS/);
   assert.match(tools, /map-hotspots/);
-  assert.match(tools, /Dakota Online/);
+  assert.match(localization, /Dakota Online/);
   assert.match(tools, /HVAC Controller/);
   assert.match(tools, /traffic computer, set/);
   assert.match(tools, /\$\{noun\}, hello/);

@@ -26,9 +26,9 @@ test("the fresh introduction presents exact Japanese copy and all three Begin va
   await expect(introduction.getByRole("button", { name: "始める · アクションメニュー" })).toBeVisible();
 
   await introduction.getByRole("button", { name: "オリジナル版の付属資料を開く" }).click();
-  await expect(page.getByRole("dialog", { name: "AMFV package" })).toBeVisible();
+  await expect(page.getByRole("dialog", { name: "AMFV 付属資料" })).toBeVisible();
   await expect(page.locator(".intro-overlay")).toHaveAttribute("aria-hidden", "true");
-  await page.getByRole("button", { name: "Close package materials" }).click();
+  await page.getByRole("button", { name: "付属資料を閉じる" }).click();
 
   await page.evaluate(() => {
     Object.defineProperty(navigator, "share", { configurable: true, value: undefined });

@@ -126,7 +126,7 @@ test("localizes the magazine article, preserves SCORE fallback, and restores can
   await expect(presentation).toContainText(/I don't know the word "score\."/i);
   await expect(presentation.locator(".story-presentation-prose", { hasText: /I don't know the word "score\."/i })).toHaveAttribute("lang", "en");
   await submitAndExpect(page, commandInput, presentation, "EXAMINE MAGAZINE ARTICLE", "［これは、あなたの『A Mind Forever Voyaging』パッケージに入っている雑誌記事です。］");
-  await page.getByRole("button", { name: "Close package materials" }).click();
+  await page.getByRole("button", { name: "付属資料を閉じる" }).click();
 
   await page.locator(".access-panel button[lang='en']").click();
   await expect(presentation).toBeHidden();
