@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
 import { FormEvent, useEffect, useMemo, useState, type CSSProperties } from "react";
+import { localizeSceneActionLabel, localizeSceneObjectName, sceneActionsLocale, sceneActionUiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -127,8 +128,24 @@ const actionsFor = (object: WorldObject, roomId?: string | null) => {
 
 export const hasUsefulSceneAction = (object: WorldObject, roomId?: string | null) => Boolean(object.commandNoun && actionsFor(object, roomId).length);
 
-const guidedActionFor = (object: WorldObject, roomId?: string | null) => {
+const PEOF_ACTION_IDS: Readonly<Record<string, readonly string[]>> = {
+  perelman: ["talk", "examine"],
+  desk: ["examine", "look-inside"],
+  decoder: ["examine", "read"],
+  map: ["examine", "read"],
+  pen: ["examine"],
+  "magazine article": ["examine", "read"],
+};
+
+const visibleActionsFor = (object: WorldObject, roomId?: string | null) => {
   const actions = actionsFor(object, roomId);
+  if (roomId !== "OFFICE" || !object.commandNoun) return actions;
+  const approved = PEOF_ACTION_IDS[object.commandNoun];
+  return approved ? approved.flatMap((id) => actions.find((action) => action.id === id) ?? []) : [];
+};
+
+const guidedActionFor = (object: WorldObject, roomId?: string | null) => {
+  const actions = visibleActionsFor(object, roomId);
   if (hasFlag(object, "ACTORBIT")) return actions.find((action) => action.id === "talk") ?? actions[0];
   if (hasFlag(object, "READBIT") || object.hasText || ["MAP", "DECODER", "MAGAZINE-ARTICLE"].includes(object.id)) return actions.find((action) => action.id === "read") ?? actions[0];
   return actions.find((action) => action.id === "examine") ?? actions[0];
@@ -136,23 +153,28 @@ const guidedActionFor = (object: WorldObject, roomId?: string | null) => {
 
 const actionCommand = (object: WorldObject, action: SceneAction) => action.command(object.commandNoun!);
 
-export function SceneActions({ objects, roomId, level, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
-  const usableObjects = useMemo(() => objects.filter((object) => hasUsefulSceneAction(object, roomId)), [objects, roomId]);
-  if (!usableObjects.length || level === "classic") return null;
+const PEOF_SCENE_NOUNS = new Set(["perelman", "desk", "decoder", "map", "pen", "magazine article"]);
 
-  if (level === "guided") return <section className="scene-actions scene-words" aria-label="Words mentioned here">
-    <div className="scene-actions-heading"><span>Worth trying</span><small>Choose one to draft a command</small></div>
-    <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{object.name}<small>{action.label}</small></button>; })}</div>
+export function SceneActions({ objects, roomId, level, locale, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; locale: Locale; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
+  const usableObjects = useMemo(() => objects.filter((object) =>
+    hasUsefulSceneAction(object, roomId) && (roomId !== "OFFICE" || PEOF_SCENE_NOUNS.has(object.commandNoun!)),
+  ), [objects, roomId]);
+  if (!usableObjects.length || level === "classic") return null;
+  const displayLocale = sceneActionsLocale(locale, roomId);
+
+  if (level === "guided") return <section className="scene-actions scene-words" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "guidedLandmark")}>
+    <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "guidedHeading")}</span><small>{sceneActionUiText(displayLocale, "guidedInstruction")}</small></div>
+    <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{localizeSceneObjectName(displayLocale, roomId, object.id, object.name)}<small>{localizeSceneActionLabel(displayLocale, roomId, object.id, action.id, action.label)}</small></button>; })}</div>
   </section>;
 
   return (
-    <section className="scene-actions" aria-label="Actions for things mentioned here">
-      <div className="scene-actions-heading"><span>In this scene</span><small>Actions written into the original story</small></div>
+    <section className="scene-actions" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "actionsLandmark")}>
+      <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "actionsHeading")}</span><small>{sceneActionUiText(displayLocale, "actionsInstruction")}</small></div>
       <div className="scene-object-grid">
         {usableObjects.map((object) => {
           return <article className="scene-object" key={object.id}>
-            <strong>{object.name}</strong>
-            <div>{actionsFor(object, roomId).map((action) => <button type="button" key={action.id} onClick={() => sendCommand(actionCommand(object, action))} disabled={disabled}>{action.label}</button>)}</div>
+            <strong>{localizeSceneObjectName(displayLocale, roomId, object.id, object.name)}</strong>
+            <div>{visibleActionsFor(object, roomId).map((action) => <button type="button" key={action.id} onClick={() => sendCommand(actionCommand(object, action))} disabled={disabled}>{localizeSceneActionLabel(displayLocale, roomId, object.id, action.id, action.label)}</button>)}</div>
           </article>;
         })}
       </div>

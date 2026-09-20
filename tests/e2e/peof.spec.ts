@@ -68,9 +68,40 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await expect(companion.getByRole("heading", { name: "ペレルマン博士のオフィス" })).toBeVisible();
   await expect(companion.getByRole("button", { name: /PEOF ペレルマン博士のオフィス 接続済み/ })).toBeVisible();
   await expect(presentation).toContainText("通信モードに入りました");
-  const deferredSceneActions = page.locator(".scene-actions").first();
-  await expect(deferredSceneActions).toBeVisible();
-  expect(await deferredSceneActions.evaluate((element) => element.closest("[lang]")?.getAttribute("lang"))).toBe("en");
+  const guidedSceneActions = page.getByRole("region", { name: "この場面で言及された語" });
+  await expect(guidedSceneActions).toBeVisible();
+  await expect(guidedSceneActions).toHaveAttribute("lang", "ja");
+  await expect(guidedSceneActions.locator(".scene-actions-heading span")).toHaveText("試してみる");
+  await expect(guidedSceneActions.locator(".scene-actions-heading small")).toHaveText("選ぶとコマンドを下書きします");
+  await expect(guidedSceneActions.getByRole("button")).toHaveCount(6);
+  for (const name of ["ペレルマン博士話す", "机調べる", "デコーダー読む", "地図読む", "ペン調べる", "雑誌記事読む"]) {
+    await expect(guidedSceneActions.getByRole("button").filter({ hasText: name })).toBeVisible();
+  }
+  const commandsBeforeDraft = await presentation.locator(".story-presentation-command").count();
+  await guidedSceneActions.getByRole("button").filter({ hasText: "ペレルマン博士話す" }).click();
+  await expect(commandInput).toHaveValue("perelman, hello");
+  await expect(commandInput).toBeFocused();
+  await expect(presentation.locator(".story-presentation-command")).toHaveCount(commandsBeforeDraft);
+
+  await settings.getByRole("button", { name: "アクションメニュー" }).click();
+  const actionMenus = page.getByRole("region", { name: "この場面で言及された対象へのアクション" });
+  await expect(actionMenus).toBeVisible();
+  await expect(actionMenus.locator(".scene-actions-heading span")).toHaveText("この場面で");
+  await expect(actionMenus.locator(".scene-actions-heading small")).toHaveText("原作に用意されたアクション");
+  const expectedActions = [
+    ["ペレルマン博士", ["話す", "調べる"]],
+    ["机", ["調べる", "中をのぞく"]],
+    ["デコーダー", ["調べる", "読む"]],
+    ["地図", ["調べる", "読む"]],
+    ["ペン", ["調べる"]],
+    ["雑誌記事", ["調べる", "読む"]],
+  ] as const;
+  for (const [name, labels] of expectedActions) {
+    const object = actionMenus.locator(".scene-object", { has: page.getByText(name, { exact: true }) });
+    await expect(object.getByRole("button")).toHaveText(labels);
+  }
+  await actionMenus.locator(".scene-object", { has: page.getByText("机", { exact: true }) }).getByRole("button", { name: "中をのぞく" }).click();
+  await expect(presentation.locator(".story-presentation-command").last()).toHaveText(/^> LOOK INSIDE DESK$/i);
   await expect(frame.getByLabel("Current game prompt")).toHaveText(">");
   await expect(frame.locator(".GridWindow")).toContainText(/Dr\. Perelman's Office/i);
   await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
@@ -91,6 +122,9 @@ test("fresh Japanese session presents the observed PEOF office scene and recover
   await expect(presentation.locator(".story-presentation-command")).toContainText(["PEOF", "SCORE"]);
 
   await settings.getByRole("button", { name: "English" }).click();
+  const englishActionMenus = page.getByRole("region", { name: "Actions for things mentioned here" });
+  await expect(englishActionMenus).toBeVisible();
+  await expect(englishActionMenus.locator(".scene-object", { has: page.getByText("Dr. Perelman", { exact: true }) }).getByRole("button")).toHaveText(["Talk", "Examine"]);
   await expect(presentation).toBeHidden();
   await expect(frame.locator(".BufferWindowInner")).not.toHaveAttribute("inert", "");
   const canonicalInput = frame.locator("textarea.Input.LineInput");

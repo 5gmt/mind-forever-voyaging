@@ -270,6 +270,60 @@ const UI = {
 export type UiKey = keyof typeof UI.en;
 export const uiText = (locale: Locale, key: UiKey) => UI[locale][key];
 
+const SCENE_ACTION_UI = {
+  en: {
+    guidedLandmark: "Words mentioned here",
+    guidedHeading: "Worth trying",
+    guidedInstruction: "Choose one to draft a command",
+    actionsLandmark: "Actions for things mentioned here",
+    actionsHeading: "In this scene",
+    actionsInstruction: "Actions written into the original story",
+  },
+  ja: {
+    guidedLandmark: "この場面で言及された語",
+    guidedHeading: "試してみる",
+    guidedInstruction: "選ぶとコマンドを下書きします",
+    actionsLandmark: "この場面で言及された対象へのアクション",
+    actionsHeading: "この場面で",
+    actionsInstruction: "原作に用意されたアクション",
+  },
+} as const;
+
+export type SceneActionUiKey = keyof typeof SCENE_ACTION_UI.en;
+export const sceneActionUiText = (locale: Locale, key: SceneActionUiKey) => SCENE_ACTION_UI[locale][key];
+export const sceneActionsLocale = (locale: Locale, roomId: string | null | undefined): Locale => roomId === "OFFICE" ? locale : "en";
+
+type PeofSceneObjectId = "PERELMAN" | "DESK" | "PERELMAN-DESK" | "DECODER" | "MAP" | "PEN" | "MAGAZINE-ARTICLE";
+type PeofSceneActionId = "talk" | "examine" | "read" | "look-inside";
+
+const PEOF_SCENE_OBJECT_NAMES: Readonly<Record<PeofSceneObjectId, string>> = {
+  PERELMAN: "ペレルマン博士",
+  DESK: "机",
+  "PERELMAN-DESK": "机",
+  DECODER: "デコーダー",
+  MAP: "地図",
+  PEN: "ペン",
+  "MAGAZINE-ARTICLE": "雑誌記事",
+};
+
+const PEOF_SCENE_ACTION_LABELS: Readonly<Record<PeofSceneActionId, string>> = {
+  talk: "話す",
+  examine: "調べる",
+  read: "読む",
+  "look-inside": "中をのぞく",
+};
+
+const isPeofSceneObject = (objectId: string): objectId is PeofSceneObjectId => objectId in PEOF_SCENE_OBJECT_NAMES;
+const isPeofSceneAction = (actionId: string): actionId is PeofSceneActionId => actionId in PEOF_SCENE_ACTION_LABELS;
+
+export const localizeSceneObjectName = (locale: Locale, roomId: string | null | undefined, objectId: string, canonicalName: string) =>
+  locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) ? PEOF_SCENE_OBJECT_NAMES[objectId] : canonicalName;
+
+export const localizeSceneActionLabel = (locale: Locale, roomId: string | null | undefined, objectId: string, actionId: string, canonicalLabel: string) =>
+  locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) && isPeofSceneAction(actionId)
+    ? PEOF_SCENE_ACTION_LABELS[actionId]
+    : canonicalLabel;
+
 const ENGLISH_PHASE_TITLES = new Set(["origin", "comparative", "witness", "lockdown", "epilogue"]);
 
 // Later-phase headings remain English even when the canonical interpreter has
