@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { companionHeaderLanguage, localizeOutletLabel, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -299,6 +299,47 @@ test("localizes the complete introduction catalog and preserves its English copy
   }
   assert.equal(uiText("en", "shareEdition"), "Share this edition");
   assert.equal(uiText("ja", "shareEdition"), "このエディションを共有");
+});
+
+test("localizes only the approved PEOF SceneActions display copy", () => {
+  const shellCopy = {
+    guidedLandmark: ["Words mentioned here", "この場面で言及された語"],
+    guidedHeading: ["Worth trying", "試してみる"],
+    guidedInstruction: ["Choose one to draft a command", "選ぶとコマンドを下書きします"],
+    actionsLandmark: ["Actions for things mentioned here", "この場面で言及された対象へのアクション"],
+    actionsHeading: ["In this scene", "この場面で"],
+    actionsInstruction: ["Actions written into the original story", "原作に用意されたアクション"],
+  };
+  for (const [key, [english, japanese]] of Object.entries(shellCopy)) {
+    assert.equal(sceneActionUiText("en", key), english);
+    assert.equal(sceneActionUiText("ja", key), japanese);
+  }
+
+  for (const [id, english, japanese] of [
+    ["PERELMAN", "Dr. Perelman", "ペレルマン博士"],
+    ["DESK", "desk", "机"],
+    ["DECODER", "decoder", "デコーダー"],
+    ["MAP", "map", "地図"],
+    ["PEN", "pen", "ペン"],
+    ["MAGAZINE-ARTICLE", "magazine article", "雑誌記事"],
+  ]) {
+    assert.equal(localizeSceneObjectName("en", "OFFICE", id, english), english);
+    assert.equal(localizeSceneObjectName("ja", "OFFICE", id, english), japanese);
+  }
+  assert.equal(localizeSceneObjectName("ja", "OFFICE", "LATER-OBJECT", "later object"), "later object");
+  assert.equal(localizeSceneObjectName("ja", "LATER-ROOM", "MAP", "map"), "map");
+
+  for (const [objectId, actionId, english, japanese] of [
+    ["PERELMAN", "talk", "Talk", "話す"],
+    ["PERELMAN", "examine", "Examine", "調べる"],
+    ["DESK", "look-inside", "Look inside", "中をのぞく"],
+    ["DECODER", "read", "Read", "読む"],
+  ]) {
+    assert.equal(localizeSceneActionLabel("en", "OFFICE", objectId, actionId, english), english);
+    assert.equal(localizeSceneActionLabel("ja", "OFFICE", objectId, actionId, english), japanese);
+  }
+  assert.equal(localizeSceneActionLabel("ja", "OFFICE", "LATER-OBJECT", "read", "Read"), "Read");
+  assert.equal(localizeSceneActionLabel("ja", "LATER-ROOM", "MAP", "read", "Read"), "Read");
 });
 
 test("localizes the real opening whitespace and falls back deterministically", () => {
