@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { localizeOutletLabel, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -127,7 +127,7 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /SceneActions/);
   assert.match(shell, /Classic/);
   assert.match(shell, /Guided/);
-  assert.match(shell, /Action menus/);
+  assert.match(shell, /actionMenus/);
   assert.match(shell, /uiText\(locale, "introPlayStyle"\)/);
   assert.match(shell, /setIntroOpen\(true\)/);
   assert.doesNotMatch(shell, /setIntroOpen\(!hasVisited\)/);
@@ -240,8 +240,35 @@ test("localizes the core wrapper UI catalog in both directions", () => {
   assert.equal(uiText("ja", "issueCommand"), "コマンドを入力");
   assert.equal(uiText("ja", "commandHistoryHelp"), "↑ で以前のコマンドを呼び出せます。");
   assert.equal(uiText("ja", "linkCopied"), "リンクをコピーしました");
-  assert.equal(localizeOutletLabel("ja", "PEOF", "Dr. Perelman's Office"), "ペレルマンのオフィス");
+  assert.equal(localizeOutletLabel("ja", "PEOF", "Dr. Perelman's Office"), "ペレルマン博士のオフィス");
   assert.equal(localizeOutletLabel("en", "PEOF", "Dr. Perelman's Office"), "Dr. Perelman's Office");
+});
+
+test("localizes the approved opening and Communications companion copy", () => {
+  assert.equal(uiText("ja", "carrierLocked"), "信号を捕捉");
+  assert.equal(uiText("ja", "readerCompanion"), "読者ガイド");
+  assert.equal(uiText("ja", "communicationsGuideCopy"), "アウトレットを選ぶと、その場所の映像と音声に接続します。DISPLAY OUTLETS で現在の一覧を再表示します。");
+  assert.equal(uiText("ja", "criticalContextCopy"), "この作品は、記憶、証拠、政治的な約束、そしてインタラクティブな表現が、単に物語を伝えるだけでなく、私たちに何を感じさせうるかを探究しています。");
+  assert.equal(uiText("en", "criticalContextCopy"), "The work explores memory, evidence, political promises, and what interactivity can make us feel rather than merely tell us.");
+});
+
+test("keeps accessible Japanese names and excluded later-mode English in their own language boundaries", async () => {
+  const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");
+  assert.match(shell, /className="system-state" lang=\{locale\} aria-label=\{uiText/);
+  assert.match(shell, /<span lang="en">\{systemActivity\}<\/span>/);
+  assert.match(shell, /className="companion-panel" lang=\{locale\} aria-label=\{uiText\(locale, "readerCompanion"\)\}/);
+  for (const className of ["library-section", "systems-section", "map-section", "evidence-section", "debug-section"]) {
+    assert.match(shell, new RegExp(`className="companion-section ${className}" lang="en"`));
+  }
+  assert.match(shell, /className="debug-entry" lang="en"/);
+  assert.match(shell, /openingOrCommunications \? <span lang=\{locale\}>[\s\S]*: <span lang="en">\{mode\}/);
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "signal"), "ja");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "comparative"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "comparative", true), "ja");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "witness"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "lockdown"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Communications Mode", "epilogue"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Simulation Mode", "field"), "en");
 });
 
 test("localizes the complete introduction catalog and preserves its English copy", () => {
