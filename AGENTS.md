@@ -27,7 +27,7 @@ This file defines how agents work in this repository. It does not replace task-s
 
 ## Project status maintenance
 
-- The contributor preparing a change owns the corresponding `PROJECT_STATUS.md` update when that change adds or removes implemented player-facing coverage, completes or withdraws a milestone, changes the active frontier or execution dependencies, or changes the CI, dependency, or delivery baseline.
+- The contributor preparing a change owns the corresponding `PROJECT_STATUS.md` update when that change adds or removes implemented player-facing coverage, completes, replaces, or withdraws a milestone, changes the active frontier or execution dependencies, or changes the CI, dependency, or delivery baseline.
 - Include the status update in the same pull request. Do not defer it to an unspecified follow-up.
 - When an approved issue-only design, audit, or copy decision changes the roadmap or unblocks dependent work, the contributor recording that outcome must either open a documentation pull request before dependent implementation begins or name the exact next pull request that owns the status update.
 - In a multi-pull-request milestone, each pull request records its newly delivered coverage when omission would make the status inaccurate. The final integration pull request owns the roll-up from active work to a completed milestone.
