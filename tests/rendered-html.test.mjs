@@ -621,7 +621,11 @@ test("retains the first Simulation Mode brief, dynamic challenge, and recording 
     const briefLines = waits[3].presentation.lines.map(({ text }) => text);
     const assignmentStart = briefLines.findIndex((text) => text.trim() === assignments[0]);
     assert.ok(assignmentStart > 0);
-    assert.deepEqual(briefLines.slice(assignmentStart, assignmentStart + assignments.length).map((text) => text.trim()), assignments);
+    assert.deepEqual(briefLines.slice(assignmentStart, assignmentStart + assignments.length), assignments.map((text) => `   ${text}`));
+    assert.deepEqual(
+      waits[3].presentation.lines.slice(assignmentStart, assignmentStart + assignments.length).map(({ runs }) => runs),
+      assignments.map((text) => [{ text: `   ${text}`, classes: ["Style_normal"], tag: "span" }]),
+    );
     assert.match(briefLines[assignmentStart - 1], /list of things to record:$/);
     assert.match(briefLines[assignmentStart + assignments.length], /^By the way, since the Simulation Controller/);
     assert.match(briefLines.join("\n"), /walks to a point beyond your field of vision[\s\S]*walks back into your field of vision/);
@@ -629,9 +633,11 @@ test("retains the first Simulation Mode brief, dynamic challenge, and recording 
     const challenge = observations.find(({ command }) => command === "ENTER SIMULATION MODE");
     assert.deepEqual(challenge.status, { mode: "Simulation Mode", time: "7:35pm", location: "(undefined)", date: "3/16/2031" });
     assert.equal(challenge.presentation.activeInput.line, 1, "security prompt and active input share one line");
-    const prompt = challenge.presentation.lines[1].text.replace(/\s+/g, " ").trim();
-    const dynamic = prompt.match(/Security Code corresponding to: ([A-Z ]+) (\d+) >$/);
+    const promptLine = challenge.presentation.lines[1];
+    const prompt = promptLine.text.replace(/\s+/g, " ").trim();
+    const dynamic = prompt.match(/^Simulation Mode is a Class One Security mode\. For access, enter the Security Code corresponding to: ([A-Z ]+) (\d+) >$/);
     assert.ok(dynamic, "security shell retains a dynamic color and inner number");
+    assert.deepEqual(promptLine.runs.at(-1), { text: "", classes: ["Input", "LineInput"], tag: "textarea" });
     challenges.push(`${dynamic[1]} ${dynamic[2]}`);
 
     const answer = observations.find(({ role }) => role === "security-answer");

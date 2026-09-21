@@ -10,7 +10,24 @@
 - Fresh context ごとの入力: opening character prompt を完了後、`PEOF`、`WAIT` × 4、`ENTER SIMULATION MODE`、既存 assisted decoder が導出した numeric answer、`LOOK`、`RECORD`、`WAIT`、`RECORD OFF`
 - Verification: `npm run test:e2e`、`npm test`、`sha256sum public/amfv-r79-s851122.z4`
 
-Capture は repository の production projector を変更せず、一時的な Playwright harness から live `AMFVPresentationBridge.extract` を各 turn 後に呼び出した。fixture の各 observation は最後の command echo から active input までを sanitized slice として保持する。security 正答後だけは Parchment が同じ security prompt leaf に numeric input を追記してから scene を出力するため、`ENTER SIMULATION MODE` echo から Kennedy Park の line input までを保持し、`inputOwnership` に送信値を明記した。
+Fixture を同じ capture path で再生成する exact invocation は次のとおり。二つ目の terminal の script は二つの fresh browser context を作り、各 turn の bridge-v3 slice と GridWindow status を指定した JSON に書き出す。security/date/time は canonical runtime の random 値なので、再生成時に committed sample と一致する必要はない。
+
+```bash
+# 初回だけ（CI image 外では `npx playwright install-deps chromium` も実行）
+npx playwright install chromium
+
+# terminal 1
+npm run dev -- --hostname 127.0.0.1 --port 3100
+
+# terminal 2（server が ready になった後）
+node scripts/capture-first-simulation-runtime.mjs \
+  --base-url http://127.0.0.1:3100 \
+  --output /tmp/parchment-first-simulation-runtime-observed.json
+```
+
+`diff -u tests/fixtures/parchment-first-simulation-runtime-observed.json /tmp/parchment-first-simulation-runtime-observed.json` では dynamic samples と bridge line IDs が変わり得る。stable leaf、9-item raw/run structure、input ownership、status transition の比較には `npm test` の fixture regression を使用する。
+
+Capture は repository の production projector を変更せず、専用の `scripts/capture-first-simulation-runtime.mjs` から live `AMFVPresentationBridge.extract` を各 turn 後に呼び出した。fixture の各 observation は最後の command echo から active input までを sanitized slice として保持する。security 正答後だけは Parchment が同じ security prompt leaf に numeric input を追記してから scene を出力するため、`ENTER SIMULATION MODE` echo から Kennedy Park の line input までを保持し、`inputOwnership` に送信値を明記した。
 
 ## Stable English identity
 
