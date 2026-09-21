@@ -1,0 +1,4569 @@
+{
+  "provenance": "Runtime-observed with Playwright in Chromium against canonical Release 79 Parchment on 2026-09-21; sanitized BridgePresentation v3 turn slices from two isolated fresh browser contexts. Output text is canonical English. Status fields are parsed from the observed GridWindow; no fixture prose was supplied by historical source.",
+  "path": [
+    "PEOF",
+    "WAIT",
+    "WAIT",
+    "WAIT",
+    "WAIT",
+    "ENTER SIMULATION MODE",
+    "<observed decoder answer>",
+    "LOOK",
+    "RECORD",
+    "WAIT",
+    "RECORD OFF"
+  ],
+  "stableIdentity": {
+    "assignmentsBoundary": {
+      "startsAfter": "A message begins coming over the message line:",
+      "endsBefore": "By the way, since the Simulation Controller",
+      "count": 9
+    },
+    "securityShell": "Simulation Mode is a Class One Security mode. For access, enter the Security Code corresponding to:",
+    "firstSimulation": {
+      "yearsHence": 10,
+      "location": "Kennedy Park"
+    }
+  },
+  "dynamicFields": [
+    "security color",
+    "security inner number",
+    "derived canonical numeric answer",
+    "first-simulation month/day",
+    "first-simulation time"
+  ],
+  "sessions": [
+    {
+      "id": 1,
+      "observations": [
+        {
+          "command": "PEOF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-36",
+                "text": ">PEOF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "PEOF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-37",
+                "text": "Dr. Perelman's Office",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Dr. Perelman's Office",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-38",
+                "text": "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-39",
+                "text": "Dr. Perelman is sitting at his desk, working.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Dr. Perelman is sitting at his desk, working.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-40",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-41",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 5,
+            "activeInput": {
+              "kind": "line",
+              "line": 5,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:07pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-41",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-42",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-43",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-44",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:17pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-44",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-45",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-46",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-47",
+                "text": "Alyson Price, Perelman's secretary, pops her head in the doorway. \"Hey Doc! Need me for anything else tonight?\" Perelman, grinning, responds, \"Not unless you've decided to dump that unfairly handsome husband of yours.\" She looks exasperated at what is obviously an old joke and shakes a fist at him in a mock threat. \"Really, though, I'll be fine,\" says Perelman. \"Scram.\" She disappears from sight, shouting from the next room, \"Good night, Doc. Don't stay too late!\"",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Alyson Price, Perelman's secretary, pops her head in the doorway. \"Hey Doc! Need me for anything else tonight?\" Perelman, grinning, responds, \"Not unless you've decided to dump that unfairly handsome husband of yours.\" She looks exasperated at what is obviously an old joke and shakes a fist at him in a mock threat. \"Really, though, I'll be fine,\" says Perelman. \"Scram.\" She disappears from sight, shouting from the next room, \"Good night, Doc. Don't stay too late!\"",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-48",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-49",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 5,
+            "activeInput": {
+              "kind": "line",
+              "line": 5,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:19pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-49",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-50",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-51",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-52",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:29pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-52",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-53",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-54",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-55",
+                "text": "A PRISM Project staff member dashes in and hands Perelman a note before leaving. Glancing at the note, Perelman walks to a point beyond your field of vision. A moment later, you hear a click, as of a switch being turned.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "A PRISM Project staff member dashes in and hands Perelman a note before leaving. Glancing at the note, Perelman walks to a point beyond your field of vision. A moment later, you hear a click, as of a switch being turned.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-56",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-57",
+                "text": "A message begins coming over the message line: \"Perelman to PRISM. The programming team has finished entering the parameters for the Plan. This is it: you can enter Simulation Mode at any time. The Social Science group has come up with a list of things to record:",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "A message begins coming over the message line: \"Perelman to PRISM. The programming team has finished entering the parameters for the Plan. This is it: you can enter Simulation Mode at any time. The Social Science group has come up with a list of things to record:",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-58",
+                "text": "   Eating a meal in a restaurant",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Eating a meal in a restaurant",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-59",
+                "text": "   Talking to a government official",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Talking to a government official",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-60",
+                "text": "   Visiting a power-generating facility",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Visiting a power-generating facility",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-61",
+                "text": "   Reading a newspaper",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Reading a newspaper",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-62",
+                "text": "   Riding some form of public transportation",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Riding some form of public transportation",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-63",
+                "text": "   Attending a court in session",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Attending a court in session",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-64",
+                "text": "   Talking to a church official",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Talking to a church official",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-65",
+                "text": "   Going to a movie",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Going to a movie",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-66",
+                "text": "   Visiting your own home or living quarters",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Visiting your own home or living quarters",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-67",
+                "text": "By the way, since the Simulation Controller will be doing so much data-crunching on the fly, it appears the simulation will run in real time -- a minute there will approximately equal a minute here. Well, good luck!\"",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "By the way, since the Simulation Controller will be doing so much data-crunching on the fly, it appears the simulation will run in real time -- a minute there will approximately equal a minute here. Well, good luck!\"",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-68",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-69",
+                "text": "A moment later, Perelman walks back into your field of vision.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "A moment later, Perelman walks back into your field of vision.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-70",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-71",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 19,
+            "activeInput": {
+              "kind": "line",
+              "line": 19,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:35pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "ENTER SIMULATION MODE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-71",
+                "text": ">ENTER SIMULATION MODE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "ENTER SIMULATION MODE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-72",
+                "text": "Simulation \nMode \nis \na \nClass \nOne \nSecurity \nmode. \nFor \naccess, \nenter \nthe \nSecurity \nCode \ncorresponding \nto: \nRED \n64 \n>",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Simulation ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Mode ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "is ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "a ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Class ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "One ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "mode. ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "For ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "access, ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "enter ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "the ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Code ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "corresponding ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "to: ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RED ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "64 ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 1,
+            "activeInput": {
+              "kind": "line",
+              "line": 1,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "7:35pm",
+            "location": "(undefined)",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "51",
+          "role": "security-answer",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-71",
+                "text": ">ENTER SIMULATION MODE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "ENTER SIMULATION MODE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-72",
+                "text": "Simulation Mode is a Class One Security mode. For access, enter the Security Code corresponding to: RED 64 >51",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Simulation ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Mode ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "is ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "a ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Class ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "One ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "mode. ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "For ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "access, ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "enter ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "the ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Code ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "corresponding ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "to: ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RED ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "64 ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "51",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-73",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-74",
+                "text": "This simulation is based 10 years hence.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This simulation is based 10 years hence.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-75",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-76",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-77",
+                "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-78",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-79",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 8,
+            "activeInput": {
+              "kind": "line",
+              "line": 8,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            },
+            "geometry": {
+              "buffer": {
+                "left": 10,
+                "width": 1178
+              },
+              "status": {
+                "left": 0,
+                "width": 1208,
+                "height": 48
+              },
+              "activePrompt": {
+                "left": 10,
+                "width": 1178
+              }
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "11:06am",
+            "location": "Kennedy Park",
+            "date": "4/10/2041"
+          },
+          "inputOwnership": {
+            "note": "The canonical numeric answer is appended to the security prompt line before the interpreter emits the simulation scene; it is not a standalone command-echo leaf.",
+            "canonicalNumericInput": "51"
+          }
+        },
+        {
+          "command": "LOOK",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-79",
+                "text": ">LOOK",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "LOOK",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-80",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-81",
+                "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-82",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-83",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 4,
+            "activeInput": {
+              "kind": "line",
+              "line": 4,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "11:07am",
+            "location": "Kennedy Park",
+            "date": "4/10/2041"
+          }
+        },
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-83",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-84",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-85",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-86",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "11:08am",
+            "location": "Kennedy Park",
+            "date": "4/10/2041"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-86",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-87",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-88",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-89",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "11:18am",
+            "location": "Kennedy Park",
+            "date": "4/10/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-89",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-90",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-91",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-92",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "11:19am",
+            "location": "Kennedy Park",
+            "date": "4/10/2041"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "observations": [
+        {
+          "command": "PEOF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-36",
+                "text": ">PEOF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "PEOF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-37",
+                "text": "Dr. Perelman's Office",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Dr. Perelman's Office",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-38",
+                "text": "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the office of your creator, Dr. Abraham Perelman. It is cluttered and disorganized. Overstuffed bookshelves line the room. Perelman's desk is covered with a number of items, including a decoder, a map of the city, a ball-point pen, and a printout of a magazine article.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-39",
+                "text": "Dr. Perelman is sitting at his desk, working.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Dr. Perelman is sitting at his desk, working.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-40",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-41",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 5,
+            "activeInput": {
+              "kind": "line",
+              "line": 5,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:07pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-41",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-42",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-43",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-44",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:17pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-44",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-45",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-46",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-47",
+                "text": "Alyson Price, Perelman's secretary, pops her head in the doorway. \"Hey Doc! Need me for anything else tonight?\" Perelman, grinning, responds, \"Not unless you've decided to dump that unfairly handsome husband of yours.\" She looks exasperated at what is obviously an old joke and shakes a fist at him in a mock threat. \"Really, though, I'll be fine,\" says Perelman. \"Scram.\" She disappears from sight, shouting from the next room, \"Good night, Doc. Don't stay too late!\"",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Alyson Price, Perelman's secretary, pops her head in the doorway. \"Hey Doc! Need me for anything else tonight?\" Perelman, grinning, responds, \"Not unless you've decided to dump that unfairly handsome husband of yours.\" She looks exasperated at what is obviously an old joke and shakes a fist at him in a mock threat. \"Really, though, I'll be fine,\" says Perelman. \"Scram.\" She disappears from sight, shouting from the next room, \"Good night, Doc. Don't stay too late!\"",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-48",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-49",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 5,
+            "activeInput": {
+              "kind": "line",
+              "line": 5,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:19pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-49",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-50",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-51",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-52",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:29pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-52",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-53",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-54",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-55",
+                "text": "A PRISM Project staff member dashes in and hands Perelman a note before leaving. Glancing at the note, Perelman walks to a point beyond your field of vision. A moment later, you hear a click, as of a switch being turned.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "A PRISM Project staff member dashes in and hands Perelman a note before leaving. Glancing at the note, Perelman walks to a point beyond your field of vision. A moment later, you hear a click, as of a switch being turned.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-56",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-57",
+                "text": "A message begins coming over the message line: \"Perelman to PRISM. The programming team has finished entering the parameters for the Plan. This is it: you can enter Simulation Mode at any time. The Social Science group has come up with a list of things to record:",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "A message begins coming over the message line: \"Perelman to PRISM. The programming team has finished entering the parameters for the Plan. This is it: you can enter Simulation Mode at any time. The Social Science group has come up with a list of things to record:",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-58",
+                "text": "   Eating a meal in a restaurant",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Eating a meal in a restaurant",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-59",
+                "text": "   Talking to a government official",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Talking to a government official",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-60",
+                "text": "   Visiting a power-generating facility",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Visiting a power-generating facility",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-61",
+                "text": "   Reading a newspaper",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Reading a newspaper",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-62",
+                "text": "   Riding some form of public transportation",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Riding some form of public transportation",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-63",
+                "text": "   Attending a court in session",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Attending a court in session",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-64",
+                "text": "   Talking to a church official",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Talking to a church official",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-65",
+                "text": "   Going to a movie",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Going to a movie",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-66",
+                "text": "   Visiting your own home or living quarters",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   Visiting your own home or living quarters",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-67",
+                "text": "By the way, since the Simulation Controller will be doing so much data-crunching on the fly, it appears the simulation will run in real time -- a minute there will approximately equal a minute here. Well, good luck!\"",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "By the way, since the Simulation Controller will be doing so much data-crunching on the fly, it appears the simulation will run in real time -- a minute there will approximately equal a minute here. Well, good luck!\"",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-68",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-69",
+                "text": "A moment later, Perelman walks back into your field of vision.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "A moment later, Perelman walks back into your field of vision.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-70",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-71",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 19,
+            "activeInput": {
+              "kind": "line",
+              "line": 19,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Communications Mode",
+            "time": "7:35pm",
+            "location": "Dr. Perelman's Office",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "ENTER SIMULATION MODE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-71",
+                "text": ">ENTER SIMULATION MODE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "ENTER SIMULATION MODE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-72",
+                "text": "Simulation \nMode \nis \na \nClass \nOne \nSecurity \nmode. \nFor \naccess, \nenter \nthe \nSecurity \nCode \ncorresponding \nto: \nORANGE \n49 \n>",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Simulation ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Mode ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "is ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "a ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Class ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "One ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "mode. ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "For ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "access, ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "enter ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "the ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Code ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "corresponding ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "to: ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "ORANGE ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "49 ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 1,
+            "activeInput": {
+              "kind": "line",
+              "line": 1,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "7:35pm",
+            "location": "(undefined)",
+            "date": "3/16/2031"
+          }
+        },
+        {
+          "command": "43",
+          "role": "security-answer",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-71",
+                "text": ">ENTER SIMULATION MODE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "ENTER SIMULATION MODE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-72",
+                "text": "Simulation Mode is a Class One Security mode. For access, enter the Security Code corresponding to: ORANGE 49 >43",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Simulation ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Mode ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "is ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "a ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Class ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "One ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "mode. ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "For ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "access, ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "enter ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "the ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Security ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "Code ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "corresponding ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "to: ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "ORANGE ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "49 ",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "43",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-73",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-74",
+                "text": "This simulation is based 10 years hence.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This simulation is based 10 years hence.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-75",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-76",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-77",
+                "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-78",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-79",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 8,
+            "activeInput": {
+              "kind": "line",
+              "line": 8,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            },
+            "geometry": {
+              "buffer": {
+                "left": 10,
+                "width": 1178
+              },
+              "status": {
+                "left": 0,
+                "width": 1208,
+                "height": 48
+              },
+              "activePrompt": {
+                "left": 10,
+                "width": 1178
+              }
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "11:15am",
+            "location": "Kennedy Park",
+            "date": "4/27/2041"
+          },
+          "inputOwnership": {
+            "note": "The canonical numeric answer is appended to the security prompt line before the interpreter emits the simulation scene; it is not a standalone command-echo leaf.",
+            "canonicalNumericInput": "43"
+          }
+        },
+        {
+          "command": "LOOK",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-79",
+                "text": ">LOOK",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "LOOK",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-80",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-81",
+                "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-82",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-83",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 4,
+            "activeInput": {
+              "kind": "line",
+              "line": 4,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "11:16am",
+            "location": "Kennedy Park",
+            "date": "4/27/2041"
+          }
+        },
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-83",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-84",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-85",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-86",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "11:17am",
+            "location": "Kennedy Park",
+            "date": "4/27/2041"
+          }
+        },
+        {
+          "command": "WAIT",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-86",
+                "text": ">WAIT",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "WAIT",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-87",
+                "text": "Time passes...",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Time passes...",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-88",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-89",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "11:27am",
+            "location": "Kennedy Park",
+            "date": "4/27/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-89",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-90",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-91",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-92",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "11:28am",
+            "location": "Kennedy Park",
+            "date": "4/27/2041"
+          }
+        }
+      ]
+    }
+  ]
+}

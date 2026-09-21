@@ -580,6 +580,88 @@ test("projects the runtime-observed PEOF inspection packet with command-qualifie
   assert.equal(observedStoryLeafTranslation("An unobserved office detail.", "ja", "LOOK"), undefined);
 });
 
+test("retains the first Simulation Mode brief, dynamic challenge, and recording boundaries", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-first-simulation-runtime-observed.json", import.meta.url), "utf8"));
+  assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
+  assert.match(fixture.provenance, /canonical Release 79/);
+  assert.match(fixture.provenance, /canonical English/);
+  assert.equal(fixture.sessions.length, 2);
+
+  const assignments = [
+    "Eating a meal in a restaurant",
+    "Talking to a government official",
+    "Visiting a power-generating facility",
+    "Reading a newspaper",
+    "Riding some form of public transportation",
+    "Attending a court in session",
+    "Talking to a church official",
+    "Going to a movie",
+    "Visiting your own home or living quarters",
+  ];
+  const challenges = [];
+  const simulationDates = [];
+  const simulationTimes = [];
+
+  for (const session of fixture.sessions) {
+    const observations = session.observations;
+    assert.deepEqual(observations.map(({ command, role }) => role ?? command), [
+      "PEOF", "WAIT", "WAIT", "WAIT", "WAIT", "ENTER SIMULATION MODE", "security-answer", "LOOK", "RECORD", "WAIT", "RECORD OFF",
+    ]);
+    for (const observation of observations) {
+      assert.equal(observation.presentation.version, 3);
+      assert.equal(observation.presentation.terminalLine, observation.presentation.lines.length - 1);
+      assert.equal(observation.presentation.activeInput.kind, "line");
+      assert.equal(observation.presentation.activeInput.line, observation.presentation.terminalLine);
+      assert.ok(observation.presentation.lines.every(({ text }) => !/[\u3040-\u30ff\u3400-\u9fff]/u.test(text)), "fixture story output remains canonical English");
+    }
+
+    const waits = observations.filter(({ command, role }) => command === "WAIT" && !role);
+    assert.equal(waits.length, 5, "four Communications WAITs plus one recorded WAIT are retained");
+    assert.match(waits[1].presentation.lines.map(({ text }) => text).join("\n"), /Alyson Price[\s\S]*Good night, Doc/);
+    const briefLines = waits[3].presentation.lines.map(({ text }) => text);
+    const assignmentStart = briefLines.findIndex((text) => text.trim() === assignments[0]);
+    assert.ok(assignmentStart > 0);
+    assert.deepEqual(briefLines.slice(assignmentStart, assignmentStart + assignments.length), assignments.map((text) => `   ${text}`));
+    assert.deepEqual(
+      waits[3].presentation.lines.slice(assignmentStart, assignmentStart + assignments.length).map(({ runs }) => runs),
+      assignments.map((text) => [{ text: `   ${text}`, classes: ["Style_normal"], tag: "span" }]),
+    );
+    assert.match(briefLines[assignmentStart - 1], /list of things to record:$/);
+    assert.match(briefLines[assignmentStart + assignments.length], /^By the way, since the Simulation Controller/);
+    assert.match(briefLines.join("\n"), /walks to a point beyond your field of vision[\s\S]*walks back into your field of vision/);
+
+    const challenge = observations.find(({ command }) => command === "ENTER SIMULATION MODE");
+    assert.deepEqual(challenge.status, { mode: "Simulation Mode", time: "7:35pm", location: "(undefined)", date: "3/16/2031" });
+    assert.equal(challenge.presentation.activeInput.line, 1, "security prompt and active input share one line");
+    const promptLine = challenge.presentation.lines[1];
+    const prompt = promptLine.text.replace(/\s+/g, " ").trim();
+    const dynamic = prompt.match(/^Simulation Mode is a Class One Security mode\. For access, enter the Security Code corresponding to: ([A-Z ]+) (\d+) >$/);
+    assert.ok(dynamic, "security shell retains a dynamic color and inner number");
+    assert.deepEqual(promptLine.runs.at(-1), { text: "", classes: ["Input", "LineInput"], tag: "textarea" });
+    challenges.push(`${dynamic[1]} ${dynamic[2]}`);
+
+    const answer = observations.find(({ role }) => role === "security-answer");
+    assert.equal(answer.inputOwnership.canonicalNumericInput, answer.command);
+    assert.match(answer.presentation.lines.map(({ text }) => text.replace(/\s+/g, " ")).join("\n"), new RegExp(`Security Code corresponding to: ${dynamic[1]} ${dynamic[2]} >${answer.command}[\\s\\S]*This simulation is based 10 years hence\\.[\\s\\S]*Kennedy Park`));
+    simulationDates.push(answer.status.date);
+    simulationTimes.push(answer.status.time);
+
+    const record = observations.find(({ command }) => command === "RECORD");
+    const recordOff = observations.find(({ command }) => command === "RECORD OFF");
+    assert.equal(record.status.mode, "Simulation Mode (recording)");
+    assert.deepEqual(record.presentation.lines.map(({ text }) => text), [">RECORD", "Record feature activated.", " ", ">"]);
+    assert.equal(recordOff.status.mode, "Simulation Mode");
+    assert.deepEqual(recordOff.presentation.lines.map(({ text }) => text), [">RECORD OFF", "Record feature deactivated.", " ", ">"]);
+    assert.deepEqual(recordOff.presentation.lines.at(-1).runs.map(({ tag, text }) => ({ tag, text })), [
+      { tag: "span", text: ">" }, { tag: "textarea", text: "" },
+    ]);
+  }
+
+  assert.equal(new Set(challenges).size, 2, "fresh sessions observed different security challenges");
+  assert.equal(new Set(simulationDates).size, 2, "fresh sessions observed different simulation dates");
+  assert.equal(new Set(simulationTimes).size, 2, "fresh sessions observed different simulation times");
+});
+
 test("recovers the canonical iframe for unsafe current observations and resets at RESTORE", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-look-runtime-observed.json", import.meta.url), "utf8")).presentation;
   fixture.version = 3;
