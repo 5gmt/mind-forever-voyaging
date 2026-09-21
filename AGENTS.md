@@ -25,6 +25,16 @@ This file defines how agents work in this repository. It does not replace task-s
 - Read `PROJECT_CHARTER.md` when interpreting or changing the project's mission, canonical authority, player guarantees, decision priorities, or non-goals.
 - Read only the documents selected by these conditions; do not treat the three files as a mandatory reading chain. A task may require both broader documents when both conditions apply.
 
+## Project status maintenance
+
+- The contributor preparing a change owns the corresponding `PROJECT_STATUS.md` update when that change adds or removes implemented player-facing coverage, completes or withdraws a milestone, changes the active frontier or execution dependencies, or changes the CI, dependency, or delivery baseline.
+- Include the status update in the same pull request. Do not defer it to an unspecified follow-up.
+- When an approved issue-only design, audit, or copy decision changes the roadmap or unblocks dependent work, the contributor recording that outcome must either open a documentation pull request before dependent implementation begins or name the exact next pull request that owns the status update.
+- In a multi-pull-request milestone, each pull request records its newly delivered coverage when omission would make the status inaccurate. The final integration pull request owns the roll-up from active work to a completed milestone.
+- Reviewers must verify that `PROJECT_STATUS.md` matches the reviewed head and target branch. Treat missing, premature, or stale status claims as review findings.
+- Update the document's last-verified date only after checking the whole status summary against the current default branch, not merely because the file was touched.
+- Keep detailed acceptance criteria, design comparisons, and verification logs in their Issues, Pull Requests, or design notes. `PROJECT_STATUS.md` contains the current summary, work order, and authoritative links.
+
 ## Canonical story integrity
 
 - Never modify `public/amfv-r79-s851122.z4` unless a task explicitly requires replacing the canonical release artifact.
