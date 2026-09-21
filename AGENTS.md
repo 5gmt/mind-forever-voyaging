@@ -32,7 +32,7 @@ This file defines how agents work in this repository. It does not replace task-s
 - When an approved issue-only design, audit, or copy decision changes the roadmap or unblocks dependent work, the contributor recording that outcome must either open a documentation pull request before dependent implementation begins or name the exact next pull request that owns the status update.
 - In a multi-pull-request milestone, each pull request records its newly delivered coverage when omission would make the status inaccurate. The final integration pull request owns the roll-up from active work to a completed milestone.
 - Reviewers must verify that `PROJECT_STATUS.md` matches the reviewed head and target branch. Treat missing, premature, or stale status claims as review findings.
-- Update the document's last-verified date only after checking the whole status summary against the current default branch, not merely because the file was touched.
+- Update the document's last-verified date (`最終確認日`) only after checking the whole status summary against the current default branch, not merely because the file was touched.
 - Keep detailed acceptance criteria, design comparisons, and verification logs in their Issues, Pull Requests, or design notes. `PROJECT_STATUS.md` contains the current summary, work order, and authoritative links.
 
 ## Canonical story integrity
