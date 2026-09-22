@@ -145,26 +145,40 @@ export const initialLineTurnPresentation = (presentation: BridgePresentation | n
   return blocks;
 };
 
-const ordinaryLineInputBoundary = (presentation: BridgePresentation | null) => {
+const currentLineTurnBoundary = (presentation: BridgePresentation | null) => {
   if (!presentation || presentation.version !== 3 || presentation.activeInput?.kind !== "line") return null;
   const end = presentation.activeInput.line;
   if (end === null || end !== presentation.terminalLine || end !== presentation.lines.length - 1) return null;
   if (!presentation.activeInput.classes.includes("Input") || !presentation.activeInput.classes.includes("LineInput")) return null;
-  return end;
+  const commandIndex = presentation.lines.slice(0, end).findLastIndex((line) => {
+    const text = clean(line.text);
+    return /^>\s*\S/.test(text) || line.runs.some((run) => run.classes.some((name) => INPUT_STYLE_PATTERN.test(name)));
+  });
+  return commandIndex < 0 ? null : { commandIndex, end };
 };
 
 // Release 79 emits these nine indented leaves between two exact prose leaves.
 // Treating the leaves independently would erase the only observed list boundary.
 export const assignmentBriefPresentation = (presentation: BridgePresentation | null, locale: Locale): StoryPresentationBlock[] | null => {
-  const end = ordinaryLineInputBoundary(presentation);
-  if (end === null || !presentation) return null;
-  const commandIndex = presentation.lines.slice(0, end).findLastIndex((line) => commandText(line.text).replace(/^>\s*/, "") === "WAIT");
-  if (commandIndex < 0) return null;
+  const boundary = currentLineTurnBoundary(presentation);
+  if (!boundary || !presentation) return null;
+  const { commandIndex, end } = boundary;
+  if (commandText(presentation.lines[commandIndex].text).replace(/^>\s*/, "") !== "WAIT") return null;
   const texts = presentation.lines.map((line) => clean(line.text));
   const introIndex = texts.indexOf(ASSIGNMENT_INTRO, commandIndex + 1);
   if (introIndex < 0) return null;
   const itemIndexes = ASSIGNMENTS.map((_, offset) => introIndex + offset + 1);
-  if (!ASSIGNMENTS.every((item, offset) => texts[itemIndexes[offset]] === item)) return null;
+  const observedItemsMatch = ASSIGNMENTS.every((item, offset) => {
+    const line = presentation.lines[itemIndexes[offset]];
+    const rawText = `   ${item}`;
+    return line?.text === rawText
+      && line.runs.length === 1
+      && line.runs[0].text === rawText
+      && line.runs[0].tag === "span"
+      && line.runs[0].classes.length === 1
+      && line.runs[0].classes[0] === "Style_normal";
+  });
+  if (!observedItemsMatch) return null;
   const outroIndex = introIndex + ASSIGNMENTS.length + 1;
   if (texts[outroIndex] !== ASSIGNMENT_OUTRO) return null;
 
@@ -197,10 +211,11 @@ export const assignmentBriefPresentation = (presentation: BridgePresentation | n
 // the exact static shell and its two canonical challenge fields; it never has
 // a slot for the derived outer answer.
 export const securityPromptPresentation = (presentation: BridgePresentation | null, locale: Locale): StoryPresentationBlock[] | null => {
-  const end = ordinaryLineInputBoundary(presentation);
-  if (end !== 1 || !presentation || presentation.lines.length !== 2) return null;
-  if (commandText(presentation.lines[0].text).replace(/^>\s*/, "") !== "ENTER SIMULATION MODE") return null;
-  const line = presentation.lines[1];
+  const boundary = currentLineTurnBoundary(presentation);
+  if (!boundary || !presentation) return null;
+  const { commandIndex, end } = boundary;
+  if (end !== commandIndex + 1 || commandText(presentation.lines[commandIndex].text).replace(/^>\s*/, "") !== "ENTER SIMULATION MODE") return null;
+  const line = presentation.lines[end];
   const inputRuns = line.runs.filter((run) => run.classes.includes("Input") || run.classes.includes("LineInput"));
   if (inputRuns.length !== 1 || inputRuns[0].tag !== "textarea" || inputRuns[0].text !== "") return null;
   const canonicalSurface = clean(line.runs.filter((run) => run !== inputRuns[0]).map((run) => run.text).join(""));
@@ -213,10 +228,10 @@ export const securityPromptPresentation = (presentation: BridgePresentation | nu
   // separate makes that catalog addition data-only without changing identity.
   const shell = localizeStoryTranscript(SECURITY_SHELL, locale);
   return [
-    { kind: "command", text: "ENTER SIMULATION MODE", canonicalText: "ENTER SIMULATION MODE", sourceLines: [0] },
+    { kind: "command", text: "ENTER SIMULATION MODE", canonicalText: "ENTER SIMULATION MODE", sourceLines: [commandIndex] },
     {
       kind: "security-prompt", text: shell, canonicalText: SECURITY_SHELL,
-      securityChallenge: { color, innerNumber }, sourceLines: [1],
+      securityChallenge: { color, innerNumber }, sourceLines: [end],
     },
   ];
 };

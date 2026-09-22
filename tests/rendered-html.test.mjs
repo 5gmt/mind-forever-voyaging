@@ -4,7 +4,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
-import { assignmentBriefPresentation, initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation, securityPromptPresentation } from "../app/story-presentation.ts";
+import { assignmentBriefPresentation, initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation, securityPromptPresentation, storyPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
 test("static export renders the finished unabridged edition", async () => {
@@ -684,6 +684,20 @@ test("projects only the two accepted first-simulation structures and fails close
     assert.match(blocks[blocks.indexOf(list[0]) + 1].text, /^By the way, since the Simulation Controller/);
     assert.ok(blocks.some(({ kind }) => kind === "spacer"), "surrounding blank-line boundaries survive");
 
+    const noIndent = structuredClone(brief);
+    for (const sourceLine of list[0].sourceLines) {
+      noIndent.lines[sourceLine].text = noIndent.lines[sourceLine].text.trimStart();
+      noIndent.lines[sourceLine].runs[0].text = noIndent.lines[sourceLine].runs[0].text.trimStart();
+    }
+    assert.equal(assignmentBriefPresentation(noIndent, "ja"), null, "raw three-space grouping is required");
+    assert.equal(observedOrdinaryTurnPresentation(noIndent, "ja"), null, "unindented packet cannot partially localize");
+    const fallback = reconcilePresentationHistory([], noIndent);
+    assert.equal(fallback.representable, true, "unknown packet uses the canonical-English host fallback");
+    const fallbackBlocks = projectPresentationHistory(fallback.history, "ja")[0].blocks;
+    assert.deepEqual(fallbackBlocks.map(({ kind }) => kind), ["command", "prose"]);
+    assert.match(fallbackBlocks[1].text, /Eating a meal in a restaurant[\s\S]*Visiting your own home or living quarters/);
+    assert.equal(fallbackBlocks.some(({ kind }) => kind === "list"), false);
+
     for (const mutate of [
       (copy) => copy.lines.splice(list[0].sourceLines[4], 1),
       (copy) => copy.lines.splice(list[0].sourceLines[2], 2, copy.lines[list[0].sourceLines[3]], copy.lines[list[0].sourceLines[2]]),
@@ -715,6 +729,15 @@ test("projects only the two accepted first-simulation structures and fails close
     const completed = structuredClone(challenge);
     completed.lines[1].runs[completed.lines[1].runs.length - 1] = { text: "51", classes: ["Style_input"], tag: "span" };
     assert.equal(securityPromptPresentation(completed, "ja"), null, "submitted outer answer is never projected");
+
+    const rollingChallenge = structuredClone(challenge);
+    rollingChallenge.lines = [...structuredClone(brief.lines.slice(0, -1)), ...rollingChallenge.lines];
+    rollingChallenge.terminalLine = rollingChallenge.lines.length - 1;
+    rollingChallenge.activeInput.line = rollingChallenge.terminalLine;
+    const rollingBlocks = storyPresentation(rollingChallenge, "ja");
+    assert.deepEqual(rollingBlocks?.map(({ kind }) => kind), ["command", "security-prompt"]);
+    assert.equal(rollingBlocks?.[1].securityChallenge.color, security[1].securityChallenge.color);
+    assert.equal(assignmentBriefPresentation(rollingChallenge, "ja"), null, "stale WAIT packet cannot supersede the latest ENTER turn");
   }
 
   assert.match(shell, /block\.kind === "security-prompt"[\s\S]*securityChallenge\?\.color[\s\S]*securityChallenge\?\.innerNumber/);
