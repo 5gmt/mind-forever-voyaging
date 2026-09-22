@@ -477,7 +477,20 @@ export type StoryContentId =
   | "part1.communications.peof.decoder-package-note"
   | "part1.communications.peof.map-package-note"
   | "part1.communications.peof.pen-package-note"
-  | "part1.communications.peof.magazine-article-package-note";
+  | "part1.communications.peof.magazine-article-package-note"
+  | "part1.communications.peof.time-passes"
+  | "part1.communications.peof.secretary-departure"
+  | "part1.communications.peof.simulation-staff-arrival"
+  | "part1.communications.peof.simulation-brief-intro"
+  | "part1.communications.peof.simulation-brief-assignment"
+  | "part1.communications.peof.simulation-brief-realtime"
+  | "part1.communications.peof.perelman-return"
+  | "part1.simulation.security-prompt"
+  | "part1.simulation.ten-years-hence"
+  | "part1.simulation.kennedy-park.title"
+  | "part1.simulation.kennedy-park.description"
+  | "part1.simulation.record-activated"
+  | "part1.simulation.record-deactivated";
 
 // Normal parser-turn localization is keyed by stable story IDs. Canonical
 // English is supplied by the recognizer and remains the per-block fallback.
@@ -606,6 +619,108 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
       canonicalCommand: "EXAMINE MAGAZINE ARTICLE",
       canonicalLeaf: "[This is the magazine article that you'll find in your A Mind Forever Voyaging package.]",
       translation: { contentId: "part1.communications.peof.magazine-article-package-note", text: "［これは、あなたの『A Mind Forever Voyaging』パッケージに入っている雑誌記事です。］" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "Time passes...",
+      translation: { contentId: "part1.communications.peof.time-passes", text: "時間が過ぎていく……" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "Alyson Price, Perelman's secretary, pops her head in the doorway. \"Hey Doc! Need me for anything else tonight?\" Perelman, grinning, responds, \"Not unless you've decided to dump that unfairly handsome husband of yours.\" She looks exasperated at what is obviously an old joke and shakes a fist at him in a mock threat. \"Really, though, I'll be fine,\" says Perelman. \"Scram.\" She disappears from sight, shouting from the next room, \"Good night, Doc. Don't stay too late!\"",
+      translation: { contentId: "part1.communications.peof.secretary-departure", text: "ペレルマンの秘書、アリソン・プライスが戸口からひょいと顔をのぞかせる。「ねえ博士！　今夜、ほかに何か用はある？」ペレルマンはにやりとして答える。「その反則なくらいハンサムなご亭主を捨てる気になったのなら話は別だがね」明らかに聞き飽きた冗談に、彼女はうんざりした顔で、脅すふりをして拳を振る。「冗談はさておき、本当にもう大丈夫だよ」とペレルマン。「さあ、帰った帰った」彼女は姿を消し、隣の部屋から声を張り上げる。「おやすみ、博士。あんまり遅くまで残らないでね！」" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "A PRISM Project staff member dashes in and hands Perelman a note before leaving. Glancing at the note, Perelman walks to a point beyond your field of vision. A moment later, you hear a click, as of a switch being turned.",
+      translation: { contentId: "part1.communications.peof.simulation-staff-arrival", text: "PRISMプロジェクトのスタッフが駆け込んできて、ペレルマンにメモを手渡すと立ち去る。メモに目を通したペレルマンは、あなたの視界の外へ歩いていく。しばらくして、スイッチを入れたようなカチッという音が聞こえる。" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "A message begins coming over the message line: \"Perelman to PRISM. The programming team has finished entering the parameters for the Plan. This is it: you can enter Simulation Mode at any time. The Social Science group has come up with a list of things to record:",
+      translation: { contentId: "part1.communications.peof.simulation-brief-intro", text: "通信回線からメッセージが流れ始める。「ペレルマンからPRISMへ。プログラミング・チームがプランのパラメーター入力を完了した。いよいよだ――いつでもシミュレーション・モードに入れる。社会科学グループが記録すべき項目のリストをまとめた。" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "By the way, since the Simulation Controller will be doing so much data-crunching on the fly, it appears the simulation will run in real time -- a minute there will approximately equal a minute here. Well, good luck!\"",
+      translation: { contentId: "part1.communications.peof.simulation-brief-realtime", text: "なお、シミュレーション・コントローラーが進行中に大量のデータ処理を行うため、シミュレーションはリアルタイムで進むようだ――向こうでの1分が、こちらでの約1分に相当する。それでは、健闘を祈る！」" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "A moment later, Perelman walks back into your field of vision.",
+      translation: { contentId: "part1.communications.peof.perelman-return", text: "しばらくして、ペレルマンがあなたの視界に戻ってくる。" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Eating a meal in a restaurant",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "レストランで食事をすること" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Talking to a government official",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "政府職員と話すこと" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Visiting a power-generating facility",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "発電施設を訪れること" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Reading a newspaper",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "新聞を読むこと" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Riding some form of public transportation",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "何らかの公共交通機関に乗ること" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Attending a court in session",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "開廷中の裁判を傍聴すること" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Talking to a church official",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "教会関係者と話すこと" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Going to a movie",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "映画を見に行くこと" },
+    },
+    {
+      canonicalCommand: "WAIT",
+      canonicalLeaf: "   Visiting your own home or living quarters",
+      translation: { contentId: "part1.communications.peof.simulation-brief-assignment", text: "自分の家、または居住区を訪れること" },
+    },
+    {
+      canonicalCommand: "ENTER SIMULATION MODE",
+      canonicalLeaf: "Simulation Mode is a Class One Security mode. For access, enter the Security Code corresponding to:",
+      translation: { contentId: "part1.simulation.security-prompt", text: "シミュレーション・モードはクラス1セキュリティ・モードです。アクセスするには、次に対応するセキュリティ・コードを入力してください：" },
+    },
+    {
+      canonicalLeaf: "This simulation is based 10 years hence.",
+      translation: { contentId: "part1.simulation.ten-years-hence", text: "このシミュレーションの時代設定は、10年後です。" },
+    },
+    {
+      canonicalLeaf: "Kennedy Park",
+      translation: { contentId: "part1.simulation.kennedy-park.title", text: "ケネディ公園", kind: "title" },
+    },
+    {
+      canonicalLeaf: "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
+      translation: { contentId: "part1.simulation.kennedy-park.description", text: "ここは市街地にある小さな公園で、北東、南東、南西へ通じる門がある。公園の中央では、ジョン・F・ケネディ像を取り囲むように、自由な形の大きな水盤が広がっている。" },
+    },
+    {
+      canonicalCommand: "RECORD",
+      canonicalLeaf: "Record feature activated.",
+      translation: { contentId: "part1.simulation.record-activated", text: "記録機能を起動しました。" },
+    },
+    {
+      canonicalCommand: "RECORD OFF",
+      canonicalLeaf: "Record feature deactivated.",
+      translation: { contentId: "part1.simulation.record-deactivated", text: "記録機能を停止しました。" },
     },
   ],
 };

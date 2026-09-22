@@ -1,7 +1,7 @@
 # AMFV 日本語化プロジェクト状況
 
 > 種別: Living roadmap / project status  
-> 最終確認日: 2026-09-21
+> 最終確認日: 2026-09-22
 
 ## この文書の責任範囲
 
@@ -11,14 +11,14 @@
 
 ## 現在の到達点
 
-日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室での deterministic inspection packet まで到達している。
+日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室での deterministic inspection packet、初回 Simulation Mode 移行と Kennedy Park での最初の `RECORD` → `WAIT` → `RECORD OFF` loop まで到達している。
 
 現在到達済みの opening、Communications Mode、最初の PEOF を取り囲む wrapper UI についても、承認済みの範囲を日本語化している。これには core header、reading/play settings、introduction overlay、companion shell、PEOF SceneActions、original-package overlay、identity rail、shared story shell、visible label、accessible name が含まれる。
 
 | 層 | 現在の日本語 coverage | 意図的に未対応の境界 |
 | --- | --- | --- |
-| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet | Simulation Mode とその後の story output |
-| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell | later mode / later phase 固有 UI、fieldwork、QA/debug |
+| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop | Kennedy Park からの移動、assignment completion、後続の Simulation story output |
+| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、既存 assisted security decoder | later mode / later phase 固有 UI の日本語化、fieldwork、QA/debug |
 | Input and actions | Guided / Action-menu の日本語表示、canonical command に解決される支援操作 | 日本語 parser input |
 | Fallback | 対応済み leaf / surface の日本語表示と EN → JA → EN recovery | 未観測または未承認の内容は canonical English |
 
@@ -61,26 +61,24 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 - [PR #45](https://github.com/5gmt/mind-forever-voyaging/pull/45) / [Issue #43](https://github.com/5gmt/mind-forever-voyaging/issues/43): identity rail と shared story shell を日本語化し、最初の PEOF までの approved wrapper baseline を完成
 - [PR #51](https://github.com/5gmt/mind-forever-voyaging/pull/51) / [Issue #47](https://github.com/5gmt/mind-forever-voyaging/issues/47): fresh PEOF から初回 Simulation Mode と `RECORD` → `WAIT` → `RECORD OFF` までを二つの real-browser session で capture し、9-item assignment boundary、security/date/time の dynamic fields、status/input transition を canonical English fixture として確定
 - [PR #52](https://github.com/5gmt/mind-forever-voyaging/pull/52) / [Issue #48](https://github.com/5gmt/mind-forever-voyaging/issues/48): Issue #47 の runtime fixture に基づき、exact raw indentation / run identity を持つ 9-item semantic list と、rolling bridge payload の最新 turn から shell / canonical color / inner number だけを分離する active-input security prompt の narrow projection を実装
+- [PR #53](https://github.com/5gmt/mind-forever-voyaging/pull/53) / [Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49): 初回 Simulation Mode brief、security shell、Kennedy Park entry / `LOOK`、最初の recording loop の runtime-observed stable English leaves に対する日本語 copy packet を承認
+- [Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50): approved copy を typed catalog と二つの narrow projection に統合し、Classic / assisted の complete fresh-session route と fail-closed boundary を unit / Chromium regression coverage に追加して、初回 Simulation Mode milestone を完了
 
 ## 現在の frontier
 
-[Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) は、設計判断を終えた後も次の gameplay expansion を追跡する execution root として維持する。選定済み milestone は **Simulation Mode への初回移行と最初の recording loop** である。
+[Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) が選定した **Simulation Mode への初回移行と最初の recording loop** milestone は、Issues #47–#50 で runtime evidence、narrow projections、copy approval、browser integration を完了した。
 
-境界は、fresh canonical session の PEOF から simulation-ready brief を受け、`ENTER SIMULATION MODE`、security challenge への正答、Kennedy Park の `LOOK`、`RECORD` → `WAIT` → `RECORD OFF` を完了して通常の line input が戻るところまでとする。
+実装済み境界は、fresh canonical session の PEOF から `WAIT` × 4、simulation-ready brief、`ENTER SIMULATION MODE`、security challenge 正答、Kennedy Park entry / `LOOK`、`RECORD` → `WAIT` → `RECORD OFF` を経て通常の line input が戻るところまでである。Dynamic security color / inner number と simulation date/time は canonical のまま保持し、computed outer answer は既存 assisted command deck だけが扱う。
 
-この milestone は、現在の PEOF-era baseline を先へ進める最初の story expansion である。Issue #47 で canonical runtime evidence が確定し、Issue #48 で 9-item list / security prompt の narrow projection 設計と実装が完了した。現在の active frontier は、fixture に基づく [Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49) の **stable English leaves の copy review** である。#49 の承認後、[Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50) で browser integration を行う。#31 / #38 の wrapper copy は Simulation 固有 copy を含まない。
+次の gameplay frontier は未選定である。Issue #29 を execution root として milestone result を確認し、次の bounded route を選定する。Issue #29 はこの integration 完了だけでは close しない。
 
 ## 基本的な作業順
 
-1. ~~Fresh canonical runtime から必須経路を capture し、secretary / Perelman timed leaves、9-item assignment list、dynamic security prompt、status/input transition の stable identity と dynamic fields を確定する。~~ Issue #47 で完了。
-2. ~~Runtime fixture に基づき、9-item semantic list と active-input security prompt の二形状だけを扱う narrow projection を設計、検証する。~~ Issue #48 / PR #52 で完了。
-3. **[Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49): Runtime-observed stable leaves の Japanese copy を独立してレビューする。** Fixture が確定したため、catalog identity と copy approval を進められる。
-4. [Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50): Fixtures、approved projections、approved copy を catalog/unit test と Chromium browser verification に統合する。
-5. 完了後、Issue #29 で次の gameplay frontier を選定する。
+1. Issue #29 に初回 Simulation Mode milestone の完了結果と残る deferred boundary を記録する。
+2. Issue #29 で次の gameplay frontier と、その runtime evidence / projection / copy / integration の順序を選定する。
+3. 選定後は canonical runtime observation を先行し、観測済み identity だけを presentation catalog へ拡張する。
 
-General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input はこの milestone に含めない。
-
-緊急の regression や canonical integrity の問題はこの順序より優先する。順序を変える場合は、その task の Issue または design note に依存関係と失う保証を記録する。
+現在も deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、Kennedy Park からの移動、map / routes、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
 
 ## 現在の開発・配備状況
 

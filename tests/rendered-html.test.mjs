@@ -677,11 +677,15 @@ test("projects only the two accepted first-simulation structures and fails close
     const blocks = assignmentBriefPresentation(brief, "ja");
     const list = blocks?.filter(({ kind }) => kind === "list");
     assert.equal(list?.length, 1);
-    assert.deepEqual(list[0].items, expectedAssignments);
+    assert.deepEqual(list[0].items, [
+      "レストランで食事をすること", "政府職員と話すこと", "発電施設を訪れること",
+      "新聞を読むこと", "何らかの公共交通機関に乗ること", "開廷中の裁判を傍聴すること",
+      "教会関係者と話すこと", "映画を見に行くこと", "自分の家、または居住区を訪れること",
+    ]);
     assert.deepEqual(list[0].canonicalItems, expectedAssignments);
     assert.equal(list[0].sourceLines.length, 9);
-    assert.match(blocks[list === undefined ? -1 : blocks.indexOf(list[0]) - 1].text, /list of things to record:$/);
-    assert.match(blocks[blocks.indexOf(list[0]) + 1].text, /^By the way, since the Simulation Controller/);
+    assert.match(blocks[list === undefined ? -1 : blocks.indexOf(list[0]) - 1].text, /記録すべき項目のリスト/);
+    assert.match(blocks[blocks.indexOf(list[0]) + 1].text, /^なお、シミュレーション・コントローラー/);
     assert.ok(blocks.some(({ kind }) => kind === "spacer"), "surrounding blank-line boundaries survive");
 
     const noIndent = structuredClone(brief);
@@ -714,7 +718,8 @@ test("projects only the two accepted first-simulation structures and fails close
     const challenge = session.observations.find(({ command }) => command === "ENTER SIMULATION MODE").presentation;
     const security = securityPromptPresentation(challenge, "ja");
     assert.deepEqual(security?.map(({ kind }) => kind), ["command", "security-prompt"]);
-    assert.equal(security[1].text, fixture.stableIdentity.securityShell);
+    assert.equal(security[1].text, "シミュレーション・モードはクラス1セキュリティ・モードです。アクセスするには、次に対応するセキュリティ・コードを入力してください：");
+    assert.equal(security[1].canonicalText, fixture.stableIdentity.securityShell);
     assert.match(security[1].securityChallenge.color, /^[A-Z ]+$/);
     assert.equal(Number.isInteger(security[1].securityChallenge.innerNumber), true);
     assert.equal("answer" in security[1], false, "story projection has no outer-answer field");
@@ -738,6 +743,18 @@ test("projects only the two accepted first-simulation structures and fails close
     assert.deepEqual(rollingBlocks?.map(({ kind }) => kind), ["command", "security-prompt"]);
     assert.equal(rollingBlocks?.[1].securityChallenge.color, security[1].securityChallenge.color);
     assert.equal(assignmentBriefPresentation(rollingChallenge, "ja"), null, "stale WAIT packet cannot supersede the latest ENTER turn");
+
+    const projectedRoute = session.observations.map((observation) => ({
+      role: observation.role ?? observation.command,
+      blocks: storyPresentation(observation.presentation, "ja"),
+    }));
+    assert.ok(projectedRoute.every(({ blocks }) => blocks), "every approved route turn has a Japanese projection");
+    const securityAnswer = projectedRoute.find(({ role }) => role === "security-answer").blocks;
+    assert.equal(securityAnswer[0].text, session.observations.find(({ role }) => role === "security-answer").command, "numeric canonical input remains the English command echo");
+    assert.equal(securityAnswer.find(({ canonicalText }) => canonicalText === "This simulation is based 10 years hence.").text, "このシミュレーションの時代設定は、10年後です。");
+    assert.equal(securityAnswer.find(({ canonicalText }) => canonicalText === "Kennedy Park").text, "ケネディ公園");
+    assert.equal(projectedRoute.find(({ role }) => role === "RECORD").blocks[1].text, "記録機能を起動しました。");
+    assert.equal(projectedRoute.find(({ role }) => role === "RECORD OFF").blocks[1].text, "記録機能を停止しました。");
   }
 
   assert.match(shell, /block\.kind === "security-prompt"[\s\S]*securityChallenge\?\.color[\s\S]*securityChallenge\?\.innerNumber/);
