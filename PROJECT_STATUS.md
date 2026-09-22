@@ -60,6 +60,7 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 - [Issue #38](https://github.com/5gmt/mind-forever-voyaging/issues/38): #31 が意図的に除外した identity rail と general story shell の英日 copy packet を監査、承認
 - [PR #45](https://github.com/5gmt/mind-forever-voyaging/pull/45) / [Issue #43](https://github.com/5gmt/mind-forever-voyaging/issues/43): identity rail と shared story shell を日本語化し、最初の PEOF までの approved wrapper baseline を完成
 - [PR #51](https://github.com/5gmt/mind-forever-voyaging/pull/51) / [Issue #47](https://github.com/5gmt/mind-forever-voyaging/issues/47): fresh PEOF から初回 Simulation Mode と `RECORD` → `WAIT` → `RECORD OFF` までを二つの real-browser session で capture し、9-item assignment boundary、security/date/time の dynamic fields、status/input transition を canonical English fixture として確定
+- [PR #52](https://github.com/5gmt/mind-forever-voyaging/pull/52) / [Issue #48](https://github.com/5gmt/mind-forever-voyaging/issues/48): Issue #47 の runtime fixture に基づき、exact raw indentation / run identity を持つ 9-item semantic list と、rolling bridge payload の最新 turn から shell / canonical color / inner number だけを分離する active-input security prompt の narrow projection を実装
 
 ## 現在の frontier
 
@@ -67,12 +68,12 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 境界は、fresh canonical session の PEOF から simulation-ready brief を受け、`ENTER SIMULATION MODE`、security challenge への正答、Kennedy Park の `LOOK`、`RECORD` → `WAIT` → `RECORD OFF` を完了して通常の line input が戻るところまでとする。
 
-この milestone は、現在の PEOF-era baseline を先へ進める最初の story expansion である。Issue #47 で canonical runtime evidence が確定したため、現在の active frontier は [Issue #48](https://github.com/5gmt/mind-forever-voyaging/issues/48) の **9-item list / security prompt の narrow projection 設計**と、fixture に基づく [Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49) の **stable English leaves の copy review** である。両 lane の承認後、[Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50) で browser integration を行う。#31 / #38 の wrapper copy は Simulation 固有 copy を含まない。
+この milestone は、現在の PEOF-era baseline を先へ進める最初の story expansion である。Issue #47 で canonical runtime evidence が確定し、Issue #48 で 9-item list / security prompt の narrow projection 設計と実装が完了した。現在の active frontier は、fixture に基づく [Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49) の **stable English leaves の copy review** である。#49 の承認後、[Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50) で browser integration を行う。#31 / #38 の wrapper copy は Simulation 固有 copy を含まない。
 
 ## 基本的な作業順
 
 1. ~~Fresh canonical runtime から必須経路を capture し、secretary / Perelman timed leaves、9-item assignment list、dynamic security prompt、status/input transition の stable identity と dynamic fields を確定する。~~ Issue #47 で完了。
-2. **[Issue #48](https://github.com/5gmt/mind-forever-voyaging/issues/48): Runtime fixture に基づき、9-item semantic list と active-input security prompt の二形状だけを扱う narrow projection を設計、検証する。**
+2. ~~Runtime fixture に基づき、9-item semantic list と active-input security prompt の二形状だけを扱う narrow projection を設計、検証する。~~ Issue #48 / PR #52 で完了。
 3. **[Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49): Runtime-observed stable leaves の Japanese copy を独立してレビューする。** Fixture が確定したため、catalog identity と copy approval を進められる。
 4. [Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50): Fixtures、approved projections、approved copy を catalog/unit test と Chromium browser verification に統合する。
 5. 完了後、Issue #29 で次の gameplay frontier を選定する。
