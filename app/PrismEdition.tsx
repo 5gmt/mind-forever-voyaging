@@ -1168,6 +1168,8 @@ export default function PrismEdition() {
                 ? <blockquote key={`${entry.entryId}-${blockIndex}`} className="story-presentation-quote"><p>{block.text}</p>{block.attribution && <cite>{block.attribution}</cite>}</blockquote>
                 : block.kind === "prompt"
                   ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prompt">{block.text}</p>
+                  : block.kind === "security-prompt"
+                    ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-prompt"><span lang={block.text === block.canonicalText ? "en" : locale}>{block.text}</span>{" "}<strong lang="en">{block.securityChallenge?.color} {block.securityChallenge?.innerNumber}</strong></p>
                   : block.kind === "command"
                     ? <p key={`${entry.entryId}-${blockIndex}`} className="story-presentation-command" lang="en"><code>&gt; {block.text}</code></p>
                     : block.kind === "spacer"

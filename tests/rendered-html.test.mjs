@@ -4,7 +4,7 @@ import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
 import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
-import { initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation } from "../app/story-presentation.ts";
+import { assignmentBriefPresentation, initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation, securityPromptPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
 test("static export renders the finished unabridged edition", async () => {
@@ -660,6 +660,68 @@ test("retains the first Simulation Mode brief, dynamic challenge, and recording 
   assert.equal(new Set(challenges).size, 2, "fresh sessions observed different security challenges");
   assert.equal(new Set(simulationDates).size, 2, "fresh sessions observed different simulation dates");
   assert.equal(new Set(simulationTimes).size, 2, "fresh sessions observed different simulation times");
+});
+
+test("projects only the two accepted first-simulation structures and fails closed", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-first-simulation-runtime-observed.json", import.meta.url), "utf8"));
+  const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");
+  const bridge = await readFile(new URL("../public/player-bridge.js", import.meta.url), "utf8");
+  const expectedAssignments = [
+    "Eating a meal in a restaurant", "Talking to a government official", "Visiting a power-generating facility",
+    "Reading a newspaper", "Riding some form of public transportation", "Attending a court in session",
+    "Talking to a church official", "Going to a movie", "Visiting your own home or living quarters",
+  ];
+
+  for (const session of fixture.sessions) {
+    const brief = session.observations.filter(({ command, role }) => command === "WAIT" && !role)[3].presentation;
+    const blocks = assignmentBriefPresentation(brief, "ja");
+    const list = blocks?.filter(({ kind }) => kind === "list");
+    assert.equal(list?.length, 1);
+    assert.deepEqual(list[0].items, expectedAssignments);
+    assert.deepEqual(list[0].canonicalItems, expectedAssignments);
+    assert.equal(list[0].sourceLines.length, 9);
+    assert.match(blocks[list === undefined ? -1 : blocks.indexOf(list[0]) - 1].text, /list of things to record:$/);
+    assert.match(blocks[blocks.indexOf(list[0]) + 1].text, /^By the way, since the Simulation Controller/);
+    assert.ok(blocks.some(({ kind }) => kind === "spacer"), "surrounding blank-line boundaries survive");
+
+    for (const mutate of [
+      (copy) => copy.lines.splice(list[0].sourceLines[4], 1),
+      (copy) => copy.lines.splice(list[0].sourceLines[2], 2, copy.lines[list[0].sourceLines[3]], copy.lines[list[0].sourceLines[2]]),
+      (copy) => copy.lines.splice(list[0].sourceLines.at(-1) + 1, 0, structuredClone(copy.lines[list[0].sourceLines.at(-1)])),
+    ]) {
+      const unknown = structuredClone(brief);
+      mutate(unknown);
+      unknown.terminalLine = unknown.lines.length - 1;
+      unknown.activeInput.line = unknown.terminalLine;
+      assert.equal(assignmentBriefPresentation(unknown, "ja"), null);
+      assert.equal(observedOrdinaryTurnPresentation(unknown, "ja"), null, "unknown packet cannot partially localize");
+    }
+
+    const challenge = session.observations.find(({ command }) => command === "ENTER SIMULATION MODE").presentation;
+    const security = securityPromptPresentation(challenge, "ja");
+    assert.deepEqual(security?.map(({ kind }) => kind), ["command", "security-prompt"]);
+    assert.equal(security[1].text, fixture.stableIdentity.securityShell);
+    assert.match(security[1].securityChallenge.color, /^[A-Z ]+$/);
+    assert.equal(Number.isInteger(security[1].securityChallenge.innerNumber), true);
+    assert.equal("answer" in security[1], false, "story projection has no outer-answer field");
+    assert.doesNotMatch(JSON.stringify(security), /\b(?:51|43)\b/, "observed derived answers do not enter story output");
+
+    const unknownColor = structuredClone(challenge);
+    const colorRun = unknownColor.lines[1].runs.find((run) => /RED|ORANGE/.test(run.text));
+    assert.ok(colorRun);
+    colorRun.text = "ULTRAVIOLET ";
+    assert.equal(securityPromptPresentation(unknownColor, "ja"), null);
+    assert.equal(observedOrdinaryTurnPresentation(unknownColor, "ja"), null);
+    const completed = structuredClone(challenge);
+    completed.lines[1].runs[completed.lines[1].runs.length - 1] = { text: "51", classes: ["Style_input"], tag: "span" };
+    assert.equal(securityPromptPresentation(completed, "ja"), null, "submitted outer answer is never projected");
+  }
+
+  assert.match(shell, /block\.kind === "security-prompt"[\s\S]*securityChallenge\?\.color[\s\S]*securityChallenge\?\.innerNumber/);
+  assert.match(shell, /assistedSecurity && securityChallenge[\s\S]*Submit code <strong>\{securityChallenge\.answer\}/);
+  assert.match(shell, /const assisted = interactionLevel !== "classic"/);
+  assert.match(bridge, /inner\?\.setAttribute\("aria-hidden", "true"\)[\s\S]*inner\?\.setAttribute\("inert", ""\)/);
+  assert.doesNotMatch(shell.slice(shell.indexOf('block.kind === "security-prompt"'), shell.indexOf(': block.kind === "command"')), /\.answer/);
 });
 
 test("recovers the canonical iframe for unsafe current observations and resets at RESTORE", async () => {
