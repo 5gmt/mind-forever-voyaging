@@ -186,8 +186,9 @@ export const assignmentBriefPresentation = (presentation: BridgePresentation | n
   for (let sourceLine = commandIndex + 1; sourceLine < end; sourceLine += 1) {
     if (sourceLine === introIndex + 1) {
       const canonicalItems = [...ASSIGNMENTS];
+      const items = canonicalItems.map((item) => observedStoryLeafTranslation(`   ${item}`, locale, "WAIT")?.text ?? item);
       blocks.push({
-        kind: "list", text: canonicalItems.join("\n"), items: canonicalItems,
+        kind: "list", text: items.join("\n"), items,
         canonicalText: canonicalItems.join("\n"), canonicalItems, sourceLines: itemIndexes,
       });
       sourceLine = itemIndexes.at(-1)!;
@@ -224,9 +225,8 @@ export const securityPromptPresentation = (presentation: BridgePresentation | nu
   const color = match[1].trim();
   const innerNumber = Number(match[2]);
   if (!SECURITY_COLORS.has(color) || !SECURITY_INNER.has(innerNumber)) return null;
-  // Japanese copy is intentionally deferred to Issue #49. Keeping this field
-  // separate makes that catalog addition data-only without changing identity.
-  const shell = localizeStoryTranscript(SECURITY_SHELL, locale);
+  const shell = observedStoryLeafTranslation(SECURITY_SHELL, locale, "ENTER SIMULATION MODE")?.text
+    ?? localizeStoryTranscript(SECURITY_SHELL, locale);
   return [
     { kind: "command", text: "ENTER SIMULATION MODE", canonicalText: "ENTER SIMULATION MODE", sourceLines: [commandIndex] },
     {
@@ -249,7 +249,12 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
     return /^>\s*\S/.test(text) || line.runs.some((run) => run.classes.some((name) => INPUT_STYLE_PATTERN.test(name)));
   });
   if (commandIndex < 0) return null;
-  const command = clean(presentation.lines[commandIndex].text).replace(/^>\s*/, "");
+  const commandLine = presentation.lines[commandIndex];
+  const canonicalLineCommand = clean(commandLine.text).replace(/^>\s*/, "");
+  const submittedSecurityAnswer = clean(commandLine.text).includes(SECURITY_SHELL)
+    ? canonicalLineCommand.match(/>(\d+)$/)?.[1] ?? ""
+    : "";
+  const command = submittedSecurityAnswer || canonicalLineCommand;
   const response = presentation.lines.slice(commandIndex + 1, end);
   const responseText = response.map((line) => clean(line.text)).join("\n");
   if (responseText.includes("list of things to record:") || responseText.includes("Security Code corresponding to:")) return null;
