@@ -63,6 +63,7 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 - [PR #52](https://github.com/5gmt/mind-forever-voyaging/pull/52) / [Issue #48](https://github.com/5gmt/mind-forever-voyaging/issues/48): Issue #47 の runtime fixture に基づき、exact raw indentation / run identity を持つ 9-item semantic list と、rolling bridge payload の最新 turn から shell / canonical color / inner number だけを分離する active-input security prompt の narrow projection を実装
 - [PR #53](https://github.com/5gmt/mind-forever-voyaging/pull/53) / [Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49): 初回 Simulation Mode brief、security shell、Kennedy Park entry / `LOOK`、最初の recording loop の runtime-observed stable English leaves に対する日本語 copy packet を承認
 - [PR #54](https://github.com/5gmt/mind-forever-voyaging/pull/54) / [Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50): approved copy を typed catalog と二つの narrow projection に統合し、Classic / assisted の complete fresh-session route と fail-closed boundary を unit / Chromium regression coverage に追加して、初回 Simulation Mode milestone を完了
+- [PR #58](https://github.com/5gmt/mind-forever-voyaging/pull/58) / [Issue #55](https://github.com/5gmt/mind-forever-voyaging/issues/55): 2041 Courthouse recording round trip を二つの fresh canonical Chromium session で capture し、stable route、optional city noise、status/input boundary、および既存 ordinary-turn structure で表現可能なことを runtime evidence として確定
 
 ## 現在の frontier
 
@@ -70,13 +71,15 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 実装済み境界は、fresh canonical session の PEOF から `WAIT` × 4、simulation-ready brief、`ENTER SIMULATION MODE`、security challenge 正答、Kennedy Park entry / `LOOK`、`RECORD` → `WAIT` → `RECORD OFF` を経て通常の line input が戻るところまでである。Dynamic security color / inner number と simulation date/time は canonical のまま保持し、computed outer answer は既存 assisted command deck だけが扱う。
 
-次の gameplay frontier は [Issue #55](https://github.com/5gmt/mind-forever-voyaging/issues/55) の **2041 Courthouse recording round trip** である。二つの fresh canonical Chromium session で、Kennedy Park から Elm & Park、Courthouse へ recording 中に移動し、explicit `LOOK` の後に Kennedy Park へ戻って通常入力を回復する boundary を capture した。Elm & Park の taxi-horn interrupt は optional city noise として stable identity から分離し、全 turn が既存 ordinary-turn structure で表現可能なことを確認した。これは runtime-evidence gateway であり、日本語 copy または production localization coverage の追加ではない。
+次の gameplay milestone は **2041 Courthouse recording round trip** である。[Issue #55](https://github.com/5gmt/mind-forever-voyaging/issues/55) / [PR #58](https://github.com/5gmt/mind-forever-voyaging/pull/58) の runtime-evidence gateway はこの head で完了し、Kennedy Park から Elm & Park、Courthouse へ recording 中に移動して explicit `LOOK` の後に帰着する stable boundary、optional city noise、ordinary input recovery を確定した。全 turn は既存 ordinary-turn structure で表現でき、新しい structural projection は不要である。
+
+この evidence completion は player-facing localization coverage の追加ではない。次に unblocked となる task は [Issue #56](https://github.com/5gmt/mind-forever-voyaging/issues/56) の exact observed-leaf copy review であり、最終的な production integration と milestone roll-up は [Issue #57](https://github.com/5gmt/mind-forever-voyaging/issues/57) が所有する。Issue #57 は Issues #55 と #56 に依存し、#56 の承認までは blocked である。
 
 ## 基本的な作業順
 
-1. Issue #55 の runtime fixture と stable / dynamic matrix を review し、Courthouse route の accepted English identity と ordinary-turn boundary を確定する。
-2. Issue #55 が block する copy-approval Issue で stable leaves の日本語 copy を監査、承認する。Optional city noise と未観測 leaves は canonical English fallback のまま維持する。
-3. 承認後の narrow production-integration Issue で、観測済み identity だけを既存 ordinary-turn catalog へ追加し、fresh-session route を browser regression で検証する。
+1. [Issue #56](https://github.com/5gmt/mind-forever-voyaging/issues/56) で Issue #55 の exact stable leaves に対する日本語 copy を監査、承認する。Optional city noise、commands、dynamic status、未観測 leaves は canonical English boundary に留める。
+2. Issue #56 の完了後、[Issue #57](https://github.com/5gmt/mind-forever-voyaging/issues/57) で approved copy を既存 ordinary-turn catalog へ統合し、Classic / assisted の complete fresh-session route を browser regression で検証する。
+3. Issue #57 が player-facing Courthouse milestone の完了と `PROJECT_STATUS.md` の最終 roll-up を所有し、その結果を Issue #29 に返す。
 
 現在も deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、Courthouse 以外の fieldwork、map / route UI、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
 
