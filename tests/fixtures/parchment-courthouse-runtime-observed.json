@@ -1,0 +1,2241 @@
+{
+  "provenance": "Runtime-observed with Playwright in Chromium against canonical Release 79 Parchment on 2026-09-26; sanitized BridgePresentation v3 turn slices from two isolated fresh browser contexts. Output text is canonical English. Status fields are parsed from the observed GridWindow; no fixture prose was supplied by historical source.",
+  "prefixPath": [
+    "PEOF",
+    "WAIT",
+    "WAIT",
+    "WAIT",
+    "WAIT",
+    "ENTER SIMULATION MODE",
+    "<observed decoder answer>",
+    "LOOK",
+    "RECORD",
+    "WAIT",
+    "RECORD OFF"
+  ],
+  "path": [
+    "RECORD",
+    "SW",
+    "NW",
+    "LOOK",
+    "SE",
+    "NE",
+    "RECORD OFF"
+  ],
+  "stableIdentity": {
+    "route": [
+      "Kennedy Park",
+      "Elm & Park",
+      "Courthouse",
+      "Elm & Park",
+      "Kennedy Park"
+    ],
+    "recordingStartsBefore": "SW",
+    "recordingEndsAfter": "NE"
+  },
+  "dynamicFields": [
+    "first-simulation month/day",
+    "first-simulation time",
+    "optional 2041 street/city-noise interrupts"
+  ],
+  "sessions": [
+    {
+      "id": 1,
+      "observations": [
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-92",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-93",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-94",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-95",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:44am",
+            "location": "Kennedy Park",
+            "date": "4/19/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-95",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-96",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-97",
+                "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-98",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-99",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 4,
+            "activeInput": {
+              "kind": "line",
+              "line": 4,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:49am",
+            "location": "Elm & Park",
+            "date": "4/19/2041"
+          }
+        },
+        {
+          "command": "NW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-99",
+                "text": ">NW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-100",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-101",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-102",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-103",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-104",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-105",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:54am",
+            "location": "Courthouse",
+            "date": "4/19/2041"
+          }
+        },
+        {
+          "command": "LOOK",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-105",
+                "text": ">LOOK",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "LOOK",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-106",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-107",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-108",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-109",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-110",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-111",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:55am",
+            "location": "Courthouse",
+            "date": "4/19/2041"
+          }
+        },
+        {
+          "command": "SE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-111",
+                "text": ">SE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-112",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-113",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-114",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "11:00am",
+            "location": "Elm & Park",
+            "date": "4/19/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-114",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-115",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-116",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-117",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "11:05am",
+            "location": "Kennedy Park",
+            "date": "4/19/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-117",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-118",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-119",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-120",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "11:06am",
+            "location": "Kennedy Park",
+            "date": "4/19/2041"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "observations": [
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-92",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-93",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-94",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-95",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:19am",
+            "location": "Kennedy Park",
+            "date": "2/17/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-95",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-96",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-97",
+                "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-98",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-99",
+                "text": "You are startled as a taxi horn blares nearby.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "You are startled as a taxi horn blares nearby.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-100",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-101",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:24am",
+            "location": "Elm & Park",
+            "date": "2/17/2041"
+          }
+        },
+        {
+          "command": "NW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-101",
+                "text": ">NW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-102",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-103",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-104",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-105",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-106",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-107",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:29am",
+            "location": "Courthouse",
+            "date": "2/17/2041"
+          }
+        },
+        {
+          "command": "LOOK",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-107",
+                "text": ">LOOK",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "LOOK",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-108",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-109",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-110",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-111",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-112",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-113",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:30am",
+            "location": "Courthouse",
+            "date": "2/17/2041"
+          }
+        },
+        {
+          "command": "SE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-113",
+                "text": ">SE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-114",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-115",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-116",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:35am",
+            "location": "Elm & Park",
+            "date": "2/17/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-116",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-117",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-118",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-119",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:40am",
+            "location": "Kennedy Park",
+            "date": "2/17/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-119",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-120",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-121",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-122",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "10:41am",
+            "location": "Kennedy Park",
+            "date": "2/17/2041"
+          }
+        }
+      ]
+    }
+  ]
+}

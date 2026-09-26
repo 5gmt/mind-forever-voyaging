@@ -662,6 +662,66 @@ test("retains the first Simulation Mode brief, dynamic challenge, and recording 
   assert.equal(new Set(simulationTimes).size, 2, "fresh sessions observed different simulation times");
 });
 
+test("retains the runtime-observed 2041 Courthouse recording round trip", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-courthouse-runtime-observed.json", import.meta.url), "utf8"));
+  assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
+  assert.match(fixture.provenance, /canonical Release 79/);
+  assert.match(fixture.provenance, /canonical English/);
+  assert.equal(fixture.sessions.length, 2);
+  assert.deepEqual(fixture.path, ["RECORD", "SW", "NW", "LOOK", "SE", "NE", "RECORD OFF"]);
+
+  const elmDescription = "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.";
+  const courthouseDescription = "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.";
+  const courtSession = "The court is in session. A woman is being tried for petty theft.";
+  const optionalNoise = "You are startled as a taxi horn blares nearby.";
+  const observedNoise = [];
+
+  for (const session of fixture.sessions) {
+    assert.deepEqual(session.observations.map(({ command }) => command), fixture.path);
+    for (const observation of session.observations) {
+      assert.equal(observation.presentation.version, 3);
+      assert.equal(observation.presentation.terminalLine, observation.presentation.lines.length - 1);
+      assert.deepEqual(observation.presentation.activeInput, {
+        kind: "line",
+        line: observation.presentation.terminalLine,
+        classes: ["Input", "LineInput"],
+      });
+      assert.deepEqual(observation.presentation.lines.at(-1).runs.map(({ text, tag }) => ({ text, tag })), [
+        { text: ">", tag: "span" }, { text: "", tag: "textarea" },
+      ]);
+      assert.ok(observation.presentation.lines.every(({ text }) => !/[\u3040-\u30ff\u3400-\u9fff]/u.test(text)));
+      assert.match(observation.status.date, /^\d{1,2}\/\d{1,2}\/2041$/);
+      const fallback = reconcilePresentationHistory([], observation.presentation);
+      assert.equal(fallback.representable, true, `${observation.command} has the existing ordinary line-input shape`);
+      if (["SW", "NW", "LOOK", "SE"].includes(observation.command)) {
+        assert.ok(projectPresentationHistory(fallback.history, "ja")[0].blocks.every(({ text, canonicalText }) => canonicalText === undefined || text === canonicalText), "unapproved route leaves fall back to canonical English");
+      }
+    }
+
+    const byCommand = Object.fromEntries(session.observations.map((observation) => [observation.command, observation]));
+    assert.equal(byCommand.RECORD.status.mode, "Simulation Mode (recording)");
+    assert.equal(byCommand["RECORD OFF"].status.mode, "Simulation Mode");
+    assert.deepEqual(byCommand.SW.presentation.lines.slice(0, 3).map(({ text }) => text), [">SW", "Elm & Park", elmDescription]);
+    const swLeaves = byCommand.SW.presentation.lines.map(({ text }) => text);
+    if (swLeaves.includes(optionalNoise)) observedNoise.push(optionalNoise);
+    assert.ok(swLeaves.every((text) => [">SW", "Elm & Park", elmDescription, " ", ">", optionalNoise].includes(text)));
+    for (const command of ["NW", "LOOK"]) {
+      assert.deepEqual(byCommand[command].presentation.lines.map(({ text }) => text), [
+        `>${command}`, "Courthouse", courthouseDescription, " ", courtSession, " ", ">",
+      ]);
+      assert.equal(byCommand[command].status.location, "Courthouse");
+      assert.equal(byCommand[command].status.mode, "Simulation Mode (recording)");
+    }
+    assert.deepEqual(byCommand.SE.presentation.lines.map(({ text }) => text), [">SE", "Elm & Park", " ", ">"]);
+    assert.deepEqual(byCommand.NE.presentation.lines.map(({ text }) => text), [">NE", "Kennedy Park", " ", ">"]);
+    assert.equal(byCommand["RECORD OFF"].status.location, "Kennedy Park");
+  }
+
+  assert.deepEqual(observedNoise, [optionalNoise], "optional city noise occurred in only one fresh session");
+  assert.notEqual(fixture.sessions[0].observations[0].status.date, fixture.sessions[1].observations[0].status.date);
+  assert.notEqual(fixture.sessions[0].observations[0].status.time, fixture.sessions[1].observations[0].status.time);
+});
+
 test("projects only the two accepted first-simulation structures and fails closed", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-first-simulation-runtime-observed.json", import.meta.url), "utf8"));
   const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");

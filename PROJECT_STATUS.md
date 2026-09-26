@@ -1,7 +1,7 @@
 # AMFV 日本語化プロジェクト状況
 
 > 種別: Living roadmap / project status  
-> 最終確認日: 2026-09-22
+> 最終確認日: 2026-09-26
 
 ## この文書の責任範囲
 
@@ -70,15 +70,15 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 実装済み境界は、fresh canonical session の PEOF から `WAIT` × 4、simulation-ready brief、`ENTER SIMULATION MODE`、security challenge 正答、Kennedy Park entry / `LOOK`、`RECORD` → `WAIT` → `RECORD OFF` を経て通常の line input が戻るところまでである。Dynamic security color / inner number と simulation date/time は canonical のまま保持し、computed outer answer は既存 assisted command deck だけが扱う。
 
-次の gameplay frontier は未選定である。Issue #29 を execution root として milestone result を確認し、次の bounded route を選定する。Issue #29 はこの integration 完了だけでは close しない。
+次の gameplay frontier は [Issue #55](https://github.com/5gmt/mind-forever-voyaging/issues/55) の **2041 Courthouse recording round trip** である。二つの fresh canonical Chromium session で、Kennedy Park から Elm & Park、Courthouse へ recording 中に移動し、explicit `LOOK` の後に Kennedy Park へ戻って通常入力を回復する boundary を capture した。Elm & Park の taxi-horn interrupt は optional city noise として stable identity から分離し、全 turn が既存 ordinary-turn structure で表現可能なことを確認した。これは runtime-evidence gateway であり、日本語 copy または production localization coverage の追加ではない。
 
 ## 基本的な作業順
 
-1. Issue #29 に初回 Simulation Mode milestone の完了結果と残る deferred boundary を記録する。
-2. Issue #29 で次の gameplay frontier と、その runtime evidence / projection / copy / integration の順序を選定する。
-3. 選定後は canonical runtime observation を先行し、観測済み identity だけを presentation catalog へ拡張する。
+1. Issue #55 の runtime fixture と stable / dynamic matrix を review し、Courthouse route の accepted English identity と ordinary-turn boundary を確定する。
+2. Issue #55 が block する copy-approval Issue で stable leaves の日本語 copy を監査、承認する。Optional city noise と未観測 leaves は canonical English fallback のまま維持する。
+3. 承認後の narrow production-integration Issue で、観測済み identity だけを既存 ordinary-turn catalog へ追加し、fresh-session route を browser regression で検証する。
 
-現在も deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、Kennedy Park からの移動、map / routes、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
+現在も deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、Courthouse 以外の fieldwork、map / route UI、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
 
 ## 現在の開発・配備状況
 
