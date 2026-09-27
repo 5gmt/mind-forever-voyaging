@@ -71,6 +71,7 @@ const expectNewBlocksWithCanonicalTail = async (
   presentation: Locator,
   previousCount: number,
   expected: readonly ExpectedBlock[],
+  canonicalFallbackIndexes: readonly number[] = [],
 ) => {
   const blocks = presentation.locator(".story-presentation-content > *");
   await expect(blocks.nth(previousCount + expected.length - 1)).toBeVisible();
@@ -80,12 +81,21 @@ const expectNewBlocksWithCanonicalTail = async (
     lang: element.getAttribute("lang"),
     items: [...element.querySelectorAll("li")].map((item) => item.textContent ?? ""),
   })), previousCount);
-  expect(actual.slice(0, expected.length)).toEqual(expected.map((block) => ({
+  const expectedBlocks = expected.map((block) => ({
     kind: block.kind,
     text: block.kind === "command" ? `> ${block.text}` : block.text ?? "",
     lang: block.kind === "command" ? "en" : block.lang ?? null,
     items: block.items ? [...block.items] : [],
-  })));
+  }));
+  for (const [index, expectedBlock] of expectedBlocks.entries()) {
+    const actualBlock = actual[index];
+    if (canonicalFallbackIndexes.includes(index) && actualBlock.text !== expectedBlock.text) {
+      expect(actualBlock).toMatchObject({ kind: expectedBlock.kind, lang: "en", items: [] });
+      expect(actualBlock.text).not.toBe("");
+    } else {
+      expect(actualBlock).toEqual(expectedBlock);
+    }
+  }
   const tail = actual.slice(expected.length);
   expect(tail.length % 2).toBe(0);
   for (let index = 0; index < tail.length; index += 2) {
@@ -222,7 +232,7 @@ for (const controls of ["classic", "guided"] as const) {
       const blockCount = await presentation.locator(".story-presentation-content > *").count();
       await send(page, input, command);
       await expect(page.locator(".location-block strong")).toHaveText(place);
-      await expectNewBlocksWithCanonicalTail(presentation, blockCount, expectedBlocks);
+      await expectNewBlocksWithCanonicalTail(presentation, blockCount, expectedBlocks, command === "SW" ? [2] : []);
       await expect(page.locator(".location-block strong")).toHaveAttribute("lang", "ja");
     }
     await expect(frame.locator(".GridWindow")).toContainText(/Location:\s*Kennedy Park/i);

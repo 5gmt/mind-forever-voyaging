@@ -737,6 +737,13 @@ test("retains the runtime-observed 2041 Courthouse recording round trip", async 
   assert.deepEqual(observedNoise, [optionalNoise], "optional city noise occurred in only one fresh session");
   assert.notEqual(fixture.sessions[0].observations[0].status.date, fixture.sessions[1].observations[0].status.date);
   assert.notEqual(fixture.sessions[0].observations[0].status.time, fixture.sessions[1].observations[0].status.time);
+
+  const alternateCrowd = structuredClone(fixture.sessions[0].observations.find(({ command }) => command === "SW").presentation);
+  alternateCrowd.lines.find(({ text }) => text === elmDescription).text = `${elmDescription.slice(0, elmDescription.indexOf("The sidewalks"))}The street is bustling with lunchtime crowds.`;
+  const alternateBlocks = projectPresentationHistory(reconcilePresentationHistory([], alternateCrowd).history, "ja")[0].blocks;
+  assert.equal(alternateBlocks.find(({ canonicalText }) => canonicalText === "Elm & Park").text, "エルム通りとパーク通り");
+  const alternateDescription = alternateBlocks.find(({ canonicalText }) => canonicalText?.endsWith("lunchtime crowds."));
+  assert.equal(alternateDescription.text, alternateDescription.canonicalText, "unapproved random description safely remains canonical English");
 });
 
 test("projects only the two accepted first-simulation structures and fails closed", async () => {
