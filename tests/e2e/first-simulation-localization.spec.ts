@@ -18,7 +18,7 @@ const BRIEF_INTRO = "通信回線からメッセージが流れ始める。「�
 const BRIEF_OUTRO = "なお、シミュレーション・コントローラーが進行中に大量のデータ処理を行うため、シミュレーションはリアルタイムで進むようだ――向こうでの1分が、こちらでの約1分に相当する。それでは、健闘を祈る！」";
 const PERELMAN_RETURN = "しばらくして、ペレルマンがあなたの視界に戻ってくる。";
 
-type ExpectedBlock = { kind: "command" | "prose" | "spacer" | "list"; text?: string; items?: readonly string[] };
+type ExpectedBlock = { kind: "command" | "title" | "prose" | "spacer" | "list"; text?: string; items?: readonly string[]; lang?: "en" };
 
 const startJapaneseStory = async (page: Page, controls: "classic" | "guided") => {
   await page.goto("/");
@@ -62,9 +62,37 @@ const expectNewBlocks = async (
   expect(actual).toEqual(expected.map((block) => ({
     kind: block.kind,
     text: block.kind === "command" ? `> ${block.text}` : block.text ?? "",
-    lang: block.kind === "command" ? "en" : null,
+    lang: block.kind === "command" ? "en" : block.lang ?? null,
     items: block.items ? [...block.items] : [],
   })));
+};
+
+const expectNewBlocksWithCanonicalTail = async (
+  presentation: Locator,
+  previousCount: number,
+  expected: readonly ExpectedBlock[],
+) => {
+  const blocks = presentation.locator(".story-presentation-content > *");
+  await expect(blocks.nth(previousCount + expected.length - 1)).toBeVisible();
+  const actual = await blocks.evaluateAll((elements, start) => elements.slice(start).map((element) => ({
+    kind: element.className.replace("story-presentation-", ""),
+    text: element.textContent ?? "",
+    lang: element.getAttribute("lang"),
+    items: [...element.querySelectorAll("li")].map((item) => item.textContent ?? ""),
+  })), previousCount);
+  expect(actual.slice(0, expected.length)).toEqual(expected.map((block) => ({
+    kind: block.kind,
+    text: block.kind === "command" ? `> ${block.text}` : block.text ?? "",
+    lang: block.kind === "command" ? "en" : block.lang ?? null,
+    items: block.items ? [...block.items] : [],
+  })));
+  const tail = actual.slice(expected.length);
+  expect(tail.length % 2).toBe(0);
+  for (let index = 0; index < tail.length; index += 2) {
+    expect(tail[index]).toMatchObject({ kind: "prose", lang: "en" });
+    expect(tail[index].text).not.toBe("");
+    expect(tail[index + 1]).toEqual({ kind: "spacer", text: "", lang: null, items: [] });
+  }
 };
 
 for (const controls of ["classic", "guided"] as const) {
@@ -152,6 +180,54 @@ for (const controls of ["classic", "guided"] as const) {
     await send(page, input, "RECORD OFF");
     await expect(presentation).toContainText("記録機能を停止しました。");
     await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode/i);
+    await expect(frame.locator(".GridWindow")).not.toContainText(/\(recording\)/i);
+
+    await send(page, input, "RECORD");
+    await expect(presentation).toContainText("記録機能を起動しました。");
+    const courthouseRoute: readonly (readonly [string, readonly ExpectedBlock[], string])[] = [
+      ["SW", [
+        { kind: "command", text: "SW" },
+        { kind: "title", text: "エルム通りとパーク通り" },
+        { kind: "prose", text: "ここは南北に走るパーク通りと東西に走るエルム通りの交差点だ。北東の角には公園の入口があり、残る三つの角には古風な大建築が建っている。歩道も車道も人で混み合っている。" },
+        { kind: "spacer" },
+      ], "エルム通りとパーク通り"],
+      ["NW", [
+        { kind: "command", text: "NW" },
+        { kind: "title", text: "裁判所" },
+        { kind: "prose", text: "この裁判所は周辺のほかの官庁舎と同じ年代の建物で、1990年頃に建てられたものだ。出口は南東へ通じている。" },
+        { kind: "spacer" },
+        { kind: "prose", text: "法廷は開廷中だ。女性が軽窃盗の罪で裁判にかけられている。" },
+        { kind: "spacer" },
+      ], "裁判所"],
+      ["LOOK", [
+        { kind: "command", text: "LOOK" },
+        { kind: "title", text: "裁判所" },
+        { kind: "prose", text: "この裁判所は周辺のほかの官庁舎と同じ年代の建物で、1990年頃に建てられたものだ。出口は南東へ通じている。" },
+        { kind: "spacer" },
+        { kind: "prose", text: "法廷は開廷中だ。女性が軽窃盗の罪で裁判にかけられている。" },
+        { kind: "spacer" },
+      ], "裁判所"],
+      ["SE", [
+        { kind: "command", text: "SE" },
+        { kind: "title", text: "エルム通りとパーク通り" },
+        { kind: "spacer" },
+      ], "エルム通りとパーク通り"],
+      ["NE", [
+        { kind: "command", text: "NE" },
+        { kind: "title", text: "ケネディ公園" },
+        { kind: "spacer" },
+      ], "ケネディ公園"],
+    ];
+    for (const [command, expectedBlocks, place] of courthouseRoute) {
+      const blockCount = await presentation.locator(".story-presentation-content > *").count();
+      await send(page, input, command);
+      await expect(page.locator(".location-block strong")).toHaveText(place);
+      await expectNewBlocksWithCanonicalTail(presentation, blockCount, expectedBlocks);
+      await expect(page.locator(".location-block strong")).toHaveAttribute("lang", "ja");
+    }
+    await expect(frame.locator(".GridWindow")).toContainText(/Location:\s*Kennedy Park/i);
+    await send(page, input, "RECORD OFF");
+    await expect(presentation.locator(".story-presentation-prose", { hasText: "記録機能を停止しました。" })).toHaveCount(2);
     await expect(frame.locator(".GridWindow")).not.toContainText(/\(recording\)/i);
     await expect(input).toBeEnabled();
     await input.focus();

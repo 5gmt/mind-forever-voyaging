@@ -446,6 +446,19 @@ const OUTLET_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> =
 export const localizeOutletLabel = (locale: Locale, code: string, canonicalLabel: string) =>
   OUTLET_LABELS[locale]?.[code.toUpperCase()] ?? canonicalLabel;
 
+const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
+  ja: {
+    "Elm & Park": "エルム通りとパーク通り",
+    Courthouse: "裁判所",
+    "Kennedy Park": "ケネディ公園",
+  },
+};
+
+// Wrapper-owned location copy uses the exact accepted canonical room identity.
+// The raw GridWindow status remains English, and unknown rooms fail closed.
+export const localizeSimulationPlace = (locale: Locale, canonicalPlace: string) =>
+  SIMULATION_PLACE_LABELS[locale]?.[canonicalPlace] ?? canonicalPlace;
+
 // Intentionally tiny and exact: this PoC only presents deterministic translations
 // of the canonical opening. Anything not listed remains verbatim English.
 const OPENING_TRANSLATIONS: ReadonlyArray<readonly [string | RegExp, string]> = [
@@ -489,6 +502,11 @@ export type StoryContentId =
   | "part1.simulation.ten-years-hence"
   | "part1.simulation.kennedy-park.title"
   | "part1.simulation.kennedy-park.description"
+  | "part1.simulation.elm-park.title"
+  | "part1.simulation.elm-park.description"
+  | "part1.simulation.courthouse.title"
+  | "part1.simulation.courthouse.description"
+  | "part1.simulation.courthouse.session"
   | "part1.simulation.record-activated"
   | "part1.simulation.record-deactivated";
 
@@ -712,6 +730,38 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
       canonicalLeaf: "This is a small, downtown park with gates leading northeast, southeast, and southwest. There is a sprawling, free-form waterpool surrounding a statue of John F. Kennedy in the center of the park.",
       translation: { contentId: "part1.simulation.kennedy-park.description", text: "ここは市街地にある小さな公園で、北東、南東、南西へ通じる門がある。公園の中央では、ジョン・F・ケネディ像を取り囲むように、自由な形の大きな水盤が広がっている。" },
     },
+    {
+      canonicalCommand: "SW",
+      canonicalLeaf: "Elm & Park",
+      translation: { contentId: "part1.simulation.elm-park.title", text: "エルム通りとパーク通り", kind: "title" },
+    },
+    {
+      canonicalCommand: "SW",
+      canonicalLeaf: "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.",
+      translation: { contentId: "part1.simulation.elm-park.description", text: "ここは南北に走るパーク通りと東西に走るエルム通りの交差点だ。北東の角には公園の入口があり、残る三つの角には古風な大建築が建っている。歩道も車道も人で混み合っている。" },
+    },
+    {
+      canonicalCommand: "SE",
+      canonicalLeaf: "Elm & Park",
+      translation: { contentId: "part1.simulation.elm-park.title", text: "エルム通りとパーク通り", kind: "title" },
+    },
+    ...(["NW", "LOOK"] as const).flatMap((canonicalCommand) => [
+      {
+        canonicalCommand,
+        canonicalLeaf: "Courthouse",
+        translation: { contentId: "part1.simulation.courthouse.title" as const, text: "裁判所", kind: "title" as const },
+      },
+      {
+        canonicalCommand,
+        canonicalLeaf: "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+        translation: { contentId: "part1.simulation.courthouse.description" as const, text: "この裁判所は周辺のほかの官庁舎と同じ年代の建物で、1990年頃に建てられたものだ。出口は南東へ通じている。" },
+      },
+      {
+        canonicalCommand,
+        canonicalLeaf: "The court is in session. A woman is being tried for petty theft.",
+        translation: { contentId: "part1.simulation.courthouse.session" as const, text: "法廷は開廷中だ。女性が軽窃盗の罪で裁判にかけられている。" },
+      },
+    ]),
     {
       canonicalCommand: "RECORD",
       canonicalLeaf: "Record feature activated.",

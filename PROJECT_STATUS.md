@@ -11,13 +11,13 @@
 
 ## 現在の到達点
 
-日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室での deterministic inspection packet、初回 Simulation Mode 移行と Kennedy Park での最初の `RECORD` → `WAIT` → `RECORD OFF` loop まで到達している。
+日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室での deterministic inspection packet、初回 Simulation Mode 移行、Kennedy Park での最初の recording loop、2041 Courthouse への recording 往復まで到達している。
 
 現在到達済みの opening、Communications Mode、最初の PEOF を取り囲む wrapper UI についても、承認済みの範囲を日本語化している。これには core header、reading/play settings、introduction overlay、companion shell、PEOF SceneActions、original-package overlay、identity rail、shared story shell、visible label、accessible name が含まれる。
 
 | 層 | 現在の日本語 coverage | 意図的に未対応の境界 |
 | --- | --- | --- |
-| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop | Kennedy Park からの移動、assignment completion、後続の Simulation story output |
+| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復 | Courthouse 以外の fieldwork、assignment completion、後続の Simulation story output |
 | Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、既存 assisted security decoder | later mode / later phase 固有 UI の日本語化、fieldwork、QA/debug |
 | Input and actions | Guided / Action-menu の日本語表示、canonical command に解決される支援操作 | 日本語 parser input |
 | Fallback | 対応済み leaf / surface の日本語表示と EN → JA → EN recovery | 未観測または未承認の内容は canonical English |
@@ -64,6 +64,8 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 - [PR #53](https://github.com/5gmt/mind-forever-voyaging/pull/53) / [Issue #49](https://github.com/5gmt/mind-forever-voyaging/issues/49): 初回 Simulation Mode brief、security shell、Kennedy Park entry / `LOOK`、最初の recording loop の runtime-observed stable English leaves に対する日本語 copy packet を承認
 - [PR #54](https://github.com/5gmt/mind-forever-voyaging/pull/54) / [Issue #50](https://github.com/5gmt/mind-forever-voyaging/issues/50): approved copy を typed catalog と二つの narrow projection に統合し、Classic / assisted の complete fresh-session route と fail-closed boundary を unit / Chromium regression coverage に追加して、初回 Simulation Mode milestone を完了
 - [PR #58](https://github.com/5gmt/mind-forever-voyaging/pull/58) / [Issue #55](https://github.com/5gmt/mind-forever-voyaging/issues/55): 2041 Courthouse recording round trip を二つの fresh canonical Chromium session で capture し、stable route、optional city noise、status/input boundary、および既存 ordinary-turn structure で表現可能なことを runtime evidence として確定
+- [Issue #56](https://github.com/5gmt/mind-forever-voyaging/issues/56): 2041 Courthouse 往復の exact observed leaves と wrapper-owned place name に対する日本語 copy packet を監査、承認
+- [Issue #57](https://github.com/5gmt/mind-forever-voyaging/issues/57): approved copy を既存 ordinary-turn catalog と exact `currentPlace` presentation に統合し、Classic / Guided の complete fresh-session route と canonical-English fallback を browser regression で検証して、2041 Courthouse milestone を完了
 
 ## 現在の frontier
 
@@ -71,15 +73,14 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 実装済み境界は、fresh canonical session の PEOF から `WAIT` × 4、simulation-ready brief、`ENTER SIMULATION MODE`、security challenge 正答、Kennedy Park entry / `LOOK`、`RECORD` → `WAIT` → `RECORD OFF` を経て通常の line input が戻るところまでである。Dynamic security color / inner number と simulation date/time は canonical のまま保持し、computed outer answer は既存 assisted command deck だけが扱う。
 
-次の gameplay milestone は **2041 Courthouse recording round trip** である。[Issue #55](https://github.com/5gmt/mind-forever-voyaging/issues/55) / [PR #58](https://github.com/5gmt/mind-forever-voyaging/pull/58) の runtime-evidence gateway はこの head で完了し、Kennedy Park から Elm & Park、Courthouse へ recording 中に移動して explicit `LOOK` の後に帰着する stable boundary、optional city noise、ordinary input recovery を確定した。全 turn は既存 ordinary-turn structure で表現でき、新しい structural projection は不要である。
+**2041 Courthouse recording round trip** milestone は Issues #55–#57 で完了した。Kennedy Park から Elm & Park、Courthouse へ recording 中に移動し、explicit `LOOK` の後に帰着する stable leaves は既存 ordinary-turn catalog で日本語表示される。Optional city noise、raw GridWindow status、commands、dynamic date/time は canonical English のまま保持し、wrapper-owned `currentPlace` だけを exact accepted room identity で日本語化する。
 
-この evidence completion は player-facing localization coverage の追加ではない。次に unblocked となる task は [Issue #56](https://github.com/5gmt/mind-forever-voyaging/issues/56) の exact observed-leaf copy review であり、最終的な production integration と milestone roll-up は [Issue #57](https://github.com/5gmt/mind-forever-voyaging/issues/57) が所有する。Issue #57 は Issues #55 と #56 に依存し、#56 の承認までは blocked である。
+次の gameplay milestone は未選定であり、execution root の [Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) に今回の完了結果を返して、次の runtime-evidence boundary を決定する。
 
 ## 基本的な作業順
 
-1. [Issue #56](https://github.com/5gmt/mind-forever-voyaging/issues/56) で Issue #55 の exact stable leaves に対する日本語 copy を監査、承認する。Optional city noise、commands、dynamic status、未観測 leaves は canonical English boundary に留める。
-2. Issue #56 の完了後、[Issue #57](https://github.com/5gmt/mind-forever-voyaging/issues/57) で approved copy を既存 ordinary-turn catalog へ統合し、Classic / assisted の complete fresh-session route を browser regression で検証する。
-3. Issue #57 が player-facing Courthouse milestone の完了と `PROJECT_STATUS.md` の最終 roll-up を所有し、その結果を Issue #29 に返す。
+1. Issue #57 の 2041 Courthouse milestone 完了結果を [Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) に返す。
+2. Issue #29 で次の gameplay milestone と runtime-evidence gateway を選定する。
 
 現在も deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、Courthouse 以外の fieldwork、map / route UI、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
 
