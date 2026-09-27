@@ -182,8 +182,13 @@ for (const controls of ["classic", "guided"] as const) {
     await send(page, input, "LOOK");
     await expect(presentation.locator(".story-presentation-title", { hasText: "ケネディ公園" })).toHaveCount(2);
 
+    const firstRecordBlockCount = await presentation.locator(".story-presentation-content > *").count();
     await send(page, input, "RECORD");
-    await expect(presentation).toContainText("記録機能を起動しました。");
+    await expectNewBlocks(presentation, firstRecordBlockCount, [
+      { kind: "command", text: "RECORD" },
+      { kind: "prose", text: "記録機能を起動しました。" },
+      { kind: "spacer" },
+    ]);
     await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode\s*\(recording\)/i);
     await send(page, input, "WAIT");
     await expect(presentation.locator(".story-presentation-prose", { hasText: "時間が過ぎていく……" })).toHaveCount(5);
@@ -192,8 +197,13 @@ for (const controls of ["classic", "guided"] as const) {
     await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode/i);
     await expect(frame.locator(".GridWindow")).not.toContainText(/\(recording\)/i);
 
+    const secondRecordBlockCount = await presentation.locator(".story-presentation-content > *").count();
     await send(page, input, "RECORD");
-    await expect(presentation).toContainText("記録機能を起動しました。");
+    await expectNewBlocks(presentation, secondRecordBlockCount, [
+      { kind: "command", text: "RECORD" },
+      { kind: "prose", text: "記録機能を起動しました。" },
+      { kind: "spacer" },
+    ]);
     const courthouseRoute: readonly (readonly [string, readonly ExpectedBlock[], string])[] = [
       ["SW", [
         { kind: "command", text: "SW" },
