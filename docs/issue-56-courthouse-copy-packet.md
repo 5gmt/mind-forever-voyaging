@@ -45,10 +45,22 @@ Issue #55 が 2026-09-26 に二つの独立した fresh Chromium context で採�
 - **Court terminology:** `The court is in session.` は assignment の `Attending a court in session` に対する既承認表現「開廷中の裁判」と整合する「法廷は開廷中だ」とする。`petty theft` は行為の描写へ広げず、罪名を示す「軽窃盗の罪」とする。
 - **Shared copy identity:** Courthouse の三つの stable leaves は `NW` と explicit `LOOK` で exact English と意味上の context が一致するため共有できる。`Elm & Park` と `Kennedy Park` の heading も往路・帰路または既承認 packet と同じ場所 identity を表すため共有できる。一方、帰路に未表示の description を挿入しない。
 
+### Place-name presentation surfaces
+
+Raw Parchment `GridWindow` の `Location:` value と、wrapper-owned の `currentPlace` presentation は別 surface として扱う。`GridWindow` が保持する runtime status evidence は canonical English のままとし、story-leaf catalog identity に転用しない。一方、wrapper-owned `currentPlace` は、Issue #55 の fixture で exact accepted room identity が観測された場合に限り、heading と同じ承認済み place copy を再利用する。
+
+| Exact accepted room identity | Raw Parchment `Location:` value | Approved wrapper-owned `currentPlace` copy |
+| --- | --- | --- |
+| `Elm & Park` | canonical English `Elm & Park` を保持 | `エルム通りとパーク通り` |
+| `Courthouse` | canonical English `Courthouse` を保持 | `裁判所` |
+| `Kennedy Park` | canonical English `Kennedy Park` を保持 | `ケネディ公園`（Issue #49 の既承認 copy を再利用） |
+
+上記三つ以外の room identity、または exact identity として確定できない値については、wrapper-owned `currentPlace` も original English に fallback する。近似一致や、raw status value 自体の置換は行わない。
+
 ## Dynamic / optional canonical-English boundaries
 
 - `RECORD`、`SW`、`NW`、`LOOK`、`SE`、`NE`、`RECORD OFF`、それらの command echo、parser へ送る入力は canonical English のままとする。
-- Simulation の month / day / time、recording を含む mode、location などの canonical status value は本 story-copy table の対象外とし、翻訳 identity に使用しない。
+- Simulation の month / day / time、recording を含む mode、および raw Parchment `GridWindow` の `Location:` value は本 story-copy table の対象外とし、canonical English を保持する。wrapper-owned `currentPlace` だけは、前節で承認した exact room identity / fallback 規則に従う。
 - Session 2 の `SW` だけで観測された `You are startled as a taxi horn blares nearby.` は optional city-noise leaf である。本 packet では承認せず、canonical English のまま表示する。
 - 空行、heading / prose の block boundary、末尾の active line-input `>` は presentation structure であり、翻訳文字列へ埋め込まない。
 - Exact identity が一致しない leaf、未観測 leaf、未承認 leaf は、その leaf 単位で original English に安全に fallback する。前後の承認済み leaf が一致していても、近似一致、部分一致、room 全体の一括翻訳は行わない。
