@@ -6,7 +6,7 @@ import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "
 import { createPortal } from "react-dom";
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
-import { companionHeaderLanguage, localizeOutletLabel, uiText, type Locale, type UiKey } from "./localization";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSimulationPlace, uiText, type Locale, type UiKey } from "./localization";
 import { projectPresentationHistory, reconcilePresentationHistory, type PresentationHistory } from "./presentation-history";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
@@ -1072,7 +1072,10 @@ export default function PrismEdition() {
   };
   const systemActivity = uiText(locale, acceptsInput ? (inputKind === "char" ? "keyRequested" : "awaitingInput") : (playerReady ? "processing" : "initializing"));
   const currentRoomName = displayLocationName(statusLocation) || room?.name || null;
-  const currentPlace = mode === "Simulation Mode" ? currentRoomName : mode === "Communications Mode" && activeOutlet ? localizeOutletLabel(locale, activeOutlet.code, activeOutlet.name) : null;
+  const currentPlace = mode === "Simulation Mode" && currentRoomName
+    ? localizeSimulationPlace(locale, currentRoomName)
+    : mode === "Communications Mode" && activeOutlet ? localizeOutletLabel(locale, activeOutlet.code, activeOutlet.name) : null;
+  const hasLocalizedCurrentPlace = locale !== "en" && currentPlace !== currentRoomName;
   const openingOrCommunications = !mode || mode === "Communications Mode";
   const assisted = interactionLevel !== "classic";
   const assistedSecurity = assisted && Boolean(securityChallenge);
@@ -1131,7 +1134,7 @@ export default function PrismEdition() {
       <section className="experience-shell" aria-labelledby="experience-shell-label" aria-hidden={blockingOverlayOpen} inert={blockingOverlayOpen ? true : undefined}>
         <span id="experience-shell-label" hidden lang={locale}>{uiText(locale, "interactiveStory")}</span>
         <header className="console-header">
-          <div className="location-block" aria-live="polite"><span className="section-kicker" lang={phase === "signal" || phase === "awakened" ? locale : "en"}>{phase === "awakened" && locale === "ja" ? <><span lang="en">PRISM</span> オンライン</> : phaseLabel[phase]}</span><strong lang={companionHeaderLanguage(locale, mode, phase, mode === "Communications Mode" && Boolean(currentPlace))}>{currentPlace || (phase === "origin" ? "Personal archive" : phase === "comparative" ? "Simulation archive" : phase === "witness" ? "Review channel" : phase === "lockdown" ? "Restricted system" : phase === "epilogue" ? "A final voyage" : mode ? guide.label : uiText(locale, "openingTransmission"))}</strong><span lang={activeOutlet ? locale : !displayYear && mode !== "Simulation Mode" && !["origin", "comparative", "witness", "lockdown", "epilogue"].includes(phase) ? locale : "en"}>{displayYear ? `${displayYear} · ${currentPlace || "Rockvil"}` : activeOutlet ? <>{locale === "ja" ? "アウトレット " : "OUTLET "}<span lang="en">{activeOutlet.code}</span></> : phase === "origin" ? "Memory files" : phase === "comparative" ? "Visited horizons" : phase === "witness" ? "Findings received" : phase === "lockdown" ? "External control detected" : phase === "epilogue" ? "Memory continuing" : mode === "Simulation Mode" ? "Locating…" : discovery.identityKnown ? uiText(locale, "projectDate2031") : uiText(locale, "carrierLocked")}</span></div>
+          <div className="location-block" aria-live="polite"><span className="section-kicker" lang={phase === "signal" || phase === "awakened" ? locale : "en"}>{phase === "awakened" && locale === "ja" ? <><span lang="en">PRISM</span> オンライン</> : phaseLabel[phase]}</span><strong lang={companionHeaderLanguage(locale, mode, phase, (mode === "Communications Mode" && Boolean(currentPlace)) || hasLocalizedCurrentPlace)}>{currentPlace || (phase === "origin" ? "Personal archive" : phase === "comparative" ? "Simulation archive" : phase === "witness" ? "Review channel" : phase === "lockdown" ? "Restricted system" : phase === "epilogue" ? "A final voyage" : mode ? guide.label : uiText(locale, "openingTransmission"))}</strong><span lang={activeOutlet ? locale : hasLocalizedCurrentPlace ? locale : !displayYear && mode !== "Simulation Mode" && !["origin", "comparative", "witness", "lockdown", "epilogue"].includes(phase) ? locale : "en"}>{displayYear ? `${displayYear} · ${currentPlace || "Rockvil"}` : activeOutlet ? <>{locale === "ja" ? "アウトレット " : "OUTLET "}<span lang="en">{activeOutlet.code}</span></> : phase === "origin" ? "Memory files" : phase === "comparative" ? "Visited horizons" : phase === "witness" ? "Findings received" : phase === "lockdown" ? "External control detected" : phase === "epilogue" ? "Memory continuing" : mode === "Simulation Mode" ? "Locating…" : discovery.identityKnown ? uiText(locale, "projectDate2031") : uiText(locale, "carrierLocked")}</span></div>
           {phase === "lockdown" && <div className="lockdown-banner">CHANNELS RESTRICTED</div>}
           <div className="system-state" lang={locale} aria-label={uiText(locale, acceptsInput ? "storyReady" : "storyProcessing")}><span className={acceptsInput ? "state-light ready" : "state-light"}></span><span>{systemActivity}</span></div>
           <div className="header-actions" lang={locale}>

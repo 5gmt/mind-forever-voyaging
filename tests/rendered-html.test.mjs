@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationPlace, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { assignmentBriefPresentation, initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation, securityPromptPresentation, storyPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -311,6 +311,12 @@ test("keeps accessible Japanese names and excluded later-mode English in their o
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "lockdown"), "en");
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "epilogue"), "en");
   assert.equal(companionHeaderLanguage("ja", "Simulation Mode", "field"), "en");
+  assert.equal(companionHeaderLanguage("ja", "Simulation Mode", "field", true), "ja");
+  assert.equal(localizeSimulationPlace("ja", "Elm & Park"), "エルム通りとパーク通り");
+  assert.equal(localizeSimulationPlace("ja", "Courthouse"), "裁判所");
+  assert.equal(localizeSimulationPlace("ja", "Kennedy Park"), "ケネディ公園");
+  assert.equal(localizeSimulationPlace("ja", "Unobserved Room"), "Unobserved Room");
+  assert.equal(localizeSimulationPlace("en", "Courthouse"), "Courthouse");
 });
 
 test("localizes the complete introduction catalog and preserves its English copy", () => {
@@ -693,9 +699,20 @@ test("retains the runtime-observed 2041 Courthouse recording round trip", async 
       assert.match(observation.status.date, /^\d{1,2}\/\d{1,2}\/2041$/);
       const fallback = reconcilePresentationHistory([], observation.presentation);
       assert.equal(fallback.representable, true, `${observation.command} has the existing ordinary line-input shape`);
-      if (["SW", "NW", "LOOK", "SE"].includes(observation.command)) {
-        assert.ok(projectPresentationHistory(fallback.history, "ja")[0].blocks.every(({ text, canonicalText }) => canonicalText === undefined || text === canonicalText), "unapproved route leaves fall back to canonical English");
+      const blocks = projectPresentationHistory(fallback.history, "ja")[0].blocks;
+      if (observation.command === "SW") {
+        assert.equal(blocks.find(({ canonicalText }) => canonicalText === "Elm & Park").text, "エルム通りとパーク通り");
+        assert.equal(blocks.find(({ canonicalText }) => canonicalText === elmDescription).text, "ここは南北に走るパーク通りと東西に走るエルム通りの交差点だ。北東の角には公園の入口があり、残る三つの角には古風な大建築が建っている。歩道も車道も人で混み合っている。");
+        const noise = blocks.find(({ canonicalText }) => canonicalText === optionalNoise);
+        if (noise) assert.equal(noise.text, optionalNoise, "optional city noise remains canonical English");
       }
+      if (["NW", "LOOK"].includes(observation.command)) {
+        assert.equal(blocks.find(({ canonicalText }) => canonicalText === "Courthouse").text, "裁判所");
+        assert.equal(blocks.find(({ canonicalText }) => canonicalText === courthouseDescription).text, "この裁判所は周辺のほかの官庁舎と同じ年代の建物で、1990年頃に建てられたものだ。出口は南東へ通じている。");
+        assert.equal(blocks.find(({ canonicalText }) => canonicalText === courtSession).text, "法廷は開廷中だ。女性が軽窃盗の罪で裁判にかけられている。");
+      }
+      if (observation.command === "SE") assert.equal(blocks.find(({ canonicalText }) => canonicalText === "Elm & Park").text, "エルム通りとパーク通り");
+      if (observation.command === "NE") assert.equal(blocks.find(({ canonicalText }) => canonicalText === "Kennedy Park").text, "ケネディ公園");
     }
 
     const byCommand = Object.fromEntries(session.observations.map((observation) => [observation.command, observation]));
@@ -720,6 +737,13 @@ test("retains the runtime-observed 2041 Courthouse recording round trip", async 
   assert.deepEqual(observedNoise, [optionalNoise], "optional city noise occurred in only one fresh session");
   assert.notEqual(fixture.sessions[0].observations[0].status.date, fixture.sessions[1].observations[0].status.date);
   assert.notEqual(fixture.sessions[0].observations[0].status.time, fixture.sessions[1].observations[0].status.time);
+
+  const alternateCrowd = structuredClone(fixture.sessions[0].observations.find(({ command }) => command === "SW").presentation);
+  alternateCrowd.lines.find(({ text }) => text === elmDescription).text = `${elmDescription.slice(0, elmDescription.indexOf("The sidewalks"))}The street is bustling with lunchtime crowds.`;
+  const alternateBlocks = projectPresentationHistory(reconcilePresentationHistory([], alternateCrowd).history, "ja")[0].blocks;
+  assert.equal(alternateBlocks.find(({ canonicalText }) => canonicalText === "Elm & Park").text, "エルム通りとパーク通り");
+  const alternateDescription = alternateBlocks.find(({ canonicalText }) => canonicalText?.endsWith("lunchtime crowds."));
+  assert.equal(alternateDescription.text, alternateDescription.canonicalText, "unapproved random description safely remains canonical English");
 });
 
 test("projects only the two accepted first-simulation structures and fails closed", async () => {
