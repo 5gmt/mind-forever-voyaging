@@ -47,18 +47,18 @@ Script は assisted decoder が表示した numeric answer を canonical English
 | Boundary | Stable output / state | Dynamic or optional output |
 | --- | --- | --- |
 | Main & Kennedy arrival | heading と三つの description paragraph、recording | 絶対日時 |
-| Centre & Kennedy arrival | heading と intersection description | truck noise（両 retained session で出現したが route identity には含めない） |
+| Centre & Kennedy arrival | heading と intersection description | retained sessions では optional output なし |
 | Bodanski Square arrival | heading、plaza description、newspaper dispenser、half-full warning | 絶対日時 |
 | `BUY NEWSPAPER` | card、`NEW BALANCE: $599`、新聞取得 | なしを観測 |
-| `READ NEWSPAPER` | 経済、Ryder / BSF、犯罪、その他記事と editorial の四段落、および段落間 blank line | Session 2 の skycopter noise |
-| return | Centre & Kennedy → Main & Kennedy → Kennedy Park headings | Session 1 の宗教について尋ねる通行人 noise |
+| `READ NEWSPAPER` | 経済、Ryder / BSF、犯罪、その他記事と editorial の四段落、および段落間 blank line | retained sessions では optional output なし |
+| return | Centre & Kennedy → Main & Kennedy → Kennedy Park headings | retained sessions では optional output なし |
 | final `RECORD OFF` | deactivation、non-recording mode、terminal ordinary line input | 絶対日時 |
 
-Optional city noise は独立した prose leaf / blank-line pair で、経路成功の条件にも記事 identity にも含めない。未観測 variant は引き続き canonical-English fallback 対象とする。
+今回保存した二 session の新聞経路には optional city noise は出現しなかった。既存 Courthouse fixture などで知られている city-noise variant を今回観測したものとして扱わず、新聞経路上では未観測とする。将来出現した未承認 variant は canonical-English fallback 対象とし、経路成功の条件や記事 identity へ推測で加えない。
 
 ## 記事構造と ordinary-turn 適合性
 
-`READ NEWSPAPER` は command echo、四つの `Style_normal_par` prose leaf、それぞれを分ける blank paragraph、任意の city-noise leaf、terminal `>` line input から成る。記事は長いが、各段落は既存の bridge-v3 line/run と blank-line boundary で損失なく表現される。全 capture turn は `reconcilePresentationHistory` で representable であり、active input は terminal line を所有する。
+保存した `READ NEWSPAPER` は command echo、四つの `Style_normal_par` prose leaf、それぞれの後にある blank paragraph、terminal `>` line input から成る。記事は長いが、各段落は既存の bridge-v3 line/run と blank-line boundary で損失なく表現される。全 capture turn は `reconcilePresentationHistory` で representable であり、active input は terminal line を所有する。Optional city noise を含む `READ NEWSPAPER` shape は今回観測していない。
 
 したがって既存 ordinary-turn projector で扱える。記事専用 renderer、汎用 renderer、VM telemetry、または paragraph splitting の変更は不要であり、N3 に未承認の表示改修を持ち込まない。
 
@@ -66,7 +66,7 @@ Optional city noise は独立した prose leaf / blank-line pair で、経路成
 
 保持した二 session では canonical route failure はなかった。事前 probe では、outer wrapper input の再有効化だけを待ったため次 command を早く送り、また履歴中の古い同名 command echo を新 turn と誤認する同期失敗が起きた。これは canonical な時刻、持ち物、乱数、経路の失敗ではない。Script を current input line ID と次の input line ID の境界待ちへ修正してから、二つの fresh session を連続して成功させた。
 
-好都合な optional prose が出るまで再試行しておらず、retained sessions は truck、skycopter、通行人、および Courthouse 手前の別形を含む。これらを失敗扱いせず fixture にそのまま保存した。
+好都合な optional prose が出るまで再試行していない。Retained sessions の相違は Courthouse 手前の Elm & Park description variant と dynamic date/time であり、新聞経路の prose と記事四段落は一致した。Truck、skycopter、通行人などの city noise は今回の fixture には保存されておらず、未観測 variant として扱う。
 
 ## A〜D の判断と後続差分
 

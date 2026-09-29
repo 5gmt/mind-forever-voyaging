@@ -757,11 +757,11 @@ test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", asy
   assert.deepEqual(fixture.prerequisites.inventoryBeforeNewspaperRecording, ["a key", "a wallet"]);
   assert.deepEqual(fixture.attemptClassification.canonicalRouteFailures, []);
 
-  const articleStarts = "The headline story in the news section is about the Index of Leading Economic Indicators";
-  const articleEnds = "An editorial calls for lowering draft board requirements in order to ease prison overcrowding.";
-  const optionalNoise = [
-    "A skycopter drones by far overhead and disappears into the distance.",
-    "A man with a shaved head asks your views on some obscure religious point, then wanders off into the crowds.",
+  const articleParagraphs = [
+    "The headline story in the news section is about the Index of Leading Economic Indicators, which are up a stunning 9.7% over last month, yet another indication of the economy's robust performance. Related stories discuss the unemployment rate, which is at the lowest level in almost thirty years, and commercial and housing construction, which are at an all-time high.",
+    "Another major story covers President Ryder's speech for the Distinguished Lecturer Series of the Border Security Force Academy. In his address, the President called the '40s a \"decade of new hope,\" and attributed much of that new hope to the work of the BSF, sending a signal to the entire world that the USNA \"won't be pushed around by the biggest dictatorship or the smallest band of terrorist murderers.\"",
+    "On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.",
+    "Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.",
   ];
 
   for (const session of fixture.sessions) {
@@ -790,10 +790,14 @@ test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", asy
     assert.match(purchase.presentation.lines[1].text, /NEW BALANCE: \$599/);
     const reading = newspaper.find(({ command }) => command === "READ NEWSPAPER");
     const readingLeaves = reading.presentation.lines.map(({ text }) => text);
-    assert.ok(readingLeaves[1].startsWith(articleStarts));
-    assert.ok(readingLeaves.some((text) => text.endsWith(articleEnds)));
-    assert.equal(readingLeaves.filter((text) => text === " ").length >= 4, true);
-    assert.ok(readingLeaves.filter((text) => optionalNoise.includes(text)).length <= 1);
+    assert.deepEqual(readingLeaves, [
+      ">READ NEWSPAPER",
+      articleParagraphs[0], " ",
+      articleParagraphs[1], " ",
+      articleParagraphs[2], " ",
+      articleParagraphs[3], " ",
+      ">",
+    ], "all four observed article paragraphs and their boundaries remain complete and ordered");
     assert.equal(reading.status.mode, "Simulation Mode (recording)");
     assert.equal(newspaper.at(-1).status.mode, "Simulation Mode");
     assert.equal(newspaper.at(-1).status.location, "Kennedy Park");
