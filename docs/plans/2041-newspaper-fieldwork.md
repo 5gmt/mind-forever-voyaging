@@ -150,9 +150,8 @@ PR #60 では、同じ RECORD コマンドを再び使った際に、既存の�
 ### 採用する範囲と現在の状態
 
 新聞の購入と読書を次の物語上の候補とし、初期 Simulation の基本操作、課題一覧、採用経路の案内を日本語化する六つの作業単位を提案する。
-この記録時点では N1〜N3、U1〜U3 の Issue は未作成であり、新聞の runtime capture、copy 承認、production integration は未着手である。
-まず N1 の観測と U1 の現行 UI 監査を進め、N1 の判断をレビューしてから新聞側の採用経路を確定する。
-同一 session で裁判所から新聞へ進むことは、現時点の確定条件にしない。
+N1 は Issue #62 として runtime capture を完了し、二つの fresh canonical session に基づいて A（同一 session の裁判所 → 新聞）を推奨した。詳細は [runtime evidence](../newspaper-runtime-evidence.md) を参照する。N2 / N3 は N1 の文書 PR のレビューとマージを待ち、U1 は並行できる。
+同一 session で裁判所から新聞へ進むことを、後続の採用経路と最終受入単位にする。
 
 対象は初回2041年の既存 Courthouse 往復、N1 で採用する新聞経路、そのために必要な操作面である。
 九課題すべての本文、原作側の正式な課題達成、帰還と評価、再入場、後続年、ノート、比較画面、他 outlet は今回の範囲に含めない。
@@ -168,7 +167,7 @@ Issue を作成したらこの表へ実リンク、実装担当、レビュー�
 
 | ID / 作業票タイトル案 | 成果物と責任 | 開始条件 / 依存関係 | Issue / 実装担当 / レビュー担当 | 状態 |
 | --- | --- | --- | --- | --- |
-| N1 Runtime: capture the 2041 newspaper fieldwork route | canonical fixture、再現 script、観測メモ、採用案と縮小判断。本計画と status の判断点を更新する | なし | 未作成 / 未割当 / 未割当 | 未着手 |
+| N1 Runtime: capture the 2041 newspaper fieldwork route | canonical fixture、再現 script、観測メモ、採用案と縮小判断。本計画と status の判断点を更新する | なし | [Issue #62](https://github.com/5gmt/mind-forever-voyaging/issues/62) / ChatGPT / 5gmt | 実装完了・レビュー待ち |
 | N2 Copy: approve Japanese copy for 2041 newspaper fieldwork | exact English leaf と日本語本文、共有地名の正本、翻訳対象外の一覧 | N1 の観測と終了判断のレビュー完了 | 未作成 / 未割当 / 未割当 | N1 待ち |
 | N3 Integrate the 2041 newspaper fieldwork in Japanese | 本文 catalog、共有地名対応表と lookup、現在地表示、unit と新聞 E2E。新聞本文の実装範囲を status に記録する | N2 完了と U1 の地名 surface 監査。必要な専用表示があれば、その設計承認も必要 | 未作成 / 未割当 / 未割当 | N2 待ち |
 | U1 Copy: approve the initial Simulation fieldwork controls | 画面別の英日 copy、visible / accessible name、command、動的値の台帳。U2 と U3 の担当範囲を項目ごとに分ける | なし。新聞固有部分の最終承認だけ N1 と N2 を待つ | 未作成 / 未割当 / 未割当 | 未着手 |
@@ -229,6 +228,8 @@ U3 が独自に訳語を足して依存を飛ばすことはしない。
 これによって `app/localization.ts` を共有していても、地名データと各 UI 項目の変更責任が明確になる。
 
 ### N1 の観測と終了判断
+
+**N1 終了判断（2026-09-29）:** A（裁判所 → 新聞）を採用する。二つの fresh session で連続経路、wallet、購入、記事四段落、帰着、録画停止、入力復帰が成立した。記事は既存 ordinary-turn projector で表現可能で専用表示は不要である。B は縮小不要、C は順序依存の根拠なし、D は追加の状態管理なしで再現したため不採用とする。N2 / N3 / U3 は同一 fresh session の連続経路を受入単位にする。
 
 N1 は購入と読書の成功だけでなく、後続が実装する経路と受入単位を決める。
 最初に既存 Courthouse 往復の後で新聞経路を実行する仮説を検証し、失敗した場合は入力待ちの誤認、optional prose の差、canonical な時刻や持ち物条件を切り分ける。
@@ -316,7 +317,7 @@ N1 の採用判断は前節のとおり N1 の文書 PR に保存し、U3 が最
 | --- | --- | --- | --- |
 | 2026-09-28 JST | 新聞本文と初期 fieldwork UI を次の候補にした | A の固定分析。新聞経路は source evidence に基づく仮説 | 分析作成者 |
 | 2026-09-29 JST | 地名の正本を N2、対応表の追加を N3、再利用を U3 に分担。最終受入を U3 に固定し、N1 の A〜D 判断を追加した | 計画レビューの三指摘を反映。head は引き続き `d898dafa`。実装 Issue は未作成 | この計画を保存する文書 PR の担当 |
-| 未実施 | N1 の採用判断 | 採用案、観測文書、承認リンク、範囲差分を観測後に記入する | N1 担当 |
+| 2026-09-29 JST | N1 は A（裁判所 → 新聞）を推奨 | 二つの fresh session で連続経路が成立。記事は ordinary-turn 適合、専用表示不要。Issue #62 の PR で 5gmt のレビュー待ち | ChatGPT |
 | 未実施 | 全体受入と milestone 完了 | 採用案に応じた検証結果、U3 PR、#29 の結果報告を完了時に記入する | U3 担当 |
 
 ## 固定分析の参照資料

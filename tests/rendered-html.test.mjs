@@ -746,6 +746,66 @@ test("retains the runtime-observed 2041 Courthouse recording round trip", async 
   assert.equal(alternateDescription.text, alternateDescription.canonicalText, "unapproved random description safely remains canonical English");
 });
 
+test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-newspaper-runtime-observed.json", import.meta.url), "utf8"));
+  assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
+  assert.equal(fixture.decision, "A: Courthouse followed by Newspaper in the same fresh canonical session");
+  assert.equal(fixture.sessions.length, 2);
+  assert.deepEqual(fixture.stableIdentity.newspaperPath, [
+    "INVENTORY", "RECORD", "NE", "N", "NE", "BUY NEWSPAPER", "READ NEWSPAPER", "SW", "S", "SW", "RECORD OFF",
+  ]);
+  assert.deepEqual(fixture.prerequisites.inventoryBeforeNewspaperRecording, ["a key", "a wallet"]);
+  assert.deepEqual(fixture.attemptClassification.canonicalRouteFailures, []);
+
+  const articleStarts = "The headline story in the news section is about the Index of Leading Economic Indicators";
+  const articleEnds = "An editorial calls for lowering draft board requirements in order to ease prison overcrowding.";
+  const optionalNoise = [
+    "A skycopter drones by far overhead and disappears into the distance.",
+    "A man with a shaved head asks your views on some obscure religious point, then wanders off into the crowds.",
+  ];
+
+  for (const session of fixture.sessions) {
+    assert.deepEqual(session.observations.map(({ command }) => command), fixture.path);
+    const newspaper = session.observations.slice(fixture.stableIdentity.courthousePath.length);
+    assert.deepEqual(newspaper.map(({ status }) => status.location), [
+      "Kennedy Park", "Kennedy Park", "Main & Kennedy", "Centre & Kennedy", "Bodanski Square", "Bodanski Square",
+      "Bodanski Square", "Centre & Kennedy", "Main & Kennedy", "Kennedy Park", "Kennedy Park",
+    ]);
+
+    for (const observation of session.observations) {
+      assert.equal(observation.presentation.version, 3);
+      assert.equal(observation.presentation.terminalLine, observation.presentation.lines.length - 1);
+      assert.deepEqual(observation.presentation.activeInput, {
+        kind: "line", line: observation.presentation.terminalLine, classes: ["Input", "LineInput"],
+      });
+      assert.match(observation.status.date, /^\d{1,2}\/\d{1,2}\/2041$/);
+      assert.equal(reconcilePresentationHistory([], observation.presentation).representable, true);
+    }
+
+    const inventory = newspaper.find(({ command }) => command === "INVENTORY");
+    assert.deepEqual(inventory.presentation.lines.map(({ text }) => text), [
+      ">INVENTORY", "You are carrying:", "   a key", "   a wallet", " ", ">",
+    ]);
+    const purchase = newspaper.find(({ command }) => command === "BUY NEWSPAPER");
+    assert.match(purchase.presentation.lines[1].text, /NEW BALANCE: \$599/);
+    const reading = newspaper.find(({ command }) => command === "READ NEWSPAPER");
+    const readingLeaves = reading.presentation.lines.map(({ text }) => text);
+    assert.ok(readingLeaves[1].startsWith(articleStarts));
+    assert.ok(readingLeaves.some((text) => text.endsWith(articleEnds)));
+    assert.equal(readingLeaves.filter((text) => text === " ").length >= 4, true);
+    assert.ok(readingLeaves.filter((text) => optionalNoise.includes(text)).length <= 1);
+    assert.equal(reading.status.mode, "Simulation Mode (recording)");
+    assert.equal(newspaper.at(-1).status.mode, "Simulation Mode");
+    assert.equal(newspaper.at(-1).status.location, "Kennedy Park");
+    assert.deepEqual(newspaper.at(-1).presentation.lines.map(({ text }) => text), [
+      ">RECORD OFF", "Record feature deactivated.", " ", ">",
+    ]);
+  }
+
+  assert.notEqual(fixture.sessions[0].observations[0].status.date, fixture.sessions[1].observations[0].status.date);
+  assert.match(fixture.attemptClassification.harnessFailures[0], /synchronization failures/);
+});
+
 test("projects only the two accepted first-simulation structures and fails closed", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-first-simulation-runtime-observed.json", import.meta.url), "utf8"));
   const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");
