@@ -18,7 +18,7 @@
 | 層 | 現在の日本語 coverage | 意図的に未対応の境界 |
 | --- | --- | --- |
 | Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復 | Courthouse 以外の fieldwork、assignment completion、後続の Simulation story output |
-| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、既存 assisted security decoder | later mode / later phase 固有 UI の日本語化、fieldwork、QA/debug |
+| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell | 初期 Simulation の操作と assisted security decoder の copy、later mode / later phase 固有 UI の日本語化、fieldwork、QA/debug |
 | Input and actions | Guided / Action-menu の日本語表示、canonical command に解決される支援操作 | 日本語 parser input |
 | Fallback | 対応済み leaf / surface の日本語表示と EN → JA → EN recovery | 未観測または未承認の内容は canonical English |
 
@@ -75,14 +75,21 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 **2041 Courthouse recording round trip** milestone は Issues #55–#57 で完了した。Kennedy Park から Elm & Park、Courthouse へ recording 中に移動し、explicit `LOOK` の後に帰着する stable leaves は既存 ordinary-turn catalog で日本語表示される。Optional city noise、raw GridWindow status、commands、dynamic date/time は canonical English のまま保持し、wrapper-owned `currentPlace` だけを exact accepted room identity で日本語化する。
 
-次の gameplay milestone は未選定であり、execution root の [Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) に今回の完了結果を返して、次の runtime-evidence boundary を決定する。
+Courthouse の完了結果は [Issue #29 に報告済み](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-5859926210)である。
+次の候補は **2041年の新聞購入と読書、および初期 fieldwork UI** とし、[固定分析と実行計画](./docs/plans/2041-newspaper-fieldwork.md)に六つの作業単位を記録した。
+新聞の runtime capture と実装は未着手であり、個別 Issue も未作成である。
+N1 の観測後に連続経路、別 session、逆順、候補保留を判断し、採用する gameplay milestone の経路と受入単位を確定する。
+地名の正本は N2、共有対応表の追加は N3、地図での再利用と最終統合は U3 が担う。
 
 ## 基本的な作業順
 
-1. Issue #57 の 2041 Courthouse milestone 完了結果を [Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) に返す。
-2. Issue #29 で次の gameplay milestone と runtime-evidence gateway を選定する。
+1. [実行計画](./docs/plans/2041-newspaper-fieldwork.md)をレビューし、N1 と U1 の作業票と担当を具体化する。
+2. N1 の新聞経路観測と U1 の現行 UI copy 監査を進める。N1 の終了判断を #29、本計画、状況文書に記録し、レビューを終えてから新聞本文の copy 承認と実装へ進む。
+3. N2 → N3 で新聞本文と共有地名、U1 → U2 で基本操作と課題一覧を統合する。U3 が N3 と U2 のマージを待ち、地図と対象操作、採用した範囲全体の受入、milestone の最終集約を行う。
 
-現在も deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、Courthouse 以外の fieldwork、map / route UI、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
+新聞本文と採用経路の map / route UI は今回の計画候補に移したが、まだ実装済み coverage には含めない。
+引き続き deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、採用経路以外の fieldwork と map / route UI、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。
+General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
 
 ## 現在の開発・配備状況
 
