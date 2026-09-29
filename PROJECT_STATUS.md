@@ -77,14 +77,14 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 Courthouse の完了結果は [Issue #29 に報告済み](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-5859926210)である。
 次の候補は **2041年の新聞購入と読書、および初期 fieldwork UI** とし、[固定分析と実行計画](./docs/plans/2041-newspaper-fieldwork.md)に六つの作業単位を記録した。
-新聞の runtime capture と実装は未着手であり、個別 Issue も未作成である。
+新聞の runtime capture と実装は未着手であり、作業票は N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) として作成済みである。
 N1 の観測後に連続経路、別 session、逆順、候補保留を判断し、採用する gameplay milestone の経路と受入単位を確定する。
 地名の正本は N2、共有対応表の追加は N3、地図での再利用と最終統合は U3 が担う。
 
 ## 基本的な作業順
 
-1. [実行計画](./docs/plans/2041-newspaper-fieldwork.md)をレビューし、N1 と U1 の作業票と担当を具体化する。
-2. N1 の新聞経路観測と U1 の現行 UI copy 監査を進める。N1 の終了判断を #29、本計画、状況文書に記録し、レビューを終えてから新聞本文の copy 承認と実装へ進む。
+1. [実行計画](./docs/plans/2041-newspaper-fieldwork.md)に従い、N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62) と U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) の実装担当とレビュー担当を具体化する。作業票は作成済みである。
+2. N1 の新聞経路観測と U1 の現行 UI copy 監査を進める。N1 の終了判断を #29、実行計画、状況文書に記録し、レビューを終えてから新聞本文の copy 承認と実装へ進む。
 3. N2 → N3 で新聞本文と共有地名、U1 → U2 で基本操作と課題一覧を統合する。U3 が N3 と U2 のマージを待ち、地図と対象操作、採用した範囲全体の受入、milestone の最終集約を行う。
 
 新聞本文と採用経路の map / route UI は今回の計画候補に移したが、まだ実装済み coverage には含めない。
