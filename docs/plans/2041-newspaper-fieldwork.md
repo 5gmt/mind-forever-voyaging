@@ -3,7 +3,7 @@
 - 種別：固定分析と進行中の実行計画
 - 分析基準日：2026-09-28 JST
 - 分析対象 head：`d898dafaec0f074a3cd66aa70b3cd4916cb57f32`
-- 実行計画の最終更新日：2026-09-29 JST
+- 実行計画の最終更新日：2026-09-30 JST
 - 実行 root：[Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29)
 
 この文書は、新聞を次の候補に選んだ根拠と、着手する作業の責任分担を保存する。
@@ -149,8 +149,9 @@ PR #60 では、同じ RECORD コマンドを再び使った際に、既存の�
 
 ### 採用する範囲と現在の状態
 
-新聞の購入と読書を次の物語上の候補とし、初期 Simulation の基本操作、課題一覧、採用経路の案内を日本語化する六つの作業単位を提案する。
-この記録時点では N1〜N3、U1〜U3 の Issue は未作成であり、新聞の runtime capture、copy 承認、production integration は未着手である。
+新聞の購入と読書を次の物語上の候補とし、初期 Simulation の基本操作、課題一覧、採用経路の案内を日本語化する六つの作業単位で進める。
+計画は [PR #61](https://github.com/5gmt/mind-forever-voyaging/pull/61) で保存した。
+N1〜N3、U1〜U3 の Issue は下表の6件として作成済みであり、新聞の runtime capture、copy 承認、production integration は未着手である。
 まず N1 の観測と U1 の現行 UI 監査を進め、N1 の判断をレビューしてから新聞側の採用経路を確定する。
 同一 session で裁判所から新聞へ進むことは、現時点の確定条件にしない。
 
@@ -162,18 +163,19 @@ PR #60 では、同じ RECORD コマンドを再び使った際に、既存の�
 ### 六つの作業票と担当
 
 N1 などの ID は文書内の固定 ID であり、GitHub Issue 番号ではない。
-Issue を作成したらこの表へ実リンク、実装担当、レビュー担当を記録する。
+Issue の実リンクは下表に記録した。
+実装担当とレビュー担当を決定したら、この表と各 Issue を更新する。
 着手前に各担当を具体化し、U3 の担当には最終統合の責任も引き渡す。
 役割の責任は以下で固定するが、未割当の人物やエージェントを割当済みとは扱わない。
 
-| ID / 作業票タイトル案 | 成果物と責任 | 開始条件 / 依存関係 | Issue / 実装担当 / レビュー担当 | 状態 |
+| ID / 作業票タイトル | 成果物と責任 | 開始条件 / 依存関係 | Issue / 実装担当 / レビュー担当 | 状態 |
 | --- | --- | --- | --- | --- |
-| N1 Runtime: capture the 2041 newspaper fieldwork route | canonical fixture、再現 script、観測メモ、採用案と縮小判断。本計画と status の判断点を更新する | なし | 未作成 / 未割当 / 未割当 | 未着手 |
-| N2 Copy: approve Japanese copy for 2041 newspaper fieldwork | exact English leaf と日本語本文、共有地名の正本、翻訳対象外の一覧 | N1 の観測と終了判断のレビュー完了 | 未作成 / 未割当 / 未割当 | N1 待ち |
-| N3 Integrate the 2041 newspaper fieldwork in Japanese | 本文 catalog、共有地名対応表と lookup、現在地表示、unit と新聞 E2E。新聞本文の実装範囲を status に記録する | N2 完了と U1 の地名 surface 監査。必要な専用表示があれば、その設計承認も必要 | 未作成 / 未割当 / 未割当 | N2 待ち |
-| U1 Copy: approve the initial Simulation fieldwork controls | 画面別の英日 copy、visible / accessible name、command、動的値の台帳。U2 と U3 の担当範囲を項目ごとに分ける | なし。新聞固有部分の最終承認だけ N1 と N2 を待つ | 未作成 / 未割当 / 未割当 | 未着手 |
-| U2 Localize initial Simulation controls and the recording brief | 入場 CTA、assisted decoder の説明、基本操作、初期案内、課題一覧の copy を統合する | U1 の U2 対象 copy 承認。新聞固有部分を含めない | 未作成 / 未割当 / 未割当 | U1 待ち |
-| U3 Localize navigation and accept the 2041 fieldwork milestone | 地図、採用経路、必要な対象操作を統合する。採用案全体の受入と status の最終集約を担う | U1 の該当 copy 承認、N3 と U2 のマージ完了 | 未作成 / 未割当 / 未割当 | N3 / U2 待ち |
+| N1 Runtime: capture the 2041 newspaper fieldwork route | canonical fixture、再現 script、観測メモ、採用案と縮小判断。本計画と status の判断点を更新する | なし | [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62) / 未割当 / 未割当 | 未着手 |
+| N2 Copy: approve Japanese copy for 2041 newspaper fieldwork | exact English leaf と日本語本文、共有地名の正本、翻訳対象外の一覧 | N1 の観測と終了判断のレビュー完了 | [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) / 未割当 / 未割当 | N1 待ち |
+| N3 Integrate the 2041 newspaper fieldwork in Japanese | 本文 catalog、共有地名対応表と lookup、現在地表示、unit と新聞 E2E。新聞本文の実装範囲を status に記録する | N2 完了と U1 の地名 surface 監査。必要な専用表示があれば、その設計承認も必要 | [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) / 未割当 / 未割当 | N2 承認と U1 の地名監査待ち |
+| U1 Copy: approve the initial Simulation fieldwork controls | 画面別の英日 copy、visible / accessible name、command、動的値の台帳。U2 と U3 の担当範囲を項目ごとに分ける | なし。新聞固有部分の最終承認だけ N1 と N2 を待つ | [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) / 未割当 / 未割当 | 未着手 |
+| U2 Localize initial Simulation controls and the recording brief | 入場 CTA、assisted decoder の説明、基本操作、初期案内、課題一覧の copy を統合する | U1 の U2 対象 copy 承認。新聞固有部分を含めない | [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) / 未割当 / 未割当 | U1 の U2 対象 copy 承認待ち |
+| U3 Localize navigation and accept the 2041 fieldwork milestone | 地図、採用経路、必要な対象操作を統合する。採用案全体の受入と status の最終集約を担う | U1 の該当 copy 承認、N3 と U2 のマージ完了 | [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) / 未割当 / 未割当 | U1 承認と N3 / U2 マージ待ち |
 
 N1 の候補ファイルは `scripts/capture-newspaper-runtime.mjs`、`tests/fixtures/parchment-newspaper-runtime-observed.json`、`docs/newspaper-runtime-evidence.md` である。
 N2 は新規 copy packet を作り、production code を変更しない。
@@ -316,6 +318,7 @@ N1 の採用判断は前節のとおり N1 の文書 PR に保存し、U3 が最
 | --- | --- | --- | --- |
 | 2026-09-28 JST | 新聞本文と初期 fieldwork UI を次の候補にした | A の固定分析。新聞経路は source evidence に基づく仮説 | 分析作成者 |
 | 2026-09-29 JST | 地名の正本を N2、対応表の追加を N3、再利用を U3 に分担。最終受入を U3 に固定し、N1 の A〜D 判断を追加した | 計画レビューの三指摘を反映。head は引き続き `d898dafa`。実装 Issue は未作成 | この計画を保存する文書 PR の担当 |
+| 2026-09-30 JST | PR #61 のマージ後、六つの作業票を作成して相互参照を確定した | N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67)。担当は着手前に具体化し、N1 の採用判断は未実施 | 作業票作成担当（ChatGPT） |
 | 未実施 | N1 の採用判断 | 採用案、観測文書、承認リンク、範囲差分を観測後に記入する | N1 担当 |
 | 未実施 | 全体受入と milestone 完了 | 採用案に応じた検証結果、U3 PR、#29 の結果報告を完了時に記入する | U3 担当 |
 
