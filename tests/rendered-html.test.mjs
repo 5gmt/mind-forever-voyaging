@@ -746,6 +746,70 @@ test("retains the runtime-observed 2041 Courthouse recording round trip", async 
   assert.equal(alternateDescription.text, alternateDescription.canonicalText, "unapproved random description safely remains canonical English");
 });
 
+test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-newspaper-runtime-observed.json", import.meta.url), "utf8"));
+  assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
+  assert.equal(fixture.decision, "A: Courthouse followed by Newspaper in the same fresh canonical session");
+  assert.equal(fixture.sessions.length, 2);
+  assert.deepEqual(fixture.stableIdentity.newspaperPath, [
+    "INVENTORY", "RECORD", "NE", "N", "NE", "BUY NEWSPAPER", "READ NEWSPAPER", "SW", "S", "SW", "RECORD OFF",
+  ]);
+  assert.deepEqual(fixture.prerequisites.inventoryBeforeNewspaperRecording, ["a key", "a wallet"]);
+  assert.deepEqual(fixture.attemptClassification.canonicalRouteFailures, []);
+
+  const articleParagraphs = [
+    "The headline story in the news section is about the Index of Leading Economic Indicators, which are up a stunning 9.7% over last month, yet another indication of the economy's robust performance. Related stories discuss the unemployment rate, which is at the lowest level in almost thirty years, and commercial and housing construction, which are at an all-time high.",
+    "Another major story covers President Ryder's speech for the Distinguished Lecturer Series of the Border Security Force Academy. In his address, the President called the '40s a \"decade of new hope,\" and attributed much of that new hope to the work of the BSF, sending a signal to the entire world that the USNA \"won't be pushed around by the biggest dictatorship or the smallest band of terrorist murderers.\"",
+    "On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.",
+    "Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.",
+  ];
+
+  for (const session of fixture.sessions) {
+    assert.deepEqual(session.observations.map(({ command }) => command), fixture.path);
+    const newspaper = session.observations.slice(fixture.stableIdentity.courthousePath.length);
+    assert.deepEqual(newspaper.map(({ status }) => status.location), [
+      "Kennedy Park", "Kennedy Park", "Main & Kennedy", "Centre & Kennedy", "Bodanski Square", "Bodanski Square",
+      "Bodanski Square", "Centre & Kennedy", "Main & Kennedy", "Kennedy Park", "Kennedy Park",
+    ]);
+
+    for (const observation of session.observations) {
+      assert.equal(observation.presentation.version, 3);
+      assert.equal(observation.presentation.terminalLine, observation.presentation.lines.length - 1);
+      assert.deepEqual(observation.presentation.activeInput, {
+        kind: "line", line: observation.presentation.terminalLine, classes: ["Input", "LineInput"],
+      });
+      assert.match(observation.status.date, /^\d{1,2}\/\d{1,2}\/2041$/);
+      assert.equal(reconcilePresentationHistory([], observation.presentation).representable, true);
+    }
+
+    const inventory = newspaper.find(({ command }) => command === "INVENTORY");
+    assert.deepEqual(inventory.presentation.lines.map(({ text }) => text), [
+      ">INVENTORY", "You are carrying:", "   a key", "   a wallet", " ", ">",
+    ]);
+    const purchase = newspaper.find(({ command }) => command === "BUY NEWSPAPER");
+    assert.match(purchase.presentation.lines[1].text, /NEW BALANCE: \$599/);
+    const reading = newspaper.find(({ command }) => command === "READ NEWSPAPER");
+    const readingLeaves = reading.presentation.lines.map(({ text }) => text);
+    assert.deepEqual(readingLeaves, [
+      ">READ NEWSPAPER",
+      articleParagraphs[0], " ",
+      articleParagraphs[1], " ",
+      articleParagraphs[2], " ",
+      articleParagraphs[3], " ",
+      ">",
+    ], "all four observed article paragraphs and their boundaries remain complete and ordered");
+    assert.equal(reading.status.mode, "Simulation Mode (recording)");
+    assert.equal(newspaper.at(-1).status.mode, "Simulation Mode");
+    assert.equal(newspaper.at(-1).status.location, "Kennedy Park");
+    assert.deepEqual(newspaper.at(-1).presentation.lines.map(({ text }) => text), [
+      ">RECORD OFF", "Record feature deactivated.", " ", ">",
+    ]);
+  }
+
+  assert.notEqual(fixture.sessions[0].observations[0].status.date, fixture.sessions[1].observations[0].status.date);
+  assert.match(fixture.attemptClassification.harnessFailures[0], /synchronization failures/);
+});
+
 test("projects only the two accepted first-simulation structures and fails closed", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-first-simulation-runtime-observed.json", import.meta.url), "utf8"));
   const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");

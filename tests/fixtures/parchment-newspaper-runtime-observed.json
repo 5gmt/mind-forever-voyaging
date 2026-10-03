@@ -1,0 +1,5939 @@
+{
+  "provenance": "Runtime-observed with Playwright in Chromium against canonical Release 79 Parchment on 2026-09-29; sanitized BridgePresentation v3 turn slices from two isolated fresh browser contexts. Output text is canonical English. Status fields are parsed from the observed GridWindow; no fixture prose was supplied by historical source.",
+  "prefixPath": [
+    "PEOF",
+    "WAIT",
+    "WAIT",
+    "WAIT",
+    "WAIT",
+    "ENTER SIMULATION MODE",
+    "<observed decoder answer>",
+    "LOOK",
+    "RECORD",
+    "WAIT",
+    "RECORD OFF"
+  ],
+  "path": [
+    "RECORD",
+    "SW",
+    "NW",
+    "LOOK",
+    "SE",
+    "NE",
+    "RECORD OFF",
+    "INVENTORY",
+    "RECORD",
+    "NE",
+    "N",
+    "NE",
+    "BUY NEWSPAPER",
+    "READ NEWSPAPER",
+    "SW",
+    "S",
+    "SW",
+    "RECORD OFF"
+  ],
+  "stableIdentity": {
+    "route": [
+      "Kennedy Park",
+      "Elm & Park",
+      "Courthouse",
+      "Elm & Park",
+      "Kennedy Park",
+      "Main & Kennedy",
+      "Centre & Kennedy",
+      "Bodanski Square",
+      "Centre & Kennedy",
+      "Main & Kennedy",
+      "Kennedy Park"
+    ],
+    "courthousePath": [
+      "RECORD",
+      "SW",
+      "NW",
+      "LOOK",
+      "SE",
+      "NE",
+      "RECORD OFF"
+    ],
+    "newspaperPath": [
+      "INVENTORY",
+      "RECORD",
+      "NE",
+      "N",
+      "NE",
+      "BUY NEWSPAPER",
+      "READ NEWSPAPER",
+      "SW",
+      "S",
+      "SW",
+      "RECORD OFF"
+    ],
+    "newspaperPurchase": "BUY NEWSPAPER",
+    "newspaperReading": "READ NEWSPAPER"
+  },
+  "dynamicFields": [
+    "first-simulation month/day",
+    "first-simulation time",
+    "optional 2041 street/city-noise interrupts"
+  ],
+  "decision": "A: Courthouse followed by Newspaper in the same fresh canonical session",
+  "sessions": [
+    {
+      "id": 1,
+      "observations": [
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-92",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-93",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-94",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-95",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:27pm",
+            "location": "Kennedy Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-95",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-96",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-97",
+                "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The street is bustling with lunchtime crowds.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The street is bustling with lunchtime crowds.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-98",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-99",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 4,
+            "activeInput": {
+              "kind": "line",
+              "line": 4,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:32pm",
+            "location": "Elm & Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "NW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-99",
+                "text": ">NW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-100",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-101",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-102",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-103",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-104",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-105",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:37pm",
+            "location": "Courthouse",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "LOOK",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-105",
+                "text": ">LOOK",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "LOOK",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-106",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-107",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-108",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-109",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-110",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-111",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:38pm",
+            "location": "Courthouse",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "SE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-111",
+                "text": ">SE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-112",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-113",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-114",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:43pm",
+            "location": "Elm & Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-114",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-115",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-116",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-117",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:48pm",
+            "location": "Kennedy Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-117",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-118",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-119",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-120",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "12:49pm",
+            "location": "Kennedy Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "INVENTORY",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-120",
+                "text": ">INVENTORY",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "INVENTORY",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-121",
+                "text": "You are carrying:",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "You are carrying:",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-122",
+                "text": "   a key",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   a key",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-123",
+                "text": "   a wallet",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   a wallet",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-124",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-125",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 5,
+            "activeInput": {
+              "kind": "line",
+              "line": 5,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "12:50pm",
+            "location": "Kennedy Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-125",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-126",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-127",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-128",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:51pm",
+            "location": "Kennedy Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-128",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-129",
+                "text": "Main & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Main & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-130",
+                "text": "This is the heart of the downtown area, flanked by classical glass-and-steel skyscrapers. The skybus terminal is on the northwest corner. To the southwest is an entrance to Kennedy Park.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the heart of the downtown area, flanked by classical glass-and-steel skyscrapers. The skybus terminal is on the northwest corner. To the southwest is an entrance to Kennedy Park.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-131",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-132",
+                "text": "The skyscraper on the northeast corner is one of Rockvil's most famous landmarks, the InfoTech Building. This 130-story office tower is the tallest building in the city and the sixth tallest in the world.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The skyscraper on the northeast corner is one of Rockvil's most famous landmarks, the InfoTech Building. This 130-story office tower is the tallest building in the city and the sixth tallest in the world.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-133",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-134",
+                "text": "The high-rise building on the southeast corner is the Silicorp Building, a tall office tower. From this intersection, Main Street runs east and west, and Kennedy Street can take you north or south.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The high-rise building on the southeast corner is the Silicorp Building, a tall office tower. From this intersection, Main Street runs east and west, and Kennedy Street can take you north or south.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-135",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-136",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 8,
+            "activeInput": {
+              "kind": "line",
+              "line": 8,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "12:56pm",
+            "location": "Main & Kennedy",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "N",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-136",
+                "text": ">N",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "N",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-137",
+                "text": "Centre & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Centre & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-138",
+                "text": "At this intersection, Centre Street cuts across Kennedy Street from northeast to southwest. A tall hotel has entrances to the east and southeast. The austere facade of Huang Hall rises to the west. Kennedy Street continues north and south.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "At this intersection, Centre Street cuts across Kennedy Street from northeast to southwest. A tall hotel has entrances to the east and southeast. The austere facade of Huang Hall rises to the west. Kennedy Street continues north and south.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-139",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-140",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 4,
+            "activeInput": {
+              "kind": "line",
+              "line": 4,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "1:01pm",
+            "location": "Centre & Kennedy",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-140",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-141",
+                "text": "Bodanski Square",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Bodanski Square",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-142",
+                "text": "This is a large plaza formed by the intersection of Bodanski Boulevard from the east, Centre Street from the southwest, and River Street from the north and south. There is a car lot on the western side of the square. On the northeastern corner is a restaurant, and the old train station can be entered to the southeast. A covered stairway leads down to the Tubes.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is a large plaza formed by the intersection of Bodanski Boulevard from the east, Centre Street from the southwest, and River Street from the north and south. There is a car lot on the western side of the square. On the northeastern corner is a restaurant, and the old train station can be entered to the southeast. A covered stairway leads down to the Tubes.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-143",
+                "text": "There is a newspaper dispenser chained to a lamp post on the corner.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "There is a newspaper dispenser chained to a lamp post on the corner.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-144",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-145",
+                "text": "WARNING: Record buffer is now half-full.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "WARNING: Record buffer is now half-full.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-146",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-147",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 7,
+            "activeInput": {
+              "kind": "line",
+              "line": 7,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "1:06pm",
+            "location": "Bodanski Square",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "BUY NEWSPAPER",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-147",
+                "text": ">BUY NEWSPAPER",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "BUY NEWSPAPER",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-148",
+                "text": "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-149",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-150",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "1:07pm",
+            "location": "Bodanski Square",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "READ NEWSPAPER",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-150",
+                "text": ">READ NEWSPAPER",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "READ NEWSPAPER",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-151",
+                "text": "The headline story in the news section is about the Index of Leading Economic Indicators, which are up a stunning 9.7% over last month, yet another indication of the economy's robust performance. Related stories discuss the unemployment rate, which is at the lowest level in almost thirty years, and commercial and housing construction, which are at an all-time high.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The headline story in the news section is about the Index of Leading Economic Indicators, which are up a stunning 9.7% over last month, yet another indication of the economy's robust performance. Related stories discuss the unemployment rate, which is at the lowest level in almost thirty years, and commercial and housing construction, which are at an all-time high.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-152",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-153",
+                "text": "Another major story covers President Ryder's speech for the Distinguished Lecturer Series of the Border Security Force Academy. In his address, the President called the '40s a \"decade of new hope,\" and attributed much of that new hope to the work of the BSF, sending a signal to the entire world that the USNA \"won't be pushed around by the biggest dictatorship or the smallest band of terrorist murderers.\"",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Another major story covers President Ryder's speech for the Distinguished Lecturer Series of the Border Security Force Academy. In his address, the President called the '40s a \"decade of new hope,\" and attributed much of that new hope to the work of the BSF, sending a signal to the entire world that the USNA \"won't be pushed around by the biggest dictatorship or the smallest band of terrorist murderers.\"",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-154",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-155",
+                "text": "On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-156",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-157",
+                "text": "Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-158",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-159",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 9,
+            "activeInput": {
+              "kind": "line",
+              "line": 9,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "1:17pm",
+            "location": "Bodanski Square",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-159",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-160",
+                "text": "Centre & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Centre & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-161",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-162",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "1:22pm",
+            "location": "Centre & Kennedy",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "S",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-162",
+                "text": ">S",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "S",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-163",
+                "text": "Main & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Main & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-164",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-165",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "1:27pm",
+            "location": "Main & Kennedy",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-165",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-166",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-167",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-168",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "1:32pm",
+            "location": "Kennedy Park",
+            "date": "3/10/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-168",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-169",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-170",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-171",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "1:33pm",
+            "location": "Kennedy Park",
+            "date": "3/10/2041"
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "observations": [
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-92",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-93",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-94",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-95",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "9:50am",
+            "location": "Kennedy Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-95",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-96",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-97",
+                "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the intersection of the north-south Park Street and the east-west Elm Street. A park entrance is on the northeast corner, and large, old-fashioned edifices occupy the other three corners of the intersection. The sidewalks and street are crowded with people.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-98",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-99",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 4,
+            "activeInput": {
+              "kind": "line",
+              "line": 4,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "9:55am",
+            "location": "Elm & Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "NW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-99",
+                "text": ">NW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-100",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-101",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-102",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-103",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-104",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-105",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:00am",
+            "location": "Courthouse",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "LOOK",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-105",
+                "text": ">LOOK",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "LOOK",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-106",
+                "text": "Courthouse",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Courthouse",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-107",
+                "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The courthouse is of the same vintage as the other governmental buildings in the area, dating from around 1990 or so. An exit leads southeast.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-108",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-109",
+                "text": "The court is in session. A woman is being tried for petty theft.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The court is in session. A woman is being tried for petty theft.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-110",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-111",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 6,
+            "activeInput": {
+              "kind": "line",
+              "line": 6,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:01am",
+            "location": "Courthouse",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "SE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-111",
+                "text": ">SE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-112",
+                "text": "Elm & Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Elm & Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-113",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-114",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:06am",
+            "location": "Elm & Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-114",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-115",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-116",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-117",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:11am",
+            "location": "Kennedy Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-117",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-118",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-119",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-120",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "10:12am",
+            "location": "Kennedy Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "INVENTORY",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-120",
+                "text": ">INVENTORY",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "INVENTORY",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-121",
+                "text": "You are carrying:",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "You are carrying:",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-122",
+                "text": "   a key",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   a key",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-123",
+                "text": "   a wallet",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "   a wallet",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-124",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-125",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 5,
+            "activeInput": {
+              "kind": "line",
+              "line": 5,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "10:13am",
+            "location": "Kennedy Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "RECORD",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-125",
+                "text": ">RECORD",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-126",
+                "text": "Record feature activated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature activated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-127",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-128",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:14am",
+            "location": "Kennedy Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-128",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-129",
+                "text": "Main & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Main & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-130",
+                "text": "This is the heart of the downtown area, flanked by classical glass-and-steel skyscrapers. The skybus terminal is on the northwest corner. To the southwest is an entrance to Kennedy Park.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is the heart of the downtown area, flanked by classical glass-and-steel skyscrapers. The skybus terminal is on the northwest corner. To the southwest is an entrance to Kennedy Park.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-131",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-132",
+                "text": "The skyscraper on the northeast corner is one of Rockvil's most famous landmarks, the InfoTech Building. This 130-story office tower is the tallest building in the city and the sixth tallest in the world.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The skyscraper on the northeast corner is one of Rockvil's most famous landmarks, the InfoTech Building. This 130-story office tower is the tallest building in the city and the sixth tallest in the world.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-133",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-134",
+                "text": "The high-rise building on the southeast corner is the Silicorp Building, a tall office tower. From this intersection, Main Street runs east and west, and Kennedy Street can take you north or south.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The high-rise building on the southeast corner is the Silicorp Building, a tall office tower. From this intersection, Main Street runs east and west, and Kennedy Street can take you north or south.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-135",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-136",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 8,
+            "activeInput": {
+              "kind": "line",
+              "line": 8,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:19am",
+            "location": "Main & Kennedy",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "N",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-136",
+                "text": ">N",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "N",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-137",
+                "text": "Centre & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Centre & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-138",
+                "text": "At this intersection, Centre Street cuts across Kennedy Street from northeast to southwest. A tall hotel has entrances to the east and southeast. The austere facade of Huang Hall rises to the west. Kennedy Street continues north and south.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "At this intersection, Centre Street cuts across Kennedy Street from northeast to southwest. A tall hotel has entrances to the east and southeast. The austere facade of Huang Hall rises to the west. Kennedy Street continues north and south.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-139",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-140",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 4,
+            "activeInput": {
+              "kind": "line",
+              "line": 4,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:24am",
+            "location": "Centre & Kennedy",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "NE",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-140",
+                "text": ">NE",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "NE",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-141",
+                "text": "Bodanski Square",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Bodanski Square",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-142",
+                "text": "This is a large plaza formed by the intersection of Bodanski Boulevard from the east, Centre Street from the southwest, and River Street from the north and south. There is a car lot on the western side of the square. On the northeastern corner is a restaurant, and the old train station can be entered to the southeast. A covered stairway leads down to the Tubes.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "This is a large plaza formed by the intersection of Bodanski Boulevard from the east, Centre Street from the southwest, and River Street from the north and south. There is a car lot on the western side of the square. On the northeastern corner is a restaurant, and the old train station can be entered to the southeast. A covered stairway leads down to the Tubes.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-143",
+                "text": "There is a newspaper dispenser chained to a lamp post on the corner.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "There is a newspaper dispenser chained to a lamp post on the corner.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-144",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-145",
+                "text": "WARNING: Record buffer is now half-full.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "WARNING: Record buffer is now half-full.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-146",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-147",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 7,
+            "activeInput": {
+              "kind": "line",
+              "line": 7,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:29am",
+            "location": "Bodanski Square",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "BUY NEWSPAPER",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-147",
+                "text": ">BUY NEWSPAPER",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "BUY NEWSPAPER",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-148",
+                "text": "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-149",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-150",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:30am",
+            "location": "Bodanski Square",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "READ NEWSPAPER",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-150",
+                "text": ">READ NEWSPAPER",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "READ NEWSPAPER",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-151",
+                "text": "The headline story in the news section is about the Index of Leading Economic Indicators, which are up a stunning 9.7% over last month, yet another indication of the economy's robust performance. Related stories discuss the unemployment rate, which is at the lowest level in almost thirty years, and commercial and housing construction, which are at an all-time high.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "The headline story in the news section is about the Index of Leading Economic Indicators, which are up a stunning 9.7% over last month, yet another indication of the economy's robust performance. Related stories discuss the unemployment rate, which is at the lowest level in almost thirty years, and commercial and housing construction, which are at an all-time high.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-152",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-153",
+                "text": "Another major story covers President Ryder's speech for the Distinguished Lecturer Series of the Border Security Force Academy. In his address, the President called the '40s a \"decade of new hope,\" and attributed much of that new hope to the work of the BSF, sending a signal to the entire world that the USNA \"won't be pushed around by the biggest dictatorship or the smallest band of terrorist murderers.\"",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Another major story covers President Ryder's speech for the Distinguished Lecturer Series of the Border Security Force Academy. In his address, the President called the '40s a \"decade of new hope,\" and attributed much of that new hope to the work of the BSF, sending a signal to the entire world that the USNA \"won't be pushed around by the biggest dictatorship or the smallest band of terrorist murderers.\"",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-154",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-155",
+                "text": "On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-156",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-157",
+                "text": "Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-158",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-159",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 9,
+            "activeInput": {
+              "kind": "line",
+              "line": 9,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:40am",
+            "location": "Bodanski Square",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-159",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-160",
+                "text": "Centre & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Centre & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-161",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-162",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:45am",
+            "location": "Centre & Kennedy",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "S",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-162",
+                "text": ">S",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "S",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-163",
+                "text": "Main & Kennedy",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Main & Kennedy",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-164",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-165",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:50am",
+            "location": "Main & Kennedy",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "SW",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-165",
+                "text": ">SW",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "SW",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-166",
+                "text": "Kennedy Park",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Kennedy Park",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-167",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-168",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode (recording)",
+            "time": "10:55am",
+            "location": "Kennedy Park",
+            "date": "2/4/2041"
+          }
+        },
+        {
+          "command": "RECORD OFF",
+          "presentation": {
+            "version": 3,
+            "lines": [
+              {
+                "id": "line-168",
+                "text": ">RECORD OFF",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "RECORD OFF",
+                    "classes": [
+                      "Style_input"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-169",
+                "text": "Record feature deactivated.",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": "Record feature deactivated.",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-170",
+                "text": " ",
+                "classes": [
+                  "BufferLine",
+                  "BlankPara"
+                ],
+                "runs": [
+                  {
+                    "text": " ",
+                    "classes": [
+                      "BlankLineSpace"
+                    ],
+                    "tag": "span"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              },
+              {
+                "id": "line-171",
+                "text": ">",
+                "classes": [
+                  "BufferLine",
+                  "Style_normal_par"
+                ],
+                "runs": [
+                  {
+                    "text": ">",
+                    "classes": [
+                      "Style_normal"
+                    ],
+                    "tag": "span"
+                  },
+                  {
+                    "text": "",
+                    "classes": [
+                      "Input",
+                      "LineInput"
+                    ],
+                    "tag": "textarea"
+                  }
+                ],
+                "layout": {
+                  "textAlign": "start",
+                  "marginLeft": "0px",
+                  "paddingLeft": "0px",
+                  "whiteSpace": "pre-wrap"
+                }
+              }
+            ],
+            "terminalLine": 3,
+            "activeInput": {
+              "kind": "line",
+              "line": 3,
+              "classes": [
+                "Input",
+                "LineInput"
+              ]
+            }
+          },
+          "status": {
+            "mode": "Simulation Mode",
+            "time": "10:56am",
+            "location": "Kennedy Park",
+            "date": "2/4/2041"
+          }
+        }
+      ]
+    }
+  ],
+  "prerequisites": {
+    "inventoryBeforeNewspaperRecording": [
+      "a key",
+      "a wallet"
+    ],
+    "purchaseBalanceAfter": "$599",
+    "purchaseRequires": "wallet/card available in the fresh Simulation entry",
+    "courthouseRecordingCompletedFirst": true
+  },
+  "attemptClassification": {
+    "canonicalRouteFailures": [],
+    "harnessFailures": [
+      "Early probe runs used outer-wrapper input enablement or an older matching command echo as completion; they were discarded as synchronization failures before fixture creation. The retained script waits for the submitted canonical input line to become the new echo and for a different canonical line input to return."
+    ],
+    "optionalOutputIsNotFailure": true
+  }
+}
