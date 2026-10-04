@@ -77,14 +77,14 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 Courthouse の完了結果は [Issue #29 に報告済み](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-5859926210)である。
 次の候補は **2041年の新聞購入と読書、および初期 fieldwork UI** とし、[固定分析と実行計画](./docs/plans/2041-newspaper-fieldwork.md)に六つの作業単位を記録した。
-[Issue #62](https://github.com/5gmt/mind-forever-voyaging/issues/62) の N1 runtime capture は、異なる日時の二つの fresh canonical session で Courthouse 往復に続く新聞購入・四段落の読書・帰着・録画停止・入力復帰を観測した。終了案 A（同一 session の裁判所 → 新聞）を推奨し、記事は既存 ordinary-turn projector で表現可能、専用 renderer は不要と判断した。N1 の文書 PR のレビューとマージ後に N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) を開始する。
-新聞の日本語 copy と production integration は未着手である。作業票は N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) として作成済みである。採用する gameplay milestone の経路と U3 の受入単位は、同一 fresh session の Courthouse → Newspaper とする。
+[Issue #62](https://github.com/5gmt/mind-forever-voyaging/issues/62) の N1 runtime capture は [PR #69](https://github.com/5gmt/mind-forever-voyaging/pull/69) でレビューとマージを完了した。異なる日時の二つの fresh canonical session で Courthouse 往復に続く新聞購入・四段落の読書・帰着・録画停止・入力復帰を観測し、終了案 A（同一 session の裁判所 → 新聞）を採用した。記事は既存 ordinary-turn projector で表現可能で、専用 renderer は不要である。
+N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) は新聞本文と共有地名の copy packet を作成し、現在は copy review 中である。Production integration は未着手である。作業票は N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) として作成済みである。採用する gameplay milestone の経路と U3 の受入単位は、同一 fresh session の Courthouse → Newspaper とする。
 地名の正本は N2、共有対応表の追加は N3、地図での再利用と最終統合は U3 が担う。
 
 ## 基本的な作業順
 
-1. Issue #62 / N1 の終了判断と runtime evidence をレビューし、文書 PR をマージする。並行して U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) の現行 UI copy 監査を進める。
-2. N1 のマージ後、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) → N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) で観測済み新聞本文と共有地名を承認・統合する。U1 → U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) で基本操作と課題一覧を承認・統合する。
+1. N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) の新聞本文と共有地名の copy review を完了する。並行して U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) の現行 UI copy と地名 surface の監査を進める。
+2. N2 の承認と U1 の地名 surface 監査後、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) で観測済み新聞本文と共有地名を統合する。U1 → U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) で基本操作と課題一覧を承認・統合する。
 3. U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) が N3 と U2 のマージを待ち、地図と対象操作、同一 fresh session の Courthouse → Newspaper 全体の受入、milestone の最終集約を行う。
 
 新聞本文と採用経路の map / route UI は今回の計画候補に移したが、まだ実装済み coverage には含めない。
