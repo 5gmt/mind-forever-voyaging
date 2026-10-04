@@ -23,7 +23,7 @@ type ExpectedBlock = { kind: "command" | "title" | "prose" | "spacer" | "list"; 
 const startJapaneseStory = async (page: Page, controls: "classic" | "guided") => {
   await page.goto("/");
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
-  const continueButton = page.getByRole("button", { name: /Begin the original story/i });
+  const continueButton = page.getByRole("button", { name: /Begin the original story|原作を始める/i });
   await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
   if (!(await continueButton.isVisible())) await introduction.getByRole("button", { name: /^Begin/ }).click();
   await expect(continueButton).toBeEnabled({ timeout: 20_000 });
@@ -149,7 +149,13 @@ for (const controls of ["classic", "guided"] as const) {
       await expectNewBlocks(presentation, blockCount, expectedBlocks);
     }
 
-    await send(page, input, "ENTER SIMULATION MODE");
+    if (controls === "guided") {
+      const ready = page.getByRole("region", { name: "Simulation Mode が利用できます" });
+      await expect(ready).toContainText("依頼された観察を始める");
+      await ready.getByRole("button", { name: "Simulation Mode に入る" }).click();
+    } else {
+      await send(page, input, "ENTER SIMULATION MODE");
+    }
     const prompt = presentation.locator(".story-presentation-prompt").last();
     await expect(prompt).toContainText("シミュレーション・モードはクラス1セキュリティ・モードです。");
     const promptText = await prompt.innerText();
@@ -169,7 +175,8 @@ for (const controls of ["classic", "guided"] as const) {
     } else {
       const decoder = page.locator(".security-decoder");
       await expect(decoder).toContainText(`${colorIndex >= 0 ? match![1] : ""} · ${match![2]}`);
-      await decoder.getByRole("button", { name: `Submit code ${answer}` }).click();
+      await expect(decoder).toHaveAttribute("aria-label", "セキュリティコード・デコーダー");
+      await decoder.getByRole("button", { name: `コード ${answer} を送信` }).click();
     }
     const answerEcho = presentation.locator(".story-presentation-command").nth(answerCommandIndex);
     await expect(answerEcho).toHaveText(`> ${answer}`);
@@ -183,7 +190,15 @@ for (const controls of ["classic", "guided"] as const) {
     await expect(presentation.locator(".story-presentation-title", { hasText: "ケネディ公園" })).toHaveCount(2);
 
     const firstRecordBlockCount = await presentation.locator(".story-presentation-content > *").count();
-    await send(page, input, "RECORD");
+    if (controls === "guided") {
+      const actions = page.locator(".quick-actions").filter({ has: page.getByRole("button", { name: "持ち物" }) });
+      await expect(actions.getByRole("button", { name: "持ち物" })).toBeVisible();
+      await expect(actions.getByRole("button", { name: "待つ" })).toBeVisible();
+      await expect(actions.getByRole("button", { name: "中止" })).toBeVisible();
+      await actions.getByRole("button", { name: "録画開始" }).click();
+    } else {
+      await send(page, input, "RECORD");
+    }
     await expectNewBlocks(presentation, firstRecordBlockCount, [
       { kind: "command", text: "RECORD" },
       { kind: "prose", text: "記録機能を起動しました。" },
@@ -192,7 +207,11 @@ for (const controls of ["classic", "guided"] as const) {
     await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode\s*\(recording\)/i);
     await send(page, input, "WAIT");
     await expect(presentation.locator(".story-presentation-prose", { hasText: "時間が過ぎていく……" })).toHaveCount(5);
-    await send(page, input, "RECORD OFF");
+    if (controls === "guided") {
+      await page.locator(".quick-actions").getByRole("button", { name: "録画停止" }).click();
+    } else {
+      await send(page, input, "RECORD OFF");
+    }
     await expect(presentation).toContainText("記録機能を停止しました。");
     await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode/i);
     await expect(frame.locator(".GridWindow")).not.toContainText(/\(recording\)/i);

@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationPlace, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationPlace, packageInteractiveLocale, plotAssignmentLabel, recordedProgress, sceneActionsLocale, sceneActionUiText, simulationAssignment, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { assignmentBriefPresentation, initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation, securityPromptPresentation, storyPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -148,24 +148,24 @@ test("preserves the historical source and derives modern context from it", async
   for (const tableIndex of [0, 2, 4, 6, 8, 10, 12, 14, 16]) assert.match(shell, new RegExp(`tableIndex: ${tableIndex}`));
   assert.match(shell, /WARNING: Deactivating record feature/);
   assert.match(shell, /\\\(recording\\\)/);
-  assert.match(shell, /Map & recording brief/);
+  assert.match(shell, /uiText\(locale, "mapRecordingBrief"\)/);
   assert.match(shell, /const travelOptions = useMemo/);
   assert.match(shell, /routeNext: Boolean/);
   assert.match(shell, /route-thread/);
   assert.match(shell, /compact-map-button/);
   assert.match(shell, /Clear current route/);
-  assert.match(shell, /Checks follow the same Release 79 triggers as the game/);
-  assert.match(shell, /Start RECORD before you complete this experience/);
+  assert.match(shell, /uiText\(locale, "checklistEstimate"\)/);
+  assert.match(shell, /uiText\(locale, recording \? "recordingCompleteHint" : "recordingStartHint"\)/);
   assert.match(shell, /interactionLevel === "actions" && initialFieldworkActive/);
   assert.match(shell, /role="dialog" aria-modal="true" aria-labelledby="fieldwork-title"/);
   assert.match(shell, /navigator\.share/);
   assert.match(shell, /https:\/\/mind-forever-voyaging\.netlify\.app\//);
   assert.match(shell, /uiText\(locale, "shareEdition"\)/);
   assert.match(shell, /resetWrapperForStory[\s\S]*setCommand\(""\)[\s\S]*setAliasNotice\(null\)[\s\S]*setMapDestinationId\(null\)/);
-  assert.match(shell, /Begin the requested observations/);
+  assert.match(shell, /uiText\(locale, "simulationBeginObservations"\)/);
   assert.match(shell, /Perelman’s brief · nine requested observations/);
   assert.match(shell, /\["wait for 28 minutes", "wait"\]/);
-  assert.match(shell, /Turn the wheel to align the color and inner number/);
+  assert.match(shell, /uiText\(locale, "securityDecoderInstructions"\)/);
   assert.match(shell, /Fast-forward console/);
   assert.match(shell, /canonicalIframeRef/);
   assert.match(shell, /qaIframeRef/);
@@ -250,6 +250,18 @@ test("localizes the core wrapper UI catalog in both directions", () => {
   assert.equal(uiText("ja", "linkCopied"), "リンクをコピーしました");
   assert.equal(localizeOutletLabel("ja", "PEOF", "Dr. Perelman's Office"), "ペレルマン博士のオフィス");
   assert.equal(localizeOutletLabel("en", "PEOF", "Dr. Perelman's Office"), "Dr. Perelman's Office");
+});
+
+test("localizes the approved initial Simulation controls and estimated brief", () => {
+  assert.equal(uiText("ja", "simulationAvailable"), "Simulation Mode が利用できます");
+  assert.equal(uiText("ja", "securityCodeDecoder"), "セキュリティコード・デコーダー");
+  assert.equal(uiText("ja", "stopRecording"), "録画停止");
+  assert.equal(uiText("ja", "checklistEstimate"), "体験中は RECORD を有効にしてください。チェックは Release 79 と同じ反応を手がかりにする補助的な推定です。");
+  assert.equal(simulationAssignment("ja", 3), "新聞を読むこと");
+  assert.equal(simulationAssignment("en", 8), "Visit your home or living quarters");
+  assert.equal(recordedProgress("ja", 2), "9件中2件を録画");
+  assert.equal(recordedProgress("en", 2, true), "2/9 recorded");
+  assert.equal(plotAssignmentLabel("ja", "新聞を読むこと"), "新聞を読むことへの経路を表示");
 });
 
 test("localizes the approved opening and Communications companion copy", () => {
@@ -906,7 +918,7 @@ test("projects only the two accepted first-simulation structures and fails close
   }
 
   assert.match(shell, /block\.kind === "security-prompt"[\s\S]*securityChallenge\?\.color[\s\S]*securityChallenge\?\.innerNumber/);
-  assert.match(shell, /assistedSecurity && securityChallenge[\s\S]*Submit code <strong>\{securityChallenge\.answer\}/);
+  assert.match(shell, /assistedSecurity && securityChallenge[\s\S]*コード <strong>\{securityChallenge\.answer\}<\/strong> を送信/);
   assert.match(shell, /const assisted = interactionLevel !== "classic"/);
   assert.match(bridge, /inner\?\.setAttribute\("aria-hidden", "true"\)[\s\S]*inner\?\.setAttribute\("inert", ""\)/);
   assert.doesNotMatch(shell.slice(shell.indexOf('block.kind === "security-prompt"'), shell.indexOf(': block.kind === "command"')), /\.answer/);

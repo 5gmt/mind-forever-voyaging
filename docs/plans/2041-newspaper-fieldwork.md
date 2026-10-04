@@ -322,6 +322,7 @@ N1 の採用判断は前節のとおり N1 の文書 PR に保存し、U3 が最
 | 2026-09-30 JST | PR #61 のマージ後、六つの作業票を作成して相互参照を確定した | N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67)。担当は着手前に具体化し、N1 の採用判断は未実施 | 作業票作成担当（ChatGPT） |
 | 2026-09-29 JST | N1 は A（裁判所 → 新聞）を推奨 | 二つの fresh session で連続経路が成立。記事は ordinary-turn 適合、専用表示不要。Issue #62 の PR で 5gmt のレビュー待ち | ChatGPT |
 | 2026-10-03 JST | N1 の PR #69 マージを受けて N2 の copy packet を作成 | Fixture の stable leaf、記事四段落、共有地名、U1 へ渡す役割別 map identity、English fallback 境界を記録。5gmt の copy review 後に N3 / U1 へ引き渡す | ChatGPT（作成）/ 5gmt（レビュー） |
+| 2026-10-04 JST | U1 の PR #72 で承認された U2 copy を初期 Simulation UI に統合 | 入場 CTA、assisted decoder、基本操作、初期 fieldwork launcher、drawer 共通 header / tabs、九課題と補助推定 copy を英日 catalog から表示する。送信 command は canonical English のまま維持し、地図内の経路・対象操作は U3 に残した | ChatGPT（U2 実装） |
 | 未実施 | 全体受入と milestone 完了 | 採用案に応じた検証結果、U3 PR、#29 の結果報告を完了時に記入する | U3 担当 |
 
 ## 固定分析の参照資料

@@ -6,7 +6,7 @@ import { FormEvent, KeyboardEvent, useEffect, useMemo, useRef, useState } from "
 import { createPortal } from "react-dom";
 import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay, RockvilNavigator, SceneActions, hasUsefulSceneAction, type InteractionLevel, type MapRoutePreview, type PackageItem, type RockvilLandmark } from "./StoryTools";
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
-import { companionHeaderLanguage, localizeOutletLabel, localizeSimulationPlace, uiText, type Locale, type UiKey } from "./localization";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSimulationPlace, plotAssignmentLabel, recordedProgress, simulationAssignment, uiText, type Locale, type UiKey } from "./localization";
 import { projectPresentationHistory, reconcilePresentationHistory, type PresentationHistory } from "./presentation-history";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
@@ -425,6 +425,8 @@ export default function PrismEdition() {
   const phase = phaseFor(discovery);
   const guide = mode === "Communications Mode"
     ? { label: uiText(locale, "communications"), copy: uiText(locale, "communicationsGuideCopy") }
+    : mode === "Simulation Mode"
+      ? { label: uiText(locale, "rockvil"), copy: uiText(locale, "simulationGuideCopy") }
     : mode
       ? MODE_COPY[mode]
       : { label: uiText(locale, "openingGuideHeading"), copy: uiText(locale, "openingGuideCopy") };
@@ -1034,7 +1036,7 @@ export default function PrismEdition() {
     : /programming team has finished entering the parameters for the plan|simulation mode at any time/i.test(transcript);
   const panelTabs: Array<{ id: Panel; label: string }> = [
     { id: "guide", label: uiText(locale, "companionAssist") },
-    ...(interactionLevel !== "classic" ? [{ id: "context" as Panel, label: mode === "Library Mode" ? "Files" : mode === "Interface Mode" ? "Systems" : mode === "Simulation Mode" ? "Explore" : uiText(locale, "companionSignals") }] : []),
+    ...(interactionLevel !== "classic" ? [{ id: "context" as Panel, label: mode === "Library Mode" ? "Files" : mode === "Interface Mode" ? "Systems" : mode === "Simulation Mode" ? uiText(locale, "explore") : uiText(locale, "companionSignals") }] : []),
     ...(simulationInvitationSeen ? [{ id: "evidence" as Panel, label: discovery.simulationEntered ? "Evidence" : "Field brief" }] : []),
     { id: "package", label: uiText(locale, "package") },
     { id: "about", label: uiText(locale, "companionAbout") },
@@ -1042,7 +1044,7 @@ export default function PrismEdition() {
   ];
 
   const baseActions: Array<[string, string]> = mode === "Library Mode" ? []
-    : mode === "Simulation Mode" ? [["Look", "look"], [recording ? "Stop recording" : "Record", recording ? "record off" : "record"], ["Inventory", "inventory"], ["Wait", "wait"], ["Abort", "abort"]]
+    : mode === "Simulation Mode" ? [[uiText(locale, "simulationLook"), "look"], [uiText(locale, recording ? "stopRecording" : "record"), recording ? "record off" : "record"], [uiText(locale, "inventory"), "inventory"], [uiText(locale, "wait"), "wait"], [uiText(locale, "abort"), "abort"]]
     : mode === "Interface Mode" ? [["Look", "look"], ["Read active ports", "read list of active ports"]]
     : mode === "Sleep Mode" ? [["Return to signals", "enter communications mode"]]
     : [[uiText(locale, "look"), "look"], [uiText(locale, "displayOutlets"), "display outlets"]];
@@ -1050,7 +1052,11 @@ export default function PrismEdition() {
   if (mode === "Communications Mode" && interfaceDiscovered) baseActions.push([uiText(locale, "inspectInterfaces"), "enter interface mode"]);
   for (const knownMode of knownModes) {
     if (knownMode !== mode && knownMode !== "Simulation Mode" && !baseActions.some(([, command]) => command === `enter ${knownMode.toLowerCase()}`)) {
-      baseActions.push([knownMode.replace(" Mode", ""), `enter ${knownMode.toLowerCase()}`]);
+      const modeLabel = knownMode === "Communications Mode" ? (locale === "ja" ? "通信" : "Communications")
+        : knownMode === "Library Mode" ? (locale === "ja" ? "ライブラリ" : "Library")
+          : knownMode === "Interface Mode" ? (locale === "ja" ? "インターフェース" : "Interface")
+            : locale === "ja" ? "スリープ" : "Sleep";
+      baseActions.push([modeLabel, `enter ${knownMode.toLowerCase()}`]);
     }
   }
   const simulationReady = simulationInvitationSeen && mode === "Communications Mode" && phase !== "witness" && phase !== "lockdown";
@@ -1058,7 +1064,7 @@ export default function PrismEdition() {
     ? { kicker: "Simulation Controller ready", title: "Begin the final voyage", detail: "The New Plan simulation is ready." }
     : phase === "comparative"
       ? { kicker: "Simulation archive available", title: "Choose another horizon", detail: "Re-enter to select an available simulation." }
-      : { kicker: "Simulation Mode available", title: "Begin the requested observations", detail: "Perelman’s field brief is saved beside the story." };
+      : { kicker: uiText(locale, "simulationAvailable"), title: uiText(locale, "simulationBeginObservations"), detail: uiText(locale, "simulationBriefSaved") };
 
   const phaseLabel: Record<Phase, string> = {
     signal: uiText(locale, "incoming"),
@@ -1189,10 +1195,10 @@ export default function PrismEdition() {
 
         <section className="command-deck" aria-labelledby="story-controls-label">
           <span id="story-controls-label" hidden lang={locale}>{uiText(locale, "storyControls")}</span>
-          {assistedSecurity && securityChallenge && inputKind === "line" && <section className="security-decoder" aria-label="Security code decoder">
+          {assistedSecurity && securityChallenge && inputKind === "line" && <section className="security-decoder" lang={locale} aria-label={uiText(locale, "securityCodeDecoder")}>
             <div className="decoder-seal" style={{ "--decoder-color": securityChallenge.color.toLowerCase().replace(" ", "-") } as React.CSSProperties}><span>{securityChallenge.color}</span><strong>{securityChallenge.inner}</strong></div>
-            <div><span className="section-kicker">Security decoder</span><h2>{securityChallenge.color} · {securityChallenge.inner}</h2><p>Turn the wheel to align the color and inner number, or submit the matching outer number.</p></div>
-            <button type="button" onClick={() => sendCommand(String(securityChallenge.answer))} disabled={!acceptsInput}>Submit code <strong>{securityChallenge.answer}</strong></button>
+            <div><span className="section-kicker">{uiText(locale, "securityDecoder")}</span><h2 lang="en">{securityChallenge.color} · {securityChallenge.inner}</h2><p>{uiText(locale, "securityDecoderInstructions")}</p></div>
+            <button type="button" onClick={() => sendCommand(String(securityChallenge.answer))} disabled={!acceptsInput}>{locale === "ja" ? <>コード <strong>{securityChallenge.answer}</strong> を送信</> : <>Submit code <strong>{securityChallenge.answer}</strong></>}</button>
           </section>}
 
           {assistedYearSelector && !assistedSecurity && inputKind === "line" && <section className="year-selector" aria-label="Select a simulation year">
@@ -1205,9 +1211,9 @@ export default function PrismEdition() {
             <div>{outlets.map((outlet) => <button type="button" key={outlet.code} className={activeOutletCode === outlet.code ? "active" : ""} onClick={() => sendCommand(outlet.code)} disabled={!acceptsInput}><span lang="en">{outlet.code}</span><strong>{localizeOutletLabel(locale, outlet.code, outlet.name)}</strong></button>)}</div>
           </section>}
 
-          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && discovery.simulationEntered && (travelOptions.length === 0 || (interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete)) && <section className="fieldwork-launcher" aria-label={initialFieldworkActive ? "Rockvil map and fieldwork brief" : "Rockvil map"}>
-            {travelOptions.length === 0 && <button ref={fieldworkLauncherRef} className="open-fieldwork" type="button" onClick={() => openFieldwork("map")}><span className="fieldwork-map-icon" aria-hidden="true"><i /><i /><i /></span><span><small>{initialFieldworkActive ? "Fieldwork" : "Navigation"}</small><strong>{initialFieldworkActive ? "Map & recording brief" : "Rockvil map"}</strong><em>{initialFieldworkActive ? `${fieldworkRecordedCount} of ${FIELD_ASSIGNMENTS.length} recorded` : mapRoutePreview ? `Route: ${mapRoutePreview.destination.label}` : "Choose a destination"}</em></span><b>Open <span aria-hidden="true">→</span></b></button>}
-            {interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && <div className={`record-reminder ${recording ? "active" : ""}`}><span className="record-reminder-light" aria-hidden="true" /><div><small>{recording ? "Recording now" : "Recording is off"}</small><strong>{currentFieldworkAssignment}</strong><span>{recording ? "Complete the experience; the brief will check itself." : "Start RECORD before you complete this experience."}</span></div>{recording ? <b>● RECORDING</b> : <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>Start recording</button>}</div>}
+          {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && discovery.simulationEntered && (travelOptions.length === 0 || (interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete)) && <section className="fieldwork-launcher" lang={initialFieldworkActive ? locale : "en"} aria-label={initialFieldworkActive ? uiText(locale, "mapFieldworkBriefLabel") : "Rockvil map"}>
+            {travelOptions.length === 0 && <button ref={fieldworkLauncherRef} className="open-fieldwork" type="button" onClick={() => openFieldwork("map")}><span className="fieldwork-map-icon" aria-hidden="true"><i /><i /><i /></span><span><small>{initialFieldworkActive ? uiText(locale, "fieldwork") : "Navigation"}</small><strong>{initialFieldworkActive ? uiText(locale, "mapRecordingBrief") : "Rockvil map"}</strong><em>{initialFieldworkActive ? recordedProgress(locale, fieldworkRecordedCount) : mapRoutePreview ? `Route: ${mapRoutePreview.destination.label}` : "Choose a destination"}</em></span><b>{initialFieldworkActive ? uiText(locale, "open") : "Open"} <span aria-hidden="true">→</span></b></button>}
+            {interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && <div className={`record-reminder ${recording ? "active" : ""}`}><span className="record-reminder-light" aria-hidden="true" /><div><small>{uiText(locale, recording ? "recordingNow" : "recordingOff")}</small><strong>{simulationAssignment(locale, currentFieldworkIndex!)}</strong><span>{uiText(locale, recording ? "recordingCompleteHint" : "recordingStartHint")}</span></div>{recording ? <b>● RECORDING</b> : <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>{uiText(locale, "startRecording")}</button>}</div>}
           </section>}
 
           {!assistedSecurity && !assistedYearSelector && assisted && inputKind === "line" && mode === "Simulation Mode" && travelOptions.length > 0 && <section className={`movement-compass ${mapRoutePreview && !mapRoutePreview.arrived ? "has-route" : ""}`} aria-label="Available directions">
@@ -1228,9 +1234,9 @@ export default function PrismEdition() {
 
           {!assistedSecurity && !assistedYearSelector && yesNoPrompt && <div className="answer-buttons" role="group" lang={locale} aria-label={uiText(locale, "answerQuestion")}><span>{uiText(locale, "answer")}</span><button type="button" onClick={() => postCommand("y", true)} disabled={!acceptsInput}>{uiText(locale, "yes")}</button><button type="button" onClick={() => postCommand("n", true)} disabled={!acceptsInput}>{uiText(locale, "no")}</button></div>}
 
-          {!assistedSecurity && !assistedYearSelector && !yesNoPrompt && assisted && inputKind === "line" && simulationReady && <section className="simulation-ready" aria-label="Simulation Mode available">
+          {!assistedSecurity && !assistedYearSelector && !yesNoPrompt && assisted && inputKind === "line" && simulationReady && <section className="simulation-ready" lang={phase === "comparative" || phase === "epilogue" ? "en" : locale} aria-label={phase === "comparative" || phase === "epilogue" ? simulationPrompt.kicker : uiText(locale, "simulationAvailable")}>
             <div><span className="section-kicker">{simulationPrompt.kicker}</span><strong>{simulationPrompt.title}</strong><small>{simulationPrompt.detail}</small></div>
-            <button type="button" onClick={() => sendCommand("enter simulation mode")} disabled={!acceptsInput}>Enter Simulation Mode <span aria-hidden="true">→</span></button>
+            <button type="button" onClick={() => sendCommand("enter simulation mode")} disabled={!acceptsInput}>{phase === "comparative" || phase === "epilogue" ? "Enter Simulation Mode" : uiText(locale, "enterSimulation")} <span aria-hidden="true">→</span></button>
           </section>}
 
           {!assistedSecurity && !assistedYearSelector && !yesNoPrompt && (inputKind === "char" ? <div className="character-prompt">
@@ -1241,7 +1247,7 @@ export default function PrismEdition() {
               <div className="command-field"><span aria-hidden="true">›</span><input ref={commandRef} id="command-input" lang="en" value={command} onChange={(event) => { setCommand(event.target.value); setAliasNotice(null); }} onKeyDown={navigateHistory} placeholder={mode === "Simulation Mode" ? uiText(locale, "simulationPlaceholder") : mode === "Library Mode" ? uiText(locale, "libraryPlaceholder") : uiText(locale, "commandPlaceholder")} autoComplete="off" spellCheck="false" aria-describedby="command-help" /><button type="submit" disabled={!command.trim() || !acceptsInput}>{uiText(locale, "send")} <span aria-hidden="true">↵</span></button></div>
               <div className="command-meta" id="command-help"><span>{commandHelp}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
-            {assisted && <div className="quick-actions" lang={locale} aria-label={uiText(locale, "commonActions")}>{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput} lang={["look", "display outlets", "enter library mode", "enter interface mode"].includes(value) ? locale : "en"}>{label}</button>)}</div>}
+            {assisted && <div className="quick-actions" lang={locale} aria-label={uiText(locale, "commonActions")}>{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput} lang={mode === "Simulation Mode" || ["look", "display outlets", "enter library mode", "enter interface mode"].includes(value) ? locale : "en"}>{label}</button>)}</div>}
             {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={contextualObjects} roomId={mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : room?.id} level={interactionLevel} locale={locale} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
           </>)}
         </section>
@@ -1273,12 +1279,12 @@ export default function PrismEdition() {
       </aside>
 
       {fieldworkOpen && <div className="fieldwork-drawer-backdrop">
-        <section className={`fieldwork-drawer ${initialFieldworkActive ? "with-brief" : "map-only"}`} role="dialog" aria-modal="true" aria-labelledby="fieldwork-title" data-fieldwork-view={fieldworkView}>
-          <header className="fieldwork-drawer-header"><div><span className="section-kicker">{initialFieldworkActive ? "Perelman’s fieldwork console" : "Rockvil navigation"}</span><h2 id="fieldwork-title">{initialFieldworkActive ? "Map & recording brief" : "Rockvil map"}</h2><p>{currentRoomName ? `${currentRoomName}${displayYear ? ` · ${displayYear}` : ""}` : "Choose a destination on the original map."}</p></div><div className="fieldwork-drawer-status">{initialFieldworkActive && <span><b>{fieldworkRecordedCount}</b> / {FIELD_ASSIGNMENTS.length} recorded</span>}{recording && <strong>● RECORDING</strong>}{interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && !recording && <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>Start RECORD</button>}<button ref={fieldworkCloseRef} className="fieldwork-close" type="button" onClick={closeFieldwork} aria-label="Close map and fieldwork brief">×</button></div></header>
-          {initialFieldworkActive && <div className="fieldwork-drawer-tabs" role="tablist" aria-label="Fieldwork views"><button type="button" role="tab" aria-selected={fieldworkView === "map"} onClick={() => setFieldworkView("map")}>Map & route</button><button type="button" role="tab" aria-selected={fieldworkView === "brief"} onClick={() => setFieldworkView("brief")}>Brief <span>{fieldworkRecordedCount}/{FIELD_ASSIGNMENTS.length}</span></button></div>}
+        <section className={`fieldwork-drawer ${initialFieldworkActive ? "with-brief" : "map-only"}`} lang={initialFieldworkActive ? locale : "en"} role="dialog" aria-modal="true" aria-labelledby="fieldwork-title" data-fieldwork-view={fieldworkView}>
+          <header className="fieldwork-drawer-header"><div><span className="section-kicker">{initialFieldworkActive ? uiText(locale, "fieldworkConsole") : "Rockvil navigation"}</span><h2 id="fieldwork-title">{initialFieldworkActive ? uiText(locale, "mapRecordingBrief") : "Rockvil map"}</h2><p>{currentRoomName ? `${localizeSimulationPlace(locale, currentRoomName)}${displayYear ? ` · ${displayYear}` : ""}` : initialFieldworkActive ? uiText(locale, "chooseDestinationOriginalMap") : "Choose a destination on the original map."}</p></div><div className="fieldwork-drawer-status">{initialFieldworkActive && <span>{recordedProgress(locale, fieldworkRecordedCount)}</span>}{recording && <strong>● RECORDING</strong>}{interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && !recording && <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>{uiText(locale, "startRecord")}</button>}<button ref={fieldworkCloseRef} className="fieldwork-close" type="button" onClick={closeFieldwork} aria-label={initialFieldworkActive ? uiText(locale, "closeFieldwork") : "Close Rockvil map"}>×</button></div></header>
+          {initialFieldworkActive && <div className="fieldwork-drawer-tabs" role="tablist" aria-label={uiText(locale, "fieldworkViews")}><button type="button" role="tab" aria-selected={fieldworkView === "map"} onClick={() => setFieldworkView("map")}>{uiText(locale, "mapRoute")}</button><button type="button" role="tab" aria-selected={fieldworkView === "brief"} onClick={() => setFieldworkView("brief")}>{uiText(locale, "brief")} <span>{fieldworkRecordedCount}/{FIELD_ASSIGNMENTS.length}</span></button></div>}
           <div className={`fieldwork-drawer-body ${initialFieldworkActive ? "with-brief" : "map-only"}`}>
             <RockvilNavigator currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} onSelect={selectMapLandmark} onStep={useMapRouteStep} onClear={() => setMapDestinationId(null)} stepLabel={interactionLevel === "guided" ? "Draft next step" : "Take next step"} disabled={!acceptsInput} />
-            {initialFieldworkActive && <section className="fieldwork-checklist" aria-label="Fieldwork checklist"><div className="checklist-heading"><div><span>Perelman’s brief</span><strong>{fieldworkRecordedCount} of {FIELD_ASSIGNMENTS.length} recorded</strong></div><small>RECORD must be active during the experience. Checks follow the same Release 79 triggers as the game.</small></div><ol>{FIELD_ASSIGNMENTS.map((assignment, index) => { const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment === index); const complete = fieldProgress[index]; const current = currentFieldworkIndex === index; return <li key={assignment} className={`${complete ? "complete" : ""} ${current ? "current" : ""}`}><span aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>{assignment}</strong>{destination && <small>{destination.label}{current ? " · you are here" : ""}</small>}</div>{destination && <button type="button" onClick={() => plotFieldworkAssignment(destination)} aria-label={`Plot route for ${assignment}`}>{mapDestinationId === destination.id ? "Route plotted" : "Show on map"}</button>}</li>; })}</ol></section>}
+            {initialFieldworkActive && <section className="fieldwork-checklist" aria-label={uiText(locale, "fieldworkChecklist")}><div className="checklist-heading"><div><span>{uiText(locale, "perelmanBrief")}</span><strong>{recordedProgress(locale, fieldworkRecordedCount)}</strong></div><small>{uiText(locale, "checklistEstimate")}</small></div><ol>{FIELD_ASSIGNMENTS.map((assignment, index) => { const localizedAssignment = simulationAssignment(locale, index); const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment === index); const complete = fieldProgress[index]; const current = currentFieldworkIndex === index; return <li key={assignment} className={`${complete ? "complete" : ""} ${current ? "current" : ""}`}><span aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>{localizedAssignment}</strong>{destination && <small>{destination.label}{current ? ` · ${uiText(locale, "youAreHere")}` : ""}</small>}</div>{destination && <button type="button" onClick={() => plotFieldworkAssignment(destination)} aria-label={plotAssignmentLabel(locale, localizedAssignment)}>{uiText(locale, mapDestinationId === destination.id ? "routePlotted" : "showOnMap")}</button>}</li>; })}</ol></section>}
           </div>
         </section>
       </div>}
