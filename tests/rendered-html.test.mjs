@@ -3,7 +3,7 @@ import { createHash } from "node:crypto";
 import { access, readFile, readdir } from "node:fs/promises";
 import test from "node:test";
 import vm from "node:vm";
-import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationPlace, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
+import { companionHeaderLanguage, localizeOutletLabel, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation } from "../app/localization.ts";
 import { assignmentBriefPresentation, initialLineTurnPresentation, observedOrdinaryTurnPresentation, openingPresentation, securityPromptPresentation, storyPresentation } from "../app/story-presentation.ts";
 import { projectPresentationHistory, reconcilePresentationHistory } from "../app/presentation-history.ts";
 
@@ -315,8 +315,16 @@ test("keeps accessible Japanese names and excluded later-mode English in their o
   assert.equal(localizeSimulationPlace("ja", "Elm & Park"), "エルム通りとパーク通り");
   assert.equal(localizeSimulationPlace("ja", "Courthouse"), "裁判所");
   assert.equal(localizeSimulationPlace("ja", "Kennedy Park"), "ケネディ公園");
+  assert.equal(localizeSimulationPlace("ja", "Main & Kennedy"), "メイン通りとケネディ通り");
+  assert.equal(localizeSimulationPlace("ja", "Centre & Kennedy"), "センター通りとケネディ通り");
+  assert.equal(localizeSimulationPlace("ja", "Bodanski Square"), "ボダンスキー広場");
   assert.equal(localizeSimulationPlace("ja", "Unobserved Room"), "Unobserved Room");
   assert.equal(localizeSimulationPlace("en", "Courthouse"), "Courthouse");
+  assert.equal(localizeSimulationMapLabel("ja", "north-central", "North Central Station"), "ノース・セントラル駅");
+  assert.equal(localizeSimulationMapLabel("ja", "newspaper", "Newspaper"), "新聞");
+  assert.equal(localizeSimulationMapLabel("ja", "infotech", "InfoTech Building"), "インフォテック・ビル");
+  assert.equal(localizeSimulationMapLabel("ja", "unknown", "Unobserved Landmark"), "Unobserved Landmark");
+  assert.equal(localizeSimulationMapLabel("en", "newspaper", "Newspaper"), "Newspaper");
 });
 
 test("localizes the complete introduction catalog and preserves its English copy", () => {
@@ -763,6 +771,12 @@ test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", asy
     "On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.",
     "Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.",
   ];
+  const japaneseArticleParagraphs = [
+    "ニュース欄のトップ記事は景気先行指数を取り上げている。前月比で驚異の9.7%上昇し、経済の力強い成長をまたしても裏づけたという。関連記事では、失業率が約30年ぶりの低水準にあることや、商業施設と住宅の建設が史上最高水準に達していることが報じられている。",
+    "別の主要記事は、国境警備隊アカデミーの著名講師シリーズで行われたライダー大統領の講演を伝えている。演説で大統領は40年代を「新たな希望の10年」と呼び、その希望の多くはBSFの働きによるものだと述べた。さらに大統領は、USNAが「最大の独裁国家にも、テロリストの殺人集団の最小の一派にも、言いなりにはならない」という姿勢を全世界に示した。",
+    "中面の一つには犯罪に関する詳細な報告があり、過去10年間で犯罪率全体はわずか4%しか低下していないにもかかわらず、世間では犯罪がそれ以上に大幅に減ったと受け止められていることを明らかにしている。報告は、この認識を三つの点に帰している。暴力犯罪はほかの種類の犯罪よりはるかに速く減少し、10年前より15%低下した。常に最も大きく報道されてきた学校内犯罪は40%減少した。そして何より、かつてのように法手続き上の不備や低額の保釈金、容易な仮釈放によって放免されるのとは対照的に、犯罪者にはより厳しい刑が科されている。",
+    "ニュース欄のほかの記事では、インフォテックの新たな軌道工場の建設、医薬品産業の規制緩和、トルコでの戦争、月面採掘事業の計画が取り上げられている。社説は、刑務所の過密を緩和するため、徴兵委員会の要件を緩和するよう求めている。",
+  ];
 
   for (const session of fixture.sessions) {
     assert.deepEqual(session.observations.map(({ command }) => command), fixture.path);
@@ -798,6 +812,20 @@ test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", asy
       articleParagraphs[3], " ",
       ">",
     ], "all four observed article paragraphs and their boundaries remain complete and ordered");
+    const localizedReading = projectPresentationHistory(
+      reconcilePresentationHistory([], reading.presentation).history,
+      "ja",
+    )[0].blocks;
+    assert.deepEqual(
+      localizedReading.filter(({ kind }) => kind === "prose").map(({ text }) => text),
+      japaneseArticleParagraphs,
+      "all approved article paragraphs are localized without changing their order",
+    );
+    assert.deepEqual(
+      localizedReading.map(({ kind }) => kind),
+      ["command", "prose", "spacer", "prose", "spacer", "prose", "spacer", "prose", "spacer"],
+      "article paragraph and blank-line structure is preserved",
+    );
     assert.equal(reading.status.mode, "Simulation Mode (recording)");
     assert.equal(newspaper.at(-1).status.mode, "Simulation Mode");
     assert.equal(newspaper.at(-1).status.location, "Kennedy Park");
@@ -808,6 +836,13 @@ test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", asy
 
   assert.notEqual(fixture.sessions[0].observations[0].status.date, fixture.sessions[1].observations[0].status.date);
   assert.match(fixture.attemptClassification.harnessFailures[0], /synchronization failures/);
+
+  assert.equal(
+    observedStoryLeafTranslation(`${articleParagraphs[0]} Unapproved variant`, "ja", "READ NEWSPAPER"),
+    undefined,
+    "unapproved article variants remain canonical English",
+  );
+  assert.equal(observedStoryLeafTranslation("Main & Kennedy", "ja", "LOOK"), undefined);
 });
 
 test("projects only the two accepted first-simulation structures and fails closed", async () => {

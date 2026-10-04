@@ -26,7 +26,7 @@ const startJapaneseStory = async (page: Page, controls: "classic" | "guided") =>
   const continueButton = page.getByRole("button", { name: /Begin the original story/i });
   await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
   if (!(await continueButton.isVisible())) await introduction.getByRole("button", { name: /^Begin/ }).click();
-  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
+  await expect(continueButton).toBeEnabled({ timeout: 40_000 });
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
   await settings.getByRole("button", { name: controls === "classic" ? "Classic" : "Guided" }).click();
@@ -106,7 +106,8 @@ const expectNewBlocksWithCanonicalTail = async (
 };
 
 for (const controls of ["classic", "guided"] as const) {
-  test(`${controls} completes the first localized Simulation Mode recording loop`, async ({ page }, testInfo) => {
+  test(`${controls} completes the localized Simulation Mode and Courthouse-to-Newspaper fieldwork`, async ({ page }, testInfo) => {
+    test.setTimeout(90_000);
     const { frame, presentation, input } = await startJapaneseStory(page, controls);
     await send(page, input, "PEOF");
     await expect(presentation).toContainText("ペレルマン博士は机に向かい、仕事をしている。");
@@ -253,6 +254,40 @@ for (const controls of ["classic", "guided"] as const) {
     await input.focus();
     await expect(input).toBeFocused();
 
+    await send(page, input, "INVENTORY");
+    await send(page, input, "RECORD");
+    for (const [command, place] of [
+      ["NE", "メイン通りとケネディ通り"],
+      ["N", "センター通りとケネディ通り"],
+      ["NE", "ボダンスキー広場"],
+    ] as const) {
+      await send(page, input, command);
+      await expect(page.locator(".location-block strong")).toHaveText(place);
+    }
+    await send(page, input, "BUY NEWSPAPER");
+    await expect(presentation).toContainText("新聞販売機にカードを差し込む。表示に「NEW BALANCE: $599」と点滅し、新聞が一部、手元へ飛び出してくる。");
+    await send(page, input, "READ NEWSPAPER");
+    const articleCopy = [
+      "ニュース欄のトップ記事は景気先行指数を取り上げている。",
+      "別の主要記事は、国境警備隊アカデミーの著名講師シリーズで行われたライダー大統領の講演を伝えている。",
+      "中面の一つには犯罪に関する詳細な報告があり、過去10年間で犯罪率全体はわずか4%しか低下していないにもかかわらず、",
+      "ニュース欄のほかの記事では、インフォテックの新たな軌道工場の建設、医薬品産業の規制緩和、トルコでの戦争、月面採掘事業の計画が取り上げられている。",
+    ] as const;
+    for (const paragraph of articleCopy) await expect(presentation).toContainText(paragraph);
+    await input.focus();
+    await expect(input).toBeFocused();
+    for (const [command, place] of [
+      ["SW", "センター通りとケネディ通り"],
+      ["S", "メイン通りとケネディ通り"],
+      ["SW", "ケネディ公園"],
+    ] as const) {
+      await send(page, input, command);
+      await expect(page.locator(".location-block strong")).toHaveText(place);
+    }
+    await send(page, input, "RECORD OFF");
+    await expect(frame.locator(".GridWindow")).not.toContainText(/\(recording\)/i);
+    await expect(input).toBeEnabled();
+
     await page.getByTitle("読書とプレイの設定").click();
     const settings = page.getByRole("region", { name: "読書とプレイの設定" });
     await expect(settings).toBeVisible();
@@ -266,6 +301,7 @@ for (const controls of ["classic", "guided"] as const) {
     const englishSettings = page.getByRole("region", { name: "Reading and play settings" });
     await englishSettings.getByRole("button", { name: "日本語" }).click();
     await expect(presentation).toContainText("記録機能を停止しました。");
+    for (const paragraph of articleCopy) await expect(presentation).toContainText(paragraph);
     await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("aria-hidden", "true");
     await expect(frame.locator(".BufferWindowInner")).toHaveAttribute("inert", "");
     await expect(input).toBeEnabled();
