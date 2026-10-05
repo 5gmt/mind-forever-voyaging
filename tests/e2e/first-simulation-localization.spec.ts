@@ -20,16 +20,16 @@ const PERELMAN_RETURN = "しばらくして、ペレルマンがあなたの視�
 
 type ExpectedBlock = { kind: "command" | "title" | "prose" | "spacer" | "list"; text?: string; items?: readonly string[]; lang?: "en" };
 
-const startJapaneseStory = async (page: Page, controls: "classic" | "guided") => {
+const startJapaneseStory = async (page: Page, controls: "classic" | "guided" | "actions") => {
   await page.goto("/");
   const introduction = page.getByRole("dialog", { name: /A Mind Forever Voyaging/i });
-  const continueButton = page.getByRole("button", { name: /Begin the original story/i });
-  await expect(introduction.or(continueButton)).toBeVisible({ timeout: 20_000 });
+  const continueButton = page.getByRole("button", { name: /Begin the original story|原作を始める/i });
+  await expect(introduction.or(continueButton)).toBeVisible({ timeout: 60_000 });
   if (!(await continueButton.isVisible())) await introduction.getByRole("button", { name: /^Begin/ }).click();
-  await expect(continueButton).toBeEnabled({ timeout: 20_000 });
+  await expect(continueButton).toBeEnabled({ timeout: 60_000 });
   await page.getByTitle("Reading and play settings").click();
   const settings = page.getByRole("region", { name: /Reading and play settings|読書とプレイの設定/ });
-  await settings.getByRole("button", { name: controls === "classic" ? "Classic" : "Guided" }).click();
+  await settings.getByRole("button", { name: controls === "classic" ? "Classic" : controls === "guided" ? "Guided" : "Action menus" }).click();
   await settings.getByRole("button", { name: "日本語" }).click();
   await page.getByTitle("読書とプレイの設定").click();
   await expect(settings).toBeHidden();
@@ -105,8 +105,9 @@ const expectNewBlocksWithCanonicalTail = async (
   }
 };
 
-for (const controls of ["classic", "guided"] as const) {
+for (const controls of ["classic", "guided", "actions"] as const) {
   test(`${controls} completes the first localized Simulation Mode recording loop`, async ({ page }, testInfo) => {
+    test.setTimeout(90_000);
     const { frame, presentation, input } = await startJapaneseStory(page, controls);
     await send(page, input, "PEOF");
     await expect(presentation).toContainText("ペレルマン博士は机に向かい、仕事をしている。");
@@ -149,7 +150,13 @@ for (const controls of ["classic", "guided"] as const) {
       await expectNewBlocks(presentation, blockCount, expectedBlocks);
     }
 
-    await send(page, input, "ENTER SIMULATION MODE");
+    if (controls !== "classic") {
+      const ready = page.getByRole("region", { name: "Simulation Mode が利用できます" });
+      await expect(ready).toContainText("依頼された観察を始める");
+      await ready.getByRole("button", { name: "Simulation Mode に入る" }).click();
+    } else {
+      await send(page, input, "ENTER SIMULATION MODE");
+    }
     const prompt = presentation.locator(".story-presentation-prompt").last();
     await expect(prompt).toContainText("シミュレーション・モードはクラス1セキュリティ・モードです。");
     const promptText = await prompt.innerText();
@@ -169,21 +176,65 @@ for (const controls of ["classic", "guided"] as const) {
     } else {
       const decoder = page.locator(".security-decoder");
       await expect(decoder).toContainText(`${colorIndex >= 0 ? match![1] : ""} · ${match![2]}`);
-      await decoder.getByRole("button", { name: `Submit code ${answer}` }).click();
+      await expect(decoder).toHaveAttribute("aria-label", "セキュリティコード・デコーダー");
+      await decoder.getByRole("button", { name: `コード ${answer} を送信` }).click();
     }
     const answerEcho = presentation.locator(".story-presentation-command").nth(answerCommandIndex);
     await expect(answerEcho).toHaveText(`> ${answer}`);
     await expect(answerEcho).toHaveAttribute("lang", "en");
 
     await expect(presentation).toContainText("このシミュレーションの時代設定は、10年後です。");
+    await expect(page.locator(".mode-subreadout")).toHaveText("ロックヴィル");
+    await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "ja");
     await expect(presentation.locator(".story-presentation-title", { hasText: "ケネディ公園" })).toHaveCount(1);
     const description = "ここは市街地にある小さな公園で、北東、南東、南西へ通じる門がある。公園の中央では、ジョン・F・ケネディ像を取り囲むように、自由な形の大きな水盤が広がっている。";
     await expect(presentation).toContainText(description);
     await send(page, input, "LOOK");
     await expect(presentation.locator(".story-presentation-title", { hasText: "ケネディ公園" })).toHaveCount(2);
 
+    if (controls === "actions") {
+      const launcher = page.locator(".compact-map-button");
+      await launcher.click();
+      const drawer = page.getByRole("dialog", { name: "地図と録画要項" });
+      await expect(drawer).toHaveAttribute("lang", "ja");
+      await expect(drawer.locator('.fieldwork-drawer-tabs[aria-label="現地調査の表示"]')).toHaveCount(1);
+      const checklist = drawer.getByRole("region", { name: "現地調査チェックリスト" });
+      await expect(checklist.locator("li")).toHaveCount(9);
+      await expect(checklist).toContainText("レストランで食事をすること");
+      await expect(checklist).toContainText("自分の家、または居住区を訪れること");
+      await expect(checklist).toContainText("補助的な推定です");
+      const navigator = drawer.locator(".rockvil-navigator");
+      await expect(navigator).toHaveAttribute("aria-label", "Navigate Rockvil using the original map");
+      await expect(navigator).toHaveAttribute("lang", "en");
+      const close = drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" });
+      await expect(close).toBeFocused();
+      await close.click();
+      await expect(launcher).toBeFocused();
+      await page.getByTitle("読書とプレイの設定").click();
+      let settings = page.getByRole("region", { name: "読書とプレイの設定" });
+      await settings.getByRole("button", { name: "English" }).click();
+      await page.getByTitle("Reading and play settings").click();
+      await launcher.click();
+      const englishDrawer = page.getByRole("dialog", { name: "Map & recording brief" });
+      await expect(englishDrawer).toHaveAttribute("lang", "en");
+      await expect(englishDrawer.getByRole("region", { name: "Fieldwork checklist" })).toContainText("Eat a meal in a restaurant");
+      await englishDrawer.getByRole("button", { name: "Close map and fieldwork brief" }).click();
+      await page.getByTitle("Reading and play settings").click();
+      settings = page.getByRole("region", { name: "Reading and play settings" });
+      await settings.getByRole("button", { name: "日本語" }).click();
+      await page.getByTitle("読書とプレイの設定").click();
+    }
+
     const firstRecordBlockCount = await presentation.locator(".story-presentation-content > *").count();
-    await send(page, input, "RECORD");
+    if (controls !== "classic") {
+      const actions = page.locator(".quick-actions").filter({ has: page.getByRole("button", { name: "持ち物" }) });
+      await expect(actions.getByRole("button", { name: "持ち物" })).toBeVisible();
+      await expect(actions.getByRole("button", { name: "待つ" })).toBeVisible();
+      await expect(actions.getByRole("button", { name: "中止" })).toBeVisible();
+      await actions.getByRole("button", { name: "録画開始" }).click();
+    } else {
+      await send(page, input, "RECORD");
+    }
     await expectNewBlocks(presentation, firstRecordBlockCount, [
       { kind: "command", text: "RECORD" },
       { kind: "prose", text: "記録機能を起動しました。" },
@@ -192,18 +243,24 @@ for (const controls of ["classic", "guided"] as const) {
     await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode\s*\(recording\)/i);
     await send(page, input, "WAIT");
     await expect(presentation.locator(".story-presentation-prose", { hasText: "時間が過ぎていく……" })).toHaveCount(5);
-    await send(page, input, "RECORD OFF");
+    if (controls !== "classic") {
+      await page.locator(".quick-actions").getByRole("button", { name: "録画停止" }).click();
+    } else {
+      await send(page, input, "RECORD OFF");
+    }
     await expect(presentation).toContainText("記録機能を停止しました。");
     await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode/i);
     await expect(frame.locator(".GridWindow")).not.toContainText(/\(recording\)/i);
 
-    const secondRecordBlockCount = await presentation.locator(".story-presentation-content > *").count();
-    await send(page, input, "RECORD");
-    await expectNewBlocks(presentation, secondRecordBlockCount, [
-      { kind: "command", text: "RECORD" },
-      { kind: "prose", text: "記録機能を起動しました。" },
-      { kind: "spacer" },
-    ]);
+    if (controls !== "actions") {
+      const secondRecordBlockCount = await presentation.locator(".story-presentation-content > *").count();
+      await send(page, input, "RECORD");
+      await expectNewBlocks(presentation, secondRecordBlockCount, [
+        { kind: "command", text: "RECORD" },
+        { kind: "prose", text: "記録機能を起動しました。" },
+        { kind: "spacer" },
+      ]);
+    }
     const courthouseRoute: readonly (readonly [string, readonly ExpectedBlock[], string])[] = [
       ["SW", [
         { kind: "command", text: "SW" },
@@ -239,6 +296,23 @@ for (const controls of ["classic", "guided"] as const) {
       ], "ケネディ公園"],
     ];
     for (const [command, expectedBlocks, place] of courthouseRoute) {
+      if (controls === "actions" && command === "LOOK") {
+        const reminder = page.locator(".record-reminder");
+        await expect(reminder).toContainText("録画は停止中");
+        await expect(reminder).toContainText("開廷中の裁判を傍聴すること");
+        const recordCommandCount = await presentation.locator(".story-presentation-command").count();
+        await reminder.getByRole("button", { name: "録画を開始" }).click();
+        await expect(presentation.locator(".story-presentation-command").nth(recordCommandCount)).toHaveText("> RECORD");
+        await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode\s*\(recording\)/i);
+        await expect(input).toBeEnabled();
+        await send(page, input, "RECORD OFF");
+        await page.locator(".compact-map-button").click();
+        const drawer = page.getByRole("dialog", { name: "地図と録画要項" });
+        await drawer.getByRole("button", { name: "RECORD を開始" }).click();
+        await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode\s*\(recording\)/i);
+        await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
+        await expect(input).toBeEnabled();
+      }
       const blockCount = await presentation.locator(".story-presentation-content > *").count();
       await send(page, input, command);
       await expect(page.locator(".location-block strong")).toHaveText(place);
@@ -247,7 +321,7 @@ for (const controls of ["classic", "guided"] as const) {
     }
     await expect(frame.locator(".GridWindow")).toContainText(/Location:\s*Kennedy Park/i);
     await send(page, input, "RECORD OFF");
-    await expect(presentation.locator(".story-presentation-prose", { hasText: "記録機能を停止しました。" })).toHaveCount(2);
+    await expect(presentation.locator(".story-presentation-prose", { hasText: "記録機能を停止しました。" })).toHaveCount(controls === "actions" ? 3 : 2);
     await expect(frame.locator(".GridWindow")).not.toContainText(/\(recording\)/i);
     await expect(input).toBeEnabled();
     await input.focus();
@@ -286,3 +360,88 @@ for (const controls of ["classic", "guided"] as const) {
     });
   });
 }
+
+test("keeps rolling first-entry state, re-entry, unknown places, and later phases in English", async ({ page }, testInfo) => {
+  test.setTimeout(90_000);
+  const { frame } = await startJapaneseStory(page, "actions");
+  await frame.locator("body").evaluate(() => {
+    const state = window as typeof window & { AMFVParentPost?: typeof window.parent.postMessage };
+    state.AMFVParentPost = window.parent.postMessage.bind(window.parent);
+    window.parent.postMessage = ((message: unknown, targetOrigin: string) => {
+      const bridgeMessage = message as { channel?: string; type?: string };
+      if (bridgeMessage?.channel === "amfv:bridge" && bridgeMessage?.type === "transcript") return;
+      state.AMFVParentPost?.(message, targetOrigin);
+    }) as typeof window.parent.postMessage;
+  });
+  const report = async (text: string, statusText: string) => frame.locator("body").evaluate((_body, payload) => {
+    (window as typeof window & { AMFVParentPost?: typeof window.parent.postMessage }).AMFVParentPost?.({
+      channel: "amfv:bridge",
+      type: "transcript",
+      text: payload.text,
+      recentText: payload.text,
+      statusText: payload.statusText,
+      inputKind: "line",
+      acceptsInput: true,
+    }, window.location.origin);
+  }, { text, statusText });
+
+  await report("This simulation is based 10 years hence.\n>", "Mode: Simulation Mode Location: Unobserved Room Date: 3/10/2041");
+  const longFirstEntryWindow = `${"Routine observation.\n".repeat(1200)}>`;
+  await report(longFirstEntryWindow.slice(-20_000), "Mode: Simulation Mode Location: Unobserved Room Date: 3/10/2041");
+  await expect(page.locator(".mode-subreadout")).toHaveText("ロックヴィル");
+  await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "ja");
+
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.locator(".open-fieldwork").click();
+  const narrowDrawer = page.getByRole("dialog", { name: "地図と録画要項" });
+  const narrowBody = narrowDrawer.locator(".fieldwork-drawer-body");
+  const narrowNavigator = narrowDrawer.locator(".rockvil-navigator");
+  await expect(narrowNavigator).toHaveAttribute("lang", "en");
+  expect((await narrowNavigator.boundingBox())!.height).toBeLessThanOrEqual((await narrowBody.boundingBox())!.height);
+  await narrowNavigator.getByRole("button", { name: /City Hall, fieldwork destination/ }).click();
+  await expect(narrowNavigator.locator(".navigator-route-actions").getByRole("button", { name: "Clear" })).toBeVisible();
+  await narrowDrawer.getByRole("tab", { name: /要項/ }).click();
+  const finalAssignment = narrowDrawer.locator(".fieldwork-checklist li").last();
+  await finalAssignment.scrollIntoViewIfNeeded();
+  await expect(finalAssignment).toBeVisible();
+  await testInfo.attach("narrow-fieldwork-drawer", { body: await page.screenshot(), contentType: "image/png" });
+  await narrowDrawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
+  await page.setViewportSize({ width: 1440, height: 900 });
+
+  await frame.locator("body").evaluate(() => {
+    (window as typeof window & { AMFVParentPost?: typeof window.parent.postMessage }).AMFVParentPost?.({
+      channel: "amfv:bridge",
+      type: "command",
+      command: "RESTORE",
+    }, window.location.origin);
+  });
+  await expect(page.locator(".mode-subreadout")).toHaveText("Rockvil");
+  await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "en");
+
+  await report("Tomorrow never yet.\nHit any key to continue", "");
+  await report("This simulation is based 10 years hence.\n>", "Mode: Simulation Mode Location: Unobserved Room Date: 3/10/2041");
+  await expect(page.locator(".mode-subreadout")).toHaveText("ロックヴィル");
+  await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "ja");
+
+  await report(">ABORT\nCommunications Mode\n>", "Mode: Communications Mode");
+  const reentryTranscript = "This simulation is based 10 years hence.\n>";
+  await report(reentryTranscript, "Mode: Simulation Mode Location: Unobserved Room Date: 3/10/2041");
+  const actions = page.locator(".quick-actions");
+  await expect(actions.getByRole("button", { name: "Look", exact: true })).toHaveAttribute("lang", "en");
+  await expect(actions.getByRole("button", { name: "Record", exact: true })).toBeVisible();
+  const explore = page.locator('.companion-tabs button[role="tab"]', { hasText: "Explore" });
+  await expect(explore).toHaveAttribute("lang", "en");
+  await expect(page.locator(".mode-subreadout")).toHaveText("Rockvil");
+  await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "en");
+  await page.locator(".open-fieldwork").click();
+  const reentryDrawer = page.getByRole("dialog", { name: "Map & recording brief" });
+  await expect(reentryDrawer).toHaveAttribute("lang", "en");
+  await expect(reentryDrawer.getByText("Unobserved Room", { exact: true })).toHaveAttribute("lang", "en");
+  await expect(reentryDrawer.locator(".rockvil-navigator")).toHaveAttribute("lang", "en");
+  await reentryDrawer.getByRole("button", { name: "Close map and fieldwork brief" }).click();
+
+  await report(`${reentryTranscript}\nThe programming team has finished entering the parameters for the Plan.\n* Part II *\nSimulations are available`, "Mode: Communications Mode");
+  const laterCta = page.getByRole("region", { name: "Simulation archive available" });
+  await expect(laterCta).toHaveAttribute("lang", "en");
+  await expect(laterCta.getByRole("button", { name: "Enter Simulation Mode" })).toBeVisible();
+});
