@@ -361,6 +361,58 @@ for (const controls of ["classic", "guided", "actions"] as const) {
   });
 }
 
+for (const checkpoint of ["opening", "Part II"] as const) {
+  test(`preserves the first canonical Simulation UI after visiting QA ${checkpoint}`, async ({ page }, testInfo) => {
+    test.setTimeout(90_000);
+    const { frame, presentation, input } = await startJapaneseStory(page, "actions");
+    await send(page, input, "PEOF");
+    for (let turn = 0; turn < 4; turn++) await send(page, input, "WAIT");
+    await page.getByRole("button", { name: "Simulation Mode に入る" }).click();
+    const decoder = page.locator(".security-decoder");
+    await expect(decoder).toBeVisible();
+    await decoder.getByRole("button", { name: /コード \d+ を送信/ }).click();
+    await expect(page.locator(".mode-subreadout")).toHaveText("ロックヴィル");
+    const canonicalStatus = await frame.locator(".GridWindow").innerText();
+    const canonicalTranscript = await frame.locator(".BufferWindowInner").innerText();
+
+    await page.getByRole("button", { name: "ガイドの表示を切り替える" }).click();
+    await page.getByRole("tab", { name: "この作品について" }).click();
+    await page.getByRole("button", { name: "Open spoiler/debug tools" }).click();
+    await page.getByRole("button", { name: "Enable spoilers & load QA build" }).click();
+    const qa = page.frameLocator('iframe[src*="qa=1"]');
+    await expect(qa.locator(".BufferWindowInner")).toContainText("Tomorrow never yet", { timeout: 60_000 });
+    if (checkpoint === "Part II") {
+      await page.getByRole("button", { name: /Part II · all horizons/ }).click();
+      await expect(page.locator(".debug-message")).toHaveText("Checkpoint ready.");
+      await expect(qa.locator(".BufferWindowInner")).toContainText("QA jump: Part II");
+      await send(page, input, "ENTER SIMULATION MODE");
+      await decoder.getByRole("button", { name: /Submit code \d+/ }).click();
+      await expect(qa.locator(".BufferWindowInner")).toContainText(/simulations are available/i);
+    }
+    await page.getByRole("button", { name: "Leave QA and return to canonical story" }).click();
+    await expect(page.locator("main")).toHaveAttribute("data-qa", "false");
+    await expect(page.locator(".mode-subreadout")).toHaveText("ロックヴィル");
+    await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "ja");
+    await expect(page.locator(".mode-readout")).toHaveText("Simulation");
+    await expect(page.locator(".mode-readout")).toHaveAttribute("lang", "en");
+    await expect(frame.locator(".GridWindow")).toHaveText(canonicalStatus, { useInnerText: true });
+    await expect(frame.locator(".BufferWindowInner")).toHaveText(canonicalTranscript, { useInnerText: true });
+    await expect(presentation).toBeVisible();
+    const actions = page.locator(".quick-actions");
+    await expect(actions.getByRole("button", { name: "持ち物", exact: true })).toBeVisible();
+    await expect(actions.getByRole("button", { name: "録画開始", exact: true })).toHaveAttribute("lang", "ja");
+    await page.locator(".compact-map-button").click();
+    const drawer = page.getByRole("dialog", { name: "地図と録画要項" });
+    await expect(drawer).toHaveAttribute("lang", "ja");
+    await expect(drawer.locator(".fieldwork-checklist")).toContainText("開廷中の裁判を傍聴すること");
+    await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
+    await testInfo.attach(`canonical-after-qa-${checkpoint}`, { body: await page.screenshot(), contentType: "image/png" });
+    await actions.getByRole("button", { name: "録画開始", exact: true }).click();
+    await expect(frame.locator(".GridWindow")).toContainText("(recording)");
+    await expect(actions.getByRole("button", { name: "録画停止", exact: true })).toBeVisible();
+  });
+}
+
 test("keeps rolling first-entry state, re-entry, unknown places, and later phases in English", async ({ page }, testInfo) => {
   test.setTimeout(90_000);
   const { frame } = await startJapaneseStory(page, "actions");
@@ -390,6 +442,19 @@ test("keeps rolling first-entry state, re-entry, unknown places, and later phase
   await report(longFirstEntryWindow.slice(-20_000), "Mode: Simulation Mode Location: Unobserved Room Date: 3/10/2041");
   await expect(page.locator(".mode-subreadout")).toHaveText("ロックヴィル");
   await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "ja");
+
+  // Keep the canonical observation window truncated while visiting QA. The
+  // saved first-entry discovery must survive even without its original marker.
+  await page.getByRole("button", { name: "ガイドの表示を切り替える" }).click();
+  await page.getByRole("tab", { name: "この作品について" }).click();
+  await page.getByRole("button", { name: "Open spoiler/debug tools" }).click();
+  await page.getByRole("button", { name: "Enable spoilers & load QA build" }).click();
+  await expect(page.frameLocator('iframe[src*="qa=1"]').locator(".BufferWindowInner")).toContainText("Tomorrow never yet", { timeout: 60_000 });
+  await page.getByRole("button", { name: "Leave QA and return to canonical story" }).click();
+  await report(longFirstEntryWindow.slice(-20_000), "Mode: Simulation Mode Location: Unobserved Room Date: 3/10/2041");
+  await expect(page.locator(".mode-subreadout")).toHaveText("ロックヴィル");
+  await expect(page.locator(".mode-subreadout")).toHaveAttribute("lang", "ja");
+  await expect(page.locator("main")).toHaveAttribute("data-phase", "field");
 
   await page.setViewportSize({ width: 390, height: 844 });
   await page.locator(".open-fieldwork").click();

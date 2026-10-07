@@ -268,7 +268,7 @@ test("limits the Simulation UI packet to the first 2041 entry and preserves Engl
   const shell = await readFile(new URL("../app/PrismEdition.tsx", import.meta.url), "utf8");
   assert.match(shell, /type InitialSimulationState = "unknown" \| "eligible" \| "active" \| "complete"/);
   assert.match(shell, /initialSimulationRef\.current = "eligible"/);
-  assert.match(shell, /priorMode === "Simulation Mode" && nextMode !== "Simulation Mode"/);
+  assert.match(shell, /priorCanonicalMode === "Simulation Mode" && nextMode !== "Simulation Mode"/);
   assert.match(shell, /const initial2041Presentation = mode === "Simulation Mode" && initialFieldworkActive && displayYear === 2041 && initialSimulationState === "active"/);
   assert.doesNotMatch(shell, /simulationEntryCount/);
   assert.match(shell, /const initialInvitationPresentation = !discovery\.simulationEntered && !discovery\.partTwo/);

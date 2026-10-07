@@ -369,6 +369,10 @@ export default function PrismEdition() {
   const presentationRef = useRef<HTMLDivElement>(null);
   const followPresentationRef = useRef(true);
   const initialSimulationRef = useRef<InitialSimulationState>("unknown");
+  // The canonical interpreter stays live across QA visits. Its mode history
+  // must survive wrapper resets and must never be updated by the QA story.
+  const canonicalModeRef = useRef<Mode | null>(null);
+  const canonicalDiscoveryBeforeQaRef = useRef<Discovery>(EMPTY_DISCOVERY);
 
   const [introOpen, setIntroOpen] = useState(true);
   const [returning, setReturning] = useState(false);
@@ -522,7 +526,7 @@ export default function PrismEdition() {
   }, [transcript]);
   const fieldworkRecordedCount = fieldProgress.filter(Boolean).length;
   const initialFieldworkActive = discovery.simulationEntered && !discovery.partTwo;
-  const initial2041Presentation = mode === "Simulation Mode" && initialFieldworkActive && displayYear === 2041 && initialSimulationState === "active";
+  const initial2041Presentation = mode === "Simulation Mode" && initialFieldworkActive && displayYear === 2041 && initialSimulationState === "active" && !qaEnabled;
   const initialInvitationPresentation = !discovery.simulationEntered && !discovery.partTwo;
   const initialSecurityPresentation = !discovery.simulationEntered && !discovery.partTwo;
   const guide = mode === "Communications Mode"
@@ -694,20 +698,24 @@ export default function PrismEdition() {
       const recentCommands = [...nextRecent.matchAll(/>[ \t]*([^\r\n]+)(?:\r?\n|$)/g)];
       const recentCommand = recentCommands.at(-1);
       const responseAfterCommand = recentCommand?.index === undefined ? nextRecent : nextRecent.slice(recentCommand.index + recentCommand[0].length);
-      const observedSimulationEntry = /this simulation is based \d+ years hence/i.test(nextTranscript);
-      let nextInitialSimulationState = initialSimulationRef.current;
-      if (/\* part ii \*|simulations are available/i.test(nextTranscript)) {
-        nextInitialSimulationState = "complete";
-      } else if (priorMode === "Simulation Mode" && nextMode !== "Simulation Mode" && nextInitialSimulationState === "active") {
-        nextInitialSimulationState = "complete";
-      } else if (nextMode === "Simulation Mode" && nextInitialSimulationState === "eligible" && observedSimulationEntry) {
-        nextInitialSimulationState = nextYear === 2041 ? "active" : "complete";
-      } else if (nextMode === "Simulation Mode" && priorMode !== "Simulation Mode" && nextInitialSimulationState !== "eligible") {
-        nextInitialSimulationState = "complete";
-      }
-      if (nextInitialSimulationState !== initialSimulationRef.current) {
-        initialSimulationRef.current = nextInitialSimulationState;
-        setInitialSimulationState(nextInitialSimulationState);
+      if (!qaEnabled) {
+        const priorCanonicalMode = canonicalModeRef.current;
+        canonicalModeRef.current = nextMode;
+        const observedSimulationEntry = /this simulation is based \d+ years hence/i.test(nextTranscript);
+        let nextInitialSimulationState = initialSimulationRef.current;
+        if (/\* part ii \*|simulations are available/i.test(nextTranscript)) {
+          nextInitialSimulationState = "complete";
+        } else if (priorCanonicalMode === "Simulation Mode" && nextMode !== "Simulation Mode" && nextInitialSimulationState === "active") {
+          nextInitialSimulationState = "complete";
+        } else if (nextMode === "Simulation Mode" && nextInitialSimulationState === "eligible" && observedSimulationEntry) {
+          nextInitialSimulationState = nextYear === 2041 ? "active" : "complete";
+        } else if (nextMode === "Simulation Mode" && priorCanonicalMode !== "Simulation Mode" && nextInitialSimulationState !== "eligible") {
+          nextInitialSimulationState = "complete";
+        }
+        if (nextInitialSimulationState !== initialSimulationRef.current) {
+          initialSimulationRef.current = nextInitialSimulationState;
+          setInitialSimulationState(nextInitialSimulationState);
+        }
       }
       const enteredCommand = lastCommandRef.current.trim().toLowerCase();
       const enteredOutlet = parseOutlets(nextTranscript).find((outlet) => outlet.code.toLowerCase() === enteredCommand)?.code ?? null;
@@ -1038,6 +1046,7 @@ export default function PrismEdition() {
   };
 
   const enableQa = () => {
+    canonicalDiscoveryBeforeQaRef.current = discovery;
     resetWrapperForStory();
     setQaEnabled(true);
     setQaWarningOpen(false);
@@ -1048,6 +1057,7 @@ export default function PrismEdition() {
 
   const returnToCanonical = () => {
     resetWrapperForStory();
+    setDiscovery(canonicalDiscoveryBeforeQaRef.current);
     setQaEnabled(false);
     setActivePanel("guide");
     setContextOpen(false);
