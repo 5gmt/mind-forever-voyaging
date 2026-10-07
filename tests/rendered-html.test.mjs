@@ -121,7 +121,7 @@ test("preserves the historical source and derives modern context from it", async
     assert.ok(object.synonyms.some((synonym) => noun === synonym || noun.startsWith(synonym)), `${object.id} must use a parser noun`);
     for (const adjective of words.slice(0, -1)) assert.ok(object.adjectives.some((word) => adjective === word || adjective.startsWith(word)), `${object.id} must use parser adjectives`);
   }
-  assert.match(shell, /Map & routes/);
+  assert.match(shell, /navigationText\(mapRoutePreview/);
   assert.match(shell, /communicationOutlets/);
   assert.match(shell, /InterfaceWorkbench/);
   assert.match(shell, /SceneActions/);
@@ -153,7 +153,7 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /routeNext: Boolean/);
   assert.match(shell, /route-thread/);
   assert.match(shell, /compact-map-button/);
-  assert.match(shell, /Clear current route/);
+  assert.match(shell, /navigationText\("clearRoute"\)/);
   assert.match(shell, /uiText\(locale, "checklistEstimate"\)/);
   assert.match(shell, /uiText\(locale, recording \? "recordingCompleteHint" : "recordingStartHint"\)/);
   assert.match(shell, /interactionLevel === "actions" && initialFieldworkActive/);
@@ -273,7 +273,7 @@ test("limits the Simulation UI packet to the first 2041 entry and preserves Engl
   assert.doesNotMatch(shell, /simulationEntryCount/);
   assert.match(shell, /const initialInvitationPresentation = !discovery\.simulationEntered && !discovery\.partTwo/);
   assert.match(shell, /mode === "Simulation Mode" && initial2041Presentation \? \[\[uiText\(locale, "simulationLook"\)/);
-  assert.match(shell, /<RockvilNavigator[\s\S]{0,1000}lang="en"/);
+  assert.match(shell, /<RockvilNavigator[\s\S]{0,1000}lang=\{navigationLocale\}/);
   assert.match(shell, /className="decoder-seal" lang="en"/);
   assert.match(shell, /localizeSimulationPlace\(locale, currentRoomName\) !== currentRoomName \? locale : "en"/);
 });
@@ -325,7 +325,7 @@ test("keeps accessible Japanese names and excluded later-mode English in their o
   assert.match(shell, /className="system-state" lang=\{locale\} aria-label=\{uiText/);
   assert.match(shell, /<span>\{systemActivity\}<\/span>/);
   assert.match(shell, /className="companion-panel" lang=\{locale\} aria-label=\{uiText\(locale, "readerCompanion"\)\}/);
-  for (const className of ["library-section", "systems-section", "map-section", "evidence-section", "debug-section"]) {
+  for (const className of ["library-section", "systems-section", "evidence-section", "debug-section"]) {
     assert.match(shell, new RegExp(`className="companion-section ${className}" lang="en"`));
   }
   assert.match(shell, /className="debug-entry" lang="en"/);
@@ -430,9 +430,23 @@ test("localizes only the approved PEOF SceneActions display copy", () => {
   assert.equal(localizeSceneActionLabel("ja", "LATER-ROOM", "MAP", "read", "Read"), "Read");
 });
 
+test("limits newspaper SceneActions to the approved initial route and object/action pairs", () => {
+  assert.equal(sceneActionsLocale("ja", "BODANSKI-SQUARE", true), "ja");
+  assert.equal(sceneActionsLocale("ja", "BODANSKI-SQUARE", false), "en");
+  assert.equal(sceneActionsLocale("ja", "UNOBSERVED-ROOM", true), "en");
+  assert.equal(localizeSceneObjectName("ja", "BODANSKI-SQUARE", "NEWSPAPER", "newspaper"), "新聞");
+  assert.equal(localizeSceneObjectName("ja", "BODANSKI-SQUARE", "NEWSPAPER-DISPENSER", "newspaper dispenser"), "新聞販売機");
+  assert.equal(localizeSceneActionLabel("ja", "BODANSKI-SQUARE", "NEWSPAPER", "buy", "Buy"), "買う");
+  assert.equal(localizeSceneActionLabel("ja", "BODANSKI-SQUARE", "NEWSPAPER", "read", "Read"), "読む");
+  assert.equal(localizeSceneActionLabel("ja", "BODANSKI-SQUARE", "NEWSPAPER-DISPENSER", "examine", "Examine"), "Examine");
+  assert.equal(localizeSceneActionLabel("ja", "BODANSKI-SQUARE", "UNKNOWN", "read", "Read"), "Read");
+  assert.equal(localizeSceneObjectName("ja", "DRUG-STORE", "NEWSPAPER", "newspaper"), "newspaper");
+  assert.equal(localizeSceneObjectName("en", "BODANSKI-SQUARE", "NEWSPAPER", "newspaper"), "newspaper");
+});
+
 test("keeps both later-scene SceneActions shells and language boundaries in English", async () => {
   const tools = await readFile(new URL("../app/StoryTools.tsx", import.meta.url), "utf8");
-  assert.match(tools, /const displayLocale = sceneActionsLocale\(locale, roomId\)/);
+  assert.match(tools, /const displayLocale = sceneActionsLocale\(locale, roomId, initial2041\)/);
   assert.match(tools, /scene-actions scene-words" lang=\{displayLocale\} aria-label=\{sceneActionUiText\(displayLocale, "guidedLandmark"\)\}/);
   assert.match(tools, /className="scene-actions" lang=\{displayLocale\} aria-label=\{sceneActionUiText\(displayLocale, "actionsLandmark"\)\}/);
 });

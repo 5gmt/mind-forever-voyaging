@@ -444,6 +444,52 @@ export const recordedProgress = (locale: Locale, count: number, compact = false)
 export const plotAssignmentLabel = (locale: Locale, assignment: string) => locale === "ja" ? `${assignment}への経路を表示` : `Plot route for ${assignment}`;
 export const packageInteractiveLocale = (locale: Locale, interactiveMap: boolean): Locale => interactiveMap ? "en" : locale;
 
+// U1's U3 packet: shared navigation copy, separate from U2's drawer/brief.
+const NAVIGATION_UI = {
+  en: {
+    landmark: "Navigate Rockvil using the original map", heading: "Rockvil street map",
+    chooseDestination: "Choose a destination", headingNote: "The marked fieldwork stops come from Perelman’s brief.",
+    mapAlt: "Original 1985 street map of downtown Rockvil", destinations: "Map destinations",
+    fieldworkSuffix: ", fieldwork destination", currentSuffix: ", current location",
+    routeTo: "Route to", arrived: "You have arrived.", noStart: "Move to a named street to begin this route.",
+    draftStep: "Draft next step", takeStep: "Take next step", clear: "Clear",
+    empty: "Select any dot on the map. Fieldwork destinations use the square markers.",
+    mapRoutes: "Map & routes", changeRoute: "Change route",
+    contextHelp: "Choose an exit, or use the map for street names and landmarks.",
+    contextFallback: "The current description names these directions.",
+    contextEmpty: "Look again for exits, doors, vehicles, and paths.",
+    openPlanner: "Open map & route planner", emptyExits: "No compass exit is named in this passage.",
+    directions: "Available directions", currentScene: "Current scene", youAreAt: "You are at",
+    continueRoute: "Reach a named street to continue", clearRoute: "Clear current route",
+    exits: "Exits from this location", next: "Next",
+  },
+  ja: {
+    landmark: "オリジナル地図でロックヴィルを移動", heading: "ロックヴィル街路地図",
+    chooseDestination: "目的地を選ぶ", headingNote: "印の付いた調査地点はペレルマンの要項に基づきます。",
+    mapAlt: "1985年版オリジナルのロックヴィル中心街地図", destinations: "地図の目的地",
+    fieldworkSuffix: "、調査目的地", currentSuffix: "、現在地",
+    routeTo: "目的地への経路", arrived: "目的地に到着しました。", noStart: "名前のある通りへ移動すると経路案内を開始できます。",
+    draftStep: "次の移動を入力欄へ", takeStep: "次の移動を実行", clear: "解除",
+    empty: "地図上の点を選んでください。調査目的地は四角い印です。",
+    mapRoutes: "地図と経路", changeRoute: "経路を変更",
+    contextHelp: "出口を選ぶか、地図で通り名とランドマークを確認します。",
+    contextFallback: "現在の描写に次の方角があります。",
+    contextEmpty: "もう一度見て、出口、扉、乗り物、道を探してください。",
+    openPlanner: "地図と経路案内を開く", emptyExits: "この文章には方角で示された出口がありません。",
+    directions: "移動できる方角", currentScene: "現在の場面", youAreAt: "現在地",
+    continueRoute: "名前のある通りへ進むと案内を続けられます", clearRoute: "現在の経路を解除",
+    exits: "現在地からの出口", next: "次",
+  },
+} as const;
+export const navigationUiText = (locale: Locale, key: keyof typeof NAVIGATION_UI.en) => NAVIGATION_UI[locale][key];
+export const navigationSteps = (locale: Locale, steps: number, command?: string | null, place?: string | null) =>
+  command ? locale === "ja"
+    ? `あと${steps}ステップ · 次は ${command.toUpperCase()}${place ? `（${localizeSimulationPlace(locale, place)}方面）` : ""}`
+    : `${steps} ${steps === 1 ? "step" : "steps"} · next ${command.toUpperCase()}${place ? ` toward ${place}` : ""}`
+    : locale === "ja" ? `残り${steps}ステップ` : `${steps} ${steps === 1 ? "step" : "steps"} remaining`;
+export const navigationRouteLabel = (locale: Locale, destination: string, command: string) =>
+  locale === "ja" ? `${destination}への経路、次は ${command}` : `Route toward ${destination}; next ${command}`;
+
 const SCENE_ACTION_UI = {
   en: {
     guidedLandmark: "Words mentioned here",
@@ -465,7 +511,9 @@ const SCENE_ACTION_UI = {
 
 export type SceneActionUiKey = keyof typeof SCENE_ACTION_UI.en;
 export const sceneActionUiText = (locale: Locale, key: SceneActionUiKey) => SCENE_ACTION_UI[locale][key];
-export const sceneActionsLocale = (locale: Locale, roomId: string | null | undefined): Locale => roomId === "OFFICE" ? locale : "en";
+const INITIAL_ROUTE_ROOMS = new Set(["KENNEDY-PARK", "ELM-AND-PARK", "COURTHOUSE", "MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE"]);
+export const sceneActionsLocale = (locale: Locale, roomId: string | null | undefined, initial2041 = false): Locale =>
+  roomId === "OFFICE" || (initial2041 && roomId && INITIAL_ROUTE_ROOMS.has(roomId)) ? locale : "en";
 
 type PeofSceneObjectId = "PERELMAN" | "DESK" | "PERELMAN-DESK" | "DECODER" | "MAP" | "PEN" | "MAGAZINE-ARTICLE";
 type PeofSceneActionId = "talk" | "examine" | "read" | "look-inside";
@@ -491,12 +539,15 @@ const isPeofSceneObject = (objectId: string): objectId is PeofSceneObjectId => o
 const isPeofSceneAction = (actionId: string): actionId is PeofSceneActionId => actionId in PEOF_SCENE_ACTION_LABELS;
 
 export const localizeSceneObjectName = (locale: Locale, roomId: string | null | undefined, objectId: string, canonicalName: string) =>
-  locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) ? PEOF_SCENE_OBJECT_NAMES[objectId] : canonicalName;
+  locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) ? PEOF_SCENE_OBJECT_NAMES[objectId]
+    : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" ? "新聞"
+      : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER-DISPENSER" ? "新聞販売機" : canonicalName;
 
 export const localizeSceneActionLabel = (locale: Locale, roomId: string | null | undefined, objectId: string, actionId: string, canonicalLabel: string) =>
   locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) && isPeofSceneAction(actionId)
     ? PEOF_SCENE_ACTION_LABELS[actionId]
-    : canonicalLabel;
+    : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "buy" ? "買う"
+      : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "read" ? "読む" : canonicalLabel;
 
 const ENGLISH_PHASE_TITLES = new Set(["origin", "comparative", "witness", "lockdown", "epilogue"]);
 
