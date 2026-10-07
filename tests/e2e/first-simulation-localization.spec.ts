@@ -1,4 +1,5 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
+import { acceptNewspaperFieldwork } from "./newspaper-acceptance";
 
 const SECURITY_COLORS = [
   "WHITE", "DARK GREEN", "DARK BLUE", "PINK", "ORANGE", "PURPLE", "TAN", "AQUA",
@@ -106,7 +107,7 @@ const expectNewBlocksWithCanonicalTail = async (
 };
 
 for (const controls of ["classic", "guided", "actions"] as const) {
-  test(`${controls} completes the first localized Simulation Mode recording loop`, async ({ page }, testInfo) => {
+  test(`${controls} completes the localized Simulation Mode and Courthouse-to-Newspaper fieldwork`, async ({ page }, testInfo) => {
     test.setTimeout(90_000);
     const { frame, presentation, input } = await startJapaneseStory(page, controls);
     await send(page, input, "PEOF");
@@ -326,6 +327,8 @@ for (const controls of ["classic", "guided", "actions"] as const) {
     await expect(input).toBeEnabled();
     await input.focus();
     await expect(input).toBeFocused();
+
+    await acceptNewspaperFieldwork(page, frame, presentation, input, controls, testInfo);
 
     await page.getByTitle("読書とプレイの設定").click();
     const settings = page.getByRole("region", { name: "読書とプレイの設定" });

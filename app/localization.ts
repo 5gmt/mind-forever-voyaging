@@ -531,6 +531,9 @@ export const localizeOutletLabel = (locale: Locale, code: string, canonicalLabel
 
 const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
+    "Main & Kennedy": "メイン通りとケネディ通り",
+    "Centre & Kennedy": "センター通りとケネディ通り",
+    "Bodanski Square": "ボダンスキー広場",
     "Elm & Park": "エルム通りとパーク通り",
     Courthouse: "裁判所",
     "Kennedy Park": "ケネディ公園",
@@ -541,6 +544,22 @@ const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, st
 // The raw GridWindow status remains English, and unknown rooms fail closed.
 export const localizeSimulationPlace = (locale: Locale, canonicalPlace: string) =>
   SIMULATION_PLACE_LABELS[locale]?.[canonicalPlace] ?? canonicalPlace;
+
+const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
+  ja: {
+    "north-central": "ノース・セントラル駅",
+    newspaper: "新聞",
+    infotech: "インフォテック・ビル",
+    kennedy: "ケネディ公園",
+    court: "裁判所",
+  },
+};
+
+// Map labels are keyed by their UI identity rather than target room. This keeps
+// landmarks, fieldwork destinations, and room names distinct even when they
+// point at the same canonical world-data ID. Unknown identities fail closed.
+export const localizeSimulationMapLabel = (locale: Locale, identity: string, canonicalLabel: string) =>
+  SIMULATION_MAP_LABELS[locale]?.[identity] ?? canonicalLabel;
 
 // Intentionally tiny and exact: this PoC only presents deterministic translations
 // of the canonical opening. Anything not listed remains verbatim English.
@@ -590,6 +609,9 @@ export type StoryContentId =
   | "part1.simulation.courthouse.title"
   | "part1.simulation.courthouse.description"
   | "part1.simulation.courthouse.session"
+  | "part1.simulation.newspaper.route"
+  | "part1.simulation.newspaper.purchase"
+  | "part1.simulation.newspaper.article"
   | "part1.simulation.record-activated"
   | "part1.simulation.record-deactivated";
 
@@ -845,6 +867,44 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
         translation: { contentId: "part1.simulation.courthouse.session" as const, text: "法廷は開廷中だ。女性が軽窃盗の罪で裁判にかけられている。" },
       },
     ]),
+    ...([
+      ["NE", "Main & Kennedy", "メイン通りとケネディ通り"],
+      ["N", "Centre & Kennedy", "センター通りとケネディ通り"],
+      ["NE", "Bodanski Square", "ボダンスキー広場"],
+      ["SW", "Centre & Kennedy", "センター通りとケネディ通り"],
+      ["S", "Main & Kennedy", "メイン通りとケネディ通り"],
+    ] as const).map(([canonicalCommand, canonicalLeaf, text]) => ({
+      canonicalCommand,
+      canonicalLeaf,
+      translation: { contentId: "part1.simulation.newspaper.route" as const, text, kind: "title" as const },
+    })),
+    ...([
+      ["This is the heart of the downtown area, flanked by classical glass-and-steel skyscrapers. The skybus terminal is on the northwest corner. To the southwest is an entrance to Kennedy Park.", "ここはダウンタウンの中心部で、クラシカルなガラスと鋼鉄の超高層ビルが両側にそびえている。北西の角にはスカイバス・ターミナルがある。南西にはケネディ公園の入口がある。"],
+      ["The skyscraper on the northeast corner is one of Rockvil's most famous landmarks, the InfoTech Building. This 130-story office tower is the tallest building in the city and the sixth tallest in the world.", "北東の角にある超高層ビルは、ロックヴィルで最も有名なランドマークの一つ、インフォテック・ビルだ。この130階建てのオフィスタワーは市内で最も高く、世界でも6番目の高さを誇る。"],
+      ["The high-rise building on the southeast corner is the Silicorp Building, a tall office tower. From this intersection, Main Street runs east and west, and Kennedy Street can take you north or south.", "南東の角にある高層建築は、背の高いオフィスタワー、シリコープ・ビルだ。この交差点から、メイン通りは東西へ、ケネディ通りは南北へ延びている。"],
+      ["At this intersection, Centre Street cuts across Kennedy Street from northeast to southwest. A tall hotel has entrances to the east and southeast. The austere facade of Huang Hall rises to the west. Kennedy Street continues north and south.", "この交差点では、センター通りが北東から南西へケネディ通りを横切っている。東と南東には高層ホテルの入口がある。西にはホアン・ホールの質素な正面がそびえている。ケネディ通りは南北へ続いている。"],
+      ["This is a large plaza formed by the intersection of Bodanski Boulevard from the east, Centre Street from the southwest, and River Street from the north and south. There is a car lot on the western side of the square. On the northeastern corner is a restaurant, and the old train station can be entered to the southeast. A covered stairway leads down to the Tubes.", "ここは、東から延びるボダンスキー大通り、南西から延びるセンター通り、そして南北に走るリバー通りが交わってできた大きな広場だ。広場の西側には駐車場がある。北東の角にはレストランがあり、南東からは古い鉄道駅に入れる。屋根付きの階段が地下交通網チューブへ通じている。"],
+      ["There is a newspaper dispenser chained to a lamp post on the corner.", "角の街灯には新聞販売機が鎖でつながれている。"],
+    ] as const).map(([canonicalLeaf, text]) => ({
+      canonicalCommand: canonicalLeaf.startsWith("At this intersection") ? "N" : "NE",
+      canonicalLeaf,
+      translation: { contentId: "part1.simulation.newspaper.route" as const, text },
+    })),
+    {
+      canonicalCommand: "BUY NEWSPAPER",
+      canonicalLeaf: "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",
+      translation: { contentId: "part1.simulation.newspaper.purchase", text: "新聞販売機にカードを差し込む。表示に「NEW BALANCE: $599」と点滅し、新聞が一部、手元へ飛び出してくる。" },
+    },
+    ...([
+      ["The headline story in the news section is about the Index of Leading Economic Indicators, which are up a stunning 9.7% over last month, yet another indication of the economy's robust performance. Related stories discuss the unemployment rate, which is at the lowest level in almost thirty years, and commercial and housing construction, which are at an all-time high.", "ニュース欄のトップ記事は景気先行指数を取り上げている。前月比で驚異の9.7%上昇し、経済の力強い成長をまたしても裏づけたという。関連記事では、失業率が約30年ぶりの低水準にあることや、商業施設と住宅の建設が史上最高水準に達していることが報じられている。"],
+      ["Another major story covers President Ryder's speech for the Distinguished Lecturer Series of the Border Security Force Academy. In his address, the President called the '40s a \"decade of new hope,\" and attributed much of that new hope to the work of the BSF, sending a signal to the entire world that the USNA \"won't be pushed around by the biggest dictatorship or the smallest band of terrorist murderers.\"", "別の主要記事は、国境警備隊アカデミーの著名講師シリーズで行われたライダー大統領の講演を伝えている。演説で大統領は40年代を「新たな希望の10年」と呼び、その希望の多くはBSFの働きによるものだと述べた。さらに大統領は、USNAが「最大の独裁国家にも、テロリストの殺人集団の最小の一派にも、言いなりにはならない」という姿勢を全世界に示した。"],
+      ["On one of the inside pages, an in-depth report on crime reveals that, although the overall crime rate has dropped only 4% over the last decade, public perception is that crime has fallen much further. The report attributes this perception to three points: Violent crime has decreased much faster than other types of crime, and is down by 15% from ten years ago. Crime in the schools, which has always gotten the most publicity, has dropped by 40%. Most importantly, offenders are getting harsher sentences, as opposed to the old days of getting off on technicalities, low bail, and easy parole.", "中面の一つには犯罪に関する詳細な報告があり、過去10年間で犯罪率全体はわずか4%しか低下していないにもかかわらず、世間では犯罪がそれ以上に大幅に減ったと受け止められていることを明らかにしている。報告は、この認識を三つの点に帰している。暴力犯罪はほかの種類の犯罪よりはるかに速く減少し、10年前より15%低下した。常に最も大きく報道されてきた学校内犯罪は40%減少した。そして何より、かつてのように法手続き上の不備や低額の保釈金、容易な仮釈放によって放免されるのとは対照的に、犯罪者にはより厳しい刑が科されている。"],
+      ["Other stories in the news section deal with the construction of a new InfoTech orbiting factory, deregulation of the medicinal drug industry, the war in Turkey, and plans for a lunar mining operation. An editorial calls for lowering draft board requirements in order to ease prison overcrowding.", "ニュース欄のほかの記事では、インフォテックの新たな軌道工場の建設、医薬品産業の規制緩和、トルコでの戦争、月面採掘事業の計画が取り上げられている。社説は、刑務所の過密を緩和するため、徴兵委員会の要件を緩和するよう求めている。"],
+    ] as const).map(([canonicalLeaf, text]) => ({
+      canonicalCommand: "READ NEWSPAPER",
+      canonicalLeaf,
+      translation: { contentId: "part1.simulation.newspaper.article" as const, text },
+    })),
     {
       canonicalCommand: "RECORD",
       canonicalLeaf: "Record feature activated.",

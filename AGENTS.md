@@ -77,7 +77,7 @@ Before completing implementation work, run the applicable checks:
 
 For changes affecting localization presentation, canonical-runtime observation, or layout, also run `npm run test:e2e` and verify the canonical story SHA-256. For layout, status, scrolling, or focus changes, record real-browser observations in addition to automated checks.
 
-GitHub CI runs the ordinary `verify` job first, then the Chromium-only `browser-e2e` job. A browser assertion failure must fail the CI job, and Playwright failure traces/screenshots under `test-results/` are retained briefly as Actions artifacts.
+GitHub CI runs the ordinary `verify` job first, then the Chromium-only `browser-e2e` job. A browser assertion failure must fail the CI job. Playwright acceptance attachments, including screenshots and accessibility observations from passing tests, and failure traces/screenshots under `test-results/` are retained briefly as Actions artifacts.
 
 For regression fixes, preserve evidence in this order when practical:
 
