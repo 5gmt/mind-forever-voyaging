@@ -182,8 +182,8 @@ export function SceneActions({ objects, roomId, level, locale, sendCommand, draf
   );
 }
 
-export function RockvilNavigator({ currentRoomId, routePreview, onSelect, onStep, onClear, stepLabel = "Take next step", disabled }: { currentRoomId: string | null; routePreview: MapRoutePreview | null; onSelect: (landmark: RockvilLandmark) => void; onStep: () => void; onClear?: () => void; stepLabel?: string; disabled: boolean }) {
-  return <section className="rockvil-navigator" aria-label="Navigate Rockvil using the original map">
+export function RockvilNavigator({ currentRoomId, routePreview, onSelect, onStep, onClear, stepLabel = "Take next step", disabled, lang }: { currentRoomId: string | null; routePreview: MapRoutePreview | null; onSelect: (landmark: RockvilLandmark) => void; onStep: () => void; onClear?: () => void; stepLabel?: string; disabled: boolean; lang?: string }) {
+  return <section className="rockvil-navigator" aria-label="Navigate Rockvil using the original map" lang={lang}>
     <div className="navigator-heading"><div><span>Rockvil street map</span><strong>Choose a destination</strong></div><small>The marked fieldwork stops come from Perelman’s brief.</small></div>
     <div className="navigator-map-scroll"><div className="navigator-map-stage"><img src="/package/rockvil-map-back.jpg" alt="Original 1985 street map of downtown Rockvil" />
       <div className="map-hotspots navigator-hotspots" aria-label="Map destinations">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelect(landmark)} aria-label={`${landmark.label}${landmark.kind === "fieldwork" ? ", fieldwork destination" : ""}${currentRoomId === landmark.targetId ? ", current location" : ""}`}><span>{landmark.label}</span></button>)}</div>

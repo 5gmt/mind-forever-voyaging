@@ -18,7 +18,7 @@
 | 層 | 現在の日本語 coverage | 意図的に未対応の境界 |
 | --- | --- | --- |
 | Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復 | Courthouse 以外の fieldwork、assignment completion、後続の Simulation story output |
-| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell | 初期 Simulation の操作と assisted security decoder の copy、later mode / later phase 固有 UI の日本語化、fieldwork、QA/debug |
+| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、初回2041年の Simulation 入場 CTA / assisted security decoder / 基本操作 / fieldwork launcher・drawer・九課題 | later mode / later phase 固有 UI の日本語化、地図内の経路・対象操作、QA/debug |
 | Input and actions | Guided / Action-menu の日本語表示、canonical command に解決される支援操作 | 日本語 parser input |
 | Fallback | 対応済み leaf / surface の日本語表示と EN → JA → EN recovery | 未観測または未承認の内容は canonical English |
 
@@ -78,12 +78,12 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 Courthouse の完了結果は [Issue #29 に報告済み](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-5859926210)である。
 次の候補は **2041年の新聞購入と読書、および初期 fieldwork UI** とし、[固定分析と実行計画](./docs/plans/2041-newspaper-fieldwork.md)に六つの作業単位を記録した。
 [Issue #62](https://github.com/5gmt/mind-forever-voyaging/issues/62) の N1 runtime capture は [PR #69](https://github.com/5gmt/mind-forever-voyaging/pull/69) でレビューとマージを完了した。異なる日時の二つの fresh canonical session で Courthouse 往復に続く新聞購入・四段落の読書・帰着・録画停止・入力復帰を観測し、終了案 A（同一 session の裁判所 → 新聞）を採用した。記事は既存 ordinary-turn projector で表現可能で、専用 renderer は不要である。
-N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) は [PR #70](https://github.com/5gmt/mind-forever-voyaging/pull/70) で新聞本文、共有地名、地図固有名の copy review を完了した。U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) は初期 Simulation UI packet を作成し、U2 の基本操作と U3 の地図・経路を分けて copy review 中である。Production integration は未着手である。作業票は N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) として作成済みである。採用する gameplay milestone の経路と U3 の受入単位は、同一 fresh session の Courthouse → Newspaper とする。
+N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) は [PR #70](https://github.com/5gmt/mind-forever-voyaging/pull/70) で新聞本文、共有地名、地図固有名の copy review を完了した。U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) は [PR #72](https://github.com/5gmt/mind-forever-voyaging/pull/72) で初期 Simulation UI packet の U2 / U3 copy review を完了した。U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) は [PR #76](https://github.com/5gmt/mind-forever-voyaging/pull/76)（#75・#73 を置換、再レビュー中）で、入場 CTA、assisted decoder、基本操作、初期 fieldwork launcher、drawer 共通 UI、九課題と補助推定 copy を日本語表示へ統合した。初回状態は canonical session に保持し、QA 往復後も同じ初回2041年の日本語 controls / rail / drawer を維持する。U2 はレビュー・マージ未完了である。Parser command と dynamic security 値は canonical English のままで、地図内の経路・対象操作は U3 の担当として未実装である。作業票は N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) として作成済みである。採用する gameplay milestone の経路と U3 の受入単位は、同一 fresh session の Courthouse → Newspaper とする。
 地名の正本は N2、共有対応表の追加は N3、地図での再利用と最終統合は U3 が担う。
 
 ## 基本的な作業順
 
-1. U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) の現行 UI copy、実表示条件、地名 surface の監査を review し、新聞固有部分から独立した U2 対象と、N2 に照合した U3 対象を承認する。
+1. U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) の現行 UI copy、実表示条件、地名 surface の監査と、U2 / U3 対象の承認は完了した。
 2. 承認済み N2 と、U1 の地名 surface 監査の review 承認後、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) で観測済み新聞本文、room name、地図固有名に必要な共有 lookup / adapter を統合する。U1 の U2 部分承認後、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) で基本操作と課題一覧を統合する。
 3. U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) が N3 と U2 のマージを待ち、地図と対象操作、同一 fresh session の Courthouse → Newspaper 全体の受入、milestone の最終集約を行う。
 
