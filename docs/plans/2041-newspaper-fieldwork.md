@@ -151,7 +151,7 @@ PR #60 では、同じ RECORD コマンドを再び使った際に、既存の�
 
 新聞の購入と読書を次の物語上の候補とし、初期 Simulation の基本操作、課題一覧、採用経路の案内を日本語化する六つの作業単位で進める。
 計画は [PR #61](https://github.com/5gmt/mind-forever-voyaging/pull/61) で保存した。
-N1〜N3、U1〜U3 の Issue は下表の6件として作成済みである。N1 は Issue #62 として runtime capture と review を完了し、二つの fresh canonical session に基づいて A（同一 session の裁判所 → 新聞）を採用した。詳細は [runtime evidence](../newspaper-runtime-evidence.md) を参照する。N2 は [copy packet](../newspaper-copy-packet.md) の review を完了した。U1 も [初期 Simulation UI copy packet](../initial-simulation-ui-copy-packet.md) の review を PR #72 で完了した。N3 は両方の承認済み成果を使い、exact observed newspaper leaves、共有 room-name lookup、room と異なる map identity 用 adapter を production に統合した。
+N1〜N3、U1〜U3 の Issue は下表の6件として作成済みである。N1 は Issue #62 として runtime capture と review を完了し、二つの fresh canonical session に基づいて A（同一 session の裁判所 → 新聞）を採用した。詳細は [runtime evidence](../newspaper-runtime-evidence.md) を参照する。N2 は [copy packet](../newspaper-copy-packet.md) の review を完了した。U1 も [初期 Simulation UI copy packet](../initial-simulation-ui-copy-packet.md) の review を PR #72 で完了した。U2 は [PR #76](https://github.com/5gmt/mind-forever-voyaging/pull/76) で再レビュー承認とマージを完了した。N3 は両方の承認済み成果を使い、exact observed newspaper leaves、共有 room-name lookup、room と異なる map identity 用 adapter を production に統合した。
 同一 session で裁判所から新聞へ進むことを、後続の採用経路と最終受入単位にする。新聞本文の production integration は N3 で提供し、map / route UI と milestone 全体の最終受入は U3 に残す。
 
 対象は初回2041年の既存 Courthouse 往復、N1 で採用する新聞経路、そのために必要な操作面である。
@@ -171,10 +171,10 @@ Issue の実リンクは下表に記録した。
 | --- | --- | --- | --- | --- |
 | N1 Runtime: capture the 2041 newspaper fieldwork route | canonical fixture、再現 script、観測メモ、採用案と縮小判断。本計画と status の判断点を更新する | なし | [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62) / ChatGPT / 5gmt | 完了（PR #69） |
 | N2 Copy: approve Japanese copy for 2041 newspaper fieldwork | [exact English leaf と日本語本文、共有地名の正本、翻訳対象外の一覧](../newspaper-copy-packet.md) | N1 の観測と終了判断のレビュー完了 | [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) / ChatGPT / 5gmt | 完了（PR #70） |
-| N3 Integrate the 2041 newspaper fieldwork in Japanese | 本文 catalog、共有地名対応表と lookup、現在地表示、unit と新聞 E2E。新聞本文の実装範囲を status に記録する | N2 完了と U1 の地名 surface 監査の review 承認。必要な専用表示があれば、その設計承認も必要 | [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) / ChatGPT / 5gmt | 実装・検証完了（本 PR） |
+| N3 Integrate the 2041 newspaper fieldwork in Japanese | 本文 catalog、共有地名対応表と lookup、現在地表示、unit と新聞 E2E。新聞本文の実装範囲を status に記録する | N2 完了と U1 の地名 surface 監査の review 承認。必要な専用表示があれば、その設計承認も必要 | [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) / ChatGPT / 5gmt | 実装済み（PR #74、受入補強・再レビュー中、マージ待ち） |
 | U1 Copy: approve the initial Simulation fieldwork controls | [画面別の英日 copy、visible / accessible name、command、動的値の台帳](../initial-simulation-ui-copy-packet.md)。U2 と U3 の担当範囲を項目ごとに分ける | なし。新聞固有部分は完了した N1 / N2 と照合する | [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) / ChatGPT / 5gmt | 完了（PR #72） |
-| U2 Localize initial Simulation controls and the recording brief | 入場 CTA、assisted decoder の説明、基本操作、初期案内、課題一覧の copy を統合する | U1 packet の U2 部分の review 承認。新聞固有部分を含めない | [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) / 未割当 / 未割当 | 着手可能（U1 承認済み） |
-| U3 Localize navigation and accept the 2041 fieldwork milestone | 地図、採用経路、必要な対象操作を統合する。採用案全体の受入と status の最終集約を担う | U1 packet の U3 部分の review 承認、N3 と U2 のマージ完了 | [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) / 未割当 / 未割当 | N3 / U2 マージ待ち |
+| U2 Localize initial Simulation controls and the recording brief | 入場 CTA、assisted decoder の説明、基本操作、初期案内、課題一覧の copy を統合する | U1 packet の U2 部分の review 承認。新聞固有部分を含めない | [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) / ChatGPT / 5gmt | 完了（PR #76、PR #75・#73 を置換）。canonical session の初回状態を QA の観測から分離し、QA 往復後も初回2041年の日本語 UI を維持する。真の再入場と RESTORE は English fallback を維持し、U3 へ drawer / checklist の統合結果を引き渡す |
+| U3 Localize navigation and accept the 2041 fieldwork milestone | 地図、採用経路、必要な対象操作を統合する。採用案全体の受入と status の最終集約を担う | U1 packet の U3 部分の review 承認、N3 と U2 のマージ完了 | [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) / 未割当 / 未割当 | U1 承認済み。N3 マージ待ち（U2 は PR #76 で完了） |
 
 N1 の候補ファイルは `scripts/capture-newspaper-runtime.mjs`、`tests/fixtures/parchment-newspaper-runtime-observed.json`、`docs/newspaper-runtime-evidence.md` である。
 N2 は新規 copy packet を作り、production code を変更しない。
@@ -323,6 +323,8 @@ N1 の採用判断は前節のとおり N1 の文書 PR に保存し、U3 が最
 | 2026-09-29 JST | N1 は A（裁判所 → 新聞）を推奨 | 二つの fresh session で連続経路が成立。記事は ordinary-turn 適合、専用表示不要。Issue #62 の PR で 5gmt のレビュー待ち | ChatGPT |
 | 2026-10-03 JST | N1 の PR #69 マージを受けて N2 の copy packet を作成 | Fixture の stable leaf、記事四段落、共有地名、U1 へ渡す役割別 map identity、English fallback 境界を記録。5gmt の copy review 後に N3 / U1 へ引き渡す | ChatGPT（作成）/ 5gmt（レビュー） |
 | 2026-10-04 JST | U1 の PR #72 承認を受け、N3 が新聞本文と共有地名を production に統合 | Exact command / leaf catalog、room-name lookup、役割別 map-label adapter、unit / Classic / Guided browser regression を追加。map / route UI と全体受入は U3 に残す | ChatGPT（実装）/ 5gmt（レビュー） |
+| 2026-10-04 JST | U1 の PR #72 で承認された U2 copy を初期 Simulation UI に統合 | 入場 CTA、assisted decoder、基本操作、初期 fieldwork launcher、drawer 共通 header / tabs、九課題と補助推定 copy を英日 catalog から表示する。送信 command は canonical English のまま維持し、地図内の経路・対象操作は U3 に残した | ChatGPT（U2 実装） |
+| 2026-10-07 JST | PR #74 の受入補強と最新 base 追従 | U2 は PR #76 で完了。N3 の録画 turn 同期、記事全文・scroll・accessibility のブラウザ証拠を補強し、U3 は N3 マージ待ちとする | Codex（修正）/ 5gmt（再レビュー） |
 | 未実施 | 全体受入と milestone 完了 | 採用案に応じた検証結果、U3 PR、#29 の結果報告を完了時に記入する | U3 担当 |
 
 ## 固定分析の参照資料
