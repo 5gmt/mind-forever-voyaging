@@ -3,7 +3,8 @@
 実装担当: Codex（ChatGPT）。指名された全体受入レビュー担当: ChatGPT Work / unknown。
 採用案は N1 の A、同一 fresh canonical session の **Courthouse → Newspaper** である。
 Base は N3 / PR #74 と U2 / PR #76 を含む `bb51710d4dde6b182a560b77b0880f1ca83c0f5f`。
-この文書は実装側の証拠と制限を記録する。指名レビュー担当の承認や milestone のマージ完了は主張しない。
+この文書は実装側の証拠・制限と、2026-10-08 JST の指名レビュー担当による受入結果を記録する。
+全体受入は承認済みであり、milestone の完了点は PR #77 のマージとする。
 
 ## 提供範囲
 
@@ -25,7 +26,7 @@ Base は N3 / PR #74 と U2 / PR #76 を含む `bb51710d4dde6b182a560b77b0880f1c
 | --- | --- |
 | 連続プレイ単位 | PEOF → WAIT × 4 → 入場・security 正答 → Kennedy Park → Courthouse 往復 → 新聞購入・録画中の読書 → Kennedy Park → RECORD OFF |
 | 地図 / 出口 | Assisted は地図 hotspot と次の一歩、context の NW 出口、新聞経路の N 方位ボタンを実際にクリック。Guided draft は未送信の command count と編集・focus を確認 |
-| 地名の役割 | 到着時に「新聞、調査目的地、現在地」「ノース・セントラル駅、現在地」と header「ボダンスキー広場」を同時確認。`navigation-*-arrival.png` と `context-exits-*` screenshot |
+| 地名の役割 | 到着時に「新聞、調査目的地、現在地」「ノース・セントラル駅、現在地」と header「ボダンスキー広場」を同時確認。保存画像は `navigation-*-arrival.png`。context 出口は実操作と E2E assertion で確認し、body attachment の `context-exits-*` は現行 CI artifact に PNG として残っていない |
 | 対象操作 | Guided は「新聞 / 読む」から draft を作り、購入時は `buy newspaper` に編集。Action menus は「買う」「読む」をクリック。Classic は parser 入力 |
 | 原作状態 | 今回の command block と新しい canonical input-line ID で各新聞 turn を同期。購入 response、記事、読書前後の raw recording status、帰着と停止を独立確認。`newspaper-*-turns.json` |
 | 補助進捗 | 購入後 `1/9 録画`、読書後 `2/9 録画` を確認する。これらの推定だけで本文や正式な原作達成を判定しない |
@@ -68,7 +69,7 @@ GitHub CI は passing attachments も `playwright-test-results` artifact に保�
 - `public/amfv-r79-s851122.z4` の SHA-256 は `14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d`。
   `source/`、QA story、raw GridWindow、2a / 2b と履歴・復元の責任分界を変更しない。
 
-## 最終候補の確認と受入の残務
+## 実装側の最終候補の確認
 
 実装側の最終候補で `npm run test:e2e` は **26 / 26 成功、retry なし（5.4分）**。
 六つの採用経路と既存の履歴・復元・QA・fallback 回帰を同じ実行で通した。
@@ -76,5 +77,25 @@ GitHub CI は passing attachments も `playwright-test-results` artifact に保�
 `npm run lint`、`npx tsc --noEmit`、`npm test`（production build と28 unit tests）、canonical SHA-256 も成功した。
 CI と適用 head の結果は PR 本文に記録する。
 
-実装側の最新 head 検証結果、CI と mergeability / behind を PR に記録し、採用案 A と証拠・制限を execution root #29 に報告する。
-指名レビュー担当が同じ head の証拠と計画 B / PROJECT_STATUS.md を確認し、承認・マージ後に milestone 完了へ更新する。
+## 指名レビュー担当による全体受入
+
+2026-10-08 JST、ChatGPT Work / unknown は実装 head `c25a40478a1db1daaa0c5cca1ea561ab94f0e73d` の
+[全体受入を承認した](https://github.com/5gmt/mind-forever-voyaging/pull/77#pullrequestreview-5450363533)。
+承認済み copy、初回2041年の適用条件、共有 room / map identity、English command と fallback 境界を照合し、独立したコードレビューでも blocking finding はなかった。
+
+[CI run 37706998154](https://github.com/5gmt/mind-forever-voyaging/actions/runs/37706998154) の実ログで
+checksum / lint / TypeScript / build・28 unit tests と、26 Chromium tests（retry なし、4.2分）の成功を確認した。
+対象は実装 head と base `bb51710d4dde6b182a560b77b0880f1ca83c0f5f` の GitHub test merge である。
+[受入 artifact](https://github.com/5gmt/mind-forever-voyaging/actions/runs/37706998154/artifacts/11520352073) の ZIP SHA-256 は
+`51df2f619bd38fd34f6fca7a0279cc4eadec0f8312e461fcc3c93b13b036332b`。
+保存期間は3日間であり、この run の期限は 2026-10-11 09:24 JST である。
+
+六つの fresh session の turn / raw recording status、記事四段落と accessibility owner、wheel 後の社説最終行・入力の可視性を記録と保存画像で確認した。
+JA 記事の scroll 移動量は Classic / Guided / Action menus の順で desktop が322 / 180 / 180px、narrow が720 / 898 / 900pxであり、すべて最終行が clipping 内に入った。
+英日切替で input-line ID を保持し、各言語の accessibility snapshot には対象言語の四段落が一度ずつ現れ、非表示側の四段落は含まれなかった。
+レビュー担当の確認は CI と保存証拠の検査であり、この環境での新たな全件ブラウザ実行や実 screen reader 音声試験とは区別する。
+
+この PR 内で計画 B と `PROJECT_STATUS.md` に受入結果と完了時の frontier を集約する。
+文書集約後の最新 head の CI、behind=0、mergeability は PR に記録して再確認する。
+PR #77 のマージをもって N1〜N3・U1〜U3 の milestone を完了し、Issue #67 を完了、execution root #29 に採用案 A の結果と制限を報告する。
+次の gameplay milestone の選定は #29 に戻し、未承認の範囲への実装着手をこの受入から導かない。
