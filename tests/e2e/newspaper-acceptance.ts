@@ -1,5 +1,6 @@
 import { expect, type FrameLocator, type Locator, type Page, type TestInfo } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
+import { clickRouteStep } from "./navigation-acceptance";
 
 // Exact copy from the approved N2 packet, independent of the production catalog.
 const ARTICLE_JA = [
@@ -43,18 +44,23 @@ export const acceptNewspaperFieldwork = async (
   const canonical = frame.locator(".BufferWindowInner");
   const canonicalInput = frame.locator("textarea.Input.LineInput");
   const surface = presentation.locator(".story-presentation-scroll");
-  const sendTurn = async (command: string) => {
+  const turns: { command: string; previousInput: string | null; nextInput: string | null; status: string }[] = [];
+  const sendTurn = async (command: string, trigger?: () => Promise<void>) => {
     await expect.poll(() => inputLineId(frame)).not.toBeNull();
     const previousInput = await inputLineId(frame);
     const previousCount = await blocks.count();
-    await input.fill(command);
-    await page.getByRole("button", { name: /^送信/ }).click();
+    if (trigger) await trigger();
+    else {
+      await input.fill(command);
+      await page.getByRole("button", { name: /^送信/ }).click();
+    }
     await expect(blocks.nth(previousCount)).toHaveText(`> ${command}`);
     await expect.poll(async () => {
       const nextInput = await inputLineId(frame);
       return nextInput !== null && nextInput !== previousInput;
     }).toBe(true);
     await expect(input).toBeEnabled();
+    turns.push({ command, previousInput, nextInput: await inputLineId(frame), status: await status.innerText() });
     return { previousInput, nextInput: await inputLineId(frame), previousCount };
   };
 
@@ -67,16 +73,49 @@ export const acceptNewspaperFieldwork = async (
     ["N", "センター通りとケネディ通り"],
     ["NE", "ボダンスキー広場"],
   ] as const) {
-    await sendTurn(command);
+    await sendTurn(controls !== "classic" && command === "N" ? "NORTH" : command, controls === "classic" ? undefined : command === "N" ? async () => {
+      const compass = page.getByRole("region", { name: "移動できる方角" });
+      await expect(compass).toContainText("メイン通りとケネディ通り");
+      await compass.getByRole("button", { name: /^N センター通りとケネディ通り/ }).click();
+    } : () => clickRouteStep(page, input, controls, command, command === "NE" ? "新聞" : undefined));
     await expect(page.locator(".location-block strong")).toHaveText(place);
   }
-  const purchase = await sendTurn("BUY NEWSPAPER");
+  if (controls !== "classic") {
+    await page.locator(".compact-map-button").click();
+    const drawer = page.getByRole("dialog", { name: "地図と録画要項" });
+    const navigator = drawer.locator(".rockvil-navigator");
+    await expect(navigator.getByRole("button", { name: "新聞、調査目的地、現在地", exact: true })).toBeVisible();
+    await expect(navigator.getByRole("button", { name: "ノース・セントラル駅、現在地", exact: true })).toBeVisible();
+    await expect(navigator).toContainText("目的地に到着しました。");
+    await expect(drawer.locator(".fieldwork-drawer-header p")).toContainText("ボダンスキー広場");
+    await attach(`navigation-${controls}-arrival`, { body: await page.screenshot(), contentType: "image/png" });
+    await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
+  }
+  const newspaperAction = async (action: "buy" | "read") => {
+    if (controls === "guided") {
+      await page.getByRole("region", { name: "この場面で言及された語" }).getByRole("button", { name: /^新聞\s*読む$/ }).click();
+      await expect(input).toHaveValue("read newspaper");
+      await expect(input).toBeFocused();
+      if (action === "buy") await input.fill("buy newspaper");
+      await page.getByRole("button", { name: /^送信/ }).click();
+    } else {
+      const object = page.locator(".scene-object").filter({ has: page.locator("strong", { hasText: /^新聞$/ }) });
+      await object.getByRole("button", { name: action === "buy" ? "買う" : "読む", exact: true }).click();
+    }
+  };
+  const purchase = await sendTurn("BUY NEWSPAPER", controls === "classic" ? undefined : () => newspaperAction("buy"));
   await expect(blocks.nth(purchase.previousCount + 1)).toHaveText("新聞販売機にカードを差し込む。表示に「NEW BALANCE: $599」と点滅し、新聞が一部、手元へ飛び出してくる。");
   await expect(status).toContainText(/Simulation Mode\s*\(recording\)/i);
+  if (controls !== "classic") await expect(page.locator(".compact-map-button small")).toHaveText("1/9 録画");
   const statusBeforeRead = await status.innerText();
-  const read = await sendTurn("READ NEWSPAPER");
+  const read = await sendTurn("READ NEWSPAPER", controls === "classic" ? undefined : () => newspaperAction("read"));
   await expect(status).toContainText(/Simulation Mode\s*\(recording\)/i);
   const statusAfterRead = await status.innerText();
+  if (controls !== "classic") {
+    await expect(page.locator(".compact-map-button small")).toHaveText("2/9 録画");
+    const dispenser = page.locator(".scene-object").filter({ has: page.locator("strong", { hasText: /^新聞販売機$/ }) });
+    if (controls === "actions") await expect(dispenser.getByRole("button", { name: "Examine", exact: true }).locator("span")).toHaveAttribute("lang", "en");
+  }
 
   // Scope the complete ordered paragraphs and blank lines to this READ turn.
   const expectArticle = async () => {
@@ -93,7 +132,7 @@ export const acceptNewspaperFieldwork = async (
   };
   await expectArticle();
   const paragraphs = ARTICLE_JA.map((_, index) => blocks.nth(read.previousCount + 1 + index * 2));
-  const lastTextVisible = () => paragraphs.at(-1)!.evaluate((element) => {
+  const lastTextVisible = (paragraph: Locator = paragraphs.at(-1)!) => paragraph.evaluate((element) => {
     const range = document.createRange();
     range.selectNodeContents(element);
     const end = [...range.getClientRects()].at(-1);
@@ -193,7 +232,10 @@ export const acceptNewspaperFieldwork = async (
     const canonicalWindow = frame.locator(".BufferWindow");
     await canonicalWindow.hover();
     await page.mouse.wheel(0, await canonicalWindow.evaluate((element) => element.scrollHeight));
-    await expect(canonical.locator(".BufferLine", { hasText: ARTICLE_EN[3] })).toBeInViewport({ ratio: 1 });
+    // The paragraph can be taller than the narrow reading window, especially
+    // when original timed-event prose follows it. Verify the actual last line.
+    const editorial = canonical.locator(".BufferLine", { hasText: ARTICLE_EN[3] });
+    await expect.poll(() => lastTextVisible(editorial)).toBe(true);
     // The wrapper's command field is the visible player input in both locales.
     await expect(input).toBeVisible();
     await expect(input).toBeInViewport({ ratio: 1 });
@@ -225,7 +267,8 @@ export const acceptNewspaperFieldwork = async (
     ["S", "メイン通りとケネディ通り"],
     ["SW", "ケネディ公園"],
   ] as const) {
-    await sendTurn(command);
+    const submittedCommand = controls !== "classic" && command === "S" ? "SOUTH" : command;
+    await sendTurn(submittedCommand, controls === "classic" ? undefined : () => clickRouteStep(page, input, controls, submittedCommand, command === "SW" ? "ケネディ公園" : undefined));
     await expect(page.locator(".location-block strong")).toHaveText(place);
   }
   const deactivation = await sendTurn("RECORD OFF");
@@ -235,6 +278,6 @@ export const acceptNewspaperFieldwork = async (
   await input.click();
   await expect(input).toBeFocused();
   await attach(`newspaper-${controls}-turns`, {
-    body: JSON.stringify({ activation, read, statusBeforeRead, statusAfterRead, deactivation, statusAfterStop: await status.innerText() }), contentType: "application/json",
+    body: JSON.stringify({ activation, purchase, read, turns, statusBeforeRead, statusAfterRead, deactivation, statusAfterStop: await status.innerText() }), contentType: "application/json",
   });
 };

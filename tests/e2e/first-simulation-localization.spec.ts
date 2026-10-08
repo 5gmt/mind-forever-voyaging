@@ -1,5 +1,6 @@
 import { expect, test, type Locator, type Page } from "@playwright/test";
 import { acceptNewspaperFieldwork } from "./newspaper-acceptance";
+import { clickRouteStep } from "./navigation-acceptance";
 
 const SECURITY_COLORS = [
   "WHITE", "DARK GREEN", "DARK BLUE", "PINK", "ORANGE", "PURPLE", "TAN", "AQUA",
@@ -106,10 +107,14 @@ const expectNewBlocksWithCanonicalTail = async (
   }
 };
 
-for (const controls of ["classic", "guided", "actions"] as const) {
-  test(`${controls} completes the localized Simulation Mode and Courthouse-to-Newspaper fieldwork`, async ({ page }, testInfo) => {
-    test.setTimeout(90_000);
+for (const viewport of ["desktop", "narrow"] as const) for (const controls of ["classic", "guided", "actions"] as const) {
+  test(`${controls} completes the localized Simulation Mode and Courthouse-to-Newspaper fieldwork (${viewport})`, async ({ page }, testInfo) => {
+    test.setTimeout(120_000);
+    if (viewport === "narrow") await page.setViewportSize({ width: 390, height: 844 });
     const { frame, presentation, input } = await startJapaneseStory(page, controls);
+    // Next's development-only indicator covers the first bottom control at 390px.
+    // Exclude framework chrome while retaining ordinary, actionable UI clicks.
+    await page.addStyleTag({ content: "nextjs-portal { display: none; }" });
     await send(page, input, "PEOF");
     await expect(presentation).toContainText("ペレルマン博士は机に向かい、仕事をしている。");
 
@@ -199,16 +204,21 @@ for (const controls of ["classic", "guided", "actions"] as const) {
       const drawer = page.getByRole("dialog", { name: "地図と録画要項" });
       await expect(drawer).toHaveAttribute("lang", "ja");
       await expect(drawer.locator('.fieldwork-drawer-tabs[aria-label="現地調査の表示"]')).toHaveCount(1);
+      await expect(drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" })).toBeFocused();
+      if (viewport === "narrow") await drawer.getByRole("tab", { name: /^要項/ }).click();
       const checklist = drawer.getByRole("region", { name: "現地調査チェックリスト" });
       await expect(checklist.locator("li")).toHaveCount(9);
       await expect(checklist).toContainText("レストランで食事をすること");
       await expect(checklist).toContainText("自分の家、または居住区を訪れること");
       await expect(checklist).toContainText("補助的な推定です");
+      if (viewport === "narrow") await drawer.getByRole("tab", { name: "地図と経路", exact: true }).click();
       const navigator = drawer.locator(".rockvil-navigator");
-      await expect(navigator).toHaveAttribute("aria-label", "Navigate Rockvil using the original map");
-      await expect(navigator).toHaveAttribute("lang", "en");
+      await expect(navigator).toHaveAttribute("aria-label", "オリジナル地図でロックヴィルを移動");
+      await expect(navigator).toHaveAttribute("lang", "ja");
+      await expect(navigator.getByRole("button", { name: "新聞、調査目的地", exact: true })).toBeVisible();
+      await expect(navigator.getByRole("button", { name: "ノース・セントラル駅", exact: true })).toBeVisible();
+      await expect(navigator.getByRole("button", { name: "City Hall, fieldwork destination", exact: true })).toHaveAttribute("lang", "en");
       const close = drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" });
-      await expect(close).toBeFocused();
       await close.click();
       await expect(launcher).toBeFocused();
       await page.getByTitle("読書とプレイの設定").click();
@@ -218,6 +228,7 @@ for (const controls of ["classic", "guided", "actions"] as const) {
       await launcher.click();
       const englishDrawer = page.getByRole("dialog", { name: "Map & recording brief" });
       await expect(englishDrawer).toHaveAttribute("lang", "en");
+      if (viewport === "narrow") await englishDrawer.getByRole("tab", { name: /^Brief/ }).click();
       await expect(englishDrawer.getByRole("region", { name: "Fieldwork checklist" })).toContainText("Eat a meal in a restaurant");
       await englishDrawer.getByRole("button", { name: "Close map and fieldwork brief" }).click();
       await page.getByTitle("Reading and play settings").click();
@@ -236,7 +247,7 @@ for (const controls of ["classic", "guided", "actions"] as const) {
     } else {
       await send(page, input, "RECORD");
     }
-    await expectNewBlocks(presentation, firstRecordBlockCount, [
+    await expectNewBlocksWithCanonicalTail(presentation, firstRecordBlockCount, [
       { kind: "command", text: "RECORD" },
       { kind: "prose", text: "記録機能を起動しました。" },
       { kind: "spacer" },
@@ -256,7 +267,7 @@ for (const controls of ["classic", "guided", "actions"] as const) {
     if (controls !== "actions") {
       const secondRecordBlockCount = await presentation.locator(".story-presentation-content > *").count();
       await send(page, input, "RECORD");
-      await expectNewBlocks(presentation, secondRecordBlockCount, [
+      await expectNewBlocksWithCanonicalTail(presentation, secondRecordBlockCount, [
         { kind: "command", text: "RECORD" },
         { kind: "prose", text: "記録機能を起動しました。" },
         { kind: "spacer" },
@@ -301,21 +312,63 @@ for (const controls of ["classic", "guided", "actions"] as const) {
         const reminder = page.locator(".record-reminder");
         await expect(reminder).toContainText("録画は停止中");
         await expect(reminder).toContainText("開廷中の裁判を傍聴すること");
+        const recordBlocks = presentation.locator(".story-presentation-content > *");
+        const activationCount = await recordBlocks.count();
         const recordCommandCount = await presentation.locator(".story-presentation-command").count();
         await reminder.getByRole("button", { name: "録画を開始" }).click();
         await expect(presentation.locator(".story-presentation-command").nth(recordCommandCount)).toHaveText("> RECORD");
+        await expectNewBlocksWithCanonicalTail(presentation, activationCount, [
+          { kind: "command", text: "RECORD" },
+          { kind: "prose", text: "記録機能を起動しました。" },
+          { kind: "spacer" },
+        ]);
         await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode\s*\(recording\)/i);
         await expect(input).toBeEnabled();
+        const stopCount = await recordBlocks.count();
         await send(page, input, "RECORD OFF");
+        await expectNewBlocksWithCanonicalTail(presentation, stopCount, [
+          { kind: "command", text: "RECORD OFF" },
+          { kind: "prose", text: "記録機能を停止しました。" },
+          { kind: "spacer" },
+        ]);
         await page.locator(".compact-map-button").click();
         const drawer = page.getByRole("dialog", { name: "地図と録画要項" });
-        await drawer.getByRole("button", { name: "RECORD を開始" }).click();
+        const restartCount = await recordBlocks.count();
+        if (viewport === "desktop") {
+          await drawer.getByRole("button", { name: "RECORD を開始" }).click();
+          await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
+        } else {
+          // The existing narrow header deliberately hides its status controls.
+          const headerRecord = drawer.locator(".fieldwork-drawer-status > button:not(.fieldwork-close)");
+          await expect(headerRecord).toHaveText("RECORD を開始");
+          await expect(headerRecord).toBeHidden();
+          await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
+          await reminder.getByRole("button", { name: "録画を開始" }).click();
+        }
+        // Raw recording status can update before the presentation history.
+        await expectNewBlocksWithCanonicalTail(presentation, restartCount, [
+          { kind: "command", text: "RECORD" },
+          { kind: "prose", text: "記録機能を起動しました。" },
+          { kind: "spacer" },
+        ]);
         await expect(frame.locator(".GridWindow")).toContainText(/Simulation Mode\s*\(recording\)/i);
-        await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
         await expect(input).toBeEnabled();
       }
       const blockCount = await presentation.locator(".story-presentation-content > *").count();
-      await send(page, input, command);
+      if (controls !== "classic" && command === "NW") {
+        await page.getByRole("button", { name: "ガイドの表示を切り替える" }).click();
+        await page.getByRole("tab", { name: "探索", exact: true }).click();
+        const context = page.locator(".companion-section.map-section");
+        await expect(context).toHaveAttribute("lang", "ja");
+        await expect(context.getByRole("button", { name: "地図と経路案内を開く" })).toBeVisible();
+        await testInfo.attach(`context-exits-${controls}-${viewport}`, { body: await page.screenshot(), contentType: "image/png" });
+        await context.locator(".exit-list button").filter({ has: page.locator("strong", { hasText: /^裁判所$/ }) }).click();
+        await page.getByRole("button", { name: "ガイドを閉じる" }).click();
+      } else if (controls !== "classic" && command !== "LOOK") {
+        await clickRouteStep(page, input, controls, command, command === "SW" ? "裁判所" : command === "SE" ? "ケネディ公園" : undefined);
+      } else {
+        await send(page, input, command);
+      }
       await expect(page.locator(".location-block strong")).toHaveText(place);
       await expectNewBlocksWithCanonicalTail(presentation, blockCount, expectedBlocks, command === "SW" ? [2] : []);
       await expect(page.locator(".location-block strong")).toHaveAttribute("lang", "ja");
@@ -464,10 +517,11 @@ test("keeps rolling first-entry state, re-entry, unknown places, and later phase
   const narrowDrawer = page.getByRole("dialog", { name: "地図と録画要項" });
   const narrowBody = narrowDrawer.locator(".fieldwork-drawer-body");
   const narrowNavigator = narrowDrawer.locator(".rockvil-navigator");
-  await expect(narrowNavigator).toHaveAttribute("lang", "en");
+  await expect(narrowNavigator).toHaveAttribute("lang", "ja");
   expect((await narrowNavigator.boundingBox())!.height).toBeLessThanOrEqual((await narrowBody.boundingBox())!.height);
   await narrowNavigator.getByRole("button", { name: /City Hall, fieldwork destination/ }).click();
-  await expect(narrowNavigator.locator(".navigator-route-actions").getByRole("button", { name: "Clear" })).toBeVisible();
+  await expect(narrowNavigator).toContainText("名前のある通りへ移動すると経路案内を開始できます。");
+  await expect(narrowNavigator.locator(".navigator-route-actions").getByRole("button", { name: "解除" })).toBeVisible();
   await narrowDrawer.getByRole("tab", { name: /要項/ }).click();
   const finalAssignment = narrowDrawer.locator(".fieldwork-checklist li").last();
   await finalAssignment.scrollIntoViewIfNeeded();
