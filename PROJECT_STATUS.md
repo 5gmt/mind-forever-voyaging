@@ -66,31 +66,33 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 - [PR #58](https://github.com/5gmt/mind-forever-voyaging/pull/58) / [Issue #55](https://github.com/5gmt/mind-forever-voyaging/issues/55): 2041 Courthouse recording round trip を二つの fresh canonical Chromium session で capture し、stable route、optional city noise、status/input boundary、および既存 ordinary-turn structure で表現可能なことを runtime evidence として確定
 - [Issue #56](https://github.com/5gmt/mind-forever-voyaging/issues/56): 2041 Courthouse 往復の exact observed leaves と wrapper-owned place name に対する日本語 copy packet を監査、承認
 - [Issue #57](https://github.com/5gmt/mind-forever-voyaging/issues/57): approved copy を既存 ordinary-turn catalog と exact `currentPlace` presentation に統合し、Classic / Guided の complete fresh-session route と canonical-English fallback を browser regression で検証して、2041 Courthouse milestone を完了
+- [PR #77](https://github.com/5gmt/mind-forever-voyaging/pull/77) / [Issue #67](https://github.com/5gmt/mind-forever-voyaging/issues/67): 新聞本文と初期 fieldwork UI の六作業を統合し、同一 fresh session の Courthouse → Newspaper を3 interaction modes × 2 viewports で受け入れ、N1–N3 / U1–U3 の milestone を完了
 
 ## 現在の frontier
 
-[Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) が選定した **Simulation Mode への初回移行と最初の recording loop** milestone は、Issues #47–#50 で runtime evidence、narrow projections、copy approval、browser integration を完了した。
+初回 Simulation Mode と recording loop（Issues #47–#50）、2041 Courthouse 往復（#55–#57）、新聞購入・四段落の読書と初期 fieldwork UI（N1–N3 / U1–U3）は完了した。
+直前の milestone は [PR #77](https://github.com/5gmt/mind-forever-voyaging/pull/77) の merge `60fa28811504ad86cbc0389374f8770a5c9b709d` で締め、[結果を #29 に報告した](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6053014866)。
+[新聞計画](./docs/plans/2041-newspaper-fieldwork.md)と[統合受入記録](./docs/issue-67-fieldwork-acceptance.md)に、同一 fresh session の Courthouse → Newspaper を Classic / Guided / Action menus × desktop / narrow の6経路で受け入れた証拠を残している。
+N2 / U1 の copy、N3 の共有 room / map lookup、U2 / U3 の初回2041年 UI は次の実装でも再利用する。
 
-実装済み境界は、fresh canonical session の PEOF から `WAIT` × 4、simulation-ready brief、`ENTER SIMULATION MODE`、security challenge 正答、Kennedy Park entry / `LOOK`、`RECORD` → `WAIT` → `RECORD OFF` を経て通常の line input が戻るところまでである。Dynamic security color / inner number と simulation date/time は canonical のまま保持し、computed outer answer は既存 assisted command deck だけが扱う。
-
-**2041 Courthouse recording round trip** milestone は Issues #55–#57 で完了した。Kennedy Park から Elm & Park、Courthouse へ recording 中に移動し、explicit `LOOK` の後に帰着する stable leaves は既存 ordinary-turn catalog で日本語表示される。Optional city noise、raw GridWindow status、commands、dynamic date/time は canonical English のまま保持し、wrapper-owned `currentPlace` だけを exact accepted room identity で日本語化する。
-
-Courthouse の完了結果は [Issue #29 に報告済み](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-5859926210)である。
-今回の milestone は **2041年の新聞購入と読書、および初期 fieldwork UI** であり、[固定分析と実行計画](./docs/plans/2041-newspaper-fieldwork.md)に六つの作業単位と受入結果を記録した。
-[Issue #62](https://github.com/5gmt/mind-forever-voyaging/issues/62) の N1 runtime capture は [PR #69](https://github.com/5gmt/mind-forever-voyaging/pull/69) でレビューとマージを完了した。異なる日時の二つの fresh canonical session で Courthouse 往復に続く新聞購入・四段落の読書・帰着・録画停止・入力復帰を観測し、終了案 A（同一 session の裁判所 → 新聞）を採用した。記事は既存 ordinary-turn projector で表現可能で、専用 renderer は不要である。
-N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) は [PR #70](https://github.com/5gmt/mind-forever-voyaging/pull/70) で新聞本文、共有地名、地図固有名の copy review を完了した。U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) は [PR #72](https://github.com/5gmt/mind-forever-voyaging/pull/72) で初期 Simulation UI packet の U2 / U3 copy review を完了した。U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) は [PR #76](https://github.com/5gmt/mind-forever-voyaging/pull/76)（#75・#73 を置換）で、入場 CTA、assisted decoder、基本操作、初期 fieldwork launcher、drawer 共通 UI、九課題と補助推定 copy を日本語表示へ統合した。初回状態は canonical session に保持し、QA 往復後も同じ初回2041年の日本語 controls / rail / drawer を維持する。U2 は再レビュー承認とマージを完了した。N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) は、採用経路の exact observed leaves、共有 room lookup、役割別 map-label adapter を production に統合し、新聞本文の player-facing coverage を追加した。Parser command と dynamic security 値は canonical English のままで、N3 は PR #74 で再レビュー承認・マージ済みである。U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) は地図・方位・context 出口、共有 lookup による採用経路、新聞 SceneActions を初回2041年の表示へ統合した。未知値・未承認 copy と再入場 / RESTORE の不明状態は English fallback を維持する。指名レビュー担当が採用案 A の全体受入を承認済みであり、PR #77 のマージをもって milestone 完了とする。作業票は N1 [#62](https://github.com/5gmt/mind-forever-voyaging/issues/62)、N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64)、N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66)、U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63)、U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65)、U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) として作成済みである。採用する gameplay milestone の経路と U3 の受入単位は、同一 fresh session の Courthouse → Newspaper とする。
-地名の正本は N2、共有対応表の追加は N3、地図での再利用と最終統合は U3 が担う。
+次の milestone は、同一 fresh canonical session の Courthouse → Newspaper に続く **Roy’s Pagoda での食事録画と Kennedy Park への帰着** とする。
+2026-10-09 JST に Yasuo が[レストラン計画](./docs/plans/2041-restaurant-fieldwork.md)の方針とタスク化を承認した。
+現時点では source と現行 UI に基づく条件付き選定であり、新規 runtime capture、copy approval、production integration は未実施である。
+計画 PR の独立レビューと merge 後、M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) が recording 容量・支払・時刻・操作面を実測して採用経路を確定する。
+成立しない場合は M2 / M3 を開始せず、別 session の成功で代用せずに設計判断へ戻す。
 
 ## 基本的な作業順
 
-1. 完了した U1 [#63](https://github.com/5gmt/mind-forever-voyaging/issues/63) / N2 [#64](https://github.com/5gmt/mind-forever-voyaging/issues/64) の承認済み copy と surface identity を production 統合の正本として維持する。
-2. U2 [#65](https://github.com/5gmt/mind-forever-voyaging/issues/65) は PR #76 で完了した。N3 [#66](https://github.com/5gmt/mind-forever-voyaging/issues/66) の新聞本文・共有 lookup 統合は PR #74 で完了した。
-3. U3 [#67](https://github.com/5gmt/mind-forever-voyaging/issues/67) は [PR #77](https://github.com/5gmt/mind-forever-voyaging/pull/77) に地図と対象操作、同一 fresh session の Courthouse → Newspaper の Classic / Guided / Action menus と desktop / narrow Chromium の受入証拠を集約した。全体受入は承認済みであり、PR #77 のマージをもって N1〜N3・U1〜U3 の milestone 完了とする。
-4. 完了結果を [Issue #29](https://github.com/5gmt/mind-forever-voyaging/issues/29) に戻し、次の gameplay milestone を選定する。今回の完了だけで次の実装着手や deferred 範囲の承認とはしない。
+1. 計画 PR を Chat モード Sol がレビューし、既存の merge gate を満たした後に merge する。通常 PR は独立した Sol review、milestone 締めは Astra / ChatGPT Work の全体受入とする分担を試行する。
+2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): Codex Cloud が二つ以上の fresh canonical session を capture し、連続経路と録画区間、現行 UI の表示面を確定する。同じ PR で CI artifact retention を3日から14日へ変更する。Sol が観測・採択判断をレビューする。
+3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): M1 の採択と merge 後、Codex Cloud が story と必要な地名・地図・対象操作 copy を一つの packet にし、Sol が承認する。
+4. M3 [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80): M1 / M2 の merge 後、Codex Cloud が catalog / UI / tests を統合し、6経路の受入記録と status の最終集約を用意する。Sol の通常レビュー後、Astra が全体受入を確認して最終 PR を merge し、#29 へ結果を戻す。
 
-新聞本文と採用経路の map / route UI は実装済み coverage に含む。ChatGPT Work / unknown が [統合受入記録](./docs/issue-67-fieldwork-acceptance.md)、CI と保存された実ブラウザ証拠を確認し、[採用案 A の全体受入を承認した](https://github.com/5gmt/mind-forever-voyaging/pull/77#pullrequestreview-5450363533)。完了点は PR #77 のマージとし、最新 head の確認結果は PR に記録する。
-引き続き deferred とする境界は、security wrong-answer / failure、PEOF の別 timing、採用経路以外の fieldwork と map / route UI、recording assignment completion、timed simulation events、later years / re-entry / review、other Communications outlets である。
-General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も引き続き対象外とする。
+今回のタスク化だけではレストランの日本語 coverage は増えていない。
+原作側の正式な九課題達成・帰還評価、再入場・後続年の日本語化、他 fieldwork と Communications outlet、未承認地名・対象操作、security wrong-answer / failure、PEOF の別 timing、timed simulation events は引き続き対象外である。
+General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も対象外とする。
+原作 recording と補助 checklist の推定を区別し、unknown output、optional interrupt、RESTORE 後の不明状態の English fallback を保持する。
+[#44](https://github.com/5gmt/mind-forever-voyaging/issues/44) の provenance conventions は独立して扱う。
 
 ## 現在の開発・配備状況
 
@@ -98,7 +100,7 @@ General GridWindow renderer、geometry-derived identity、runtime machine transl
 - Current delivery baseline は Next.js static export と Netlify である。
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
-- CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を短期 retention で保持する。
+- CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を現在3日間保持する。14日への延長は M1 #78 の変更予定であり、まだ適用していない。
 
 ## 更新の契機
 
