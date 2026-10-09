@@ -107,3 +107,16 @@ Under the repository's current branch-based GitHub workflow, a pull request is m
 - its evidence matches the acceptance criteria, preserved guarantees, and known limitations.
 
 If the target branch advances during review, update the branch and rerun the task-specific regression on the new base before merging.
+
+## Milestone review delegation
+
+For the 2041 restaurant milestone and its planning PR, use the owner-approved review split in [the restaurant plan](docs/plans/2041-restaurant-fieldwork.md):
+
+- Codex Cloud implements M1–M3, runs verification, fixes findings, and prepares the evidence packet and corresponding plan/status updates. The M3 contributor owns the final milestone roll-up before acceptance.
+- Chat-mode Sol reviews ordinary PRs in a session independent of implementation and may merge the planning PR and M1/M2 after the existing merge gates pass. M3 also requires Sol's ordinary PR review.
+- The designated Astra / ChatGPT Work reviewer performs M3's milestone-wide acceptance and merges the final integration PR after both review checkpoints pass on the final head. Do not add an Astra review to every ordinary PR by default.
+- Escalate decisions changing canonical authority, history/recovery/accessibility guarantees, observation/rendering boundaries, the adopted route, or completion criteria to the milestone reviewer; record owner approval for material design changes. Ordinary fixes preserving those boundaries remain with Sol.
+- Include head/base SHAs, changes since review, acceptance-to-evidence mapping, current-head CI/artifact links and expiry, unresolved findings, and unverified limitations in handoffs. Review follow-up deltas and affected evidence, broadening only for a concrete risk or base change.
+- Shared GitHub credentials do not make an implementation self-check an independent review. If GitHub disallows self-approval, record the review judgment, reviewed SHA, and reviewer provenance in a COMMENT review.
+
+This is a milestone-scoped workflow trial. Keep the independent provenance conventions task #44 separate. Existing draft, latest-base, verification, and merge-readiness requirements above still apply.
