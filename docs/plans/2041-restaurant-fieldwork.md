@@ -95,7 +95,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 | ID / Issue | 実装担当 | 通常レビュー | 依存関係 / 状態 |
 | --- | --- | --- | --- |
-| M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | 本計画 PR の review / merge 後に着手。runtime 未採取。 |
+| M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | #81 merge 後に3 fresh session を capture。録画警告と食事 UI 未到達を確認。独立レビュー・設計再評価待ち、採用経路なし。 |
 | M2 / [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79) | Codex Cloud | Chat モード Sol | M1 の実測・経路採択の review / merge を待つ。copy 未承認。 |
 | M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | M1 / M2 の merge を待つ。production 未実装。 |
 
@@ -104,13 +104,13 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 **Files:** 新規 `scripts/capture-restaurant-runtime.mjs`、`tests/fixtures/parchment-restaurant-runtime-observed.json`、`docs/restaurant-runtime-evidence.md`。更新 `.github/workflows/ci.yml`、`tests/rendered-html.test.mjs`、`AGENTS.md` の retention 説明（必要箇所）、本書、`PROJECT_STATUS.md`。
 **Interfaces:** 既存 `scripts/capture-newspaper-runtime.mjs` と canonical bridge-v3 の観測形式を参照する。成果物は session / path / command ごとの exact English presentation、status、current input / turn identity、stable / dynamic / optional 分類、実操作 surface 台帳、経路採択判断。独自の production API は追加しない。
 
-- [ ] 現行 capture の同期方法と初回状態を確認し、fresh session、先行二経路、追加経路を再現する capture script を作る。各 command で現在の input ID と新しい echo / line-input を待つ。
-- [ ] 二つ以上の独立 session を実行し、開始日時や観測された変動を記録する。body の行順・空行・heading、status、line / char input、支払・残高・時刻、recording 応答・警告を fixture に保存する。
-- [ ] 食事を録画できる最小限の区間を調査する。先行経路を黙って変えず、候補と採用案を区別する。正常経路と harness failure / canonical failure の分類を残す。
-- [ ] Classic / Guided / Action menus の現行操作面を監査し、map target、room / map identity、対象・action、visible / accessible copy、動的値、guard、送信 command を evidence 文書に一覧化する。
-- [ ] 採取した fixture に基づく regression を追加し、command 列、current-turn identity、原文保持、既存 ordinary-turn projector での表現可否を固定する。未知出力を翻訳済みとして埋めない。
-- [ ] CI retention を14日に変更する。既存 Actions の SHA pin、`if: always()`、失敗時の job failure と upload 条件を保持し、CI artifact の実際の有効期限を記録する。
-- [ ] `npm run lint`、`npx tsc --noEmit`、`npm test`、`npm run test:e2e`、canonical checksum、`git diff --check` を実行し、runtime evidence と採択 / 停止判断、本書と status を同じ PR で提出する。
+- [x] 現行 capture の同期方法と初回状態を確認し、fresh session、先行二経路、追加経路を再現する capture script を作る。各 command で現在の input ID と新しい echo / line-input を待つ。
+- [x] 二つ以上の独立 session を実行し、開始日時や観測された変動を記録する。body の行順・空行・heading、status、input kind、支払・残高・時刻、recording 応答・警告を fixture に保存する。起動 character prompt は保存範囲外であることを記録した。
+- [x] 食事を録画できる最小限の区間を調査する。先行経路を黙って変えず、候補と採用案を区別する。正常経路と harness failure / canonical failure の分類を残す。
+- [x] Classic / Guided / Action menus の現行操作面を監査し、map target、room / map identity、対象・action、visible / accessible copy、動的値、guard、送信 command を evidence 文書に一覧化する。
+- [x] 採取した fixture に基づく regression を追加し、command 列、current-turn identity、原文保持、既存 ordinary-turn projector での表現可否を固定する。未知出力を翻訳済みとして埋めない。
+- [x] CI retention を14日に変更した。既存 Actions の SHA pin、`if: always()`、失敗時の job failure と upload 条件を保持。Current-head CI artifact の実際の有効期限は PR の引き渡し記録で確認する。
+- [x] `npm run lint`、`npx tsc --noEmit`、`npm test`（29件）、`npm run test:e2e`（26件）、canonical checksum、`git diff --check` を実行。runtime evidence と採択 / 停止判断、本書と status を同じ PR に含める。
 
 **Done:** Sol が runtime・UI 監査・既存 projection の適合性・採択経路を確認し、M1 を merge したこと。失敗記録だけの merge は M2 / M3 を unblock しない。新しい経路や保証が必要な場合は設計判断への link を必要とする。
 
@@ -148,3 +148,4 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 ## 変更・進行の記録
 
 - 2026-10-09 JST: Yasuo がレストラン milestone と review 分担を承認。計画書と M1–M3 を作成。計画 PR は独立レビュー待ち。新規 runtime 観測、copy approval、production integration、14日 retention の適用は未実施。
+- 2026-10-21 JST: #81 の merge `43b00db08fc5c2726095875b21dd381b42b0b682` を確認し M1 を実行。[Runtime evidence](../restaurant-runtime-evidence.md) と3 fresh session の fixture、UI 台帳、regression、CI retention 14日設定を追加。Travel 録画は食事前、meal-only は食事応答で buffer full / auto-deactivation。現地の食事対象操作も表示されない。採用経路なし、M2 / M3 は停止継続。Sol の独立レビューと Astra / Yasuo の設計判断へ渡し、完了条件を実装側で変更しない。
