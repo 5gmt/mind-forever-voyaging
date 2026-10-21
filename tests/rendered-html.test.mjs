@@ -795,6 +795,88 @@ test("retains the runtime-observed 2041 Courthouse recording round trip", async 
   assert.equal(alternateDescription.text, alternateDescription.canonicalText, "unapproved random description safely remains canonical English");
 });
 
+test("retains synchronized fresh restaurant attempts after Courthouse and Newspaper", async () => {
+  const url = new URL("./fixtures/parchment-restaurant-runtime-observed.json", import.meta.url);
+  assert.equal(await access(url).then(() => true, () => false), true, "restaurant runtime evidence must be captured");
+  const fixture = JSON.parse(await readFile(url, "utf8"));
+  assert.equal(fixture.sessions.length, 3);
+  assert.deepEqual(fixture.sessions.map(({ recordingWindow }) => recordingWindow), ["travel", "meal", "meal"]);
+  assert.deepEqual(fixture.courthousePath, ["RECORD", "SW", "NW", "LOOK", "SE", "NE", "RECORD OFF"]);
+  assert.deepEqual(fixture.newspaperPath, ["INVENTORY", "RECORD", "NE", "N", "NE", "BUY NEWSPAPER", "READ NEWSPAPER", "SW", "S", "SW", "RECORD OFF"]);
+  const mealText = 'You order a bowl of Hot and Sour soup and some assorted appetizers. The food arrives promptly, steaming hot, delicately spiced, delicious. Afterward, your check arrives with a typical fortune cookie and a plate of lychee nuts. The fortune reads: "Prosperity does not equal happiness." You pay with your credit card. After a moment, the waiter returns your card, informing you that your account has been debited for $30 and that your new balance is $569.';
+  const warning = "WARNING: Record buffer full. Auto-deactivation of record feature.";
+  const inactive = "ERROR: Record feature not currently active.";
+  const minutes = (time) => {
+    const [, hour, minute, period] = time.match(/^(\d+):(\d+)(am|pm)$/);
+    return Number(hour) % 12 * 60 + Number(minute) + (period === "pm" ? 720 : 0);
+  };
+  for (const session of fixture.sessions) {
+    assert.ok(!session.harnessFailure, JSON.stringify(session.harnessFailure));
+    assert.match(session.startedAt, /^2026-/);
+    assert.deepEqual(session.observations.map(({ command }) => command), session.commands);
+    const commands = session.commands.join("|");
+    assert.ok(commands.includes(fixture.courthousePath.join("|")));
+    assert.ok(commands.includes(fixture.newspaperPath.join("|")));
+    assert.ok(commands.indexOf("READ NEWSPAPER") < commands.indexOf("BUY MEAL"));
+    assert.deepEqual(session.submittedCommands, session.commands.flatMap((command) => command === "ENTER SIMULATION MODE"
+      ? [command, session.observations.find(({ role }) => role === "security-answer").inputOwnership.canonicalNumericInput]
+      : [command]));
+    assert.equal(session.securityPrompt.presentation.activeInput.kind, "line");
+    for (const [index, turn] of session.observations.entries()) {
+      const p = turn.presentation;
+      assert.equal(p.version, 3);
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.notEqual(turn.submittedInputId, turn.nextInputId);
+      assert.equal(p.lines[p.activeInput.line].id, turn.nextInputId);
+      assert.equal(p.activeInput.line, p.terminalLine);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(reconcilePresentationHistory([], p).representable, true, turn.command);
+      if (!turn.role) assert.equal(p.lines[0].text.toUpperCase(), `>${turn.command}`);
+      if (index > 0) assert.equal(turn.submittedInputId, session.observations[index - 1].nextInputId);
+    }
+    assert.equal(new Set(session.observations.map(({ nextInputId }) => nextInputId)).size, session.observations.length);
+    const restaurant = session.observations.slice(-11);
+    assert.deepEqual(restaurant.map(({ command }) => command), fixture.restaurantPaths[session.recordingWindow]);
+    const mealIndex = session.commands.indexOf("BUY MEAL");
+    const meal = session.observations[mealIndex];
+    assert.equal(meal.presentation.lines[1].text, mealText);
+    assert.equal(minutes(meal.status.time) - minutes(session.observations[mealIndex - 1].status.time), 22);
+    assert.equal(meal.status.mode, "Simulation Mode", "meal response returns after auto-deactivation");
+    assert.equal(restaurant.at(-1).status.location, "Kennedy Park");
+    assert.equal(restaurant.at(-1).status.mode, "Simulation Mode");
+    const failureTurn = restaurant.find(({ presentation }) => presentation.lines.some(({ text }) => text === warning));
+    assert.ok(failureTurn, "retain the canonical capacity failure rather than claiming recording success");
+    assert.deepEqual(restaurant.find(({ command }) => command === "RECORD OFF").presentation.lines.map(({ text }) => text), [
+      ">RECORD OFF", inactive, " ", ">",
+    ]);
+    const projected = projectPresentationHistory(reconcilePresentationHistory([], meal.presentation).history, "ja")[0].blocks;
+    assert.equal(projected[1].text, meal.presentation.lines.slice(1, -1).map(({ text }) => text.trim()).filter(Boolean).join("\n"));
+    assert.equal(observedStoryLeafTranslation(mealText, "ja", "BUY MEAL"), undefined, "M1 must retain unapproved English");
+    if (session.recordingWindow === "meal") {
+      assert.equal(session.observations[mealIndex - 1].status.mode, "Simulation Mode (recording)");
+      assert.equal(failureTurn, meal);
+      assert.deepEqual(meal.presentation.lines.map(({ text }) => text), [">BUY MEAL", mealText, " ", warning, " ", ">"]);
+    } else {
+      assert.equal(failureTurn.command, "W");
+      assert.equal(failureTurn.status.location, "Elm Underpass");
+      assert.equal(session.observations[mealIndex - 1].status.mode, "Simulation Mode");
+    }
+  }
+  const audited = fixture.sessions[2];
+  assert.equal(audited.surfaceAudit.length, 8);
+  for (const audit of audited.surfaceAudit) {
+    assert.equal(audit.samples.length, 6);
+    for (const sample of audit.samples) {
+      if (sample.mode === "classic") assert.deepEqual(sample.sceneActions, []);
+      else assert.equal(sample.context.length, 1, "audit the open Explore panel as well as inline controls");
+      if (audited.observations[audit.observationIndex].status.location === "Roy's Pagoda") {
+        assert.deepEqual(sample.sceneActions, [], "actual meal controls are absent despite generic BUY handling");
+        for (const context of sample.context) assert.doesNotMatch(context.aria, /button "(?:Buy|Eat|買う|食べる)"/);
+      }
+    }
+  }
+});
+
 test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-newspaper-runtime-observed.json", import.meta.url), "utf8"));
   assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
