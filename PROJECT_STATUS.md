@@ -80,14 +80,14 @@ N2 / U1 の copy、N3 の共有 room / map lookup、U2 / U3 の初回2041年 UI 
 計画 [PR #81](https://github.com/5gmt/mind-forever-voyaging/pull/81) は独立レビュー後に merge 済み（`43b00db08fc5c2726095875b21dd381b42b0b682`）。
 M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) は3独立 fresh session の録画区間比較、支払・時刻・入力境界、現行操作面の証拠と regression を追加した。[実測記録](./docs/restaurant-runtime-evidence.md)の通り、移動中または食事応答で buffer full により自動停止し、現行 assisted UI の食事対象操作も未到達である。
 [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は Sol の独立レビュー後、evidence-only として merge 済み（`f45d268282a40d63bf88e1eaf95b01c96961eeea`）。[レビューと #78 の継続判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、採用経路は未承認、#78 は open のままである。
-[再開判断用の提案](./docs/plans/2041-restaurant-followup-decision.md)に、徒歩経路を維持し新聞の録画区間だけを購入・読書の前後へ移す追加実測案と、初回2041年・Roy's Pagoda に限定する meal UI 案を記録した。いずれも未承認・未実行であり、Astra / Yasuo の設計判断を待つ。M2 / M3 は停止を維持し、copy approval と production integration は未実施である。
+[Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)で、徒歩経路を維持し新聞の録画区間だけを購入・読書の前後へ移す A案の追加実測と、初回2041年・Roy's Pagoda に限定する `BUY MEAL` UI の設計範囲が承認された。[決定資料](./docs/plans/2041-restaurant-followup-decision.md)と関連文書を同期する [PR #83](https://github.com/5gmt/mind-forever-voyaging/pull/83) は Sol の通常レビュー・merge 待ち。その後に2 fresh session以上で追加実測する。既存の成功 fixture・受入経路・回帰テストと失敗記録は保持する。追加実測前・成功経路未採択であり、#78 は open、M2 / M3 は blocked、copy approval と production integration は未実施である。
 成立しない場合は M2 / M3 を開始せず、別 session の成功で代用せずに設計判断へ戻す。
 
 ## 基本的な作業順
 
 1. 計画 PR #81 はレビュー・merge 済み。通常 PR は独立した Sol review、milestone 締めは Astra / ChatGPT Work の全体受入とする分担を試行する。
-2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): 実測・監査・14日 artifact retention は #82 でレビュー・merge 済み。次は再開案を Astra / Yasuo が判断し、承認された場合だけ追加実測する。Sol の経路採択レビュー・merge が成立するまで後続を開始しない。
-3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): M1 の採択と merge 後、Codex Cloud が story と必要な地名・地図・対象操作 copy を一つの packet にし、Sol が承認する。
+2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): 実測・監査・14日 artifact retention は #82 でレビュー・merge 済み。A案・限定 UI の設計範囲は承認済み。#83 の文書同期・Sol の通常レビュー・merge → 2 fresh session以上の追加実測 → Sol の経路採択レビュー・merge の順に進める。後続は採択 merge まで開始せず、M1 に未実装 meal UI の完成を要求しない。
+3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): M1 の採択と merge 後、Codex Cloud が story と必要な地名・地図・対象操作、および限定 meal UI を囲む visible / accessible な説明の copy を一つの packet にし、Sol が承認する。
 4. M3 [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80): M1 / M2 の merge 後、Codex Cloud が catalog / UI / tests を統合し、6経路の受入記録と status の最終集約を用意する。Sol の通常レビュー後、Astra が全体受入を確認して最終 PR を merge し、#29 へ結果を戻す。
 
 今回のタスク化だけではレストランの日本語 coverage は増えていない。

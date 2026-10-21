@@ -1,6 +1,8 @@
 # Issue #78 follow-up: recording windows and meal controls
 
-**状態:** 設計判断用の提案。未承認・未実測。採用経路や完了条件を変更する決定ではない。
+**状態:** A案の追加実測方針と限定 meal UI の設計範囲は承認済み、追加実測前。成功経路は未採択、#78 は open、M2 #79 / M3 #80 は blocked。
+
+承認元は [2026-10-21 の Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)。Yasuo の設計判断依頼に基づき、PR #83 reviewed head `0c222bb5fdb61d15c19b622d32436daeec8987c9` の具体案と同コメントの補足が承認された。[PR #83 のレビュー](https://github.com/5gmt/mind-forever-voyaging/pull/83#pullrequestreview-5600151543)に従い、この文書同期を Sol の通常レビュー・merge へ戻す。この範囲の反映に Astra の再承認は不要。
 
 ## 確定した現況
 
@@ -8,10 +10,10 @@
 
 実測・fixture・回帰テスト・14日 retention は受け入れ済み。成功経路は未採択であり、#78 は open、M2 #79 / M3 #80 は blocked のままである。旧実測を作り直して失敗を消したり、マージを録画成立の承認と解釈したりしない。
 
-残課題は次の二点で、PR #82 へのコード修正要求ではない。
+PR #82 で残った課題は次の二点。追加実測と UI 設計の方針は上記判断で決定したが、課題が解消した実測・実装はまだない。
 
-1. 既存の録画区間を保つと、食事前または22分の食事応答で buffer が満杯になる。録画区間と完了境界の再評価が必要。
-2. 実際の Roy's Pagoda では Guided / Action menus に meal の操作が現れない。限定した対象・action・guard の設計判断が必要。
+1. 既存の録画区間を保つと、食事前または22分の食事応答で buffer が満杯になる。A案の録画区間で追加実測が必要。
+2. 実際の Roy's Pagoda では Guided / Action menus に meal の操作が現れない。承認された限定 surface の copy は M2、実装・受入は M3 が担う。
 
 ## 根拠の区別
 
@@ -29,13 +31,13 @@ Source / code は上記 merge commit で照合した。`source/`、story binary�
 
 | 候補 | 変更点 | 評価 |
 | --- | --- | --- |
-| **A: 新聞だけ現地録画へ変更（推奨する追加実測案）** | 初回 recording loop と Courthouse は全 command を維持。Newspaper の徒歩・購入・全記事・帰着も維持し、RECORD / RECORD OFF の位置だけを購入・読書の前後へ移す。Restaurant は現地録画、明示停止後に公園へ戻る。 | 全食事区間の録画という期待を維持し、既存経路への変更を絞れる。先行経路の録画前提を変えるため、実行前に Astra の設計レビューと Yasuo の承認が必要。 |
-| B: 先行録画を保ち、meal 応答時の auto-deactivation を許容 | PR #82 の meal-only を使い、食事開始時の recording と meal response を完了境界にする。 | 22分の録画継続を確認できず、完了条件の変更になる。Source flag や補助 checklist を正式達成の代用にできないため、採用を推奨しない。 |
-| C: 現在の停止を継続 | 経路・録画前提・UI を変更せず、M2 / M3 を開始しない。 | 既承認境界を維持する現状。A が承認されない場合も #78 を完了扱いにしない。 |
+| **A: 新聞だけ現地録画へ変更（追加実測方針として承認済み）** | 初回 recording loop と Courthouse は全 command を維持。Newspaper の徒歩・購入・全記事・帰着も維持し、RECORD / RECORD OFF の位置だけを購入・読書の前後へ移す。Restaurant は現地録画、明示停止後に公園へ戻る。 | 全食事区間の録画という期待を維持する追加実測方針。#83 の文書同期・Sol の通常レビュー・merge 後に実行する。成功経路としては未採択。 |
+| B: 先行録画を保ち、meal 応答時の auto-deactivation を許容 | PR #82 の meal-only を使い、食事開始時の recording と meal response を完了境界にする。 | 不採用。22分の録画継続を確認できず、完了条件の変更になる。Source flag や補助 checklist を正式達成の代用にしない。 |
+| C: 停止を継続 | 経路・録画前提・UI を変更せず、M2 / M3 を開始しない。 | 比較時の保留案。A の追加実測が失敗した場合も #78 を完了扱いにせず、設計判断へ戻す。 |
 
-A でも別 session の食事、順序変更、徒歩区間の省略、buffer 消去、save/restore、VM/state 編集は用いない。既存の成功済み Courthouse / Newspaper milestone の fixture と受入経路も上書きしない。
+A でも別 session の食事、順序変更、徒歩区間の省略、buffer 消去、save/restore、VM/state 編集は用いない。既存の成功済み Courthouse / Newspaper milestone の fixture・受入経路・回帰テストと、#82 の失敗 fixture は保持する。Restaurant milestone 用の連続経路を追加する判断であり、以前の受入条件を遡って変更しない。
 
-### A の具体的な追加実測列（未承認・未実行）
+### A の具体的な追加実測列（方針承認済み・未実行）
 
 ```text
 初回 entry / recording loop: PR #82 の prefix をそのまま維持
@@ -65,35 +67,37 @@ SW → W → W → S → RECORD → BUY MEAL → RECORD OFF → N → E → E �
 
 **この表は buffer の実測値ではない。** Source の加算規則と観測済み status の分差から、A を試す理由を説明した計算である。実際の残量・成功・余裕を保証しない。半量警告はあり得るため、追加実測では警告を含む exact output を保存する。原作 SIZE や内部 flag を wrapper に取り込まない。
 
-### 承認後の実測と採択条件
+### #83 merge 後の実測と採択条件
 
-- 新たな独立 fresh canonical session を2回以上実行し、元の失敗 fixture を保持したまま別の候補証拠を保存する。開始時刻、全実送信列、送信元・次 input ID、行・空行・heading・status を記録する。
-- Courthouse の LOOK、Newspaper の購入・四段落の READ、Restaurant の BUY MEAL の前後で recording status と canonical 応答を照合する。半量警告と full / auto-deactivation を分ける。
-- 食事前後が recording、22分の食事と $30 / $569、続く RECORD OFF の成功、Kennedy Park の通常 line input を確認する。Full warning、早期停止、入力同期の破綻があれば不採択として記録する。
+- 新たな独立 fresh canonical session を2回以上実行し、元の失敗 fixture を保持したまま別の候補証拠を保存する。開始時刻、全実送信列、送信元・次 input ID、turn ID、行・空行・heading・status、各警告の出現 turn を記録する。
+- Courthouse の LOOK、Newspaper の購入・四段落の READ、Restaurant の BUY MEAL の前後で recording status と canonical 応答を照合する。半量警告は許容し、録画区間変更で移動した警告の出力位置も保存する。Full / auto-deactivation は成功に数えない。
+- 食事前後が recording、22分の食事と支払・残高の実応答（既存観測は $30 / $569）、続く明示 RECORD OFF の成功、非 recording で Kennedy Park の通常 line input に復帰することを確認する。Full warning、早期停止、入力同期の破綻があれば不採択として記録する。
 - この完了境界は原作の九課題達成・帰還評価を保証しない。Formal evaluation、Interface Mode の容量照会、再入場への scope 拡張を自動追加しない。
 - Sol が新しい証拠と採択判断を独立レビューする。設計承認だけでも、追加実測が成功しただけでも M2 / M3 を開始しない。採択が承認され merge された時点で plan / status を更新する。
+- M1 は限定 meal UI の要求・guard・command を確定するが、M3 で行う UI 実装の完成を採択条件にしない。未実装 UI を M1 の前提にして依存関係を循環させない。
 
-## Meal UI の限定案（未承認・未実装）
+## Meal UI の限定設計（設計範囲承認済み・未実装）
 
-汎用 `GLOBAL-OBJECTS` の guard を緩める方法は採らない。M1 では次の限定案をレビュー用に確定し、production 実装は M2 の copy 承認後の M3 に置く。
+汎用 `GLOBAL-OBJECTS` の guard を緩める方法は採らない。次の範囲が承認済みで、具体的な copy は M2、production 実装は M2 の copy 承認・merge 後の M3 に置く。
 
-| 項目 | 提案する境界 |
+| 項目 | 承認された境界 |
 | --- | --- |
 | Identity | Map assignment `meal` / target room `ROYS-PAGODA` / scene object `MEAL` を区別する。Room heading は raw English `Roy's Pagoda` から既存の room lookup で解決する。 |
 | Scope / guards | 既存 `initial2041Presentation` が成立する fresh 初回2041年、Simulation Mode、解決済み `ROYS-PAGODA`、line input のみに限定。QA、後続年、再入場・RESTORE 後の不明状態、未知 room には公開しない。Input が受け付けられない間は操作を無効化する。 |
 | Action | M1 で実測済みの **`BUY MEAL`** 一つに限定。Metadata の command noun `food` から作る `buy food` は runtime で同値確認していないため、勝手に代用しない。Take / Eat / 他レストランの action を追加しない。 |
 | Guided | 既存の draft 経路を再利用し、`BUY MEAL` を編集可能な input へ入れる。自動送信しない。 |
-| Action menus | 明示的な Buy 操作を既存 send 経路で送る。録画を自動開始しない。録画中の食事は M3 の accepted route が明示的に RECORD を送って確認する。 |
-| Copy / accessibility | 対象・action の visible / accessible copy は M2 の packet へ含める。未承認段階では English fallback。既存 locale/history/input-focus/accessibility owner を維持する。 |
+| Action menus / Classic | Action menus は明示的な Buy 操作一回につき `BUY MEAL` を一回、既存 send 経路で送る。Classic に新設候補を追加しない。購入・録画を自動開始しない。録画中の食事は M3 の accepted route が明示的に RECORD を送って確認する。 |
+| Copy / accessibility | 対象・action と、それを囲む visible / accessible な説明を M2 の packet へ含める。来店文は meal / food に言及していないため、既存の「Words/things mentioned here / この場面で言及された語 / 対象」という説明を新規 meal 候補へそのまま適用しない。この限定 surface に即した説明を承認し、無関係な SceneActions 全体の説明・guard を一括変更しない。未承認 copy は English fallback。既存 locale/history/input-focus/accessibility owner を維持する。 |
+| Locale / busy | EN / JA で同じ可用性とし、input を受け付けない busy 中は無効化する。 |
 
-承認後の M1 追加実測ではこの UI の要求・guard・command を採択対象としてレビューし、M3 の実装前に実 UI が完成したと称さない。M3 は Classic / Guided / Action menus × 2 viewport の全経路、draft / 即時送信、scope 外の非表示・English fallback を確認する。
+M1 追加実測ではこの UI の要求・guard・command をレビューし、M3 の実装前に実 UI が完成したと称さない。M3 は Classic / Guided / Action menus × 2 viewport の全経路、EN / JA で同じ可用性、Guided の編集可能 draft / Action menus の一回の明示送信、busy 無効化、scope 外に新設候補がないこと・既存 English fallback を確認する。
 
-## 必要な決定と再開点
+## 決定状態と再開点
 
 | 決定 | 担当 / 現在の状態 |
 | --- | --- |
-| A の新しい録画区間と、full / auto-deactivation を認めない食事前後の完了境界を追加実測してよいか | Astra の設計レビュー + Yasuo の承認 **未記録**。一般的な作業継続の依頼を、この具体案の承認に読み替えない。 |
-| 上記の限定 meal UI 案を、M2 copy / M3 実装の境界として採用してよいか | Astra / Yasuo の設計判断 **未記録**。現在の guard や rendering を変更しない。 |
-| 新しい候補を採択できるか | 上記の承認後に追加実測し、Sol が独立レビュー。**未実測・未採択**。 |
+| A の録画区間と、full / auto-deactivation を認めない食事前後の境界を追加実測する | 上記の Astra の設計判断で **承認済み**。#83 の文書同期・Sol の通常レビュー・merge を待つ。 |
+| 限定 meal UI を M2 copy / M3 実装の設計範囲とする | **承認済み**。具体的 copy の承認・実装・受入は未実施。 |
+| 新しい候補を成功経路として採択する | 追加実測後に Sol が独立レビュー・merge。**追加実測前・未採択**。#78 は open、M2 / M3 は blocked。 |
 
-本書の merge は候補Aの実行許可・UI実装許可・経路採択・M2/M3の unblock を意味しない。承認は該当 PR / Issue の具体案と reviewed SHA に結び付けて記録し、その後に実装者が実行計画と status を同期する。
+再開順序は **#83 の文書同期・Sol の通常レビュー・merge → A案の2 fresh session以上の追加実測 → Sol の経路採択レビュー・merge → M2 の copy 承認・merge → M3 の実装・受入**。#83 merge 後は承認された追加実測を開始できる。更なる経路・完了条件・保証の変更が必要な場合だけ、設計判断へ戻す。M3 の全体受入は従来通り Astra が担当する。

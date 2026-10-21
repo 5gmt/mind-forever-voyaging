@@ -6,6 +6,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、共有 room / map lookup、初期 fieldwork UI を再利用する。M1 が runtime と操作面を確定し、M2 が本文と必要な UI copy を一括承認し、M3 が統合と milestone 全体受入を担う。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、Node.js tests、Playwright / Chromium、GitHub Actions。
 **Spec:** 本書「採択した設計」。2026-10-09 JST に Yasuo が会話で方針とタスク化を承認。実測による経路採択は M1 の review gate に残す。
+**Follow-up design:** [2026-10-21 の Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)で、A案の追加実測と限定 meal UI の設計範囲を承認。追加実測前・成功経路未採択、M2 / M3 は blocked。#83 の文書同期・Sol の通常レビュー・merge 後に追加実測を開始する。
 **Baseline:** PR #77 merge `60fa28811504ad86cbc0389374f8770a5c9b709d`。実装開始時には最新 default branch を使用する。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。
 
@@ -35,7 +36,11 @@
 既承認の九課題名と共通操作 copy は再利用する。
 補助 checklist は推定であり、原作側の正式な九課題達成・帰還評価は今回の完了条件ではない。
 
-以下の候補比較は計画時点の historical source と当時の UI に基づくもの。後に PR #82 で runtime capture を行い、実測証拠のみを受け入れて merge した。成功経路は採択していない。現在の未承認の再開候補は [follow-up decision packet](2041-restaurant-followup-decision.md) に分離する。
+以下の候補比較は計画時点の historical source と当時の UI に基づくもの。後に PR #82 で runtime capture を行い、実測証拠のみを受け入れて merge した。成功経路は採択していない。承認された A案の追加実測列と限定 meal UI の設計範囲は [follow-up decision packet](2041-restaurant-followup-decision.md) に記録する。
+
+A案は初回 recording loop と Courthouse を維持し、Newspaper の徒歩・購入・四段落の読書・帰着をすべて残す。Bodanski Square で購入前に RECORD、読書後・帰路前に RECORD OFF とし、Restaurant は Roy's Pagoda で RECORD → BUY MEAL → RECORD OFF、非 recording で公園へ戻る。**Restaurant milestone 用の連続経路を追加**する判断であり、既存 Courthouse / Newspaper の成功 fixture・受入経路・回帰テストは保持する。過去の milestone の受入条件を遡って変えず、#82 の失敗 fixture も上書きしない。Source に基づく録画時間の見積り98→68は、実測容量や成功の証明ではない。
+
+限定 meal UI は既存の初回2041年判定、Simulation Mode、raw English から解決した `ROYS-PAGODA`、line input を条件に、観測済み `BUY MEAL` 一つを提供する設計とする。Guided は編集可能な draft、Action menus は明示押下一回につき一回送信、Classic には追加しない。EN / JA で同じ可用性とし、busy 中は無効化する。QA、後続年、再入場、RESTORE 不明状態、未知 room には新設候補を出さず、既存 fallback を保持する。自動購入・自動録画、汎用 GLOBAL-OBJECTS guard の緩和、新 renderer は追加しない。具体的 copy は M2、実装・受入は M3 が担う。
 レストランは既存 `meal` map target と短い徒歩経路を使える見込みがある。
 公共交通は時刻・到着・発車と複数の同名 Tube Station、自宅は家族・時間帯、帰還評価は録画内容と phase 分岐が増えるため、今回の候補から外す。
 この選択だけで未観測 prose や完了結果を承認しない。
@@ -55,6 +60,8 @@ M1 は少なくとも二つの独立した fresh canonical session で、既存 
 継続に失敗した場合も失敗を記録し、別 session の食事だけで連続経路の成功を代用しない。
 原作の状態を書き換えて録画容量や残高を回避しない。
 Canonical output から直接確認できない容量の残量や内部課題 flag は、未観測と明記し、推定値を runtime fact にしない。
+
+追加実測では全実送信列、current input / turn ID、status、警告の出現 turn を保存する。Courthouse LOOK、新聞購入・全記事 READ、食事の前後の canonical recording、食事22分と支払の実応答、食事後の recording 継続、明示 RECORD OFF の成功、非 recording で公園の通常入力へ復帰することを確認する。Half-full 警告は許容して、録画区間変更によって移動した出力位置も保持する。Full / auto-deactivation は成功に数えない。M1 の採択に M3 の未実装 meal UI の完成を要求せず、UI の要求・guard・command と現行操作面の監査を渡す。
 
 同一 session での録画が成立しない、必要な UI が既存境界で安全に提供できない、または richer projection が必要なら、M1 の事実を保存して M2 / M3 を止める。
 Astra が設計を再評価し、採用経路・完了条件・保証を変える場合は Yasuo の判断を記録してから本書と Issue を更新する。
@@ -95,9 +102,11 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 | ID / Issue | 実装担当 | 通常レビュー | 依存関係 / 状態 |
 | --- | --- | --- | --- |
-| M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | 3 fresh session の実測証拠は #82 で独立レビュー・merge 済み。#78 は open、採用経路なし。再開候補の Astra / Yasuo 判断待ち。 |
+| M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | 3 fresh session の実測証拠は #82 で独立レビュー・merge 済み。A案と限定 UI の設計範囲は承認済み。#83 の文書同期・Sol の通常レビュー・merge 後に追加実測。#78 は open、成功経路未採択。 |
 | M2 / [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79) | Codex Cloud | Chat モード Sol | M1 の実測・経路採択の review / merge を待つ。copy 未承認。 |
 | M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | M1 / M2 の merge を待つ。production 未実装。 |
+
+再開 gate は **#83 の同期・通常レビュー・merge → M1 の2 fresh session以上の追加実測 → Sol の採択レビュー・merge → M2 の copy 承認・merge → M3**。この文書同期に Astra の再承認は不要。A案でも成立しない、または更なる経路・完了条件・保証の変更が必要な場合だけ設計判断へ戻す。
 
 ### M1: Runtime — capture the 2041 restaurant fieldwork route
 
@@ -113,8 +122,10 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 - [x] 採取した fixture に基づく regression を追加し、command 列、current-turn identity、原文保持、既存 ordinary-turn projector での表現可否を固定する。未知出力を翻訳済みとして埋めない。
 - [x] CI retention を14日に変更した。既存 Actions の SHA pin、`if: always()`、失敗時の job failure と upload 条件を保持。Current-head CI artifact の実際の有効期限は PR の引き渡し記録で確認する。
 - [x] `npm run lint`、`npx tsc --noEmit`、`npm test`（29件）、`npm run test:e2e`（26件）、canonical checksum、`git diff --check` を実行。runtime evidence と採択 / 停止判断、本書と status を同じ PR に含める。
+- [ ] #83 の文書同期・Sol の通常レビュー・merge 後、承認された A案を2 fresh session以上で実行し、全送信列・input / turn ID・status・警告 turn を別候補 fixture に追加する。既存の成功・失敗 fixture と回帰テストを保持する。
+- [ ] 食事後の recording、明示停止、非 recording の公園通常入力までを確認し、Sol の独立した経路採択レビュー・merge を受ける。未実装 meal UI の完成をこの採択条件にしない。
 
-**Done:** Sol が runtime・UI 監査・既存 projection の適合性・採択経路を確認し、M1 を merge したこと。失敗記録だけの merge は M2 / M3 を unblock しない。新しい経路や保証が必要な場合は設計判断への link を必要とする。
+**Done:** Sol が runtime・UI 要求と現行操作面の監査・既存 projection の適合性・採択経路を確認し、採択 PR を merge したこと。M3 の meal UI 実装完了は要求しない。失敗記録だけの merge は M2 / M3 を unblock しない。更なる経路や保証の変更が必要な場合は設計判断への link を必要とする。
 
 ### M2: Copy — approve restaurant story and controls together
 
@@ -123,6 +134,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 - [ ] M1 の採択経路で実際に観測した stable story leaves と新規地名を抽出し、既承認 copy と重複・衝突を照合する。
 - [ ] 来店・食事・支払・帰着の本文、地図課題 label、room name、対象名・action、visible / accessible name を一つの packet に記録する。既存 `Restaurant` 課題名と Roy’s Pagoda の room / map identity を混同しない。
+- [ ] 限定 meal 操作を囲む visible / accessible な説明も監査・承認する。来店文に meal / food の言及がないため、既存の「Words/things mentioned here / この場面で言及された語 / 対象」をそのまま新設候補へ適用しない。限定 surface の実態に即した copy とし、無関係な SceneActions の説明・guard を一括変更しない。
 - [ ] 値の保持方針、optional / unknown English fallback、未観測失敗枝、後続 phase / year の非対象を明示する。表示範囲に合わせて既存 guard を変えない。
 - [ ] Fixture の文字列・行順・blank-line boundary と表を照合し、source-only prose を追加していないこと、翻訳が意味関係や失敗を変えないことを確認する。
 - [ ] `git diff --check` と applicable CI を確認し、本書と status を更新して Sol の copy review に出す。文書だけの変更ではローカル E2E を実施したと記載しない。
@@ -139,6 +151,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 - [ ] current turn の meal response、recording の原作出力、支払・時刻と補助 checklist の推定を別々に検証する。同じ command の過去 echo、訪問だけ、成功語の部分一致を録画完了の代用にしない。
 - [ ] Classic / Guided / Action menus × 1440×900 / 390×844 の6経路を、各 fresh canonical session の Courthouse → Newspaper → Restaurant → Kennedy Park / 録画停止・入力復帰として E2E にする。M1 の採択した録画区間を使う。
 - [ ] Guided / Action menus では map / route / exits / compass と対象操作を実 UI から使い、English draft または既存即時送信、可視 / accessible copy、食事本文、drawer / 本文の scroll、入力・focus 復帰を確認する。Classic に assisted answer / controls を出さない。
+- [ ] 限定 meal UI の EN / JA で同じ可用性、Guided の編集可能 draft、Action menus の明示押下一回につき `BUY MEAL` 一回送信、busy 中の無効化を検証する。Classic、QA、後続年、再入場、RESTORE 不明状態、未知 room では新設候補なし、既存 fallback を確認する。M2 承認の周囲の visible / accessible 説明も照合する。
 - [ ] EN → JA → EN、長い履歴、unknown leaf / place、再入場・RESTORE 不明状態の regression を保持し、`lang` と accessibility owner の非重複を確認する。未実施の実保存データ RESTORE、音声 screen reader、本番配備を検証済みと称さない。
 - [ ] 適用する full checks / canonical checksum を実行し、current-head CI と6経路の screenshots、turn / input / status・scroll・accessibility 記録を acceptance 文書へ対応付ける。
 - [ ] Codex が実装済み coverage、受入待ち状態、merge を完了点とする最終 roll-up を本書と status に準備し、Sol の通常レビューを受ける。
@@ -152,3 +165,4 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 - 2026-10-09 JST: Yasuo がレストラン milestone と review 分担を承認。計画書と M1–M3 を作成。計画 PR は独立レビュー待ち。新規 runtime 観測、copy approval、production integration、14日 retention の適用は未実施。
 - 2026-10-21 JST: #81 の merge `43b00db08fc5c2726095875b21dd381b42b0b682` を確認し M1 を実行。[Runtime evidence](../restaurant-runtime-evidence.md) と3 fresh session の fixture、UI 台帳、regression、CI retention 14日設定を追加。Travel 録画は食事前、meal-only は食事応答で buffer full / auto-deactivation。現地の食事対象操作も表示されない。採用経路なし、M2 / M3 は停止継続。Sol の独立レビューと Astra / Yasuo の設計判断へ渡し、完了条件を実装側で変更しない。
 - 2026-10-21 JST（merge 後）: [PR #82 の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) は evidence-only として受け入れ、`f45d268282a40d63bf88e1eaf95b01c96961eeea` へ merge。[#78 のコメント](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い #78 は open、M2/M3 は blocked を維持する。[再開判断用資料](2041-restaurant-followup-decision.md)を追加し、録画前提・限定 meal UI の具体案を未承認の候補として整理。追加 runtime や production 変更には着手していない。
+- 2026-10-22 JST: [2026-10-21 の Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [#83 レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/83#pullrequestreview-5600151543)を反映。A案の追加実測方針・限定 meal UI の設計範囲は承認済み、追加実測前。既存成功経路と失敗記録の保持、限定 surface の説明監査、M1 に UI 完成を要求しない再開 gate を明記。#83 の Sol 通常レビュー・merge 待ち、#78 open・経路未採択・M2/M3 blocked を維持する。

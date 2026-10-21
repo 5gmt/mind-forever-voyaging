@@ -4,9 +4,11 @@
 
 **採用経路なし。M2 #79 / M3 #80 は引き続き停止する。** 同一 fresh canonical session の Courthouse → Newspaper を変更せず、Roy’s Pagoda で食事・支払を行い Kennedy Park の通常 line input まで戻れた。しかし、公園から録画すると食事前に buffer が満杯になり、食事直前から録画しても食事応答の末尾で自動停止する。さらに現行 Guided / Action menus に食事対象の操作が現れない。
 
-食事直前の `Simulation Mode (recording)` は観測済みである。食事の全時間が録画されたこと、内部の課題 flag、録画の正式な帰還評価は未観測であり、成功として採択しない。Astra に録画警告を含む完了境界と必要な対象操作の扱いを戻し、重要な設計変更には Yasuo の承認を記録する。
+食事直前の `Simulation Mode (recording)` は観測済みである。食事の全時間が録画されたこと、内部の課題 flag、録画の正式な帰還評価は未観測であり、成功として採択しない。この失敗に基づき、録画区間と必要な対象操作の扱いを設計判断へ戻した。
 
-**2026-10-21 JST の merge 後状態:** [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は [Sol の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) 後、evidence-only として `f45d268282a40d63bf88e1eaf95b01c96961eeea` へ merge 済み。[#78 の判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、失敗記録の merge は経路採択や後続の unblock を意味しない。[再開判断用の提案](plans/2041-restaurant-followup-decision.md)はこの fixture と source を根拠にした未承認案であり、追加実測済みの結果ではない。
+**2026-10-21 JST の merge 後状態:** [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は [Sol の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) 後、evidence-only として `f45d268282a40d63bf88e1eaf95b01c96961eeea` へ merge 済み。[#78 の判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、失敗記録の merge は経路採択や後続の unblock を意味しない。
+
+**現在の再開判断:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)で、[A案の追加実測方針と限定 meal UI の設計範囲](plans/2041-restaurant-followup-decision.md)は承認済み。追加実測前であり、以下の3 session の失敗はそのまま保持する。#83 の文書同期・Sol の通常レビュー・merge 後に、別の候補 fixture を2 fresh session以上で採取する。既存 Courthouse / Newspaper の成功 fixture・受入経路・回帰テストも保持し、restaurant milestone 用の連続経路を追加する。Half-full 警告と移動した出力 turn を保存し、full / auto-deactivation は成功に数えない。食事前後の recording、明示停止の成功、非 recording の公園通常入力までを Sol が採択レビュー・merge するまでは、#78 open・経路未採択・M2/M3 blocked を維持する。M1 採択に M3 の meal UI 実装完了は要求しない。
 
 ## 保存した証拠と再現
 
@@ -83,7 +85,9 @@ ERROR: Record feature not currently active.
 | SceneActions | Elm & Park は `park Examine`、Elm Underpass は `restaurant Examine`。現地 Roy's Pagoda は来店・録画開始・食事後・停止要求後とも**対象なし**。 | Guided は語を draft、Action menus は action を送信する既存機構。`MEAL` / name `food` / command noun `food` の generic `Buy` → `buy food` は source-derived metadata にあるが、実際の到達可能な meal UI ではない。手入力 `BUY MEAL` と区別する。 |
 | Recording controls | `Record` / `録画開始`、`Stop recording` / `録画停止`、drawer の `Start RECORD` / `RECORD を開始`、`● RECORDING`。 | Current raw status / input に従う。Auto-deactivation 後の表示と canonical warning を保持。Checklist の3/9だけを録画成立の根拠にしない。 |
 
-`app/StoryTools.tsx` の action generator と `app/PrismEdition.tsx` の contextual object guard を照合した。`MEAL` は `GLOBAL-OBJECTS` にあり、room/passage の可用性・語の言及・候補の絞り込みを通っていない。Generic BUY handler の存在だけで利用可能な action と称さず、guard を緩めたり未観測対象を公開したりしていない。必要な対象保持・完了条件の扱いはレビュー側の設計判断に残す。
+`app/StoryTools.tsx` の action generator と `app/PrismEdition.tsx` の contextual object guard を照合した。`MEAL` は `GLOBAL-OBJECTS` にあり、room/passage の可用性・語の言及・候補の絞り込みを通っていない。Generic BUY handler の存在だけで利用可能な action と称さず、guard を緩めたり未観測対象を公開したりしていない。
+
+承認された限定 UI は、既存の初回2041年判定・Simulation Mode・解決済み `ROYS-PAGODA`・line input にのみ `BUY MEAL` を提供する設計で、現行 UI の観測結果ではない。来店文に meal / food の言及がないため、既存の「この場面で言及された語 / 対象」という説明の下にそのまま候補を追加しない。M2 が対象・action 名と限定 surface を囲む visible / accessible な説明を承認し、無関係な説明や汎用 guard を一括変更しない。M3 が EN / JA の同じ可用性、Guided draft / Action menus 一回の明示送信、busy 無効化、scope 外の新設候補なし・既存 fallback を検証する。Copy・実装・受入は未実施。
 
 ## Stable / dynamic / optional / unknown と projection
 
@@ -112,4 +116,4 @@ ERROR: Record feature not currently active.
 
 Fixture regression は保存前に `restaurant runtime evidence must be captured` で RED、保存後に GREEN を確認した。最終 local checks は `npm run lint`、`npx tsc --noEmit`、`npm test`（29/29）、`npm run test:e2e`（26/26、4.7分）、canonical SHA-256、`git diff --check` が通過。Current-head CI URL・artifact URL・実際の14日期限は PR の引き渡し記録にまとめる。`.github/workflows/ci.yml` の `retention-days: 14` と `AGENTS.md` / status を同期し、Actions の full SHA pin、`if: always()`、upload path / if-no-files-found、先行 job と失敗伝播は保持する。
 
-Sol の evidence-only レビューは完了した。M1 の成功経路採択、Astra / Yasuo の再開設計判断、M2 copy / M3 6経路受入、実保存データの RESTORE、音声読み上げ、本番配備は完了扱いにしない。
+Sol の evidence-only レビューと、Astra の A案・限定 UI の再開設計判断は完了した。追加実測、M1 の成功経路採択、M2 copy / M3 6経路受入、実保存データの RESTORE、音声読み上げ、本番配備は完了扱いにしない。
