@@ -156,13 +156,15 @@ export const acceptNewspaperFieldwork = async (
       && end.left >= viewport.left && end.right <= viewport.right;
   });
   const readToEnd = async (label: string) => {
+    // Hover can scroll the iframe/element into view. Finish pointer preparation
+    // before positioning the article and measuring the wheel's starting point.
+    await surface.hover();
     await paragraphs[0].evaluate((element) => element.scrollIntoView({ block: "start" }));
     // On a tall viewport all four paragraphs can already fit at the tail.
     // Start earlier in the history so reaching the editorial requires a wheel.
     await surface.evaluate((element) => { element.scrollTop = Math.max(0, element.scrollTop - element.clientHeight / 2); });
     await expect(paragraphs[0]).toBeInViewport();
     const startTop = await surface.evaluate((element) => element.scrollTop);
-    await surface.hover();
     for (let step = 0; step < 12 && !(await lastTextVisible()); step++) {
       const previousTop = await surface.evaluate((element) => element.scrollTop);
       await page.mouse.wheel(0, 180);

@@ -100,6 +100,10 @@ ERROR: Record feature not currently active.
 
 初回の npm bootstrap は home cache が書けず失敗したため、workspace 配下の cache / prefix で成功させた。初回 lint は repository 内に置いた Chromium 配布物まで走査したため失敗し、ブラウザ・npm の scratch assets を repository 外の `/workspace/work/issue78/` へ移した。Capture 書き込み途中に走った初回 npm test は不完全 fixture で失敗した。最終検証は完成 fixture で再実行し通過した。これらを canonical route failure と数えない。
 
+初回 head `1c0100989c32c4b6f48c77b17ffe090babe02059` の [CI 39572145503](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39572145503) は verify 成功、browser-e2e は24/26だった。既存 newspaper の narrow Guided / Action menus が `newspaper-acceptance.ts:171` の scroll 比較で失敗した（開始5512/5476、12回の wheel 後2160）。旧 helper は開始位置の計測後に `hover()` を実行していた。Playwright の pointer 準備は iframe/要素を scrollIntoView するため、hover を記事の位置決め・基準値計測の前へ移した。Wheel 増加、clipping を含む本文末尾、iframe/input の viewport、focus の全 assertion を保持し、retry や成功条件の緩和は加えていない。Production scroll code は変更しない。
+
+その失敗 run でも `if: always()` により [artifact 12332657993](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39572145503/artifacts/12332657993) を保存できた。`created_at=2026-10-21T08:53:48Z`、`expires_at=2026-11-04T08:53:46Z`（11月4日17:53:46 JST）を API で確認し、設定14日と実期限が一致する。旧 head の失敗を current-head の成功として扱わず、最終 CI 結果は PR 本文へ別途記録する。
+
 本 fixture は独立3セッションの証拠で、好都合な prose や食事単独の別 session で連続経路を代用していない。先行経路の短縮、save/restore、原作 state の編集、buffer 消去、production UI の変更は行っていない。
 
 ## 検証と CI

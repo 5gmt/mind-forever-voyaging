@@ -104,6 +104,8 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 **Files:** 新規 `scripts/capture-restaurant-runtime.mjs`、`tests/fixtures/parchment-restaurant-runtime-observed.json`、`docs/restaurant-runtime-evidence.md`。更新 `.github/workflows/ci.yml`、`tests/rendered-html.test.mjs`、`AGENTS.md` の retention 説明（必要箇所）、本書、`PROJECT_STATUS.md`。
 **Interfaces:** 既存 `scripts/capture-newspaper-runtime.mjs` と canonical bridge-v3 の観測形式を参照する。成果物は session / path / command ごとの exact English presentation、status、current input / turn identity、stable / dynamic / optional 分類、実操作 surface 台帳、経路採択判断。独自の production API は追加しない。
 
+**CI follow-up:** 初回 M1 CI で既存 newspaper narrow acceptance の scroll 計測が失敗したため、`tests/e2e/newspaper-acceptance.ts` の hover を基準位置の設定前へ移す。既存の末尾可読性・wheel・focus assertion と production code を保持する限定的な harness 修正とする。
+
 - [x] 現行 capture の同期方法と初回状態を確認し、fresh session、先行二経路、追加経路を再現する capture script を作る。各 command で現在の input ID と新しい echo / line-input を待つ。
 - [x] 二つ以上の独立 session を実行し、開始日時や観測された変動を記録する。body の行順・空行・heading、status、input kind、支払・残高・時刻、recording 応答・警告を fixture に保存する。起動 character prompt は保存範囲外であることを記録した。
 - [x] 食事を録画できる最小限の区間を調査する。先行経路を黙って変えず、候補と採用案を区別する。正常経路と harness failure / canonical failure の分類を残す。
