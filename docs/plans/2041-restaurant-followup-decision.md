@@ -87,7 +87,7 @@ SW → W → W → S → RECORD → BUY MEAL → RECORD OFF → N → E → E �
 | Action | M1 で実測済みの **`BUY MEAL`** 一つに限定。Metadata の command noun `food` から作る `buy food` は runtime で同値確認していないため、勝手に代用しない。Take / Eat / 他レストランの action を追加しない。 |
 | Guided | 既存の draft 経路を再利用し、`BUY MEAL` を編集可能な input へ入れる。自動送信しない。 |
 | Action menus / Classic | Action menus は明示的な Buy 操作一回につき `BUY MEAL` を一回、既存 send 経路で送る。Classic に新設候補を追加しない。購入・録画を自動開始しない。録画中の食事は M3 の accepted route が明示的に RECORD を送って確認する。 |
-| Copy / accessibility | 対象・action と、それを囲む visible / accessible な説明を M2 の packet へ含める。来店文は meal / food に言及していないため、既存の「Words/things mentioned here / この場面で言及された語 / 対象」という説明を新規 meal 候補へそのまま適用しない。この限定 surface に即した説明を承認し、無関係な SceneActions 全体の説明・guard を一括変更しない。未承認 copy は English fallback。既存 locale/history/input-focus/accessibility owner を維持する。 |
+| Copy / accessibility | 対象・action と、それを囲む visible / accessible な説明を M2 の packet へ含める。来店文は meal / food に言及していないため、既存の`Words mentioned here` / `この場面で言及された語`、`Actions for things mentioned here` / `この場面で言及された対象へのアクション`という説明を新規 meal 候補へそのまま適用しない。この限定 surface に即した説明を承認し、無関係な SceneActions 全体の説明・guard を一括変更しない。未承認 copy は English fallback。既存 locale/history/input-focus/accessibility owner を維持する。 |
 | Locale / busy | EN / JA で同じ可用性とし、input を受け付けない busy 中は無効化する。 |
 
 M1 追加実測ではこの UI の要求・guard・command をレビューし、M3 の実装前に実 UI が完成したと称さない。M3 は Classic / Guided / Action menus × 2 viewport の全経路、EN / JA で同じ可用性、Guided の編集可能 draft / Action menus の一回の明示送信、busy 無効化、scope 外に新設候補がないこと・既存 English fallback を確認する。

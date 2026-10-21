@@ -87,7 +87,7 @@ ERROR: Record feature not currently active.
 
 `app/StoryTools.tsx` の action generator と `app/PrismEdition.tsx` の contextual object guard を照合した。`MEAL` は `GLOBAL-OBJECTS` にあり、room/passage の可用性・語の言及・候補の絞り込みを通っていない。Generic BUY handler の存在だけで利用可能な action と称さず、guard を緩めたり未観測対象を公開したりしていない。
 
-承認された限定 UI は、既存の初回2041年判定・Simulation Mode・解決済み `ROYS-PAGODA`・line input にのみ `BUY MEAL` を提供する設計で、現行 UI の観測結果ではない。来店文に meal / food の言及がないため、既存の「この場面で言及された語 / 対象」という説明の下にそのまま候補を追加しない。M2 が対象・action 名と限定 surface を囲む visible / accessible な説明を承認し、無関係な説明や汎用 guard を一括変更しない。M3 が EN / JA の同じ可用性、Guided draft / Action menus 一回の明示送信、busy 無効化、scope 外の新設候補なし・既存 fallback を検証する。Copy・実装・受入は未実施。
+承認された限定 UI は、既存の初回2041年判定・Simulation Mode・解決済み `ROYS-PAGODA`・line input にのみ `BUY MEAL` を提供する設計で、現行 UI の観測結果ではない。来店文に meal / food の言及がないため、既存の`Words mentioned here` / `この場面で言及された語`、`Actions for things mentioned here` / `この場面で言及された対象へのアクション`という説明の下にそのまま候補を追加しない。M2 が対象・action 名と限定 surface を囲む visible / accessible な説明を承認し、無関係な説明や汎用 guard を一括変更しない。M3 が EN / JA の同じ可用性、Guided draft / Action menus 一回の明示送信、busy 無効化、scope 外の新設候補なし・既存 fallback を検証する。Copy・実装・受入は未実施。
 
 ## Stable / dynamic / optional / unknown と projection
 

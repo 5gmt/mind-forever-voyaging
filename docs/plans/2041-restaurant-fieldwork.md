@@ -134,7 +134,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 - [ ] M1 の採択経路で実際に観測した stable story leaves と新規地名を抽出し、既承認 copy と重複・衝突を照合する。
 - [ ] 来店・食事・支払・帰着の本文、地図課題 label、room name、対象名・action、visible / accessible name を一つの packet に記録する。既存 `Restaurant` 課題名と Roy’s Pagoda の room / map identity を混同しない。
-- [ ] 限定 meal 操作を囲む visible / accessible な説明も監査・承認する。来店文に meal / food の言及がないため、既存の「Words/things mentioned here / この場面で言及された語 / 対象」をそのまま新設候補へ適用しない。限定 surface の実態に即した copy とし、無関係な SceneActions の説明・guard を一括変更しない。
+- [ ] 限定 meal 操作を囲む visible / accessible な説明も監査・承認する。来店文に meal / food の言及がないため、既存の`Words mentioned here` / `この場面で言及された語`、`Actions for things mentioned here` / `この場面で言及された対象へのアクション`をそのまま新設候補へ適用しない。限定 surface の実態に即した copy とし、無関係な SceneActions の説明・guard を一括変更しない。
 - [ ] 値の保持方針、optional / unknown English fallback、未観測失敗枝、後続 phase / year の非対象を明示する。表示範囲に合わせて既存 guard を変えない。
 - [ ] Fixture の文字列・行順・blank-line boundary と表を照合し、source-only prose を追加していないこと、翻訳が意味関係や失敗を変えないことを確認する。
 - [ ] `git diff --check` と applicable CI を確認し、本書と status を更新して Sol の copy review に出す。文書だけの変更ではローカル E2E を実施したと記載しない。
