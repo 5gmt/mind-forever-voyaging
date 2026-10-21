@@ -79,13 +79,14 @@ N2 / U1 の copy、N3 の共有 room / map lookup、U2 / U3 の初回2041年 UI 
 2026-10-09 JST に Yasuo が[レストラン計画](./docs/plans/2041-restaurant-fieldwork.md)の方針とタスク化を承認した。
 計画 [PR #81](https://github.com/5gmt/mind-forever-voyaging/pull/81) は独立レビュー後に merge 済み（`43b00db08fc5c2726095875b21dd381b42b0b682`）。
 M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) は3独立 fresh session の録画区間比較、支払・時刻・入力境界、現行操作面の証拠と regression を追加した。[実測記録](./docs/restaurant-runtime-evidence.md)の通り、移動中または食事応答で buffer full により自動停止し、現行 assisted UI の食事対象操作も未到達である。
-採用経路は未承認であり、M1 は独立レビュー待ち。警告を含む完了条件・必要な操作面を Astra / Yasuo の設計判断へ戻す。M2 / M3 は停止を維持し、copy approval と production integration は未実施である。
+[PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は Sol の独立レビュー後、evidence-only として merge 済み（`f45d268282a40d63bf88e1eaf95b01c96961eeea`）。[レビューと #78 の継続判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、採用経路は未承認、#78 は open のままである。
+[再開判断用の提案](./docs/plans/2041-restaurant-followup-decision.md)に、徒歩経路を維持し新聞の録画区間だけを購入・読書の前後へ移す追加実測案と、初回2041年・Roy's Pagoda に限定する meal UI 案を記録した。いずれも未承認・未実行であり、Astra / Yasuo の設計判断を待つ。M2 / M3 は停止を維持し、copy approval と production integration は未実施である。
 成立しない場合は M2 / M3 を開始せず、別 session の成功で代用せずに設計判断へ戻す。
 
 ## 基本的な作業順
 
 1. 計画 PR #81 はレビュー・merge 済み。通常 PR は独立した Sol review、milestone 締めは Astra / ChatGPT Work の全体受入とする分担を試行する。
-2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): 連続経路の実測と UI 監査、14日 artifact retention の変更を独立レビューへ提出。Sol が観測と停止判断を確認し、Astra / Yasuo の設計判断と経路採択・merge が成立するまで後続を開始しない。
+2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): 実測・監査・14日 artifact retention は #82 でレビュー・merge 済み。次は再開案を Astra / Yasuo が判断し、承認された場合だけ追加実測する。Sol の経路採択レビュー・merge が成立するまで後続を開始しない。
 3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): M1 の採択と merge 後、Codex Cloud が story と必要な地名・地図・対象操作 copy を一つの packet にし、Sol が承認する。
 4. M3 [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80): M1 / M2 の merge 後、Codex Cloud が catalog / UI / tests を統合し、6経路の受入記録と status の最終集約を用意する。Sol の通常レビュー後、Astra が全体受入を確認して最終 PR を merge し、#29 へ結果を戻す。
 
@@ -101,7 +102,7 @@ General GridWindow renderer、geometry-derived identity、runtime machine transl
 - Current delivery baseline は Next.js static export と Netlify である。
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
-- CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。本 M1 branch は Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を14日間保持する設定へ変更した。既存 default branch への適用は merge 待ちで、current-head run の実際の期限は PR に記録する。
+- CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。#82 の merge により、default branch は Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を14日間保持する。#82 reviewed-head run の実期限もレビュー記録で確認済み。
 
 ## 更新の契機
 

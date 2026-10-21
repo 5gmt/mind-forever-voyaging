@@ -35,7 +35,7 @@
 既承認の九課題名と共通操作 copy は再利用する。
 補助 checklist は推定であり、原作側の正式な九課題達成・帰還評価は今回の完了条件ではない。
 
-候補比較は historical source と現行 UI に基づく設計判断であり、レストラン経路の新規 runtime capture はまだ行っていない。
+以下の候補比較は計画時点の historical source と当時の UI に基づくもの。後に PR #82 で runtime capture を行い、実測証拠のみを受け入れて merge した。成功経路は採択していない。現在の未承認の再開候補は [follow-up decision packet](2041-restaurant-followup-decision.md) に分離する。
 レストランは既存 `meal` map target と短い徒歩経路を使える見込みがある。
 公共交通は時刻・到着・発車と複数の同名 Tube Station、自宅は家族・時間帯、帰還評価は録画内容と phase 分岐が増えるため、今回の候補から外す。
 この選択だけで未観測 prose や完了結果を承認しない。
@@ -95,7 +95,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 | ID / Issue | 実装担当 | 通常レビュー | 依存関係 / 状態 |
 | --- | --- | --- | --- |
-| M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | #81 merge 後に3 fresh session を capture。録画警告と食事 UI 未到達を確認。独立レビュー・設計再評価待ち、採用経路なし。 |
+| M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | 3 fresh session の実測証拠は #82 で独立レビュー・merge 済み。#78 は open、採用経路なし。再開候補の Astra / Yasuo 判断待ち。 |
 | M2 / [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79) | Codex Cloud | Chat モード Sol | M1 の実測・経路採択の review / merge を待つ。copy 未承認。 |
 | M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | M1 / M2 の merge を待つ。production 未実装。 |
 
@@ -151,3 +151,4 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 - 2026-10-09 JST: Yasuo がレストラン milestone と review 分担を承認。計画書と M1–M3 を作成。計画 PR は独立レビュー待ち。新規 runtime 観測、copy approval、production integration、14日 retention の適用は未実施。
 - 2026-10-21 JST: #81 の merge `43b00db08fc5c2726095875b21dd381b42b0b682` を確認し M1 を実行。[Runtime evidence](../restaurant-runtime-evidence.md) と3 fresh session の fixture、UI 台帳、regression、CI retention 14日設定を追加。Travel 録画は食事前、meal-only は食事応答で buffer full / auto-deactivation。現地の食事対象操作も表示されない。採用経路なし、M2 / M3 は停止継続。Sol の独立レビューと Astra / Yasuo の設計判断へ渡し、完了条件を実装側で変更しない。
+- 2026-10-21 JST（merge 後）: [PR #82 の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) は evidence-only として受け入れ、`f45d268282a40d63bf88e1eaf95b01c96961eeea` へ merge。[#78 のコメント](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い #78 は open、M2/M3 は blocked を維持する。[再開判断用資料](2041-restaurant-followup-decision.md)を追加し、録画前提・限定 meal UI の具体案を未承認の候補として整理。追加 runtime や production 変更には着手していない。

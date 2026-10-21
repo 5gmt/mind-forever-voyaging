@@ -4,7 +4,9 @@
 
 **採用経路なし。M2 #79 / M3 #80 は引き続き停止する。** 同一 fresh canonical session の Courthouse → Newspaper を変更せず、Roy’s Pagoda で食事・支払を行い Kennedy Park の通常 line input まで戻れた。しかし、公園から録画すると食事前に buffer が満杯になり、食事直前から録画しても食事応答の末尾で自動停止する。さらに現行 Guided / Action menus に食事対象の操作が現れない。
 
-食事直前の `Simulation Mode (recording)` は観測済みである。食事の全時間が録画されたこと、内部の課題 flag、録画の正式な帰還評価は未観測であり、成功として採択しない。Astra に録画警告を含む完了境界と必要な対象操作の扱いを戻し、重要な設計変更には Yasuo の承認を記録する。独立した Chat モード Sol のレビューと M1 の merge 自体も未完了である。失敗記録の merge は後続を unblock しない。
+食事直前の `Simulation Mode (recording)` は観測済みである。食事の全時間が録画されたこと、内部の課題 flag、録画の正式な帰還評価は未観測であり、成功として採択しない。Astra に録画警告を含む完了境界と必要な対象操作の扱いを戻し、重要な設計変更には Yasuo の承認を記録する。
+
+**2026-10-21 JST の merge 後状態:** [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は [Sol の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) 後、evidence-only として `f45d268282a40d63bf88e1eaf95b01c96961eeea` へ merge 済み。[#78 の判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、失敗記録の merge は経路採択や後続の unblock を意味しない。[再開判断用の提案](plans/2041-restaurant-followup-decision.md)はこの fixture と source を根拠にした未承認案であり、追加実測済みの結果ではない。
 
 ## 保存した証拠と再現
 
@@ -110,4 +112,4 @@ ERROR: Record feature not currently active.
 
 Fixture regression は保存前に `restaurant runtime evidence must be captured` で RED、保存後に GREEN を確認した。最終 local checks は `npm run lint`、`npx tsc --noEmit`、`npm test`（29/29）、`npm run test:e2e`（26/26、4.7分）、canonical SHA-256、`git diff --check` が通過。Current-head CI URL・artifact URL・実際の14日期限は PR の引き渡し記録にまとめる。`.github/workflows/ci.yml` の `retention-days: 14` と `AGENTS.md` / status を同期し、Actions の full SHA pin、`if: always()`、upload path / if-no-files-found、先行 job と失敗伝播は保持する。
 
-M1 の採択レビュー、Sol / Astra の判断、未実施の M2 copy / M3 6経路受入、実保存データの RESTORE、音声読み上げ、本番配備は完了扱いにしない。
+Sol の evidence-only レビューは完了した。M1 の成功経路採択、Astra / Yasuo の再開設計判断、M2 copy / M3 6経路受入、実保存データの RESTORE、音声読み上げ、本番配備は完了扱いにしない。
