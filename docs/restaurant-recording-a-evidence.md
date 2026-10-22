@@ -2,7 +2,7 @@
 
 ## 判断と状態
 
-**承認された A案は、2つの独立 fresh canonical session で食事前後の録画継続・明示停止・公園帰着を満たした。成功経路としての採択は Sol の独立レビュー・merge 待ち。#78 は open、M2 #79 / M3 #80 は blocked を維持する。**
+**A案は [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により restaurant milestone 用の成功経路として採択済み。#78 / M1 は完了、M2 #79 を開始可能。M3 #80 は M2 copy approval / merge まで blocked。** 以下はその採択根拠となった2 fresh session の実測記録である。
 
 設計の正本は [Astra の判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)。[PR #83 の通常レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/83#pullrequestreview-5613806742)と [merge 後の開始判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6340253840)を確認し、merge `bdc6f84e3de34b59d8477edcc5657d87f55b7362` から実行した。
 
@@ -84,7 +84,7 @@ Production UI は変更しておらず、前回の48 sample の現行操作面�
 
 全39観測 × 2 session は既存 `reconcilePresentationHistory` で representable。新規 renderer、VM telemetry、source からの prose 補完、Japanese parser は追加していない。Canonical SHA-256 は `14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d`。
 
-未実施は成功経路の独立採択レビュー・merge、M2 copy approval、M3 の UI 実装・3 modes × 2 viewports の全体受入、正式な九課題評価、後続年・再入場、実保存データ RESTORE、音声 screen reader、本番配備。M1 に M3 の UI 完成を要求しない。
+成功経路の独立採択レビュー・merge は完了。未実施は M2 copy approval、M3 の UI 実装・3 modes × 2 viewports の全体受入、正式な九課題評価、後続年・再入場、実保存データ RESTORE、音声 screen reader、本番配備。M1 に M3 の UI 完成を要求しない。M2 の候補は [restaurant copy packet](restaurant-copy-packet.md) に記録する。
 
 Local checks は `npm run lint`、`npx tsc --noEmit`、`npm test`（30/30）、`npm run test:e2e`（26/26、6.4分）、canonical SHA-256、`git diff --check` が通過した。26件の E2E は従来の受入・回帰 suite であり、A案を3 modes × 2 viewports で受け入れた証拠ではない。A案の実測は上記2 desktop context として別に扱う。
 
