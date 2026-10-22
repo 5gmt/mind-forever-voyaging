@@ -8,7 +8,7 @@
 
 **2026-10-21 JST の merge 後状態:** [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は [Sol の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) 後、evidence-only として `f45d268282a40d63bf88e1eaf95b01c96961eeea` へ merge 済み。[#78 の判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、失敗記録の merge は経路採択や後続の unblock を意味しない。
 
-**現在の再開判断:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)で、[A案の追加実測方針と限定 meal UI の設計範囲](plans/2041-restaurant-followup-decision.md)は承認済み。追加実測前であり、以下の3 session の失敗はそのまま保持する。#83 の文書同期・Sol の通常レビュー・merge 後に、別の候補 fixture を2 fresh session以上で採取する。既存 Courthouse / Newspaper の成功 fixture・受入経路・回帰テストも保持し、restaurant milestone 用の連続経路を追加する。Half-full 警告と移動した出力 turn を保存し、full / auto-deactivation は成功に数えない。食事前後の recording、明示停止の成功、非 recording の公園通常入力までを Sol が採択レビュー・merge するまでは、#78 open・経路未採択・M2/M3 blocked を維持する。M1 採択に M3 の meal UI 実装完了は要求しない。
+**現在の状態:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)で、[A案の追加実測方針と限定 meal UI の設計範囲](plans/2041-restaurant-followup-decision.md)は承認済み。#83 の通常レビュー・merge 後、別の fixture に [2 fresh session の A案実測](restaurant-recording-a-evidence.md)を追加し、食事前後の録画継続・明示停止・非 recording の公園入力復帰を確認した。Half-full 警告の移動した turn も保存した。本書の旧3 session の失敗と、既存 Courthouse / Newspaper の成功 fixture・受入経路・回帰テストは保持する。成功経路は Sol の独立採択レビュー・merge 待ちであり、#78 open・M2/M3 blocked を維持する。M1 採択に M3 の meal UI 実装完了は要求しない。
 
 ## 保存した証拠と再現
 
@@ -116,4 +116,4 @@ ERROR: Record feature not currently active.
 
 Fixture regression は保存前に `restaurant runtime evidence must be captured` で RED、保存後に GREEN を確認した。最終 local checks は `npm run lint`、`npx tsc --noEmit`、`npm test`（29/29）、`npm run test:e2e`（26/26、4.7分）、canonical SHA-256、`git diff --check` が通過。Current-head CI URL・artifact URL・実際の14日期限は PR の引き渡し記録にまとめる。`.github/workflows/ci.yml` の `retention-days: 14` と `AGENTS.md` / status を同期し、Actions の full SHA pin、`if: always()`、upload path / if-no-files-found、先行 job と失敗伝播は保持する。
 
-Sol の evidence-only レビューと、Astra の A案・限定 UI の再開設計判断は完了した。追加実測、M1 の成功経路採択、M2 copy / M3 6経路受入、実保存データの RESTORE、音声読み上げ、本番配備は完了扱いにしない。
+Sol の evidence-only レビューと、Astra の A案・限定 UI の再開設計判断は完了した。別記の A案追加実測は完了したが、M1 の成功経路採択、M2 copy / M3 6経路受入、実保存データの RESTORE、音声読み上げ、本番配備は完了扱いにしない。

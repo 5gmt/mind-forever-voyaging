@@ -877,6 +877,104 @@ test("retains synchronized fresh restaurant attempts after Courthouse and Newspa
   }
 });
 
+test("records the approved restaurant candidate without full-buffer interruption", async () => {
+  const url = new URL("./fixtures/parchment-restaurant-recording-a-observed.json", import.meta.url);
+  assert.equal(await access(url).then(() => true, () => false), true, "restaurant candidate A must be captured separately");
+  const fixture = JSON.parse(await readFile(url, "utf8"));
+  const previous = JSON.parse(await readFile(new URL("./fixtures/parchment-restaurant-runtime-observed.json", import.meta.url), "utf8"));
+  assert.equal(fixture.candidate, "A");
+  assert.equal(fixture.canonicalSha256, previous.canonicalSha256);
+  assert.deepEqual(fixture.prefixPath, previous.prefixPath);
+  assert.deepEqual(fixture.courthousePath, previous.courthousePath);
+  assert.deepEqual(fixture.newspaperPath, ["INVENTORY", "NE", "N", "NE", "RECORD", "BUY NEWSPAPER", "READ NEWSPAPER", "RECORD OFF", "SW", "S", "SW"]);
+  const withoutRecording = (path) => path.filter((command) => !command.startsWith("RECORD"));
+  assert.deepEqual(withoutRecording(fixture.newspaperPath), withoutRecording(previous.newspaperPath));
+  assert.deepEqual(fixture.restaurantPaths.meal, previous.restaurantPaths.meal);
+  assert.equal(fixture.sessions.length, 2);
+  const path = [...fixture.prefixPath, ...fixture.courthousePath, ...fixture.newspaperPath, ...fixture.restaurantPaths.meal];
+  const oldMeal = previous.sessions[1].observations.find(({ command }) => command === "BUY MEAL");
+  const oldArticle = previous.sessions[1].observations.find(({ command }) => command === "READ NEWSPAPER");
+  const content = (turn) => turn.presentation.lines.slice(1, -1).map(({ text }) => text);
+  const minutes = (time) => {
+    const [, hour, minute, period] = time.match(/^(\d+):(\d+)(am|pm)$/);
+    return Number(hour) % 12 * 60 + Number(minute) + (period === "pm" ? 720 : 0);
+  };
+  for (const session of fixture.sessions) {
+    assert.ok(!session.harnessFailure, JSON.stringify(session.harnessFailure));
+    assert.deepEqual(session.commands, path.filter((command) => command !== "<observed decoder answer>"));
+    assert.deepEqual(session.submittedCommands, path.map((command) => command === "<observed decoder answer>"
+      ? session.observations.find(({ role }) => role === "security-answer").inputOwnership.canonicalNumericInput : command));
+    assert.deepEqual(session.commands, session.observations.map(({ command }) => command));
+    assert.equal(session.securityPrompt.presentation.activeInput.kind, "line");
+    for (const [index, turn] of session.observations.entries()) {
+      const p = turn.presentation;
+      assert.equal(turn.turnId, turn.submittedInputId, "turn anchor is the canonical submitted input line");
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.notEqual(turn.submittedInputId, turn.nextInputId);
+      assert.equal(p.lines[p.activeInput.line].id, turn.nextInputId);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.activeInput.line, p.terminalLine);
+      assert.match(turn.statusText, /Mode:\s+/);
+      assert.ok(turn.statusText.includes(turn.status.location));
+      assert.equal(reconcilePresentationHistory([], p).representable, true, turn.command);
+      if (!turn.role) assert.equal(p.lines[0].text.toUpperCase(), `>${turn.command}`);
+      if (index > 0) assert.equal(turn.submittedInputId, session.observations[index - 1].nextInputId);
+      assert.doesNotMatch(p.lines.map(({ text }) => text).join("\n"), /Record buffer full|Auto-deactivation|not currently active/);
+    }
+    assert.equal(new Set(session.observations.map(({ nextInputId }) => nextInputId)).size, session.observations.length);
+    const courtLook = session.observations.find(({ command, status }) => command === "LOOK" && status.location === "Courthouse");
+    assert.ok(courtLook, "retain the recorded Courthouse LOOK");
+    const courtIndex = session.observations.indexOf(courtLook);
+    for (const turn of session.observations.slice(courtIndex - 1, courtIndex + 2)) {
+      assert.equal(turn.status.mode, "Simulation Mode (recording)");
+    }
+    const purchase = session.observations.find(({ command }) => command === "BUY NEWSPAPER");
+    const article = session.observations.find(({ command }) => command === "READ NEWSPAPER");
+    const paperStart = session.observations[session.observations.indexOf(purchase) - 1];
+    for (const turn of [paperStart, purchase, article]) {
+      assert.equal(turn.status.location, "Bodanski Square");
+      assert.equal(turn.status.mode, "Simulation Mode (recording)");
+    }
+    const paperStop = session.observations[session.observations.indexOf(article) + 1];
+    assert.equal(paperStop.status.mode, "Simulation Mode");
+    assert.deepEqual(content(paperStop), ["Record feature deactivated.", " "]);
+    assert.deepEqual(content(article).slice(0, 8), content(oldArticle), "preserve all four observed paragraphs and blank lines");
+    const projectedArticle = projectPresentationHistory(reconcilePresentationHistory([], article.presentation).history, "ja")[0].blocks;
+    for (const leaf of content(article).slice(8).filter((text) => text.trim())) {
+      if (observedStoryLeafTranslation(leaf, "ja", "READ NEWSPAPER") === undefined) {
+        assert.ok(projectedArticle.map(({ text }) => text ?? "").join("\n").includes(leaf), "optional unapproved output remains English");
+      }
+    }
+    const mealIndex = session.commands.indexOf("BUY MEAL");
+    const meal = session.observations[mealIndex];
+    const before = session.observations[mealIndex - 1];
+    for (const turn of [before, meal]) {
+      assert.equal(turn.status.location, "Roy's Pagoda");
+      assert.equal(turn.status.mode, "Simulation Mode (recording)");
+    }
+    assert.equal(minutes(meal.status.time) - minutes(before.status.time), 22);
+    assert.equal(meal.presentation.lines[1].text, oldMeal.presentation.lines[1].text);
+    assert.match(meal.presentation.lines[1].text, /debited for \$30.*new balance is \$569/);
+    const stop = session.observations[mealIndex + 1];
+    assert.equal(stop.command, "RECORD OFF");
+    assert.equal(stop.status.location, "Roy's Pagoda");
+    assert.equal(stop.status.mode, "Simulation Mode");
+    assert.deepEqual(content(stop), ["Record feature deactivated.", " "]);
+    const returned = session.observations.slice(mealIndex + 2);
+    assert.deepEqual(returned.map(({ command }) => command), ["N", "E", "E", "NE"]);
+    assert.ok(returned.every(({ status }) => status.mode === "Simulation Mode"));
+    assert.equal(returned.at(-1).status.location, "Kennedy Park");
+    const warnings = session.observations.flatMap((turn) => {
+      const texts = turn.presentation.lines.map(({ text }) => text).filter((text) => text.startsWith("WARNING:"));
+      return texts.length ? [{ turnId: turn.turnId, command: turn.command, status: turn.status, texts }] : [];
+    });
+    assert.deepEqual(session.warnings, warnings, "retain warning text with its actual turn and status");
+    assert.equal(warnings.length, 1);
+    assert.equal(warnings[0].turnId, before.turnId, "half-full warning moved to Roy's recording-start turn");
+    assert.deepEqual(warnings[0].texts, ["WARNING: Record buffer is now half-full."]);
+  }
+});
+
 test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-newspaper-runtime-observed.json", import.meta.url), "utf8"));
   assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);

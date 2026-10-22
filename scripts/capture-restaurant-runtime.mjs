@@ -7,12 +7,18 @@ const argument = (name, fallback) => {
 };
 
 const baseURL = argument("--base-url", "http://127.0.0.1:3100");
-const output = argument("--output", "/tmp/parchment-restaurant-runtime-observed.json");
+const candidateA = process.argv.includes("--candidate-a");
+const output = argument("--output", candidateA
+  ? "/tmp/parchment-restaurant-recording-a-observed.json"
+  : "/tmp/parchment-restaurant-runtime-observed.json");
 const prefixPath = ["PEOF", "WAIT", "WAIT", "WAIT", "WAIT", "ENTER SIMULATION MODE", "<observed decoder answer>", "LOOK", "RECORD", "WAIT", "RECORD OFF"];
 const courthousePath = ["RECORD", "SW", "NW", "LOOK", "SE", "NE", "RECORD OFF"];
-const newspaperPath = ["INVENTORY", "RECORD", "NE", "N", "NE", "BUY NEWSPAPER", "READ NEWSPAPER", "SW", "S", "SW", "RECORD OFF"];
-// Test travel recording once, then the smallest meal-only window twice.
-const attempts = ["travel", "meal", "meal"];
+const newspaperPath = candidateA
+  ? ["INVENTORY", "NE", "N", "NE", "RECORD", "BUY NEWSPAPER", "READ NEWSPAPER", "RECORD OFF", "SW", "S", "SW"]
+  : ["INVENTORY", "RECORD", "NE", "N", "NE", "BUY NEWSPAPER", "READ NEWSPAPER", "SW", "S", "SW", "RECORD OFF"];
+// Preserve the original failed attempts by default. A is an explicitly opted-in
+// restaurant-milestone candidate; it does not replace earlier accepted routes.
+const attempts = candidateA ? ["meal", "meal"] : ["travel", "meal", "meal"];
 const restaurantPath = (window) => window === "travel"
   ? ["RECORD", "SW", "W", "W", "S", "BUY MEAL", "N", "E", "E", "NE", "RECORD OFF"]
   : ["SW", "W", "W", "S", "RECORD", "BUY MEAL", "RECORD OFF", "N", "E", "E", "NE"];
@@ -151,7 +157,11 @@ const captureSession = async (browser, id, recordingWindow) => {
   let securityPrompt;
   const result = () => ({ id, startedAt, finishedAt: new Date().toISOString(), recordingWindow,
     viewport: { width: 1440, height: 900 }, commands: observations.map(({ command }) => command),
-    submittedCommands, securityPrompt, observations, surfaceAudit });
+    submittedCommands, securityPrompt, observations, surfaceAudit,
+    warnings: observations.flatMap((turn) => {
+      const texts = turn.presentation.lines.map(({ text }) => text).filter((text) => text.startsWith("WARNING:"));
+      return texts.length ? [{ turnId: turn.turnId, command: turn.command, status: turn.status, texts }] : [];
+    }) });
   const context = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const page = await context.newPage();
   try {
@@ -189,9 +199,9 @@ const captureSession = async (browser, id, recordingWindow) => {
         return input instanceof HTMLInputElement && !input.disabled;
       }, undefined, { timeout: 60_000 });
       const observed = await extract(frame, command, inputLineId);
-      observations.push({ command, submittedInputId: inputLineId,
+      observations.push({ command, turnId: inputLineId, submittedInputId: inputLineId,
         nextInputId: observed.presentation.lines[observed.presentation.activeInput.line].id,
-        presentation: observed.presentation, status: parseStatus(observed.statusText) });
+        presentation: observed.presentation, statusText: observed.statusText, status: parseStatus(observed.statusText) });
       process.stdout.write(`Session ${id} ${command}: ${parseStatus(observed.statusText).location} / ${parseStatus(observed.statusText).mode}\n`);
     };
 
@@ -219,10 +229,12 @@ const captureSession = async (browser, id, recordingWindow) => {
     const entered = await extract(frame, "ENTER SIMULATION MODE", inputLineId);
     observations.push({
       command: "ENTER SIMULATION MODE",
+      turnId: inputLineId,
       submittedInputId: inputLineId,
       nextInputId: entered.presentation.lines[entered.presentation.activeInput.line].id,
       role: "security-answer",
       presentation: entered.presentation,
+      statusText: entered.statusText,
       status: parseStatus(entered.statusText),
       inputOwnership: {
         note: "The canonical numeric answer is appended to the security prompt line before the interpreter emits the simulation scene; it is not a standalone command-echo leaf.",
@@ -256,7 +268,8 @@ try {
     await writeFile(output, `${JSON.stringify({ sessions }, null, 2)}\n`);
   }
   const fixture = {
-    provenance: `Runtime-observed with Playwright in Chromium against canonical Release 79 Parchment; three isolated fresh contexts captured ${new Date().toISOString()}. No VM edits, restores, or historical-source prose.`,
+    provenance: `Runtime-observed with Playwright in Chromium against canonical Release 79 Parchment; ${sessions.length} isolated fresh contexts captured ${new Date().toISOString()}. No VM edits, restores, or historical-source prose.`,
+    ...(candidateA ? { candidate: "A" } : {}),
     canonicalSha256: "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d",
     prefixPath, courthousePath, newspaperPath,
     attempts, restaurantPaths: { travel: restaurantPath("travel"), meal: restaurantPath("meal") },
@@ -264,7 +277,7 @@ try {
   };
   await writeFile(output, `${JSON.stringify(fixture, null, 2)}\n`);
   if (sessions.some(({ harnessFailure }) => harnessFailure)) process.exitCode = 1;
-  process.stdout.write(`Captured three fresh Courthouse-to-Newspaper-to-Restaurant attempts to ${output}\n`);
+  process.stdout.write(`Captured ${sessions.length} fresh Courthouse-to-Newspaper-to-Restaurant attempts to ${output}\n`);
 } finally {
   await browser.close();
 }
