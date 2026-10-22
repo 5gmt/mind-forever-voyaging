@@ -1,6 +1,6 @@
 # Issue #78 follow-up: recording windows and meal controls
 
-**状態:** A案と限定 meal UI の設計範囲は承認済み。#83 merge 後、[2 fresh session で A案の成立を実測](../restaurant-recording-a-evidence.md)した。成功経路の独立採択レビュー・merge 待ち、#78 は open、M2 #79 / M3 #80 は blocked。
+**状態:** A案は [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により採択済み。#78 / M1 完了、M2 #79 の [copy packet](../restaurant-copy-packet.md) は review 待ち。M3 #80 は M2 copy approval / merge まで blocked。限定 meal UI の設計範囲は承認済みだが未実装。
 
 承認元は [2026-10-21 の Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)。Yasuo の設計判断依頼に基づき、PR #83 reviewed head `0c222bb5fdb61d15c19b622d32436daeec8987c9` の具体案と同コメントの補足が承認された。[PR #83 のレビュー](https://github.com/5gmt/mind-forever-voyaging/pull/83#pullrequestreview-5600151543)に従い、この文書同期を Sol の通常レビュー・merge へ戻す。この範囲の反映に Astra の再承認は不要。
 
@@ -8,11 +8,11 @@
 
 [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は [Sol の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) 後、2026-10-21 JST に evidence-only として merge された。Reviewed head は `bb1066fb3f4f25acbff6b354c6b04b3e513a622a`、merge は `f45d268282a40d63bf88e1eaf95b01c96961eeea`。判断の正本は [#78 の merge 後コメント](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)。
 
-実測・fixture・回帰テスト・14日 retention は受け入れ済み。成功経路は未採択であり、#78 は open、M2 #79 / M3 #80 は blocked のままである。旧実測を作り直して失敗を消したり、マージを録画成立の承認と解釈したりしない。
+実測・fixture・回帰テスト・14日 retention は #82 で受け入れ済み。その時点では成功経路は未採択、M2/M3 は blocked だった。後続 #84 で別 fixture の A案を採択した。旧実測を作り直して失敗を消したり、#82 merge 自体を録画成立の承認と解釈したりしない。
 
-PR #82 で残った課題は次の二点。A案の追加実測は成立したが、成功経路の独立採択と UI の copy / 実装・受入はまだない。
+PR #82 で残った課題は次の二点。A案の実測・成功経路採択は #84 で完了し、UI の copy / 実装・受入は M2/M3 が担う。
 
-1. 既存の録画区間を保つと、食事前または22分の食事応答で buffer が満杯になる。A案の2 session では食事後も録画継続し、明示停止に成功した。独立した経路採択レビューが必要。
+1. 既存の録画区間を保つと、食事前または22分の食事応答で buffer が満杯になる。A案の2 session では食事後も録画継続し、明示停止に成功し、独立レビューで採択された。
 2. 実際の Roy's Pagoda では Guided / Action menus に meal の操作が現れない。承認された限定 surface の copy は M2、実装・受入は M3 が担う。
 
 ## 根拠の区別
@@ -31,7 +31,7 @@ Source / code は上記 merge commit で照合した。`source/`、story binary�
 
 | 候補 | 変更点 | 評価 |
 | --- | --- | --- |
-| **A: 新聞だけ現地録画へ変更（設計承認済み・2 session 実測済み）** | 初回 recording loop と Courthouse は全 command を維持。Newspaper の徒歩・購入・全記事・帰着も維持し、RECORD / RECORD OFF の位置だけを購入・読書の前後へ移す。Restaurant は現地録画、明示停止後に公園へ戻る。 | #83 の文書同期・Sol の通常レビュー・merge 後に2 session で成立を確認。成功経路としての採択レビュー・merge は未完了。 |
+| **A: 新聞だけ現地録画へ変更（2 session 実測・採択済み）** | 初回 recording loop と Courthouse は全 command を維持。Newspaper の徒歩・購入・全記事・帰着も維持し、RECORD / RECORD OFF の位置だけを購入・読書の前後へ移す。Restaurant は現地録画、明示停止後に公園へ戻る。 | #83 merge 後に2 session で成立を確認し、#84 の独立採択レビュー・merge で採択済み。 |
 | B: 先行録画を保ち、meal 応答時の auto-deactivation を許容 | PR #82 の meal-only を使い、食事開始時の recording と meal response を完了境界にする。 | 不採用。22分の録画継続を確認できず、完了条件の変更になる。Source flag や補助 checklist を正式達成の代用にしない。 |
 | C: 停止を継続 | 経路・録画前提・UI を変更せず、M2 / M3 を開始しない。 | 比較時の保留案。A の追加実測が失敗した場合も #78 を完了扱いにせず、設計判断へ戻す。 |
 
@@ -98,6 +98,6 @@ M1 追加実測ではこの UI の要求・guard・command をレビューし、
 | --- | --- |
 | A の録画区間と、full / auto-deactivation を認めない食事前後の境界を追加実測する | 上記の Astra の設計判断で **承認済み**。#83 merge 後に2 session で実測済み。 |
 | 限定 meal UI を M2 copy / M3 実装の設計範囲とする | **承認済み**。具体的 copy の承認・実装・受入は未実施。 |
-| 新しい候補を成功経路として採択する | Sol の独立レビュー・採択 PR merge を待つ。**2 session で成立、採択未完了**。#78 は open、M2 / M3 は blocked。 |
+| 新しい候補を成功経路として採択する | #84 の Sol 独立レビュー・merge で **採択完了**。#78 完了、M2 は copy review 待ち。M3 は M2 merge まで blocked。 |
 
 再開順序は **#83 の文書同期・Sol の通常レビュー・merge → A案の2 fresh session以上の追加実測 → Sol の経路採択レビュー・merge → M2 の copy 承認・merge → M3 の実装・受入**。#83 merge 後は承認された追加実測を開始できる。更なる経路・完了条件・保証の変更が必要な場合だけ、設計判断へ戻す。M3 の全体受入は従来通り Astra が担当する。

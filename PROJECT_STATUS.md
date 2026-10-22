@@ -75,19 +75,19 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 [新聞計画](./docs/plans/2041-newspaper-fieldwork.md)と[統合受入記録](./docs/issue-67-fieldwork-acceptance.md)に、同一 fresh session の Courthouse → Newspaper を Classic / Guided / Action menus × desktop / narrow の6経路で受け入れた証拠を残している。
 N2 / U1 の copy、N3 の共有 room / map lookup、U2 / U3 の初回2041年 UI は次の実装でも再利用する。
 
-次の milestone は、同一 fresh canonical session の Courthouse → Newspaper に続く **Roy’s Pagoda での食事録画と Kennedy Park への帰着** とする。
+現在の milestone は、同一 fresh canonical session の Courthouse → Newspaper に続く **Roy’s Pagoda での食事録画と Kennedy Park への帰着** とする。
 2026-10-09 JST に Yasuo が[レストラン計画](./docs/plans/2041-restaurant-fieldwork.md)の方針とタスク化を承認した。
 計画 [PR #81](https://github.com/5gmt/mind-forever-voyaging/pull/81) は独立レビュー後に merge 済み（`43b00db08fc5c2726095875b21dd381b42b0b682`）。
 M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) は3独立 fresh session の録画区間比較、支払・時刻・入力境界、現行操作面の証拠と regression を追加した。[実測記録](./docs/restaurant-runtime-evidence.md)の通り、移動中または食事応答で buffer full により自動停止し、現行 assisted UI の食事対象操作も未到達である。
-[PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は Sol の独立レビュー後、evidence-only として merge 済み（`f45d268282a40d63bf88e1eaf95b01c96961eeea`）。[レビューと #78 の継続判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、採用経路は未承認、#78 は open のままである。
-[Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)で、徒歩経路を維持し新聞の録画区間だけを購入・読書の前後へ移す A案と、初回2041年・Roy's Pagoda に限定する `BUY MEAL` UI の設計範囲が承認された。[PR #83](https://github.com/5gmt/mind-forever-voyaging/pull/83) は独立レビュー後に merge 済み（`bdc6f84e3de34b59d8477edcc5657d87f55b7362`）。その後の [A案の2 fresh session 実測](./docs/restaurant-recording-a-evidence.md)で、食事前後の録画継続・明示停止・非録画の公園入力復帰が成立した。既存の成功 fixture・受入経路・回帰テストと失敗記録は保持する。成功経路の Sol 独立採択レビュー・merge 待ちであり、#78 は open、M2 / M3 は blocked、copy approval と production integration は未実施である。
-成立しない場合は M2 / M3 を開始せず、別 session の成功で代用せずに設計判断へ戻す。
+[PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は evidence-only として merge 済み（`f45d268282a40d63bf88e1eaf95b01c96961eeea`）。その時点の旧候補は不採択で、失敗記録を保持する。[Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [PR #83](https://github.com/5gmt/mind-forever-voyaging/pull/83) の設計同期後、[別 fixture の A案](./docs/restaurant-recording-a-evidence.md)が2 fresh session で成立した。
+[PR #84 の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により、A案を成功経路として採択し **#78 / M1 は完了**した。既存の成功 fixture・受入経路・回帰テストと旧失敗を保持し、正式な九課題評価の達成とは区別する。
+[M2 #79 の開始判断](https://github.com/5gmt/mind-forever-voyaging/issues/79#issuecomment-6341140821)に従い、[story / UI copy packet](./docs/restaurant-copy-packet.md) の候補を作成した。初回2041年・Roy's Pagoda 限定 `BUY MEAL` 操作と、それを囲む visible / accessible な説明も含む。Sol の独立 copy approval / merge 待ちで、M3 #80 は blocked、production integration は未実施である。更なる経路・保証の変更が必要な場合だけ設計判断へ戻す。
 
 ## 基本的な作業順
 
 1. 計画 PR #81 はレビュー・merge 済み。通常 PR は独立した Sol review、milestone 締めは Astra / ChatGPT Work の全体受入とする分担を試行する。
-2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): #82 の証拠・監査・14日 retention、#83 の設計同期はレビュー・merge 済み。承認済み A案が2 fresh session で成立し、次は Sol の独立採択レビュー・merge。後続は採択 merge まで開始せず、M1 に未実装 meal UI の完成を要求しない。
-3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): M1 の採択と merge 後、Codex Cloud が story と必要な地名・地図・対象操作、および限定 meal UI を囲む visible / accessible な説明の copy を一つの packet にし、Sol が承認する。
+2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): #84 で独立採択レビュー・merge 済み。M1 完了、Issue closed。未実装 meal UI の完成を M1 の条件にしていない。
+3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): Codex Cloud が本文・地名・地図・対象操作と周囲の説明を packet にした。次は Sol の独立 copy review / approval / merge。M2 未完了、production は変更していない。
 4. M3 [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80): M1 / M2 の merge 後、Codex Cloud が catalog / UI / tests を統合し、6経路の受入記録と status の最終集約を用意する。Sol の通常レビュー後、Astra が全体受入を確認して最終 PR を merge し、#29 へ結果を戻す。
 
 今回のタスク化だけではレストランの日本語 coverage は増えていない。
