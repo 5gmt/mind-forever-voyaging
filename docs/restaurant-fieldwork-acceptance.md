@@ -22,6 +22,7 @@ Base は上記 #85 merge。現 head / base、current-head CI、artifact URL・�
 | Accessibility | 各 locale の iframe aria snapshot、canonical / localized owner の排他性、原文警告の `lang=en`、日本語 surface の `lang=ja`。Guided の accessible name `食事 注文する` は visible 対象名＋動詞の構造と aria snapshot で検証する。音声読み上げは未実施。 |
 | Scope と fallback | `restaurant-scope.ts` は実経路の後の controlled bridge probe。busy、character input、unknown room、2051、RESTORE unknown、re-entry、QA、rolling initial history を分離して検証する。VM の実出力 / 実保存データ RESTORE の証拠とは数えない。Unit は wrong balance / command、half-full / full warning の English fallback を保持。 |
 | 起動順序の回帰 | `player-startup.spec.ts` が wrapper hydration を実際の初期 char-input transcript 到着後まで遅延させ、起動待ちで止まる RED を再現。受信 listener 登録直後に既存 `request-state` を一度送る限定修正で GREEN。新 bridge API / observer / VM 状態変更はない。 |
+| Parchment 測定ウィンドウの分離 | 実ブラウザの lifecycle 記録で一時的な測定用 BufferWindow への host 移動を観測。`player-measurement.spec.ts` が Parchment と同じ測定 pane の DOM 形状を保持して RED → GREEN を確認する。実ウィンドウの `#windowport` に selector を限定し、host / reading position / canonical payload / input / accessibility owner を保持する。これは DOM lifecycle probe であり、合成した VM turn の証拠ではない。 |
 | 既存 regression | Courthouse / Newspaper の旧成功 fixture と従来26 E2E を保持。新聞 helper は opt-in `on-site` 時だけ A案、既定 `travel` 経路は不変。#82 の3失敗 fixture / capacity failure も保持し、承認された同じ meal leaf の訳だけを新 coverage に更新。 |
 
 ## 再現・artifact の読み方
@@ -43,7 +44,7 @@ Base は上記 #85 merge。現 head / base、current-head CI、artifact URL・�
 
 ## 検証結果と制限
 
-2026-10-23 JST のローカル最終確認:
+2026-10-23 JST、head `6853d9f` でのローカル確認（以下の6経路実測表も同 head）。測定ウィンドウ分離後の最終 head の full checks / 6経路と CI・artifact は PR の検証・引き渡し欄を正本とする。最終 suite は既存26＋起動順序1＋測定分離1＋restaurant 6の **34件**。
 
 - `npm run lint`: PASS。
 - `npx tsc --noEmit`: PASS。
@@ -80,7 +81,14 @@ CI follow-up（初回 head `394cdab`）:
 - 既存 Guided narrow の first newspaper paragraph viewport assertion も再発。`scrollIntoView` は所有 surface 以外の祖先も動かし得て、bridge は outer BufferWindow を0へ戻す。開始位置を `.story-presentation-scroll` だけの相対座標で設定し、outer scrollTop=0 を追加検証する。段落の viewport・wheel 進行・末尾の実文字・input / focus assertion は維持し、retry / timeout を緩めない。
 - 失敗 artifact は [12489378048](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39925823372/artifacts/12489378048)（2026-11-06 17:43:03 JST まで）。CI ZIP は取得用参照を発行できたが、ローカル download は403で未展開。CI failure image / trace を目視済みとは称さず、job log、既存 DOM ownership、ローカル browser 記録で計測手順を確認した。
 - この follow-up は test helper の同期と計測だけで、production implementation / canonical story / source を変更しない。Follow-up 後のローカル full33 は全件通過し、6経路の実測表も更新した。最新 head の CI / artifact は PR の引き渡し欄を正本とする。
-- [2回目 CI 39929137710](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39929137710)（head `6853d9f`）は verify success / browser 30 passed・3 failed。Security prompt 同期は解消。一方、旧 / 新 Actions narrow の新聞先頭 viewport と Actions desktop の meal wheel で位置が0へ戻る失敗が残った。所有 surface だけの開始位置指定では解消しておらず、root cause は未確定。DOM identity・hidden / mode・scroll geometry の読み取り専用 lifecycle 記録を追加し、失敗時の job log から切り分ける。現時点ではスクロール問題を修正済みとは扱わない。
+- [2回目 CI 39929137710](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39929137710)（head `6853d9f`）は verify success / browser 30 passed・3 failed。Security prompt 同期は解消。一方、旧 / 新 Actions narrow の新聞先頭 viewport と Actions desktop の meal wheel で位置が0へ戻る失敗が残った。所有 surface だけの開始位置指定では解消せず、当時は root cause 未確定。DOM identity・hidden / mode・scroll geometry の読み取り専用 lifecycle 記録を追加し、その時点では修正済みと扱わず調査を継続した。
+
+測定ウィンドウ分離の follow-up:
+
+- [診断 head `b9febd8` の CI 39931520689](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39931520689) は33件通過したが、production 修正を含まないため解決の証拠とは数えない。その後のローカル Actions desktop の成功時 lifecycle 記録で、同じ host / surface が実 BufferWindow と一時測定 BufferWindow（高さ90px、異常に長い本文 layout）を往復することを観測した。
+- Bundled Parchment の `measure()` は font / size 測定用の `#layout_test_pane` と BufferWindow / GridWindow を `#gameport` 直下へ一時追加する。従来の `#gameport .BufferWindow` の末尾選択はそれを実ウィンドウと取り違え、host を移動する。同じ広い selector は測定文字列 `12345678` を canonical observation に混入し得る。CI の失敗 ZIP は未展開なので、各旧 CI failure の全タイミングがこの原因だったとは断定しない。
+- `player-measurement.spec.ts` はその DOM 形状を report をまたいで保持し、修正前に host の親が実 window ID から外れる RED を再現した。Bridge の既存 DOM 読み取りと wrapper の portal-target lookup を `#windowport` に限定する通常修正で GREEN。測定中 / 撤去後の reading scrollTop=100、canonical transcript / recent / status / grid / presentation / input の report 一致、aria-hidden / inert を検証し、JSON / screenshot を保存する。新 observer / bridge API / renderer / VM telemetry は追加せず、raw English / 2a+2b / recovery の規則を変えない。
+- 起動順序の既存 regression も passing JSON を file attachment として保存する。最終 head の34件 full E2E、lint / tsc / build+31 unit、checksum の結果と current-head artifact / 期限は PR 本文に記録する。診断 head の33件 success を最終 head の結果として転記しない。
 
 **Astra 受入上の留意:** 390px でも食事本文・支払・録画継続/停止・帰着/input は確認対象だが、原作が出力しない時刻はその session で検証不能。22分の根拠は採択 M1 の2 session と本 M3 の3 desktop session。時計表示を補う新 renderer / VM telemetry は追加しない。
 

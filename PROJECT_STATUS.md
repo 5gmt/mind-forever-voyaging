@@ -91,6 +91,8 @@ M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) は3独立 fre
 4. M3 [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80): Codex Cloud が catalog / 限定 UI / 6経路テスト・受入記録と本 status の roll-up を用意した。Sol の通常レビュー後、Astra が最終 head の全体受入を確認して最終 PR を merge し、#29 に reviewed head / merge commit・CI / artifact・受入・対象外を報告する。**この gate の完了まで M3 / milestone は受入待ち、#80 open。** 次 milestone は自動選択しない。
 
 M3 merge 時の完了点は同一初回 session の Courthouse → Newspaper → Restaurant → Kennedy Park / 通常入力復帰。実装者が roll-up を本 PR に用意し、独立承認・merge 前の完了宣言はしない。
+
+M3 の検証で再現した既存 lifecycle の問題も同 PR で扱う。Hydration より早い初期通知は既存 `request-state` で再取得し、Parchment の一時測定ウィンドウは実 window tree `#windowport` への限定で observation / localized host から除外する。実ブラウザ regression を追加し、34件 full E2E と current-head CI / artifact の最終結果は PR の引き渡し欄に記録する。Renderer / VM authority / recovery / accessibility の保証変更は含まない。
 原作側の正式な九課題達成・帰還評価、再入場・後続年の日本語化、他 fieldwork と Communications outlet、未承認地名・対象操作、security wrong-answer / failure、PEOF の別 timing、timed simulation events は引き続き対象外である。
 General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も対象外とする。
 原作 recording と補助 checklist の推定を区別し、unknown output、optional interrupt、RESTORE 後の不明状態の English fallback を保持する。

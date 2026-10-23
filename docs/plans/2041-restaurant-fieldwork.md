@@ -145,7 +145,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 ### M3: Integrate and accept the restaurant fieldwork milestone
 
-**Files:** 更新 `app/localization.ts`、必要な `app/PrismEdition.tsx` / `app/StoryTools.tsx`、`tests/rendered-html.test.mjs`。新規 `tests/e2e/restaurant-fieldwork.spec.ts`、`tests/e2e/restaurant-acceptance.ts`、`docs/restaurant-fieldwork-acceptance.md`。更新 本書、`PROJECT_STATUS.md`。
+**Files:** 更新 `app/localization.ts`、必要な `app/PrismEdition.tsx` / `app/StoryTools.tsx`、`tests/rendered-html.test.mjs`。新規 `tests/e2e/restaurant-fieldwork.spec.ts`、`tests/e2e/restaurant-acceptance.ts`、`docs/restaurant-fieldwork-acceptance.md`。検証で再現した既存 lifecycle の通常修正として `public/player-bridge.js` の測定ウィンドウ除外と、`player-startup.spec.ts` / `player-measurement.spec.ts` の実ブラウザ regression を含む。更新 本書、`PROJECT_STATUS.md`。
 **Interfaces:** M1 fixture / 採択 command 列と M2 approved copy を消費する。既存 `localizeSimulationPlace`、`localizeSimulationMapLabel`、`localizeSceneObjectName`、`localizeSceneActionLabel` と ordinary-turn catalog を再利用し、room / map / assignment の lookup を重複させない。
 
 - [x] 採択 fixture と approved copy に対し、原文の忠実な projection、共有 lookup と English fallback を検証する unit regression を先に追加し、追加 coverage が未実装で失敗することを確認する。

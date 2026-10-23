@@ -223,7 +223,7 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(shell, /createPortal\(/);
   assert.match(shell, /mode: localizedMode \? "localized" : "canonical"/);
   assert.match(shell, /aria-hidden=\{qaEnabled\}/);
-  assert.match(bridge, /#gameport \.BufferWindowInner/);
+  assert.match(bridge, /#windowport \.BufferWindowInner/);
   assert.match(bridge, /inner\?\.setAttribute\("aria-hidden", "true"\)/);
   assert.match(bridge, /inner\?\.setAttribute\("inert", ""\)/);
   assert.match(bridge, /localized-host-ready/);
@@ -494,7 +494,7 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
     return node;
   });
   const input = lines.at(-1).children.at(-1);
-  const fixtureDocument = { querySelectorAll: (selector) => selector === "#gameport .BufferLine" ? lines : [input] };
+  const fixtureDocument = { querySelectorAll: (selector) => selector === "#windowport .BufferLine" ? lines : [input] };
   const context = vm.createContext({});
   vm.runInContext(bridgeHelper, context);
   const extracted = context.AMFVPresentationBridge.extract(fixtureDocument, () => ({

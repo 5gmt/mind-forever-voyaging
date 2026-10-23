@@ -1,4 +1,5 @@
 import { expect, test } from "@playwright/test";
+import { writeFile } from "node:fs/promises";
 
 test("recovers canonical startup notifications delivered before wrapper hydration", async ({ page }, testInfo) => {
   test.setTimeout(60_000);
@@ -42,5 +43,7 @@ test("recovers canonical startup notifications delivered before wrapper hydratio
   await begin.click();
   await expect(frame.locator(".BufferWindowInner")).toContainText("Communications Mode");
   await expect(page.locator("#command-input")).toBeEnabled();
-  await testInfo.attach("startup-before-hydration", { body: JSON.stringify({ delayedWrapperChunk: delayed, canonicalInputRecovered: true, currentStatus: await page.locator(".system-state").innerText() }), contentType: "application/json" });
+  const record = testInfo.outputPath("startup-before-hydration.json");
+  await writeFile(record, JSON.stringify({ delayedWrapperChunk: delayed, canonicalInputRecovered: true, currentStatus: await page.locator(".system-state").innerText() }));
+  await testInfo.attach("startup-before-hydration", { path: record, contentType: "application/json" });
 });

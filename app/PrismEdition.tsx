@@ -604,7 +604,7 @@ export default function PrismEdition() {
 
   useEffect(() => {
     const currentLocalizedHost = (frame: HTMLIFrameElement | null) => {
-      const buffers = [...(frame?.contentDocument?.querySelectorAll("#gameport .BufferWindow") ?? [])];
+      const buffers = [...(frame?.contentDocument?.querySelectorAll("#windowport .BufferWindow") ?? [])];
       return buffers.at(-1)?.querySelector<HTMLElement>(":scope > #amfv-localized-presentation-host") ?? null;
     };
     const onMessage = (event: MessageEvent) => {
