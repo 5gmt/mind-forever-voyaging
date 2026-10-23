@@ -48,21 +48,21 @@ Base は上記 #85 merge。現 head / base、current-head CI、artifact URL・�
 - `npm run lint`: PASS。
 - `npx tsc --noEmit`: PASS。
 - `npm test`: Next static export build と31 unit tests が PASS。
-- `npm run test:e2e`: **33/33 PASS（12.1分、retry 0）**。既存26件＋起動順序1件＋restaurant 6件。
+- `npm run test:e2e`: **33/33 PASS（12.9m、retry 0。CI follow-up 後の全実行）**。既存26件＋起動順序1件＋restaurant 6件。
 - Canonical checksum 一致、story / source / 既存 fixture / dependencies / workflow は未変更。`git diff --check` と相対 Markdown link 34件も通過。
 
 | 経路 / viewport | 原作 DATE / 食事 TIME | Meal input → 応答後 input | 公園 input | Story scroll top → end |
 | --- | --- | --- | --- | --- |
-| Classic / 1440×900 | `1/4/2041` / `12:28PM → 12:50PM`（22分） | `line-193 → line-196` | `line-211` | 3958 → 4602 |
-| Guided / 1440×900 | `5/10/2041` / `1:11PM → 1:33PM`（22分） | `line-191 → line-194` | `line-211` | 4324 → 4711 |
-| Action menus / 1440×900 | `6/17/2041` / `11:34AM → 11:56AM`（22分） | `line-195 → line-198` | `line-215` | 4364 → 4753 |
-| Classic / 390×844 | 原作が時計・日付を出力せず、時刻は未観測 | `line-194 → line-197` | `line-212` | 6928 → 7521 |
-| Guided / 390×844 | 原作が時計・日付を出力せず、時刻は未観測 | `line-196 → line-199` | `line-216` | 7414 → 7706 |
-| Action menus / 390×844 | 原作が時計・日付を出力せず、時刻は未観測 | `line-192 → line-195` | `line-212` | 7294 → 7590 |
+| Classic / 1440×900 | `5/24/2041` / `12:25PM → 12:47PM`（22分） | `line-191 → line-194` | `line-211` | 3914 → 4558 |
+| Guided / 1440×900 | `1/14/2041` / `1:50PM → 2:12PM`（22分） | `line-191 → line-194` | `line-209` | 4324 → 4711 |
+| Action menus / 1440×900 | `5/20/2041` / `12:19PM → 12:41PM`（22分） | `line-193 → line-196` | `line-213` | 4364 → 4753 |
+| Classic / 390×844 | 原作が時計・日付を出力せず、時刻は未観測 | `line-192 → line-195` | `line-212` | 6786 → 7379 |
+| Guided / 390×844 | 原作が時計・日付を出力せず、時刻は未観測 | `line-188 → line-191` | `line-206` | 7258 → 7550 |
+| Action menus / 390×844 | 原作が時計・日付を出力せず、時刻は未観測 | `line-192 → line-195` | `line-210` | 7269 → 7565 |
 
 各経路で実送信40回（可変 security answer を含む）の全 input ID chain が連続し、省略形へ正規化した command 列が採択 M1 と一致した。全6件とも食事前後 recording、明示 OFF 成功、公園では非 recording / ordinary line input、half-full は Roy’s RECORD で1回、full / 自動停止なし。食事の最終文字は clipping ancestor を含む viewport 内で可読、input の viewport / 編集 / focus、英日 history と accessibility owner を検証した。
 
-6件の meal screenshot と英日 aria / scroll / status 記録、狭幅 Guided / Action menus の return screenshot を実装者が確認した。Guided の accessible name は `食事 注文する` で、限定説明も両 mode の narrow accessibility snapshot に含まれる。帰着画像は現在地・raw status・入力フォーカスの証拠であり、本文は既存の reading-position recovery を維持して過去履歴を表示する場合がある。本文末尾の可読性は meal / newspaper の専用 screenshot と scroll JSON で示す。Classic desktop には未承認の city interrupt（shaved-head man）が現れ、Japanese 隣接 leaf とともに原文 English のまま保持された。
+6件の meal screenshot と英日 aria / scroll / status 記録、狭幅 Guided / Action menus の return screenshot を実装者が確認した。Guided の accessible name は `食事 注文する` で、限定説明も両 mode の narrow accessibility snapshot に含まれる。帰着画像は現在地・raw status・入力フォーカスの証拠であり、本文は既存の reading-position recovery を維持して過去履歴を表示する場合がある。本文末尾の可読性は meal / newspaper の専用 screenshot と scroll JSON で示す。初回ローカル実行の Classic desktop には未承認の city interrupt（shaved-head man）が現れ、Japanese 隣接 leaf とともに原文 English のまま保持された。
 
 Current-head CI / artifact URL・14日 retention の実期限は PR 本文へ追記する。ローカル画像確認を CI ZIP 全体の手動精査と称さない。Sol 通常 review と Astra 全体受入・最終 merge は未実施。
 
@@ -73,6 +73,13 @@ Current-head CI / artifact URL・14日 retention の実期限は PR 本文へ追
 - Full suite の起動待ち失敗を2回観測。通信は player / bridge / z4 が200、iframe に原作 char prompt があり、wrapper が INITIALIZING のままだった。初期通知が wrapper hydration より早い状態を専用の実ブラウザ test で再現し、既存 `request-state` の一度の再取得で復帰を確認した。起動順序の回帰テストを追加し、retry / timeout / assertion を緩めていない。元の2回の全タイミングが同一原因だったとまでは断定しない。
 - Narrow 画像と aria snapshot で既存 generic CSS が meal の説明文を隠すことを発見。可視性 assertion の RED を確認し、`.scene-meal` の限定 override を追加。無関係な SceneActions の compact 表示は変えない。Context panel を開いた狭幅の帰路は、panel に覆われる header toggle ではなく panel 自身の Close を使う。
 - 新規 clock harness は大文字 AM/PM と正午のまたぎ、narrow で時計を出さない canonical status を誤って仮定した。Raw status を保存し、desktop の時刻差を正規化、narrow は時計未観測として明示的に検証する。22分という観測を narrow に転記しない。
+
+CI follow-up（初回 head `394cdab`）:
+
+- [初回 CI 39925823372](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39925823372) は verify success / browser 27 passed・6 failed。新規5件は VM input ID 更新を待った直後に、React がまだ前の prompt を表示している時点で challenge を読み、match が null になった。現在の exact challenge が表示される assertion を同期条件へ追加した。
+- 既存 Guided narrow の first newspaper paragraph viewport assertion も再発。`scrollIntoView` は所有 surface 以外の祖先も動かし得て、bridge は outer BufferWindow を0へ戻す。開始位置を `.story-presentation-scroll` だけの相対座標で設定し、outer scrollTop=0 を追加検証する。段落の viewport・wheel 進行・末尾の実文字・input / focus assertion は維持し、retry / timeout を緩めない。
+- 失敗 artifact は [12489378048](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39925823372/artifacts/12489378048)（2026-11-06 17:43:03 JST まで）。CI ZIP は取得用参照を発行できたが、ローカル download は403で未展開。CI failure image / trace を目視済みとは称さず、job log、既存 DOM ownership、ローカル browser 記録で計測手順を確認した。
+- この follow-up は test helper の同期と計測だけで、production implementation / canonical story / source を変更しない。Follow-up 後のローカル full33 は全件通過し、6経路の実測表も更新した。最新 head の CI / artifact は PR の引き渡し欄を正本とする。
 
 **Astra 受入上の留意:** 390px でも食事本文・支払・録画継続/停止・帰着/input は確認対象だが、原作が出力しない時刻はその session で検証不能。22分の根拠は採択 M1 の2 session と本 M3 の3 desktop session。時計表示を補う新 renderer / VM telemetry は追加しない。
 

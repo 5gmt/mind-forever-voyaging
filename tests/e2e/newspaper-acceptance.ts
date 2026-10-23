@@ -165,10 +165,16 @@ export const acceptNewspaperFieldwork = async (
     // Hover can scroll the iframe/element into view. Finish pointer preparation
     // before positioning the article and measuring the wheel's starting point.
     await surface.hover();
-    await paragraphs[0].evaluate((element) => element.scrollIntoView({ block: "start" }));
-    // On a tall viewport all four paragraphs can already fit at the tail.
-    // Start earlier in the history so reaching the editorial requires a wheel.
-    await surface.evaluate((element) => { element.scrollTop = Math.max(0, element.scrollTop - element.clientHeight / 2); });
+    // scrollIntoView can also move Parchment's outer BufferWindow, which the
+    // localized bridge resets to zero. Position only the owned reading surface
+    // so the first article starts halfway down it and reaching the tail needs
+    // a wheel even on a tall viewport.
+    await paragraphs[0].evaluate((element) => {
+      const owner = element.closest<HTMLElement>(".story-presentation-scroll")!;
+      const top = element.getBoundingClientRect().top - owner.getBoundingClientRect().top + owner.scrollTop;
+      owner.scrollTop = Math.max(0, top - owner.clientHeight / 2);
+    });
+    await expect(frame.locator(".BufferWindow.AMFVLocalizedBuffer")).toHaveJSProperty("scrollTop", 0);
     await expect(paragraphs[0]).toBeInViewport();
     const startTop = await surface.evaluate((element) => element.scrollTop);
     for (let step = 0; step < 12 && !(await lastTextVisible()); step++) {
@@ -191,7 +197,7 @@ export const acceptNewspaperFieldwork = async (
     await attach(`newspaper-${controls}-${label}-scroll`, {
       body: JSON.stringify({ startTop, ...(await surface.evaluate((element) => ({
         endTop: element.scrollTop, scrollHeight: element.scrollHeight, clientHeight: element.clientHeight,
-      }))), editorialEndVisible: await lastTextVisible(), inputLine: await inputLineId(frame) }), contentType: "application/json",
+      }))), outerBufferTop: await frame.locator(".BufferWindow").evaluate((element) => element.scrollTop), editorialEndVisible: await lastTextVisible(), inputLine: await inputLineId(frame) }), contentType: "application/json",
     });
   };
   const expectJapaneseOwner = async () => {

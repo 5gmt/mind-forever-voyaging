@@ -63,8 +63,12 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
     await page.getByTitle(/Reading and play settings|読書とプレイの設定/).click();
   };
   for (const cmd of ["PEOF", "WAIT", "WAIT", "WAIT", "WAIT", "ENTER SIMULATION MODE"]) await send(cmd);
-  const prompt = await presentation.locator(".story-presentation-prompt").last().innerText();
-  const match = prompt.match(/(WHITE|DARK GREEN|DARK BLUE|PINK|ORANGE|PURPLE|TAN|AQUA|LIGHT BLUE|LIGHT GREEN|LIGHT GRAY|YELLOW|BLACK|DARK GRAY|BROWN|RED) (\d+)$/)!;
+  const prompt = presentation.locator(".story-presentation-prompt").last();
+  const challengePattern = /(WHITE|DARK GREEN|DARK BLUE|PINK|ORANGE|PURPLE|TAN|AQUA|LIGHT BLUE|LIGHT GREEN|LIGHT GRAY|YELLOW|BLACK|DARK GRAY|BROWN|RED) (\d+)$/;
+  // The VM input can advance before React presents its new prompt. Wait on
+  // that exact current challenge rather than reading a previous prompt.
+  await expect(prompt).toContainText(challengePattern);
+  const match = (await prompt.innerText()).match(challengePattern)!;
   expect(match).not.toBeNull();
   const answer = OUTER[(2 * COLORS.indexOf(match[1]) + INNER.indexOf(Number(match[2]))) % OUTER.length];
   await send(String(answer), controls === "classic" ? undefined : () => page.locator(".security-decoder").getByRole("button", { name: `コード ${answer} を送信` }).click());
