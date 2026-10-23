@@ -80,6 +80,7 @@ CI follow-up（初回 head `394cdab`）:
 - 既存 Guided narrow の first newspaper paragraph viewport assertion も再発。`scrollIntoView` は所有 surface 以外の祖先も動かし得て、bridge は outer BufferWindow を0へ戻す。開始位置を `.story-presentation-scroll` だけの相対座標で設定し、outer scrollTop=0 を追加検証する。段落の viewport・wheel 進行・末尾の実文字・input / focus assertion は維持し、retry / timeout を緩めない。
 - 失敗 artifact は [12489378048](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39925823372/artifacts/12489378048)（2026-11-06 17:43:03 JST まで）。CI ZIP は取得用参照を発行できたが、ローカル download は403で未展開。CI failure image / trace を目視済みとは称さず、job log、既存 DOM ownership、ローカル browser 記録で計測手順を確認した。
 - この follow-up は test helper の同期と計測だけで、production implementation / canonical story / source を変更しない。Follow-up 後のローカル full33 は全件通過し、6経路の実測表も更新した。最新 head の CI / artifact は PR の引き渡し欄を正本とする。
+- [2回目 CI 39929137710](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39929137710)（head `6853d9f`）は verify success / browser 30 passed・3 failed。Security prompt 同期は解消。一方、旧 / 新 Actions narrow の新聞先頭 viewport と Actions desktop の meal wheel で位置が0へ戻る失敗が残った。所有 surface だけの開始位置指定では解消しておらず、root cause は未確定。DOM identity・hidden / mode・scroll geometry の読み取り専用 lifecycle 記録を追加し、失敗時の job log から切り分ける。現時点ではスクロール問題を修正済みとは扱わない。
 
 **Astra 受入上の留意:** 390px でも食事本文・支払・録画継続/停止・帰着/input は確認対象だが、原作が出力しない時刻はその session で検証不能。22分の根拠は採択 M1 の2 session と本 M3 の3 desktop session。時計表示を補う新 renderer / VM telemetry は追加しない。
 

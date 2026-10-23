@@ -2,6 +2,7 @@ import { expect, type Locator, type Page, type TestInfo } from "@playwright/test
 import { writeFile } from "node:fs/promises";
 import { acceptNewspaperFieldwork } from "./newspaper-acceptance";
 import { clickRouteStep } from "./navigation-acceptance";
+import { readingTrace } from "./reading-observations";
 
 const MEAL_EN = 'You order a bowl of Hot and Sour soup and some assorted appetizers. The food arrives promptly, steaming hot, delicately spiced, delicious. Afterward, your check arrives with a typical fortune cookie and a plate of lychee nuts. The fortune reads: "Prosperity does not equal happiness." You pay with your credit card. After a moment, the waiter returns your card, informing you that your account has been debited for $30 and that your new balance is $569.';
 const MEAL_JA = '酸辣湯を一杯と、前菜を何品か注文する。料理はすぐに運ばれてくる。湯気が立つほど熱く、香辛料が繊細に利いていて、おいしい。食後には勘定書きが、よくあるフォーチュンクッキーと、ライチの実をのせた皿とともに届く。おみくじには「繁栄は幸福と同じではない。」とある。クレジットカードで支払う。少しして、ウェイターがカードを返し、口座から$30が引き落とされ、新しい残高は$569になったと告げる。';
@@ -160,12 +161,14 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
   await attach("restaurant-meal-status", JSON.stringify({ beforeMeal, afterMeal: mealTurn.status, elapsedMinutes, limitation: elapsedMinutes === null ? "Canonical narrow status emits no clock/date; elapsed time unobserved in this session" : null }));
   if (controls !== "classic") await expect(page.locator(".compact-map-button small")).toHaveText("3/9 録画");
   const surface = presentation.locator(".story-presentation-scroll");
+  await readingTrace(frame, "meal-scroll-start");
   const mealParagraph = blocks.nth(mealStart + 1);
   await surface.hover();
   await surface.evaluate((element) => { element.scrollTop = Math.max(0, element.scrollHeight - element.clientHeight * 2); });
   const startTop = await surface.evaluate((element) => element.scrollTop);
   await page.mouse.wheel(0, await surface.evaluate((element) => element.scrollHeight));
-  await expect.poll(() => surface.evaluate((element) => element.scrollTop)).toBeGreaterThan(startTop);
+  try { await expect.poll(() => surface.evaluate((element) => element.scrollTop)).toBeGreaterThan(startTop); }
+  catch (error) { console.log("READING_LIFECYCLE", JSON.stringify(await readingTrace(frame, "meal-scroll-failure"))); throw error; }
   const lastTextVisible = (paragraph: Locator = mealParagraph) => paragraph.evaluate((element) => {
     const range = document.createRange(); range.selectNodeContents(element);
     const end = [...range.getClientRects()].at(-1)!;

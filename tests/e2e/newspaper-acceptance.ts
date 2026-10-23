@@ -1,6 +1,7 @@
 import { expect, type FrameLocator, type Locator, type Page, type TestInfo } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 import { clickRouteStep } from "./navigation-acceptance";
+import { observeReadingLifecycle, readingTrace } from "./reading-observations";
 
 // Exact copy from the approved N2 packet, independent of the production catalog.
 const ARTICLE_JA = [
@@ -34,6 +35,7 @@ export const acceptNewspaperFieldwork = async (
   controls: string, testInfo: TestInfo,
   recordingWindow: "travel" | "on-site" = "travel",
 ) => {
+  await observeReadingLifecycle(frame);
   const attach = async (name: string, evidence: { body: string | Buffer; contentType: string }) => {
     const extension = evidence.contentType === "image/png" ? "png" : evidence.contentType === "application/json" ? "json" : "txt";
     const path = testInfo.outputPath(`${name}.${extension}`);
@@ -162,6 +164,7 @@ export const acceptNewspaperFieldwork = async (
       && end.left >= viewport.left && end.right <= viewport.right;
   });
   const readToEnd = async (label: string) => {
+    await readingTrace(frame, `newspaper-${label}-start`);
     // Hover can scroll the iframe/element into view. Finish pointer preparation
     // before positioning the article and measuring the wheel's starting point.
     await surface.hover();
@@ -175,7 +178,8 @@ export const acceptNewspaperFieldwork = async (
       owner.scrollTop = Math.max(0, top - owner.clientHeight / 2);
     });
     await expect(frame.locator(".BufferWindow.AMFVLocalizedBuffer")).toHaveJSProperty("scrollTop", 0);
-    await expect(paragraphs[0]).toBeInViewport();
+    try { await expect(paragraphs[0]).toBeInViewport(); }
+    catch (error) { console.log("READING_LIFECYCLE", JSON.stringify(await readingTrace(frame, `newspaper-${label}-failure`))); throw error; }
     const startTop = await surface.evaluate((element) => element.scrollTop);
     for (let step = 0; step < 12 && !(await lastTextVisible()); step++) {
       const previousTop = await surface.evaluate((element) => element.scrollTop);
