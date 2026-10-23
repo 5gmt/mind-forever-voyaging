@@ -6,7 +6,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、共有 room / map lookup、初期 fieldwork UI を再利用する。M1 が runtime と操作面を確定し、M2 が本文と必要な UI copy を一括承認し、M3 が統合と milestone 全体受入を担う。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、Node.js tests、Playwright / Chromium、GitHub Actions。
 **Spec:** 本書「採択した設計」。2026-10-09 JST に Yasuo が会話で方針とタスク化を承認。実測による経路採択は M1 の review gate に残す。
-**Follow-up design:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)に従い、2 fresh session で成立した A案を #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` で採択。M1 完了、M2 の [copy packet](../restaurant-copy-packet.md) は独立 copy review 待ち。M3 は M2 承認・merge まで blocked。
+**Follow-up design:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)に従い、2 fresh session で成立した A案を #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` で採択。M1 完了。M2 の [copy packet](../restaurant-copy-packet.md) は [#85 の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)で承認、`7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a` へ merge 済み。M3 は開始可能となり、本統合 PR の実装・証拠を [受入記録](../restaurant-fieldwork-acceptance.md)に集約する。Sol 通常 review / Astra 全体受入・最終 merge は未完了。
 **Baseline:** PR #77 merge `60fa28811504ad86cbc0389374f8770a5c9b709d`。実装開始時には最新 default branch を使用する。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。
 
@@ -103,11 +103,11 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 | ID / Issue | 実装担当 | 通常レビュー | 依存関係 / 状態 |
 | --- | --- | --- | --- |
 | M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | #84 の独立採択レビュー・merge で完了、Issue closed。A案を採択、旧失敗・既存成功 fixture を保持。 |
-| M2 / [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79) | Codex Cloud | Chat モード Sol | 開始 gate 解除済み。[Story / UI copy packet](../restaurant-copy-packet.md) の候補を作成・照合。Sol の独立 copy review / merge 待ち。 |
-| M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | M2 copy approval / merge を待つ。production 未実装。 |
+| M2 / [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79) | Codex Cloud | Chat モード Sol | [#85 の独立 copy review](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)で本文・限定 UI copy を承認・merge 済み。M2 完了、Issue closed。 |
+| M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | 本統合 PR で catalog / 限定 meal UI / 6経路と受入証拠・status roll-up を用意。Sol 通常 review、その後 Astra の全体受入・最終 merge 待ち。 |
 
 再開 gate は **#83 の同期・通常レビュー・merge → M1 の2 fresh session以上の追加実測 → Sol の採択レビュー・merge → M2 の copy 承認・merge → M3**。この文書同期に Astra の再承認は不要。A案でも成立しない、または更なる経路・完了条件・保証の変更が必要な場合だけ設計判断へ戻す。
-現在は M1 の採択 merge まで完了しており、M2 の copy review を行う段階である。
+現在は M1 / M2 が完了。M3 は実装と検証を本 PR へ集約する段階で、全体受入・merge は未完了。
 
 ### M1: Runtime — capture the 2041 restaurant fieldwork route
 
@@ -136,10 +136,10 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 
 - [x] M1 採択 fixture の新規7 story leaf・地名を抽出し、再利用4 leaf と既承認 copy を照合した。
 - [x] 来店・食事・支払・帰着、room / map / assignment / scene identity、visible / accessible な対象・action copy の候補を一つの packet に記録した。`Restaurant` / Roy’s Pagoda / MEAL を区別する。
-- [x] 現地で言及されていない meal 操作を囲む visible / accessible な説明も監査し、限定 surface に即した英日候補を用意した。汎用「言及された対象」の説明を流用せず、無関係な説明・guard の一括変更を要求しない。独立 copy 承認は未完了。
+- [x] 現地で言及されていない meal 操作を囲む visible / accessible な説明も監査し、限定 surface に即した英日候補を用意した。汎用「言及された対象」の説明を流用せず、無関係な説明・guard の一括変更を要求しない。独立 copy 承認は #85 で完了。
 - [x] 値の保持、optional / unknown English fallback、未観測失敗枝、後続 phase / year の非対象を明示した。Production guard は変更しない。
-- [x] Fixture の exact text・command・index / line・空行を照合し、source-only prose を加えていないこと、支払値と意味関係を保つことを自己点検した。意味・表現の最終承認は Sol の独立 review に残す。
-- [ ] `git diff --check` と applicable CI を確認し、本書と status を更新して Sol の copy review に出す。文書だけの変更ではローカル E2E を実施したと記載しない。
+- [x] Fixture の exact text・command・index / line・空行を照合し、source-only prose を加えていないこと、支払値と意味関係を保つことを自己点検した。意味・表現は #85 の Sol 独立 review で承認された。
+- [x] `git diff --check` と applicable CI を確認し、本書と status を更新して #85 の Sol copy review / approval / merge を完了した。M2 文書のみのローカル E2E は未実施と記載した。
 
 **Done:** Sol が本文と UI copy の両方を承認し M2 を merge したこと。production catalog / guard / fixture は変更しない。
 
@@ -148,15 +148,16 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 **Files:** 更新 `app/localization.ts`、必要な `app/PrismEdition.tsx` / `app/StoryTools.tsx`、`tests/rendered-html.test.mjs`。新規 `tests/e2e/restaurant-fieldwork.spec.ts`、`tests/e2e/restaurant-acceptance.ts`、`docs/restaurant-fieldwork-acceptance.md`。更新 本書、`PROJECT_STATUS.md`。
 **Interfaces:** M1 fixture / 採択 command 列と M2 approved copy を消費する。既存 `localizeSimulationPlace`、`localizeSimulationMapLabel`、`localizeSceneObjectName`、`localizeSceneActionLabel` と ordinary-turn catalog を再利用し、room / map / assignment の lookup を重複させない。
 
-- [ ] 採択 fixture と approved copy に対し、原文の忠実な projection、共有 lookup と English fallback を検証する unit regression を先に追加し、追加 coverage が未実装で失敗することを確認する。
-- [ ] Approved leaves / role-specific labels を既存 catalog へ追加し、必要な操作面へ接続する。観測に基づく狭い対象保持が必要なら採択した scope 内に限定し、未知対象を推測で公開しない。
-- [ ] current turn の meal response、recording の原作出力、支払・時刻と補助 checklist の推定を別々に検証する。同じ command の過去 echo、訪問だけ、成功語の部分一致を録画完了の代用にしない。
-- [ ] Classic / Guided / Action menus × 1440×900 / 390×844 の6経路を、各 fresh canonical session の Courthouse → Newspaper → Restaurant → Kennedy Park / 録画停止・入力復帰として E2E にする。M1 の採択した録画区間を使う。
-- [ ] Guided / Action menus では map / route / exits / compass と対象操作を実 UI から使い、English draft または既存即時送信、可視 / accessible copy、食事本文、drawer / 本文の scroll、入力・focus 復帰を確認する。Classic に assisted answer / controls を出さない。
-- [ ] 限定 meal UI の EN / JA で同じ可用性、Guided の編集可能 draft、Action menus の明示押下一回につき `BUY MEAL` 一回送信、busy 中の無効化を検証する。Classic、QA、後続年、再入場、RESTORE 不明状態、未知 room では新設候補なし、既存 fallback を確認する。M2 承認の周囲の visible / accessible 説明も照合する。
-- [ ] EN → JA → EN、長い履歴、unknown leaf / place、再入場・RESTORE 不明状態の regression を保持し、`lang` と accessibility owner の非重複を確認する。未実施の実保存データ RESTORE、音声 screen reader、本番配備を検証済みと称さない。
-- [ ] 適用する full checks / canonical checksum を実行し、current-head CI と6経路の screenshots、turn / input / status・scroll・accessibility 記録を acceptance 文書へ対応付ける。
-- [ ] Codex が実装済み coverage、受入待ち状態、merge を完了点とする最終 roll-up を本書と status に準備し、Sol の通常レビューを受ける。
+- [x] 採択 fixture と approved copy に対し、原文の忠実な projection、共有 lookup と English fallback を検証する unit regression を先に追加し、追加 coverage が未実装で失敗することを確認する。
+- [x] Approved leaves / role-specific labels を既存 catalog へ追加し、必要な操作面へ接続する。観測に基づく狭い対象保持が必要なら採択した scope 内に限定し、未知対象を推測で公開しない。
+- [x] current turn の meal response、recording の原作出力、支払・時刻と補助 checklist の推定を別々に検証する。同じ command の過去 echo、訪問だけ、成功語の部分一致を録画完了の代用にしない。
+- [x] Classic / Guided / Action menus × 1440×900 / 390×844 の6経路を、各 fresh canonical session の Courthouse → Newspaper → Restaurant → Kennedy Park / 録画停止・入力復帰として E2E にする。M1 の採択した録画区間を使う。
+- [x] Guided / Action menus では map / route / exits / compass と対象操作を実 UI から使い、English draft または既存即時送信、可視 / accessible copy、食事本文、drawer / 本文の scroll、入力・focus 復帰を確認する。Classic に assisted answer / controls を出さない。
+- [x] 限定 meal UI の EN / JA で同じ可用性、Guided の編集可能 draft、Action menus の明示押下一回につき `BUY MEAL` 一回送信、busy 中の無効化を検証する。Classic、QA、後続年、再入場、RESTORE 不明状態、未知 room では新設候補なし、既存 fallback を確認する。M2 承認の周囲の visible / accessible 説明も照合する。
+- [x] EN → JA → EN、長い履歴、unknown leaf / place、再入場・RESTORE 不明状態の regression を保持し、`lang` と accessibility owner の非重複を確認する。未実施の実保存データ RESTORE、音声 screen reader、本番配備を検証済みと称さない。
+- [x] 適用する full checks / canonical checksum を実行し、current-head CI と6経路の screenshots、turn / input / status・scroll・accessibility 記録を acceptance 文書へ対応付ける。
+- [x] Codex が実装済み coverage、受入待ち状態、merge を完了点とする最終 roll-up を本書と status に準備する。
+- [ ] Sol が通常 PR review を行い、実装担当が指摘を修正する。
 - [ ] Sol の指摘修正後、Astra が同じ最終 head の全体受入を確認する。指摘による追加 commit は担当 reviewer が該当証拠を再確認し、latest base・behind=0・mergeable・current-head checks を満たして Astra が merge する。
 - [ ] Merge 後に完了結果、reviewed head / merge commit、CI / artifact、受入 link と対象外を #29 に報告し、M3 Issue を閉じる。次の milestone を自動選択しない。
 
@@ -170,3 +171,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 - 2026-10-22 JST: [2026-10-21 の Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [#83 レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/83#pullrequestreview-5600151543)を反映。A案の追加実測方針・限定 meal UI の設計範囲は承認済み、追加実測前。既存成功経路と失敗記録の保持、限定 surface の説明監査、M1 に UI 完成を要求しない再開 gate を明記。#83 の Sol 通常レビュー・merge 待ち、#78 open・経路未採択・M2/M3 blocked を維持する。
 - 2026-10-22 JST（#83 merge 後）: `bdc6f84e3de34b59d8477edcc5657d87f55b7362` から A案を2 fresh context で実測。両方で食事22分の前後が recording、明示停止成功、非録画で公園の通常入力まで成立。Half-full は Roy's RECORD turn に移動し、full / 自動停止はない。正午の optional output も保持した。[候補の実測記録](../restaurant-recording-a-evidence.md)と別 fixture、regression を追加し、成功経路の Sol 独立採択レビューへ渡す。#78 open・M2/M3 blocked を維持する。
 - 2026-10-22 JST（#84 merge 後）: Sol の独立レビューで A案を採択し `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` へ merge。#78 / M1 完了、[M2 開始判断](https://github.com/5gmt/mind-forever-voyaging/issues/79#issuecomment-6341140821)を確認し [copy packet](../restaurant-copy-packet.md) を作成。7新規 leaf、再利用4 leaf、役割別地名・地図・課題、限定 meal 操作と周囲の説明を一括で Sol の copy review へ提出する。Copy 未承認、M3 は引き続き blocked、production coverage は増えていない。
+
+- 2026-10-22 JST（#85 merge 後）: M2 の独立 copy 承認・merge と [M3 開始 gate](https://github.com/5gmt/mind-forever-voyaging/issues/80#issuecomment-6342202848)を確認。本統合 PR で approved catalog / role lookup / 限定 meal 操作、6経路の regression と [受入記録](../restaurant-fieldwork-acceptance.md)、最終 status roll-up を用意する。Sol の通常レビューと Astra の最終 head 全体受入・merge を待つ。
+
+- 2026-10-23 JST: Approved copy / shared lookup / 限定 meal UI を統合し、6 fresh browser route と全33 E2E・31 unit・build/lint/TypeScript/checksum を検証。狭幅の限定説明を可視化し、初期通知が hydration より早い起動待ちを既存 request-state の一度の再取得で修正した。狭幅の原作 status は時計・日付を出力しないため、22分は M1 と M3 desktop の実測と区別する。[最終受入記録](../restaurant-fieldwork-acceptance.md)と status roll-up を準備済み。Sol 通常 review → Astra 全体受入・最終 merge / #29 報告は未完了。

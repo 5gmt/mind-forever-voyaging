@@ -1,6 +1,8 @@
 # Issue #78 follow-up: recording windows and meal controls
 
-**状態:** A案は [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により採択済み。#78 / M1 完了、M2 #79 の [copy packet](../restaurant-copy-packet.md) は review 待ち。M3 #80 は M2 copy approval / merge まで blocked。限定 meal UI の設計範囲は承認済みだが未実装。
+**M1 採択時の状態:** A案は [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により採択済み。#78 / M1 完了、M2 #79 の [copy packet](../restaurant-copy-packet.md) は review 待ち。M3 #80 は M2 copy approval / merge まで blocked。限定 meal UI の設計範囲は承認済みだが未実装。
+
+**M3 integration 時の更新:** [M2 #85 の独立 copy 承認](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)と merge `7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a` で M2 / #79 も完了した。M3 の開始 gate は解除済みで、production 統合と6経路の検証・受入待ち状態は [M3 受入記録](../restaurant-fieldwork-acceptance.md)を参照。本書の下記 UI 監査と未実施項目は M1 / 設計提出時点の記録として保持し、現在の production 完成・独立受入の証拠と混同しない。
 
 承認元は [2026-10-21 の Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)。Yasuo の設計判断依頼に基づき、PR #83 reviewed head `0c222bb5fdb61d15c19b622d32436daeec8987c9` の具体案と同コメントの補足が承認された。[PR #83 のレビュー](https://github.com/5gmt/mind-forever-voyaging/pull/83#pullrequestreview-5600151543)に従い、この文書同期を Sol の通常レビュー・merge へ戻す。この範囲の反映に Astra の再承認は不要。
 

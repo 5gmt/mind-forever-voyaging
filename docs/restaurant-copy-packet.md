@@ -2,7 +2,7 @@
 
 ## 状態・根拠・承認単位
 
-**M2 の英日 copy 候補。Sol の独立 copy review / merge 待ちであり、copy 承認済み・production 実装済みとは扱わない。M3 #80 は本 packet の承認・merge まで blocked。**
+**M2 は [#85 の Sol 独立 copy review](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)で本文 R1–R7 と限定 meal UI の英日 copy を承認し、`7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a` へ merge 済み。#79 完了、[#80 の開始 gate](https://github.com/5gmt/mind-forever-voyaging/issues/80#issuecomment-6342202848)は解除された。以下の候補表・現行 UI の記述は M2 提出時点の記録。M3 の実装・受入は [受入文書](restaurant-fieldwork-acceptance.md)で管理する。**
 
 M1 #78 は [PR #84 の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` で完了した。[M2 開始判断](https://github.com/5gmt/mind-forever-voyaging/issues/79#issuecomment-6341140821)に従い、採択済み A案の `tests/fixtures/parchment-restaurant-recording-a-observed.json` を story の唯一の根拠とする。以下の `S1/S2:index:line` は各 session の `observations[index].presentation.lines[line]`、index / line は0始まりである。
 
@@ -114,6 +114,6 @@ Raw `GridWindow` の mode / date / time / `Location:` は English のまま。�
 
 ## 検証・承認と handoff
 
-Packet 作成は Codex Cloud。上の新規7 leaf と再利用4 leaf を両 session の exact text・command・位置・行順・空行に照合し、UI identity / source copy と現行表示条件を別に監査する。日本語は候補であり、Sol の独立 review が意味・表現・story / UI 両方の承認を担う。
+Packet 作成は Codex Cloud。上の新規7 leaf と再利用4 leaf を両 session の exact text・command・位置・行順・空行に照合し、UI identity / source copy と現行表示条件を別に監査する。日本語は #85 の独立 review で意味・表現・story / UI とも承認済み。Guided の対象名＋動詞の accessible name は、M3 の browser aria snapshot で確認する留意事項を引き継ぐ。
 
 本 M2 の完成条件は **Sol が本 packet の本文と UI copy を承認し、M2 PR を merge すること**。その時点で #79 を完了し M3 #80 を開始可能とする。Review 前にチェック欄や status を copy 承認済みにせず、M3 の production 実装・6経路受入・Astra 全体受入を今回完了と称さない。検証結果、current-head CI / artifact の head 一致と実期限、未解決 finding は PR の引き渡しに記録する。文書のみのため、実施していないローカル npm / browser suite や新規 runtime capture を実施済みとは記録しない。

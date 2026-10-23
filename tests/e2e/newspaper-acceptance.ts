@@ -32,6 +32,7 @@ const inputLineId = async (frame: FrameLocator) => frame.locator("body").evaluat
 export const acceptNewspaperFieldwork = async (
   page: Page, frame: FrameLocator, presentation: Locator, input: Locator,
   controls: string, testInfo: TestInfo,
+  recordingWindow: "travel" | "on-site" = "travel",
 ) => {
   const attach = async (name: string, evidence: { body: string | Buffer; contentType: string }) => {
     const extension = evidence.contentType === "image/png" ? "png" : evidence.contentType === "application/json" ? "json" : "txt";
@@ -65,9 +66,13 @@ export const acceptNewspaperFieldwork = async (
   };
 
   await sendTurn("INVENTORY");
-  const activation = await sendTurn("RECORD");
-  await expect(blocks.nth(activation.previousCount + 1)).toHaveText("記録機能を起動しました。");
-  await expect(status).toContainText(/Simulation Mode\s*\(recording\)/i);
+  const activate = async () => {
+    const turn = await sendTurn("RECORD");
+    await expect(blocks.nth(turn.previousCount + 1)).toHaveText("記録機能を起動しました。");
+    await expect(status).toContainText(/Simulation Mode\s*\(recording\)/i);
+    return turn;
+  };
+  let activation = recordingWindow === "travel" ? await activate() : null;
   for (const [command, place] of [
     ["NE", "メイン通りとケネディ通り"],
     ["N", "センター通りとケネディ通り"],
@@ -91,6 +96,7 @@ export const acceptNewspaperFieldwork = async (
     await attach(`navigation-${controls}-arrival`, { body: await page.screenshot(), contentType: "image/png" });
     await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
   }
+  if (recordingWindow === "on-site") activation = await activate();
   const newspaperAction = async (action: "buy" | "read") => {
     if (controls === "guided") {
       await page.getByRole("region", { name: "この場面で言及された語" }).getByRole("button", { name: /^新聞\s*読む$/ }).click();
@@ -264,6 +270,13 @@ export const acceptNewspaperFieldwork = async (
   await expectArticle();
   await input.fill("");
 
+  const deactivate = async () => {
+    const turn = await sendTurn("RECORD OFF");
+    await expect(blocks.nth(turn.previousCount + 1)).toHaveText("記録機能を停止しました。");
+    await expect(status).not.toContainText(/\(recording\)/i);
+    return turn;
+  };
+  let deactivation = recordingWindow === "on-site" ? await deactivate() : null;
   for (const [command, place] of [
     ["SW", "センター通りとケネディ通り"],
     ["S", "メイン通りとケネディ通り"],
@@ -273,8 +286,7 @@ export const acceptNewspaperFieldwork = async (
     await sendTurn(submittedCommand, controls === "classic" ? undefined : () => clickRouteStep(page, input, controls, submittedCommand, command === "SW" ? "ケネディ公園" : undefined));
     await expect(page.locator(".location-block strong")).toHaveText(place);
   }
-  const deactivation = await sendTurn("RECORD OFF");
-  await expect(blocks.nth(deactivation.previousCount + 1)).toHaveText("記録機能を停止しました。");
+  if (recordingWindow === "travel") deactivation = await deactivate();
   await expect(status).toContainText(/Location:\s*Kennedy Park/i);
   await expect(status).not.toContainText(/\(recording\)/i);
   await input.click();
@@ -282,4 +294,5 @@ export const acceptNewspaperFieldwork = async (
   await attach(`newspaper-${controls}-turns`, {
     body: JSON.stringify({ activation, purchase, read, turns, statusBeforeRead, statusAfterRead, deactivation, statusAfterStop: await status.innerText() }), contentType: "application/json",
   });
+  return turns;
 };
