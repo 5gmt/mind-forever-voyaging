@@ -71,7 +71,7 @@ Base は上記 #85 merge。現 head / base、current-head CI、artifact URL・�
 
 6件の meal screenshot と英日 aria / scroll / status 記録、狭幅 Guided / Action menus の return screenshot を実装者が確認した。Guided の accessible name は `食事 注文する` で、限定説明も両 mode の narrow accessibility snapshot に含まれる。帰着画像は現在地・raw status・入力フォーカスの証拠であり、本文は既存の reading-position recovery を維持して過去履歴を表示する場合がある。本文末尾の可読性は meal / newspaper の専用 screenshot と scroll JSON で示す。初回ローカル実行の Classic desktop には未承認の city interrupt（shaved-head man）が現れ、Japanese 隣接 leaf とともに原文 English のまま保持された。
 
-Current-head CI / artifact URL・14日 retention の実期限は PR 本文へ追記する。ローカル画像確認を CI ZIP 全体の手動精査と称さない。Sol 通常 review と Astra 全体受入・最終 merge は未実施。
+このローカル確認時点では、current-head CI / artifact URL・期限の追記、Sol 通常 review、Astra 全体受入・最終 merge は未実施だった。ローカル画像確認を CI ZIP 全体の手動精査と称さない。その後の独立受入は上記「独立した milestone 受入」、最終 head の CI / artifact と merge は #86 を参照する。
 
 検証途中の失敗と修正:
 

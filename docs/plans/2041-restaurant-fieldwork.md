@@ -107,7 +107,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 | M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | 実装と6経路を Sol / ChatGPT Work が承認。#86 に status / plan / 受入の最終集約を含める。最終 head の独立 review・CI・受入と merge / #29 報告で完了し、実施結果は #86 / #80 / #29 に記録。 |
 
 再開 gate は **#83 の同期・通常レビュー・merge → M1 の2 fresh session以上の追加実測 → Sol の採択レビュー・merge → M2 の copy 承認・merge → M3**。この文書同期に Astra の再承認は不要。A案でも成立しない、または更なる経路・完了条件・保証の変更が必要な場合だけ設計判断へ戻す。
-現在は M1 / M2 が完了。M3 は実装と検証を本 PR へ集約する段階で、全体受入・merge は未完了。
+M1 / M2 は完了。M3 の実装と6経路の独立受入は #86 に記録し、最終 head のレビュー・CI・merge は #86、完了報告は #29、Issue の完了状態は #80 を正本とする。
 
 ### M1: Runtime — capture the 2041 restaurant fieldwork route
 
