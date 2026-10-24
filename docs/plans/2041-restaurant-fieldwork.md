@@ -6,7 +6,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、共有 room / map lookup、初期 fieldwork UI を再利用する。M1 が runtime と操作面を確定し、M2 が本文と必要な UI copy を一括承認し、M3 が統合と milestone 全体受入を担う。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、Node.js tests、Playwright / Chromium、GitHub Actions。
 **Spec:** 本書「採択した設計」。2026-10-09 JST に Yasuo が会話で方針とタスク化を承認。実測による経路採択は M1 の review gate に残す。
-**Follow-up design:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)に従い、2 fresh session で成立した A案を #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` で採択。M1 完了。M2 の [copy packet](../restaurant-copy-packet.md) は [#85 の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)で承認、`7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a` へ merge 済み。M3 は開始可能となり、本統合 PR の実装・証拠を [受入記録](../restaurant-fieldwork-acceptance.md)に集約する。Sol 通常 review / Astra 全体受入・最終 merge は未完了。
+**Follow-up design:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)に従い、2 fresh session で成立した A案を #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` で採択。M1 完了。M2 の [copy packet](../restaurant-copy-packet.md) は [#85 の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)で承認、`7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a` へ merge 済み。M3 の実装・証拠は [PR #86](https://github.com/5gmt/mind-forever-voyaging/pull/86)と [受入記録](../restaurant-fieldwork-acceptance.md)に集約し、[Sol 通常 review](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5627091288)と [ChatGPT Work の6経路受入](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5636695294)で実装を承認した。最終文書差分を独立確認し、最終 head の受入・CI と既存 merge gate を満たして #86 を merge、#29 へ報告した時点で M1–M3 完了となる。最終 gate の実施結果は #86 / #80 / #29 を正本とする。
 **Baseline:** PR #77 merge `60fa28811504ad86cbc0389374f8770a5c9b709d`。実装開始時には最新 default branch を使用する。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。
 
@@ -104,7 +104,7 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 | --- | --- | --- | --- |
 | M1 / [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) | Codex Cloud | Chat モード Sol | #84 の独立採択レビュー・merge で完了、Issue closed。A案を採択、旧失敗・既存成功 fixture を保持。 |
 | M2 / [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79) | Codex Cloud | Chat モード Sol | [#85 の独立 copy review](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)で本文・限定 UI copy を承認・merge 済み。M2 完了、Issue closed。 |
-| M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | 本統合 PR で catalog / 限定 meal UI / 6経路と受入証拠・status roll-up を用意。Sol 通常 review、その後 Astra の全体受入・最終 merge 待ち。 |
+| M3 / [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) | Codex Cloud | Chat モード Sol、その後 Astra が全体受入 | 実装と6経路を Sol / ChatGPT Work が承認。#86 に status / plan / 受入の最終集約を含める。最終 head の独立 review・CI・受入と merge / #29 報告で完了し、実施結果は #86 / #80 / #29 に記録。 |
 
 再開 gate は **#83 の同期・通常レビュー・merge → M1 の2 fresh session以上の追加実測 → Sol の採択レビュー・merge → M2 の copy 承認・merge → M3**。この文書同期に Astra の再承認は不要。A案でも成立しない、または更なる経路・完了条件・保証の変更が必要な場合だけ設計判断へ戻す。
 現在は M1 / M2 が完了。M3 は実装と検証を本 PR へ集約する段階で、全体受入・merge は未完了。
@@ -156,10 +156,11 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 - [x] 限定 meal UI の EN / JA で同じ可用性、Guided の編集可能 draft、Action menus の明示押下一回につき `BUY MEAL` 一回送信、busy 中の無効化を検証する。Classic、QA、後続年、再入場、RESTORE 不明状態、未知 room では新設候補なし、既存 fallback を確認する。M2 承認の周囲の visible / accessible 説明も照合する。
 - [x] EN → JA → EN、長い履歴、unknown leaf / place、再入場・RESTORE 不明状態の regression を保持し、`lang` と accessibility owner の非重複を確認する。未実施の実保存データ RESTORE、音声 screen reader、本番配備を検証済みと称さない。
 - [x] 適用する full checks / canonical checksum を実行し、current-head CI と6経路の screenshots、turn / input / status・scroll・accessibility 記録を acceptance 文書へ対応付ける。
-- [x] Codex が実装済み coverage、受入待ち状態、merge を完了点とする最終 roll-up を本書と status に準備する。
-- [ ] Sol が通常 PR review を行い、実装担当が指摘を修正する。
-- [ ] Sol の指摘修正後、Astra が同じ最終 head の全体受入を確認する。指摘による追加 commit は担当 reviewer が該当証拠を再確認し、latest base・behind=0・mergeable・current-head checks を満たして Astra が merge する。
-- [ ] Merge 後に完了結果、reviewed head / merge commit、CI / artifact、受入 link と対象外を #29 に報告し、M3 Issue を閉じる。次の milestone を自動選択しない。
+- [x] Codex が実装済み coverage と最終 roll-up を本書と status に準備し、#86 の受入時に独立レビュー結果と完了条件を同期した。
+- [x] Sol が実装 head `6a8e4565cefa5b34dbf6330932481bbb06d374bc` を通常レビューし、blocking finding なしと記録した。
+- [x] ChatGPT Work が同じ実装 head の6経路と current-head CI artifact の全体受入を承認した。
+
+残る最終 gate は [#86](https://github.com/5gmt/mind-forever-voyaging/pull/86) のレビュー / checks / merge 状態を正本とする。追加の文書 commit は Sol が差分を独立確認し、Astra が最終 head の証拠と production / tests の不変を確認する。Latest base・behind=0・mergeable・current-head checks を満たして Astra が merge し、reviewed head / merge commit、CI / artifact、受入 link、対象外を [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29) に報告して [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) を閉じる。この実施結果を自己参照 SHA の文書 commit で繰り返し更新しない。次 milestone は自動選択しない。
 
 **Done:** Sol の通常レビューと Astra の6経路の全体受入が承認され、M3 が merge され、#29 に結果が記録されたこと。
 
@@ -175,3 +176,5 @@ M1 が `.github/workflows/ci.yml` の acceptance artifact retention を 3日か�
 - 2026-10-22 JST（#85 merge 後）: M2 の独立 copy 承認・merge と [M3 開始 gate](https://github.com/5gmt/mind-forever-voyaging/issues/80#issuecomment-6342202848)を確認。本統合 PR で approved catalog / role lookup / 限定 meal 操作、6経路の regression と [受入記録](../restaurant-fieldwork-acceptance.md)、最終 status roll-up を用意する。Sol の通常レビューと Astra の最終 head 全体受入・merge を待つ。
 
 - 2026-10-23 JST: Approved copy / shared lookup / 限定 meal UI を統合し、6 fresh browser route と全33 E2E・31 unit・build/lint/TypeScript/checksum を検証。狭幅の限定説明を可視化し、初期通知が hydration より早い起動待ちを既存 request-state の一度の再取得で修正した。狭幅の原作 status は時計・日付を出力しないため、22分は M1 と M3 desktop の実測と区別する。[最終受入記録](../restaurant-fieldwork-acceptance.md)と status roll-up を準備済み。Sol 通常 review → Astra 全体受入・最終 merge / #29 報告は未完了。
+
+- 2026-10-24 JST: #86 の実装 head `6a8e4565cefa5b34dbf6330932481bbb06d374bc` を Sol が独立レビューし、ChatGPT Work が6 fresh routes と CI artifact を直接確認して全体受入を承認。全31 unit / 34 browser tests、録画・支払・停止・入力、英日 owner、narrow 表示、起動 / 測定 pane regression を照合した。本書・status・受入文書を最終集約へ同期し、文書差分の独立確認・最終 head CI・merge / #29 報告を #86 の最終 gate に残す。

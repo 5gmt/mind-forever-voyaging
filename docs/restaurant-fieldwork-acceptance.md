@@ -4,9 +4,15 @@
 
 実装担当は Codex Cloud。M1 は [#84 の Sol 採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)、M2 は [#85 の独立 copy 承認](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)と merge `7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a` で完了した。
 
-本書は M3 実装・検証の集約であり、独立した受入承認ではない。**Sol の通常 PR review → 指摘修正 → 同じ最終 head に対する Astra の6経路全体受入 → Astra が最終 merge** の順序を守る。実装者は自己点検を独立 review と数えず、merge しない。#80 は最終 merge まで open。
+本書の実装・検証の記録は Codex Cloud の自己点検であり、独立 review とは区別する。実装 head `6a8e4565cefa5b34dbf6330932481bbb06d374bc` は [Sol の通常レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5627091288)と [ChatGPT Work の6経路全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5636695294)で承認された。**最終文書差分の独立確認 → 同じ最終 head の CI / 全体受入 → Astra が merge → #29 報告 / #80 close** を [PR #86](https://github.com/5gmt/mind-forever-voyaging/pull/86) の最終 gate とする。未実施の merge / 報告を、この文書更新だけで完了扱いしない。
 
-Base は上記 #85 merge。現 head / base、current-head CI、artifact URL・有効期限、review 差分は PR 本文に記録する。SHA の自己参照更新だけの commit を繰り返さず、PR の reviewed head と CI artifact metadata を正本とする。Plan / PROJECT_STATUS は本 PR の coverage と受入待ちを記し、最終 merge を milestone 完了とする roll-up を準備する。
+Base は上記 #85 merge。現 head / base、current-head CI、artifact URL・有効期限、review 差分は PR 本文に記録する。SHA の自己参照更新だけの commit を繰り返さず、PR の reviewed head と CI artifact metadata を正本とする。Plan / PROJECT_STATUS は #86 の統合 coverage と独立受入、merge / #29 報告を完了条件とする roll-up を含む。最終 head の review / CI / merge は #86、完了報告は #29、Issue 状態は #80 を正本とする。
+
+## 独立した milestone 受入
+
+2026-10-24 JST、ChatGPT Work は実装 head `6a8e4565cefa5b34dbf6330932481bbb06d374bc` の [CI 39933797171](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39933797171) と [artifact 12492499979](https://github.com/5gmt/mind-forever-voyaging/actions/runs/39933797171/artifacts/12492499979) を直接確認した。ZIP を展開し、6経路の食事、narrow 帰着・新聞末尾、assisted drawer、測定 pane の画像、全40送信の input ID chain、raw meal / status、scroll、EN / JA accessibility snapshot を照合した。31 unit / 34 browser tests は CI log で確認し、レビュー側で新規ローカル E2E を実行したとは称さない。
+
+食事前後 recording、$30 / $569、明示 OFF、公園の通常入力、末尾可視性、英日 owner 非重複を6経路で確認した。Desktop の3経路では22分、390px では原作時計未出力を維持する。測定 pane 保持中も presentation / report payload が一致し、host parent=window2、scrollTop=100、入力と accessibility owner を保った。詳しい CI 実測値とレビューの限界は [受入レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5636695294)を参照。Artifact の有効期限は 2026-11-06 18:49:37 JST。文書同期後の current-head CI / artifact は #86 の最終引き渡し欄に記録し、この実装 head の証拠と区別する。
 
 ## 実装と証拠の対応
 
