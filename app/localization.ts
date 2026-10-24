@@ -511,7 +511,13 @@ const SCENE_ACTION_UI = {
 
 export type SceneActionUiKey = keyof typeof SCENE_ACTION_UI.en;
 export const sceneActionUiText = (locale: Locale, key: SceneActionUiKey) => SCENE_ACTION_UI[locale][key];
-const INITIAL_ROUTE_ROOMS = new Set(["KENNEDY-PARK", "ELM-AND-PARK", "COURTHOUSE", "MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE"]);
+const MEAL_ACTION_UI = {
+  en: { landmark: "Meal at Roy's Pagoda", heading: "Order a meal", guidedInstruction: "Choose the meal to draft an order you can edit before sending.", actionsInstruction: "Choose Order meal to send the command once.", orderMeal: "Order meal" },
+  ja: { landmark: "ロイズ・パゴダでの食事", heading: "食事を注文する", guidedInstruction: "食事を選ぶと、注文のコマンドを下書きします。編集してから送信できます。", actionsInstruction: "「食事を注文する」を押すと、コマンドを1回送信します。", orderMeal: "食事を注文する" },
+} as const;
+export const mealActionUiText = (locale: Locale, key: keyof typeof MEAL_ACTION_UI.en) => MEAL_ACTION_UI[locale][key];
+
+const INITIAL_ROUTE_ROOMS = new Set(["KENNEDY-PARK", "ELM-AND-PARK", "COURTHOUSE", "MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE", "ELM-AND-UNIVERSITY", "ELM-UNDERPASS", "ROYS-PAGODA"]);
 export const sceneActionsLocale = (locale: Locale, roomId: string | null | undefined, initial2041 = false): Locale =>
   roomId === "OFFICE" || (initial2041 && roomId && INITIAL_ROUTE_ROOMS.has(roomId)) ? locale : "en";
 
@@ -541,13 +547,13 @@ const isPeofSceneAction = (actionId: string): actionId is PeofSceneActionId => a
 export const localizeSceneObjectName = (locale: Locale, roomId: string | null | undefined, objectId: string, canonicalName: string) =>
   locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) ? PEOF_SCENE_OBJECT_NAMES[objectId]
     : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" ? "新聞"
-      : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER-DISPENSER" ? "新聞販売機" : canonicalName;
+      : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER-DISPENSER" ? "新聞販売機" : locale === "ja" && roomId === "ROYS-PAGODA" && objectId === "MEAL" ? "食事" : canonicalName;
 
 export const localizeSceneActionLabel = (locale: Locale, roomId: string | null | undefined, objectId: string, actionId: string, canonicalLabel: string) =>
   locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) && isPeofSceneAction(actionId)
     ? PEOF_SCENE_ACTION_LABELS[actionId]
     : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "buy" ? "買う"
-      : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "read" ? "読む" : canonicalLabel;
+      : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "read" ? "読む" : locale === "ja" && roomId === "ROYS-PAGODA" && objectId === "MEAL" && actionId === "buy" ? "注文する" : canonicalLabel;
 
 const ENGLISH_PHASE_TITLES = new Set(["origin", "comparative", "witness", "lockdown", "epilogue"]);
 
@@ -582,6 +588,9 @@ export const localizeOutletLabel = (locale: Locale, code: string, canonicalLabel
 
 const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
+    "Elm & University": "エルム通りとユニバーシティ大通り",
+    "Elm Underpass": "エルム通りの高架下",
+    "Roy's Pagoda": "ロイズ・パゴダ",
     "Main & Kennedy": "メイン通りとケネディ通り",
     "Centre & Kennedy": "センター通りとケネディ通り",
     "Bodanski Square": "ボダンスキー広場",
@@ -600,6 +609,7 @@ const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, stri
   ja: {
     "north-central": "ノース・セントラル駅",
     newspaper: "新聞",
+    meal: "レストラン",
     infotech: "インフォテック・ビル",
     kennedy: "ケネディ公園",
     court: "裁判所",
@@ -663,6 +673,8 @@ export type StoryContentId =
   | "part1.simulation.newspaper.route"
   | "part1.simulation.newspaper.purchase"
   | "part1.simulation.newspaper.article"
+  | "part1.simulation.restaurant.route"
+  | "part1.simulation.restaurant.meal"
   | "part1.simulation.record-activated"
   | "part1.simulation.record-deactivated";
 
@@ -941,6 +953,93 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
       canonicalLeaf,
       translation: { contentId: "part1.simulation.newspaper.route" as const, text },
     })),
+    {
+      canonicalCommand: "W",
+      canonicalLeaf: "Elm & University",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & University"), kind: "title" },
+    },
+    {
+      canonicalCommand: "WEST",
+      canonicalLeaf: "Elm & University",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & University"), kind: "title" },
+    },
+    {
+      canonicalCommand: "E",
+      canonicalLeaf: "Elm & University",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & University"), kind: "title" },
+    },
+    {
+      canonicalCommand: "EAST",
+      canonicalLeaf: "Elm & University",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & University"), kind: "title" },
+    },
+    {
+      canonicalCommand: "W",
+      canonicalLeaf: "University Avenue forks off to the northwest, meandering into the campus which spans the north side of Elm Street here. A tall apartment complex is on the south side of the street. The top of some steps indicate an entrance to the Tubes.",
+      translation: { contentId: "part1.simulation.restaurant.route", text: "ユニバーシティ大通りが北西へ枝分かれし、このあたりではエルム通りの北側に広がるキャンパスの中へ、曲がりくねって延びている。通りの南側には高層の集合住宅がある。階段の上端が、地下交通網チューブへの入口の目印になっている。" },
+    },
+    {
+      canonicalCommand: "WEST",
+      canonicalLeaf: "University Avenue forks off to the northwest, meandering into the campus which spans the north side of Elm Street here. A tall apartment complex is on the south side of the street. The top of some steps indicate an entrance to the Tubes.",
+      translation: { contentId: "part1.simulation.restaurant.route", text: "ユニバーシティ大通りが北西へ枝分かれし、このあたりではエルム通りの北側に広がるキャンパスの中へ、曲がりくねって延びている。通りの南側には高層の集合住宅がある。階段の上端が、地下交通網チューブへの入口の目印になっている。" },
+    },
+    {
+      canonicalCommand: "W",
+      canonicalLeaf: "Elm Underpass",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm Underpass"), kind: "title" },
+    },
+    {
+      canonicalCommand: "WEST",
+      canonicalLeaf: "Elm Underpass",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm Underpass"), kind: "title" },
+    },
+    {
+      canonicalCommand: "N",
+      canonicalLeaf: "Elm Underpass",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm Underpass"), kind: "title" },
+    },
+    {
+      canonicalCommand: "NORTH",
+      canonicalLeaf: "Elm Underpass",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm Underpass"), kind: "title" },
+    },
+    {
+      canonicalCommand: "W",
+      canonicalLeaf: "Elm Street passes under an elevated roadway, a relic of the last century's interstate highway system. A Chinese restaurant fills the space under the highway to the south, and a bar is nestled under the roadway north of here. Elm leads eastward, to downtown, and westward toward the suburbs.",
+      translation: { contentId: "part1.simulation.restaurant.route", text: "エルム通りは、前世紀の州間高速道路網の名残である高架道路の下をくぐっている。南側の高速道路の下の空間を中華料理店が占め、ここから北の高架下にはバーがこぢんまりと収まっている。エルム通りは東へ行くとダウンタウンへ、西へ行くと郊外へ続いている。" },
+    },
+    {
+      canonicalCommand: "WEST",
+      canonicalLeaf: "Elm Street passes under an elevated roadway, a relic of the last century's interstate highway system. A Chinese restaurant fills the space under the highway to the south, and a bar is nestled under the roadway north of here. Elm leads eastward, to downtown, and westward toward the suburbs.",
+      translation: { contentId: "part1.simulation.restaurant.route", text: "エルム通りは、前世紀の州間高速道路網の名残である高架道路の下をくぐっている。南側の高速道路の下の空間を中華料理店が占め、ここから北の高架下にはバーがこぢんまりと収まっている。エルム通りは東へ行くとダウンタウンへ、西へ行くと郊外へ続いている。" },
+    },
+    {
+      canonicalCommand: "S",
+      canonicalLeaf: "Roy's Pagoda",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Roy's Pagoda"), kind: "title" },
+    },
+    {
+      canonicalCommand: "SOUTH",
+      canonicalLeaf: "Roy's Pagoda",
+      translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Roy's Pagoda"), kind: "title" },
+    },
+    {
+      canonicalCommand: "S",
+      canonicalLeaf: "This is a small Chinese restaurant, crowded with students. There is an exit to the north.",
+      translation: { contentId: "part1.simulation.restaurant.route", text: "ここは学生で混み合う小さな中華料理店だ。北に出口がある。" },
+    },
+    {
+      canonicalCommand: "SOUTH",
+      canonicalLeaf: "This is a small Chinese restaurant, crowded with students. There is an exit to the north.",
+      translation: { contentId: "part1.simulation.restaurant.route", text: "ここは学生で混み合う小さな中華料理店だ。北に出口がある。" },
+    },
+    {
+      canonicalCommand: "BUY MEAL",
+      canonicalLeaf: "You order a bowl of Hot and Sour soup and some assorted appetizers. The food arrives promptly, steaming hot, delicately spiced, delicious. Afterward, your check arrives with a typical fortune cookie and a plate of lychee nuts. The fortune reads: \"Prosperity does not equal happiness.\" You pay with your credit card. After a moment, the waiter returns your card, informing you that your account has been debited for $30 and that your new balance is $569.",
+      translation: { contentId: "part1.simulation.restaurant.meal", text: "酸辣湯を一杯と、前菜を何品か注文する。料理はすぐに運ばれてくる。湯気が立つほど熱く、香辛料が繊細に利いていて、おいしい。食後には勘定書きが、よくあるフォーチュンクッキーと、ライチの実をのせた皿とともに届く。おみくじには「繁栄は幸福と同じではない。」とある。クレジットカードで支払う。少しして、ウェイターがカードを返し、口座から$30が引き落とされ、新しい残高は$569になったと告げる。" },
+    },
+    { canonicalCommand: "E", canonicalLeaf: "Elm & Park", translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & Park"), kind: "title" } },
+    { canonicalCommand: "EAST", canonicalLeaf: "Elm & Park", translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & Park"), kind: "title" } },
     {
       canonicalCommand: "BUY NEWSPAPER",
       canonicalLeaf: "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",

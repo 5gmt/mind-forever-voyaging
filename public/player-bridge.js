@@ -8,7 +8,7 @@
   };
 
   const visibleInput = (documentRoot, getStyle) => {
-    const inputs = [...documentRoot.querySelectorAll("#gameport textarea.Input, #gameport input[type='text'], #gameport textarea")];
+    const inputs = [...documentRoot.querySelectorAll("#windowport textarea.Input, #windowport input[type='text'], #windowport textarea")];
     return inputs.reverse().find((input) => {
       const style = getStyle(input);
       return !input.disabled && style.display !== "none" && style.visibility !== "hidden";
@@ -16,7 +16,9 @@
   };
 
   const extract = (documentRoot, getStyle) => {
-    const allLines = [...documentRoot.querySelectorAll("#gameport .BufferLine")];
+    // #gameport also contains Parchment's temporary font/size measurement
+    // windows. Only #windowport contains the live interpreter window tree.
+    const allLines = [...documentRoot.querySelectorAll("#windowport .BufferLine")];
     const lines = allLines.slice(-80).map((line) => {
       const style = getStyle(line);
       return {
@@ -53,8 +55,8 @@
     const gameport = documentRoot.querySelector?.("#gameport");
     // BufferLine's box is the canonical content column after the
     // BufferWindowInner padding has been applied.
-    const buffer = documentRoot.querySelector?.("#gameport .BufferLine");
-    const status = documentRoot.querySelector?.("#gameport .GridWindow");
+    const buffer = documentRoot.querySelector?.("#windowport .BufferLine");
+    const status = documentRoot.querySelector?.("#windowport .GridWindow");
 
     return {
       version: 3,
@@ -110,7 +112,7 @@
   // and its canonical children. The bridge owns only this separate host and
   // the accessibility switch that prevents duplicate English/Japanese output.
   const ensureLocalizedHost = () => {
-    const buffer = [...document.querySelectorAll("#gameport .BufferWindow")].at(-1);
+    const buffer = [...document.querySelectorAll("#windowport .BufferWindow")].at(-1);
     if (!buffer) return null;
     if (!localizedHost) {
       localizedHost = document.createElement("div");
@@ -160,7 +162,7 @@
   const gameText = () => {
     // The localized host is deliberately excluded: all detection continues to
     // consume canonical English owned by Parchment.
-    const text = [...document.querySelectorAll("#gameport .BufferWindowInner")]
+    const text = [...document.querySelectorAll("#windowport .BufferWindowInner")]
       .map((inner) => inner.innerText)
       .join("\n")
       .replace(/\u00a0/g, " ");
@@ -168,21 +170,21 @@
   };
 
   const statusText = () =>
-    [...document.querySelectorAll("#gameport .GridWindow")]
+    [...document.querySelectorAll("#windowport .GridWindow")]
       .map((window) => window.innerText)
       .join("\n")
       .replace(/\u00a0/g, " ")
       .slice(-2000);
 
   const gridText = () =>
-    [...document.querySelectorAll("#gameport .GridWindow")]
+    [...document.querySelectorAll("#windowport .GridWindow")]
       .map((window) => window.innerText)
       .join("\n")
       .replace(/\u00a0/g, " ")
       .slice(-5000);
 
   const recentText = () =>
-    [...document.querySelectorAll("#gameport .BufferLine")]
+    [...document.querySelectorAll("#windowport .BufferLine")]
       .slice(-18)
       .map((line) => line.innerText)
       .join("\n")
@@ -190,7 +192,7 @@
       .slice(-5000);
 
   const activeInput = () => {
-    const inputs = [...document.querySelectorAll("#gameport textarea.Input, #gameport input[type='text'], #gameport textarea")];
+    const inputs = [...document.querySelectorAll("#windowport textarea.Input, #windowport input[type='text'], #windowport textarea")];
     return inputs.reverse().find((input) => {
       const style = getComputedStyle(input);
       return !input.disabled && style.display !== "none" && style.visibility !== "hidden";

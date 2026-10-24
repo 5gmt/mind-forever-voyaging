@@ -1,6 +1,7 @@
 import { expect, type FrameLocator, type Locator, type Page, type TestInfo } from "@playwright/test";
 import { writeFile } from "node:fs/promises";
 import { clickRouteStep } from "./navigation-acceptance";
+import { observeReadingLifecycle, readingTrace } from "./reading-observations";
 
 // Exact copy from the approved N2 packet, independent of the production catalog.
 const ARTICLE_JA = [
@@ -32,7 +33,9 @@ const inputLineId = async (frame: FrameLocator) => frame.locator("body").evaluat
 export const acceptNewspaperFieldwork = async (
   page: Page, frame: FrameLocator, presentation: Locator, input: Locator,
   controls: string, testInfo: TestInfo,
+  recordingWindow: "travel" | "on-site" = "travel",
 ) => {
+  await observeReadingLifecycle(frame);
   const attach = async (name: string, evidence: { body: string | Buffer; contentType: string }) => {
     const extension = evidence.contentType === "image/png" ? "png" : evidence.contentType === "application/json" ? "json" : "txt";
     const path = testInfo.outputPath(`${name}.${extension}`);
@@ -65,9 +68,13 @@ export const acceptNewspaperFieldwork = async (
   };
 
   await sendTurn("INVENTORY");
-  const activation = await sendTurn("RECORD");
-  await expect(blocks.nth(activation.previousCount + 1)).toHaveText("記録機能を起動しました。");
-  await expect(status).toContainText(/Simulation Mode\s*\(recording\)/i);
+  const activate = async () => {
+    const turn = await sendTurn("RECORD");
+    await expect(blocks.nth(turn.previousCount + 1)).toHaveText("記録機能を起動しました。");
+    await expect(status).toContainText(/Simulation Mode\s*\(recording\)/i);
+    return turn;
+  };
+  let activation = recordingWindow === "travel" ? await activate() : null;
   for (const [command, place] of [
     ["NE", "メイン通りとケネディ通り"],
     ["N", "センター通りとケネディ通り"],
@@ -91,6 +98,7 @@ export const acceptNewspaperFieldwork = async (
     await attach(`navigation-${controls}-arrival`, { body: await page.screenshot(), contentType: "image/png" });
     await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
   }
+  if (recordingWindow === "on-site") activation = await activate();
   const newspaperAction = async (action: "buy" | "read") => {
     if (controls === "guided") {
       await page.getByRole("region", { name: "この場面で言及された語" }).getByRole("button", { name: /^新聞\s*読む$/ }).click();
@@ -156,14 +164,22 @@ export const acceptNewspaperFieldwork = async (
       && end.left >= viewport.left && end.right <= viewport.right;
   });
   const readToEnd = async (label: string) => {
+    await readingTrace(frame, `newspaper-${label}-start`);
     // Hover can scroll the iframe/element into view. Finish pointer preparation
     // before positioning the article and measuring the wheel's starting point.
     await surface.hover();
-    await paragraphs[0].evaluate((element) => element.scrollIntoView({ block: "start" }));
-    // On a tall viewport all four paragraphs can already fit at the tail.
-    // Start earlier in the history so reaching the editorial requires a wheel.
-    await surface.evaluate((element) => { element.scrollTop = Math.max(0, element.scrollTop - element.clientHeight / 2); });
-    await expect(paragraphs[0]).toBeInViewport();
+    // scrollIntoView can also move Parchment's outer BufferWindow, which the
+    // localized bridge resets to zero. Position only the owned reading surface
+    // so the first article starts halfway down it and reaching the tail needs
+    // a wheel even on a tall viewport.
+    await paragraphs[0].evaluate((element) => {
+      const owner = element.closest<HTMLElement>(".story-presentation-scroll")!;
+      const top = element.getBoundingClientRect().top - owner.getBoundingClientRect().top + owner.scrollTop;
+      owner.scrollTop = Math.max(0, top - owner.clientHeight / 2);
+    });
+    await expect(frame.locator(".BufferWindow.AMFVLocalizedBuffer")).toHaveJSProperty("scrollTop", 0);
+    try { await expect(paragraphs[0]).toBeInViewport(); }
+    catch (error) { console.log("READING_LIFECYCLE", JSON.stringify(await readingTrace(frame, `newspaper-${label}-failure`))); throw error; }
     const startTop = await surface.evaluate((element) => element.scrollTop);
     for (let step = 0; step < 12 && !(await lastTextVisible()); step++) {
       const previousTop = await surface.evaluate((element) => element.scrollTop);
@@ -185,7 +201,7 @@ export const acceptNewspaperFieldwork = async (
     await attach(`newspaper-${controls}-${label}-scroll`, {
       body: JSON.stringify({ startTop, ...(await surface.evaluate((element) => ({
         endTop: element.scrollTop, scrollHeight: element.scrollHeight, clientHeight: element.clientHeight,
-      }))), editorialEndVisible: await lastTextVisible(), inputLine: await inputLineId(frame) }), contentType: "application/json",
+      }))), outerBufferTop: await frame.locator(".BufferWindow").evaluate((element) => element.scrollTop), editorialEndVisible: await lastTextVisible(), inputLine: await inputLineId(frame) }), contentType: "application/json",
     });
   };
   const expectJapaneseOwner = async () => {
@@ -264,6 +280,13 @@ export const acceptNewspaperFieldwork = async (
   await expectArticle();
   await input.fill("");
 
+  const deactivate = async () => {
+    const turn = await sendTurn("RECORD OFF");
+    await expect(blocks.nth(turn.previousCount + 1)).toHaveText("記録機能を停止しました。");
+    await expect(status).not.toContainText(/\(recording\)/i);
+    return turn;
+  };
+  let deactivation = recordingWindow === "on-site" ? await deactivate() : null;
   for (const [command, place] of [
     ["SW", "センター通りとケネディ通り"],
     ["S", "メイン通りとケネディ通り"],
@@ -273,8 +296,7 @@ export const acceptNewspaperFieldwork = async (
     await sendTurn(submittedCommand, controls === "classic" ? undefined : () => clickRouteStep(page, input, controls, submittedCommand, command === "SW" ? "ケネディ公園" : undefined));
     await expect(page.locator(".location-block strong")).toHaveText(place);
   }
-  const deactivation = await sendTurn("RECORD OFF");
-  await expect(blocks.nth(deactivation.previousCount + 1)).toHaveText("記録機能を停止しました。");
+  if (recordingWindow === "travel") deactivation = await deactivate();
   await expect(status).toContainText(/Location:\s*Kennedy Park/i);
   await expect(status).not.toContainText(/\(recording\)/i);
   await input.click();
@@ -282,4 +304,5 @@ export const acceptNewspaperFieldwork = async (
   await attach(`newspaper-${controls}-turns`, {
     body: JSON.stringify({ activation, purchase, read, turns, statusBeforeRead, statusAfterRead, deactivation, statusAfterStop: await status.innerText() }), contentType: "application/json",
   });
+  return turns;
 };

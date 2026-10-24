@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
 import { FormEvent, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
+import { localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -155,11 +155,23 @@ const actionCommand = (object: WorldObject, action: SceneAction) => action.comma
 
 const PEOF_SCENE_NOUNS = new Set(["perelman", "desk", "decoder", "map", "pen", "magazine article"]);
 
-export function SceneActions({ objects, roomId, level, locale, initial2041 = false, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; locale: Locale; initial2041?: boolean; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
+export function SceneActions({ objects, roomId, level, locale, initial2041 = false, lineInput = false, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; locale: Locale; initial2041?: boolean; lineInput?: boolean; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
   const usableObjects = useMemo(() => objects.filter((object) =>
     hasUsefulSceneAction(object, roomId) && (roomId !== "OFFICE" || PEOF_SCENE_NOUNS.has(object.commandNoun!)),
   ), [objects, roomId]);
-  if (!usableObjects.length || level === "classic") return null;
+  if (level === "classic") return null;
+  // This approved, observed order is deliberately separate from prose-derived
+  // nouns: arrival never mentions food. Do not expose generic GLOBAL-OBJECTS
+  // or use MEAL's source command noun "food" / other authored verbs here.
+  if (initial2041 && lineInput && roomId === "ROYS-PAGODA") {
+    const guided = level === "guided";
+    return <section className={`scene-actions scene-meal ${guided ? "scene-words" : ""}`} lang={locale} aria-label={mealActionUiText(locale, "landmark")}>
+      <div className="scene-actions-heading"><span>{mealActionUiText(locale, "heading")}</span><small>{mealActionUiText(locale, guided ? "guidedInstruction" : "actionsInstruction")}</small></div>
+      {guided ? <div className="scene-word-list"><button type="button" onClick={() => draftCommand("BUY MEAL")} disabled={disabled}><span>{localizeSceneObjectName(locale, roomId, "MEAL", "Meal")}</span>{" "}<small>{localizeSceneActionLabel(locale, roomId, "MEAL", "buy", "Order")}</small></button></div>
+        : <div className="scene-object-grid"><article className="scene-object"><strong>{localizeSceneObjectName(locale, roomId, "MEAL", "Meal")}</strong><div><button type="button" onClick={() => sendCommand("BUY MEAL")} disabled={disabled}>{mealActionUiText(locale, "orderMeal")}</button></div></article></div>}
+    </section>;
+  }
+  if (!usableObjects.length) return null;
   const displayLocale = sceneActionsLocale(locale, roomId, initial2041);
   const objectName = (object: WorldObject) => {
     const name = localizeSceneObjectName(displayLocale, roomId, object.id, object.name);

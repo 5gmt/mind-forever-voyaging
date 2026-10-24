@@ -223,7 +223,7 @@ test("localizes only presentation while preserving raw English mechanics", async
   assert.match(shell, /createPortal\(/);
   assert.match(shell, /mode: localizedMode \? "localized" : "canonical"/);
   assert.match(shell, /aria-hidden=\{qaEnabled\}/);
-  assert.match(bridge, /#gameport \.BufferWindowInner/);
+  assert.match(bridge, /#windowport \.BufferWindowInner/);
   assert.match(bridge, /inner\?\.setAttribute\("aria-hidden", "true"\)/);
   assert.match(bridge, /inner\?\.setAttribute\("inert", ""\)/);
   assert.match(bridge, /localized-host-ready/);
@@ -494,7 +494,7 @@ test("builds the opening presentation from Parchment BufferLine bridge data", as
     return node;
   });
   const input = lines.at(-1).children.at(-1);
-  const fixtureDocument = { querySelectorAll: (selector) => selector === "#gameport .BufferLine" ? lines : [input] };
+  const fixtureDocument = { querySelectorAll: (selector) => selector === "#windowport .BufferLine" ? lines : [input] };
   const context = vm.createContext({});
   vm.runInContext(bridgeHelper, context);
   const extracted = context.AMFVPresentationBridge.extract(fixtureDocument, () => ({
@@ -795,6 +795,54 @@ test("retains the runtime-observed 2041 Courthouse recording round trip", async 
   assert.equal(alternateDescription.text, alternateDescription.canonicalText, "unapproved random description safely remains canonical English");
 });
 
+test("projects approved restaurant leaves with shared role labels and exact fallback", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-restaurant-recording-a-observed.json", import.meta.url), "utf8"));
+  const places = [
+    ["Elm & University", "エルム通りとユニバーシティ大通り"],
+    ["Elm Underpass", "エルム通りの高架下"],
+    ["Roy's Pagoda", "ロイズ・パゴダ"],
+  ];
+  for (const [en, ja] of places) {
+    assert.equal(localizeSimulationPlace("ja", en), ja);
+    assert.equal(localizeSimulationPlace("en", en), en);
+  }
+  assert.equal(localizeSimulationMapLabel("ja", "meal", "Restaurant"), "レストラン");
+  assert.equal(localizeSimulationMapLabel("ja", "unknown", "Restaurant"), "Restaurant");
+  assert.equal(localizeSimulationPlace("ja", "University Heights"), "University Heights");
+  assert.equal(localizeSceneObjectName("ja", "ROYS-PAGODA", "MEAL", "Meal"), "食事");
+  assert.equal(localizeSceneActionLabel("ja", "ROYS-PAGODA", "MEAL", "buy", "Order"), "注文する");
+  assert.equal(localizeSceneObjectName("ja", "ELM-UNDERPASS", "RESTAURANT-OBJECT", "restaurant"), "restaurant");
+  assert.equal(localizeSceneObjectName("ja", "unknown", "MEAL", "food"), "food");
+  const expected = {
+    29: ["エルム通りとユニバーシティ大通り", "ユニバーシティ大通りが北西へ枝分かれし、このあたりではエルム通りの北側に広がるキャンパスの中へ、曲がりくねって延びている。通りの南側には高層の集合住宅がある。階段の上端が、地下交通網チューブへの入口の目印になっている。"],
+    30: ["エルム通りの高架下", "エルム通りは、前世紀の州間高速道路網の名残である高架道路の下をくぐっている。南側の高速道路の下の空間を中華料理店が占め、ここから北の高架下にはバーがこぢんまりと収まっている。エルム通りは東へ行くとダウンタウンへ、西へ行くと郊外へ続いている。"],
+    31: ["ロイズ・パゴダ", "ここは学生で混み合う小さな中華料理店だ。北に出口がある。"],
+    33: ["酸辣湯を一杯と、前菜を何品か注文する。料理はすぐに運ばれてくる。湯気が立つほど熱く、香辛料が繊細に利いていて、おいしい。食後には勘定書きが、よくあるフォーチュンクッキーと、ライチの実をのせた皿とともに届く。おみくじには「繁栄は幸福と同じではない。」とある。クレジットカードで支払う。少しして、ウェイターがカードを返し、口座から$30が引き落とされ、新しい残高は$569になったと告げる。"],
+    35: ["エルム通りの高架下"],
+    36: ["エルム通りとユニバーシティ大通り"],
+    37: ["エルム通りとパーク通り"],
+    38: ["ケネディ公園"],
+  };
+  for (const session of fixture.sessions) {
+    for (const index of [29, 30, 31, 33, 35, 36, 37, 38]) {
+      const turn = session.observations[index];
+      const result = observedOrdinaryTurnPresentation(turn.presentation, "ja");
+      assert.ok(result);
+      assert.deepEqual(result.filter((block) => block.kind !== "command" && block.kind !== "spacer").map((block) => block.text), expected[index]);
+      for (const line of turn.presentation.lines.slice(1, -1)) {
+        if (!line.text.trim()) continue;
+        const leaf = observedStoryLeafTranslation(line.text, "ja", turn.command);
+        assert.ok(leaf, `${turn.command}: ${line.text}`);
+        assert.ok(result.some((block) => block.text === leaf.text));
+      }
+    }
+    const meal = session.observations[33].presentation.lines[1].text;
+    assert.equal(observedStoryLeafTranslation(meal.replace("$569", "$568"), "ja", "BUY MEAL"), undefined);
+    assert.equal(observedStoryLeafTranslation(meal, "ja", "EAT MEAL"), undefined);
+    assert.equal(observedStoryLeafTranslation("WARNING: Record buffer is now half-full.", "ja", "RECORD"), undefined);
+  }
+});
+
 test("retains synchronized fresh restaurant attempts after Courthouse and Newspaper", async () => {
   const url = new URL("./fixtures/parchment-restaurant-runtime-observed.json", import.meta.url);
   assert.equal(await access(url).then(() => true, () => false), true, "restaurant runtime evidence must be captured");
@@ -850,8 +898,12 @@ test("retains synchronized fresh restaurant attempts after Courthouse and Newspa
       ">RECORD OFF", inactive, " ", ">",
     ]);
     const projected = projectPresentationHistory(reconcilePresentationHistory([], meal.presentation).history, "ja")[0].blocks;
-    assert.equal(projected[1].text, meal.presentation.lines.slice(1, -1).map(({ text }) => text.trim()).filter(Boolean).join("\n"));
-    assert.equal(observedStoryLeafTranslation(mealText, "ja", "BUY MEAL"), undefined, "M1 must retain unapproved English");
+    // M3 now translates the approved meal leaf, including in this historical
+    // failure. The independent canonical capacity failure must still survive.
+    assert.equal(projected[1].text, observedStoryLeafTranslation(mealText, "ja", "BUY MEAL").text);
+    assert.equal(projected[1].canonicalText, mealText);
+    assert.equal(observedStoryLeafTranslation(warning, "ja", "BUY MEAL"), undefined);
+    if (failureTurn === meal) assert.ok(projected.some((block) => block.text === warning && block.canonicalText === warning));
     if (session.recordingWindow === "meal") {
       assert.equal(session.observations[mealIndex - 1].status.mode, "Simulation Mode (recording)");
       assert.equal(failureTurn, meal);

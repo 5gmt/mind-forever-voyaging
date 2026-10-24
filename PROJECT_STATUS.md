@@ -11,14 +11,14 @@
 
 ## 現在の到達点
 
-日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室での deterministic inspection packet、初回 Simulation Mode 移行、Kennedy Park での最初の recording loop、2041 Courthouse への recording 往復、続く新聞購入・四段落の読書・帰着まで到達している。
+日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室での deterministic inspection packet、初回 Simulation Mode 移行、Kennedy Park での最初の recording loop、2041 Courthouse への recording 往復、続く新聞購入・四段落の読書・帰着まで到達している。[M3 / PR #86](https://github.com/5gmt/mind-forever-voyaging/pull/86) は、同じ初回2041年 session の Roy’s Pagoda での食事録画・公園帰着、承認済み経路と限定 meal 操作を追加する。以下の coverage は #86 の統合内容を含む。Merge 前の最終 gate と merge 後の完了記録は、同 PR と [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29) を正本とする。
 
 現在到達済みの opening、Communications Mode、最初の PEOF を取り囲む wrapper UI についても、承認済みの範囲を日本語化している。これには core header、reading/play settings、introduction overlay、companion shell、PEOF SceneActions、original-package overlay、identity rail、shared story shell、visible label、accessible name が含まれる。
 
 | 層 | 現在の日本語 coverage | 意図的に未対応の境界 |
 | --- | --- | --- |
-| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復、Main & Kennedy / Centre & Kennedy / Bodanski Square 経由の新聞購入・四段落の読書・帰着 | 新聞以外の追加 fieldwork、assignment completion、後続の Simulation story output |
-| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、初回2041年の Simulation 入場 CTA / assisted security decoder / 基本操作 / fieldwork launcher・drawer・九課題、地図の共通操作・採用経路・新聞対象操作 | later mode / later phase 固有 UI、未承認の地名・対象・動詞、QA/debug |
+| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復、Main & Kennedy / Centre & Kennedy / Bodanski Square 経由の新聞購入・四段落の読書・帰着、Elm & University / Elm Underpass / Roy’s Pagoda の来店・食事・支払・公園帰着（#86 の統合範囲） | 他 fieldwork、正式 assignment completion、後続の Simulation story output |
+| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、初回2041年の Simulation 入場 CTA / assisted security decoder / 基本操作 / fieldwork launcher・drawer・九課題、地図の共通操作・採用経路・新聞対象操作、初回2041年 Roy’s Pagoda 限定 meal の英日 draft / 一回送信（#86 の統合範囲） | later mode / later phase 固有 UI、未承認の地名・対象・動詞、QA/debug |
 | Input and actions | Guided / Action-menu の日本語表示、canonical command に解決される支援操作 | 日本語 parser input |
 | Fallback | 対応済み leaf / surface の日本語表示と EN → JA → EN recovery | 未観測または未承認の内容は canonical English |
 
@@ -75,22 +75,24 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 [新聞計画](./docs/plans/2041-newspaper-fieldwork.md)と[統合受入記録](./docs/issue-67-fieldwork-acceptance.md)に、同一 fresh session の Courthouse → Newspaper を Classic / Guided / Action menus × desktop / narrow の6経路で受け入れた証拠を残している。
 N2 / U1 の copy、N3 の共有 room / map lookup、U2 / U3 の初回2041年 UI は次の実装でも再利用する。
 
-現在の milestone は、同一 fresh canonical session の Courthouse → Newspaper に続く **Roy’s Pagoda での食事録画と Kennedy Park への帰着** とする。
+今回の統合で締める milestone は、同一 fresh canonical session の Courthouse → Newspaper に続く **Roy’s Pagoda での食事録画と Kennedy Park への帰着** である。
 2026-10-09 JST に Yasuo が[レストラン計画](./docs/plans/2041-restaurant-fieldwork.md)の方針とタスク化を承認した。
 計画 [PR #81](https://github.com/5gmt/mind-forever-voyaging/pull/81) は独立レビュー後に merge 済み（`43b00db08fc5c2726095875b21dd381b42b0b682`）。
-M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) は3独立 fresh session の録画区間比較、支払・時刻・入力境界、現行操作面の証拠と regression を追加した。[実測記録](./docs/restaurant-runtime-evidence.md)の通り、移動中または食事応答で buffer full により自動停止し、現行 assisted UI の食事対象操作も未到達である。
+M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78) は3独立 fresh session の録画区間比較、支払・時刻・入力境界、現行操作面の証拠と regression を追加した。[実測記録](./docs/restaurant-runtime-evidence.md)の通り、移動中または食事応答で buffer full により自動停止し、M1 当時の assisted UI では食事対象操作も未到達だった。
 [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は evidence-only として merge 済み（`f45d268282a40d63bf88e1eaf95b01c96961eeea`）。その時点の旧候補は不採択で、失敗記録を保持する。[Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)と [PR #83](https://github.com/5gmt/mind-forever-voyaging/pull/83) の設計同期後、[別 fixture の A案](./docs/restaurant-recording-a-evidence.md)が2 fresh session で成立した。
 [PR #84 の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により、A案を成功経路として採択し **#78 / M1 は完了**した。既存の成功 fixture・受入経路・回帰テストと旧失敗を保持し、正式な九課題評価の達成とは区別する。
-[M2 #79 の開始判断](https://github.com/5gmt/mind-forever-voyaging/issues/79#issuecomment-6341140821)に従い、[story / UI copy packet](./docs/restaurant-copy-packet.md) の候補を作成した。初回2041年・Roy's Pagoda 限定 `BUY MEAL` 操作と、それを囲む visible / accessible な説明も含む。Sol の独立 copy approval / merge 待ちで、M3 #80 は blocked、production integration は未実施である。更なる経路・保証の変更が必要な場合だけ設計判断へ戻す。
+[M2 #79 の copy packet](./docs/restaurant-copy-packet.md) は [#85 の Sol 独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)で承認・merge 済み（`7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a`）。**M1 / M2 完了。M3 の実装と6経路は [Sol の通常レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5627091288)と [ChatGPT Work の全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5636695294)で承認した。** [M3 受入記録](./docs/restaurant-fieldwork-acceptance.md)に coverage と証拠・制限を集約する。最終文書差分の独立確認、同じ最終 head の受入・CI、latest base / mergeability を確認して #86 を merge し、#29 に結果を記録した時点で **M1–M3 / レストラン milestone 完了**とする。Merge と最終 reviewed head は #86、完了報告は #29、Issue の完了状態は [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80) に記録する。次 milestone は未選定。
 
 ## 基本的な作業順
 
 1. 計画 PR #81 はレビュー・merge 済み。通常 PR は独立した Sol review、milestone 締めは Astra / ChatGPT Work の全体受入とする分担を試行する。
 2. M1 [#78](https://github.com/5gmt/mind-forever-voyaging/issues/78): #84 で独立採択レビュー・merge 済み。M1 完了、Issue closed。未実装 meal UI の完成を M1 の条件にしていない。
-3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): Codex Cloud が本文・地名・地図・対象操作と周囲の説明を packet にした。次は Sol の独立 copy review / approval / merge。M2 未完了、production は変更していない。
-4. M3 [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80): M1 / M2 の merge 後、Codex Cloud が catalog / UI / tests を統合し、6経路の受入記録と status の最終集約を用意する。Sol の通常レビュー後、Astra が全体受入を確認して最終 PR を merge し、#29 へ結果を戻す。
+3. M2 [#79](https://github.com/5gmt/mind-forever-voyaging/issues/79): #85 で本文・地名・役割別 UI と周囲の説明を一括承認・merge 済み。M2 完了、Issue closed。
+4. M3 [#80](https://github.com/5gmt/mind-forever-voyaging/issues/80): 実装者が用意した catalog / 限定 UI / 6経路・受入記録を #86 に統合。実装の独立レビューと全体受入を記録し、最終 gate・merge・#29 報告・Issue close は上記のリンクを正本とする。完了後は次 milestone の選定に戻り、自動着手しない。
 
-今回のタスク化だけではレストランの日本語 coverage は増えていない。
+M3 の到達点は同一初回 session の Courthouse → Newspaper → Restaurant → Kennedy Park / 通常入力復帰。実装者が用意した roll-up を #86 の最終受入で同期する。この文書の更新だけで未実施の merge / 報告を完了扱いせず、完了後にも固定の「受入待ち」を残さない。
+
+M3 の検証で再現した既存 lifecycle の問題も同 PR で扱う。Hydration より早い初期通知は既存 `request-state` で再取得し、Parchment の一時測定ウィンドウは実 window tree `#windowport` への限定で observation / localized host から除外する。実ブラウザ regression を追加し、34件 full E2E と current-head CI / artifact の最終結果は PR の引き渡し欄に記録する。Renderer / VM authority / recovery / accessibility の保証変更は含まない。
 原作側の正式な九課題達成・帰還評価、再入場・後続年の日本語化、他 fieldwork と Communications outlet、未承認地名・対象操作、security wrong-answer / failure、PEOF の別 timing、timed simulation events は引き続き対象外である。
 General GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も対象外とする。
 原作 recording と補助 checklist の推定を区別し、unknown output、optional interrupt、RESTORE 後の不明状態の English fallback を保持する。

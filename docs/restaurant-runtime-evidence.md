@@ -8,7 +8,9 @@
 
 **2026-10-21 JST の merge 後状態:** [PR #82](https://github.com/5gmt/mind-forever-voyaging/pull/82) は [Sol の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/82#pullrequestreview-5599103425) 後、evidence-only として `f45d268282a40d63bf88e1eaf95b01c96961eeea` へ merge 済み。[#78 の判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6315058171)に従い、失敗記録の merge は経路採択や後続の unblock を意味しない。
 
-**現在の状態:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)を受けた [別 fixture の A案実測](restaurant-recording-a-evidence.md)は、[Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により採択済み。#78 / M1 は完了し、M2 #79 を開始可能、M3 #80 は M2 copy approval / merge まで blocked。本書の旧3 session の失敗と既存の成功 fixture・受入経路・回帰テストは保持する。Meal UI 実装・正式な九課題評価の完了を意味しない。
+**M1 採択時の状態:** [Astra の設計判断](https://github.com/5gmt/mind-forever-voyaging/issues/78#issuecomment-6316815976)を受けた [別 fixture の A案実測](restaurant-recording-a-evidence.md)は、[Sol の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/84#pullrequestreview-5614358178)と #84 merge `8d5fea7ff9d5909a65e55a4122bfc7805b0e581c` により採択済み。#78 / M1 は完了し、M2 #79 を開始可能、M3 #80 は M2 copy approval / merge まで blocked。本書の旧3 session の失敗と既存の成功 fixture・受入経路・回帰テストは保持する。Meal UI 実装・正式な九課題評価の完了を意味しない。
+
+**M3 integration 時の更新:** [M2 #85 の独立 copy 承認](https://github.com/5gmt/mind-forever-voyaging/pull/85#pullrequestreview-5615116876)と merge `7a0568f76001909cfd39a1bbdbcb61fd1f6dd28a` で M2 / #79 も完了した。M3 の開始 gate は解除済みで、production 統合と6経路の検証・受入待ち状態は [M3 受入記録](restaurant-fieldwork-acceptance.md)を参照。本書の下記 UI 監査と未実施項目は M1 / 設計提出時点の記録として保持し、現在の production 完成・独立受入の証拠と混同しない。
 
 ## 保存した証拠と再現
 
