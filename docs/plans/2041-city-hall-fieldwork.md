@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、room / map lookup、SceneActions を拡張する。状態と対象の在室根拠は canonical raw English から得る。録画中の会話・退場・明示停止・帰着を実測してから copy と実装を承認する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「設計判断」と「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画・タスク化の段階。市役所の新規 runtime capture、copy approval、production 実装は未実施。計画 PR の独立レビュー・merge 後に G1 を開始する。
+**Status:** 計画 PR #90 は独立レビュー後に merge `86999d7ae28d1f11d86c83adf99db3bfeee6ac1f` 済み。G1 は先行40送信を保持した2 fresh session の連続成功と現行 UI の監査を提出する（[実測記録](../city-hall-runtime-evidence.md)）。G1 の独立採択と merge までは未完了で、G2 / G3 は blocked。新規 copy approval と production 統合は未実施。
 **Baseline:** PR #86 merge `284eb5dcfb9e900e8d98a6a34e5a5ad2d058ce3c`。実行時には最新 `codex/modern-amfv` を取り込む。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。
 
@@ -114,10 +114,10 @@ EN / JA で command と可用性は同じにする。既存の対象外英語 UI
 **Files:** 新規 `scripts/capture-city-hall-runtime.mjs`、`tests/fixtures/parchment-city-hall-runtime-observed.json`、`docs/city-hall-runtime-evidence.md`。更新 `tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。
 **Interfaces:** `scripts/capture-restaurant-runtime.mjs --candidate-a` と bridge-v3 の観測形式を参照し、既存の採択40送信を保持する。成果物は session / actual command / input ID / resulting presentation / raw status の対応、stable / dynamic / optional leaf、採用 alias、各 locale・mode の surface 台帳、成功または停止判断。既存 script / fixture を置換しない。
 
-- [ ] 最新 base と適用規則を確認し、候補50送信の capture を実装する。起動 character input と line input を区別し、各送信では現在の input ID に対する新 echo と次の input を待つ。
-- [ ] 2回以上の fresh session で全経路を採取し、先行3課題・会話前後 recording・明示 OFF・退場後 LOOK・公園帰着を照合する。8分の source 値と実際の status 差、残容量の不明を混同しない。
-- [ ] Classic / Guided / Action menus と EN / JA の現行 room / map / route / recording / Talk surface を、在室前・在室中・会話後・LOOK 後に監査する。command、draft / 即時送信、accessible name、help、guard と不足を台帳化する。未実装の日本語 copy や G3 の修正完了は G1 の条件にしない。
-- [ ] exact leaf / command qualifier / input identity / 行構造を fixture regression で固定する。既存 ordinary projector が処理できることと English fallback を確認し、失敗なら事実と不足を残す。
+- [x] 最新 base と適用規則を確認し、候補50送信の capture を実装する。起動 character input と line input を区別し、各送信では現在の input ID に対する新 echo と次の input を待つ。
+- [x] 2回以上の fresh session で全経路を採取し、先行3課題・会話前後 recording・明示 OFF・退場後 LOOK・公園帰着を照合する。8分の source 値と実際の status 差、残容量の不明を混同しない。
+- [x] Classic / Guided / Action menus と EN / JA の現行 room / map / route / recording / Talk surface を、在室前・在室中・会話後・LOOK 後に監査する。command、draft / 即時送信、accessible name、help、guard と不足を台帳化する。未実装の日本語 copy や G3 の修正完了は G1 の条件にしない。
+- [x] exact leaf / command qualifier / input identity / 行構造を fixture regression で固定する。既存 ordinary projector が処理できることと English fallback を確認し、失敗なら事実と不足を残す。
 - [ ] applicable checks と canonical checksum を実行し、PR に結果・source/runtime/UI の区別・current-head CI・採択判断を記録する。本書と status を同時に同期する。
 - [ ] Sol の独立レビューで連続経路と人物操作の契約を採択し merge する。失敗記録のみの merge では G1 完了・G2 着手にしない。
 
