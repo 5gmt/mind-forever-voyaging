@@ -110,13 +110,13 @@ If the target branch advances during review, update the branch and rerun the tas
 
 ## Milestone review delegation
 
-For the 2041 restaurant milestone and its planning PR, use the owner-approved review split in [the restaurant plan](docs/plans/2041-restaurant-fieldwork.md):
+The owner-approved Sol / Work review split continues from the completed [restaurant milestone](docs/plans/2041-restaurant-fieldwork.md) into the [2041 City Hall milestone](docs/plans/2041-city-hall-fieldwork.md) and its planning PR:
 
-- Codex Cloud implements M1–M3, runs verification, fixes findings, and prepares the evidence packet and corresponding plan/status updates. The M3 contributor owns the final milestone roll-up before acceptance.
-- Chat-mode Sol reviews ordinary PRs in a session independent of implementation and may merge the planning PR and M1/M2 after the existing merge gates pass. M3 also requires Sol's ordinary PR review.
-- The designated Astra / ChatGPT Work reviewer performs M3's milestone-wide acceptance and merges the final integration PR after both review checkpoints pass on the final head. Do not add an Astra review to every ordinary PR by default.
+- Codex Cloud implements G1–G3, runs verification, fixes findings, and prepares the evidence packet and corresponding plan/status updates. The G3 contributor owns the final acceptance record and milestone roll-up before handoff.
+- Chat-mode Sol reviews ordinary PRs in a session independent of implementation and may merge the planning PR and G1/G2 after the existing merge gates pass. G3 also requires Sol's ordinary PR review.
+- The designated Astra / ChatGPT Work reviewer performs G3's milestone-wide acceptance and merges the final integration PR after both review checkpoints pass on the final head. Do not add a Work review to every ordinary PR by default.
 - Escalate decisions changing canonical authority, history/recovery/accessibility guarantees, observation/rendering boundaries, the adopted route, or completion criteria to the milestone reviewer; record owner approval for material design changes. Ordinary fixes preserving those boundaries remain with Sol.
 - Include head/base SHAs, changes since review, acceptance-to-evidence mapping, current-head CI/artifact links and expiry, unresolved findings, and unverified limitations in handoffs. Review follow-up deltas and affected evidence, broadening only for a concrete risk or base change.
 - Shared GitHub credentials do not make an implementation self-check an independent review. If GitHub disallows self-approval, record the review judgment, reviewed SHA, and reviewer provenance in a COMMENT review.
 
-This is a milestone-scoped workflow trial. Keep the independent provenance conventions task #44 separate. Existing draft, latest-base, verification, and merge-readiness requirements above still apply.
+This remains a milestone-scoped workflow. Review its handoff cost and findings at the milestone close; do not infer unmeasured usage savings. Keep the independent provenance conventions task #44 separate. Existing draft, latest-base, verification, and merge-readiness requirements above still apply.
