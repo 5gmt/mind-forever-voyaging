@@ -1027,6 +1027,117 @@ test("records the approved restaurant candidate without full-buffer interruption
   }
 });
 
+test("retains two fresh City Hall continuations with current input identities and safe projection", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
+  const previous = JSON.parse(await readFile(new URL("./fixtures/parchment-restaurant-recording-a-observed.json", import.meta.url), "utf8"));
+  const normalize = (commands) => commands.map((command, index) => index === 6 ? "<observed decoder answer>" : command.toUpperCase());
+  const leaves = (turn) => turn.presentation.lines.slice(1, -1).map(({ text }) => text);
+  const cityDescription = "The city's seat of government is an old concrete-slab building dating back to the late twentieth century. The only exit is east.";
+  const presence = "A government official is sitting on a bench in the center of the lobby, eating a snack.";
+  const conversation = "You have a brief chat with the government official, who cheerily comments on how well things in the city are running, and how rewarding his job has been lately. Suddenly he glances at his watch, mumbles a polite parting message, and hurries away.";
+  const plazaDescription = "The name of this plaza tells it all. The well-maintained portico of City Hall stretches along the west side of the plaza, and Dunbar's lies on the southeast corner. Park Street leads north and south. Main Street and Centre Street both begin here, leading eastward and northeastward, respectively. The street is bustling with lunchtime crowds.";
+  const cityCommands = ["NE", "W", "W", "RECORD", "GOVERNMENT OFFICIAL, HELLO", "RECORD OFF", "LOOK", "E", "E", "SW"];
+  const minutes = (time) => {
+    const [, hour, minute, suffix] = time.match(/^(\d+):(\d+)(am|pm)$/);
+    return Number(hour) % 12 * 60 + Number(minute) + (suffix === "pm" ? 720 : 0);
+  };
+  assert.equal(fixture.canonicalSha256, "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+  assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
+  assert.deepEqual(fixture.cityHallPath, cityCommands);
+  assert.equal(fixture.sessions.length, 2);
+  for (const session of fixture.sessions) {
+    assert.equal(session.harnessFailure, undefined);
+    assert.deepEqual(session.viewport, { width: 1440, height: 900 });
+    assert.equal(session.submittedCommands.length, 50);
+    assert.deepEqual(normalize(session.submittedCommands.slice(0, 40)), normalize(previous.sessions[0].submittedCommands));
+    assert.deepEqual(session.submittedCommands.slice(40).map((command) => command.toUpperCase()), cityCommands);
+    assert.deepEqual(session.bridgeCommands, [" ", ...session.submittedCommands], "one actual bridge submission per requested command, including startup");
+    assert.equal(session.startup.inputKind, "char");
+    assert.equal(session.startup.before.presentation.activeInput.kind, "char");
+    assert.equal(session.startup.after.activeInput.kind, "line");
+    assert.equal(session.startup.nextInputId, session.submissions[0].submittedInputId);
+    assert.equal(session.submissions.length, 50);
+    for (const [index, submission] of session.submissions.entries()) {
+      assert.equal(submission.command, session.submittedCommands[index]);
+      assert.equal(submission.inputKind, "line");
+      assert.equal(submission.echo.id, submission.submittedInputId);
+      assert.notEqual(submission.nextInputId, submission.submittedInputId);
+      if (index) assert.equal(submission.submittedInputId, session.submissions[index - 1].nextInputId);
+      if (submission.role === "security-answer") {
+        assert.ok(submission.echo.runs.some((run) => run.classes.includes("Style_input") && run.text === submission.command));
+        assert.ok(submission.echo.text.endsWith(`>${submission.command}`));
+      } else assert.equal(submission.echo.text.toUpperCase(), `>${submission.command.toUpperCase()}`);
+    }
+    assert.equal(session.observations.length, 49, "the decoder exchange is one combined presentation plus two separately identified submissions");
+    for (const [index, turn] of session.observations.entries()) {
+      const p = turn.presentation;
+      assert.equal(p.version, 3);
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.equal(turn.turnId, turn.submittedInputId);
+      assert.equal(p.terminalLine, p.lines.length - 1);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.lines[p.activeInput.line].id, turn.nextInputId);
+      if (index) assert.equal(turn.submittedInputId, session.observations[index - 1].nextInputId);
+      assert.equal(reconcilePresentationHistory([], p).representable, true, turn.command);
+      assert.doesNotMatch(p.lines.map(({ text }) => text).join("\n"), /Record buffer full|Auto-deactivation|not currently active|City Hall is closed|don't see any government official/i);
+    }
+    const court = session.observations[13];
+    assert.equal(court.command, "LOOK");
+    assert.equal(court.status.location, "Courthouse");
+    assert.equal(court.status.mode, "Simulation Mode (recording)");
+    const article = session.observations[23];
+    assert.equal(article.command, "READ NEWSPAPER");
+    assert.equal(article.status.mode, "Simulation Mode (recording)");
+    assert.deepEqual(leaves(article).slice(0, 8), leaves(previous.sessions[0].observations[23]).slice(0, 8));
+    const meal = session.observations[33];
+    assert.equal(meal.command, "BUY MEAL");
+    assert.equal(meal.status.mode, "Simulation Mode (recording)");
+    assert.equal(leaves(meal)[0], leaves(previous.sessions[0].observations[33])[0]);
+    assert.equal(session.observations[38].status.location, "Kennedy Park");
+    const city = session.observations.slice(39);
+    assert.deepEqual(city.map(({ command }) => command.toUpperCase()), cityCommands);
+    assert.deepEqual(city.map(({ status }) => status.location), ["Main & Kennedy", "Rockvil Centre", "City Hall", "City Hall", "City Hall", "City Hall", "City Hall", "Rockvil Centre", "Main & Kennedy", "Kennedy Park"]);
+    assert.deepEqual(city.map(({ status }) => status.mode), ["Simulation Mode", "Simulation Mode", "Simulation Mode", "Simulation Mode (recording)", "Simulation Mode (recording)", "Simulation Mode", "Simulation Mode", "Simulation Mode", "Simulation Mode", "Simulation Mode"]);
+    assert.deepEqual(leaves(city[1]), ["Rockvil Centre", plazaDescription, " "]);
+    assert.deepEqual(leaves(city[2]), ["City Hall", cityDescription, presence, " "]);
+    assert.deepEqual(leaves(city[3]), ["Record feature activated.", " "]);
+    assert.deepEqual(leaves(city[4]), [conversation, " "]);
+    assert.deepEqual(leaves(city[5]), ["Record feature deactivated.", " "]);
+    assert.deepEqual(leaves(city[6]), ["City Hall", cityDescription, " "], "LOOK after departure contains no official");
+    assert.equal(minutes(city[4].status.time) - minutes(city[3].status.time), 8, "measured GridWindow delta, independent of source estimate");
+    for (const index of [1, 2, 4, 6]) {
+      const turn = city[index];
+      assert.equal(observedOrdinaryTurnPresentation(turn.presentation, "ja"), null, "new City Hall output is not copy-approved");
+      const blocks = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation).history, "ja")[0].blocks;
+      assert.deepEqual(blocks.map(({ kind }) => kind), ["command", "prose"]);
+      assert.equal(blocks[0].canonicalText.toUpperCase(), cityCommands[index]);
+      assert.equal(blocks[1].text, leaves(turn).filter((text) => text.trim()).join("\n"), "canonical English fallback preserves all new text in order");
+    }
+    for (const [index, translation] of [[3, "記録機能を起動しました。"], [5, "記録機能を停止しました。"]]) {
+      const blocks = observedOrdinaryTurnPresentation(city[index].presentation, "ja");
+      assert.deepEqual(blocks.map(({ kind }) => kind), ["command", "prose", "spacer"]);
+      assert.equal(blocks[1].text, translation, "existing approved recording leaves still project");
+    }
+    assert.equal(session.warnings.length, 1);
+    assert.equal(session.warnings[0].turnId, session.observations[32].turnId);
+    assert.deepEqual(session.warnings[0].texts, ["WARNING: Record buffer is now half-full."]);
+    assert.deepEqual(session.surfaceAudit.map(({ phase }) => phase), ["before-city-hall", "before-entry", "official-present", "recording-before-talk", "after-conversation", "explicit-off", "after-look"]);
+    for (const audit of session.surfaceAudit) {
+      assert.equal(audit.inputBefore, audit.inputAfter, "auditing locale, drawers and drafts sends no story commands");
+      assert.equal(audit.samples.length, 6);
+      for (const sample of audit.samples) {
+        assert.equal(sample.inputAfter, audit.inputBefore);
+        const availableTalk = sample.talk.filter(({ visible, aria }) => visible && aria);
+        const present = ["official-present", "recording-before-talk"].includes(audit.phase);
+        assert.equal(availableTalk.length, sample.mode !== "classic" && present ? 1 : 0);
+        if (sample.mode === "guided" && present) assert.equal(sample.talkDraft, "government official, hello");
+        if (sample.mode !== "classic") assert.match(sample.map, /City Hall/);
+      }
+    }
+    if (session.id === 2) assert.equal(city[4].submissionMethod, "Action menus: one explicit Talk click");
+  }
+});
+
 test("retains the runtime-observed Courthouse-to-Newspaper fieldwork route", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-newspaper-runtime-observed.json", import.meta.url), "utf8"));
   assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
