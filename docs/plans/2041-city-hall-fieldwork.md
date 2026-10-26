@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、room / map lookup、SceneActions を拡張する。状態と対象の在室根拠は canonical raw English から得る。録画中の会話・退場・明示停止・帰着を実測してから copy と実装を承認する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「設計判断」と「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #90 は独立レビュー後に merge `86999d7ae28d1f11d86c83adf99db3bfeee6ac1f` 済み。G1 は先行40送信を保持した2 fresh session の連続成功と現行 UI の監査を提出する（[実測記録](../city-hall-runtime-evidence.md)）。G1 の独立採択と merge までは未完了で、G2 / G3 は blocked。新規 copy approval と production 統合は未実施。
+**Status:** 計画 PR #90 と G1 / #87 は独立レビュー後に merge 済み。G1 は [#91 の採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/91#pullrequestreview-5646050774)と merge `7d1291177ee6a690ffdfb0e33b39f2a27c8e310d` で完了し、G2 開始 gate は解除された。G2 は [copy packet](../city-hall-copy-packet.md)を承認候補として提出する。G2 の独立 copy approval / merge と G3 production 統合は未実施で、G3 / #89 は引き続き blocked。
 **Baseline:** PR #86 merge `284eb5dcfb9e900e8d98a6a34e5a5ad2d058ce3c`。実行時には最新 `codex/modern-amfv` を取り込む。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。
 
@@ -118,19 +118,20 @@ EN / JA で command と可用性は同じにする。既存の対象外英語 UI
 - [x] 2回以上の fresh session で全経路を採取し、先行3課題・会話前後 recording・明示 OFF・退場後 LOOK・公園帰着を照合する。8分の source 値と実際の status 差、残容量の不明を混同しない。
 - [x] Classic / Guided / Action menus と EN / JA の現行 room / map / route / recording / Talk surface を、在室前・在室中・会話後・LOOK 後に監査する。command、draft / 即時送信、accessible name、help、guard と不足を台帳化する。未実装の日本語 copy や G3 の修正完了は G1 の条件にしない。
 - [x] exact leaf / command qualifier / input identity / 行構造を fixture regression で固定する。既存 ordinary projector が処理できることと English fallback を確認し、失敗なら事実と不足を残す。
-- [ ] applicable checks と canonical checksum を実行し、PR に結果・source/runtime/UI の区別・current-head CI・採択判断を記録する。本書と status を同時に同期する。
-- [ ] Sol の独立レビューで連続経路と人物操作の契約を採択し merge する。失敗記録のみの merge では G1 完了・G2 着手にしない。
+- [x] applicable checks と canonical checksum を実行し、PR に結果・source/runtime/UI の区別・current-head CI・採択判断を記録する。本書と status を同時に同期する。
+- [x] Sol の独立レビューで連続経路と人物操作の契約を採択し merge する。失敗記録のみの merge では G1 完了・G2 着手にしない。
 
 ### G2: Copy — approve City Hall story and required controls
 
 **Files:** 新規 `docs/city-hall-copy-packet.md`。更新 本書、`PROJECT_STATUS.md`。
 **Interfaces:** G1 fixture / surface 台帳を入力とし、exact English leaf・command qualifier・観測位置 → Japanese、再利用 leaf、room / map / assignment / actor / action identity、visible / accessible name、動的値、表示条件、canonical command を G3 に渡す。
 
-- [ ] G1 の新規観測 leaf と必要な surface を抽出し、既承認の新聞・初期 Simulation・restaurant copy との再利用を示す。
-- [ ] 市役所・広場・職員の在室・会話と退場・LOOK を文脈ごとに承認候補へまとめる。話者と評価対象の関係、職員の退場、時刻や録画状態を原文どおり保持する。
-- [ ] City Hall / Rockvil Centre の room、map `official`、既承認課題、人物、Talk、周囲の help を別行に整理し、visible / accessible copy と guard を揃える。未監査の actor verbs / aliases は翻訳承認しない。
-- [ ] 未観測 failure、city noise、対象外 phase / year / room の English fallback、source-only 値と runtime 値の違いを明示する。
-- [ ] `git diff --check`、fixture との exact text / command / link 照合と applicable CI を確認する。文書のみで未実行の local E2E はそのまま未実行と記録し、Sol copy approval / merge を受ける。
+- [x] G1 の新規観測 leaf と必要な surface を抽出し、既承認の新聞・初期 Simulation・restaurant copy との再利用を示す。
+- [x] 市役所・広場・職員の在室・会話と退場・LOOK を文脈ごとに承認候補へまとめる。話者と評価対象の関係、職員の退場、時刻や録画状態を原文どおり保持する。
+- [x] City Hall / Rockvil Centre の room、map `official`、既承認課題、人物、Talk、周囲の help を別行に整理し、visible / accessible copy と guard を揃える。未監査の actor verbs / aliases は翻訳承認しない。
+- [x] 未観測 failure、city noise、対象外 phase / year / room の English fallback、source-only 値と runtime 値の違いを明示する。
+- [ ] `git diff --check`、fixture との exact text / command / link 照合と applicable CI を確認する。文書のみで未実行の local E2E はそのまま未実行と記録し、current-head CI / artifact は提出 PR を正本にする。
+- [ ] Sol の独立 copy approval / merge を受け、G3 の開始 gate を解除する。提出だけで承認済みにしない。
 
 ### G3: Integration — deliver and accept the complete City Hall route
 

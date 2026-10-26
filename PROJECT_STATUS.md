@@ -78,19 +78,20 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 #86 の最終 head `defce753268d344cec6ae2753b94a820c27933f8` に対する [Work の最終 gate](https://github.com/5gmt/mind-forever-voyaging/pull/86#pullrequestreview-5637647137)と [CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/40059801256)を経て merge 済み。最終検証は31 unit / 34 browser tests、M1–M3 の Issues #78–#80 は完了している。
 既存 lifecycle の起動同期と測定ウィンドウ分離も #86 で回帰検証し、2a+2b、canonical authority、history / recovery / accessibility の保証を維持した。
 
-次の milestone は、同じ初回2041年 session の既存3課題に続く **City Hall での政府職員との会話録画と Kennedy Park への帰着** を計画する。
-[市役所計画](./docs/plans/2041-city-hall-fieldwork.md)に候補比較、経路、人物の在室・退場、受入境界とタスクセットをまとめた。
-計画 PR [#90](https://github.com/5gmt/mind-forever-voyaging/pull/90) は独立レビュー後に merge `86999d7ae28d1f11d86c83adf99db3bfeee6ac1f` 済み。
-G1 は先行40送信を保持した2 fresh session で市役所の会話録画、職員の退場、明示停止、非録画 LOOK と公園帰着を実測し、[原文と現行 UI の監査](./docs/city-hall-runtime-evidence.md)を提出する。
-G1 の独立採択と merge は未実施で、G2 / G3 は引き続き blocked。
-新規 copy 承認と日本語 coverage の追加は後続の範囲である。
-失敗証拠だけの merge は G2 / G3 を unblock しない。既存の room / map lookup、初回2041年 UI、人物の在室・退場判定と SceneActions を再利用する。
+次の milestone として、同じ初回2041年 session の既存3課題に続く **City Hall での政府職員との会話録画と Kennedy Park への帰着** を進めている。
+[市役所計画](./docs/plans/2041-city-hall-fieldwork.md)に採択経路、人物の在室と退場、受入境界、タスクセットをまとめている。
+計画 PR [#90](https://github.com/5gmt/mind-forever-voyaging/pull/90) に続き、G1 は [#91 の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/91#pullrequestreview-5646050774)と merge `7d1291177ee6a690ffdfb0e33b39f2a27c8e310d` で完了した。
+先行40送信を保持した2 fresh session の成功と84 UI sample を採択済みの根拠とし、[G2 開始 gate](https://github.com/5gmt/mind-forever-voyaging/issues/88#issuecomment-6405180186)は解除されている。
+G2 は [copy packet](./docs/city-hall-copy-packet.md)で本文6 leaf、地名、map identity、人物の Talk と適用条件を承認候補として提出する。
+独立 copy approval と merge は未実施で、G3 / #89 は引き続き blocked。
+新規日本語 coverage と production UI / guard の統合は G3 の範囲で、今回の文書提出を表示済みとは扱わない。
+退場後の古い cache と長い履歴、main / companion 両面の char-input guard は G1 の引継ぎ事項として G3 で検証、修正する。
 
 ## 基本的な作業順
 
 1. 市役所計画 PR #90 は Sol review / merge 済み。通常レビューは Sol、milestone 締めは Astra / ChatGPT Work という分担を継続する。
-2. G1 [#87](https://github.com/5gmt/mind-forever-voyaging/issues/87): 既存40送信に市役所区間を加えた連続経路を2 fresh session以上で実測。職員の在室・会話・退場、録画継続・停止、現行 UI と原文を監査し、Sol が採択・merge する。
-3. G2 [#88](https://github.com/5gmt/mind-forever-voyaging/issues/88): G1 の採択 fixture と surface 台帳に基づき、本文・地名・地図・人物操作・周囲の説明を Sol が一括 copy approval / merge する。
+2. G1 [#87](https://github.com/5gmt/mind-forever-voyaging/issues/87): #91 で採択と merge 済み。成功経路、原文と現行 UI、未確認の境界を G2 / G3 へ引き継ぐ。
+3. G2 [#88](https://github.com/5gmt/mind-forever-voyaging/issues/88): copy packet を承認候補として提出。Sol が本文、役割別の UI、周囲の説明と guard を一括 copy approval / merge する。
 4. G3 [#89](https://github.com/5gmt/mind-forever-voyaging/issues/89): catalog / UI と必要な在室・退場の局所修正を統合し、先行3課題付きの6経路と回帰を確認する。実装者が status / plan / 受入記録を揃え、Sol 通常レビュー後に Work が milestone 全体を受け入れ・merge し、#29 報告と Issue close を行う。
 
 G1–G3 の依存関係と完了条件の正本は市役所計画と各 Issue とする。新経路が成立しない場合は設計判断へ戻り、先行経路や完了条件を暗黙に変更しない。
