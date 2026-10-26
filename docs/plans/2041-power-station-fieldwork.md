@@ -121,9 +121,9 @@ City Hall の人物 guard を発電所のために変更せず、catalog 拡張�
 
 | ID | 成果物 | 依存関係と完了 gate |
 | --- | --- | --- |
-| P1 | 四課題後の runtime fixture、操作面の台帳、発電所往復の採択 | 計画 PR merge 後。Sol が実測をレビューして成功経路を採択し merge。 |
-| P2 | 本文、地名、地図と必要な操作の copy packet | P1 採択と merge 後。Sol が copy を独立承認して merge。 |
-| P3 | 日本語統合、6経路と負例、境界回帰、最終受入記録 | P1 / P2 merge 後。Sol 通常レビュー → Work 全体受入と merge → #29 報告と Issue close。 |
+| P1 / [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94) | 四課題後の runtime fixture、操作面の台帳、発電所往復の採択 | 計画 PR merge 後。Sol が実測をレビューして成功経路を採択し merge。 |
+| P2 / [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95) | 本文、地名、地図と必要な操作の copy packet | P1 採択と merge 後。Sol が copy を独立承認して merge。 |
+| P3 / [#96](https://github.com/5gmt/mind-forever-voyaging/issues/96) | 日本語統合、6経路と負例、境界回帰、最終受入記録 | P1 / P2 merge 後。Sol 通常レビュー → Work 全体受入と merge → #29 報告と Issue close。 |
 
 ### P1: Capture and adopt the Power Station route after four fieldwork tasks
 
