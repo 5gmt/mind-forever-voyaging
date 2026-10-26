@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、room / map lookup、SceneActions を拡張する。状態と対象の在室根拠は canonical raw English から得る。録画中の会話・退場・明示停止・帰着を実測してから copy と実装を承認する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「設計判断」と「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #90 と G1 / #87 は独立レビュー後に merge 済み。G1 は [#91 の採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/91#pullrequestreview-5646050774)と merge `7d1291177ee6a690ffdfb0e33b39f2a27c8e310d` で完了し、G2 開始 gate は解除された。G2 は [copy packet](../city-hall-copy-packet.md)を承認候補として提出する。G2 の独立 copy approval / merge と G3 production 統合は未実施で、G3 / #89 は引き続き blocked。
+**Status:** 計画 PR #90、G1 / #87、G2 / #88 は独立レビュー後に merge 済み。G1 は [#91 の採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/91#pullrequestreview-5646050774)、G2 は [#92 の copy approval](https://github.com/5gmt/mind-forever-voyaging/pull/92#pullrequestreview-5646941509)と merge `c0b790184ee4e0f36fcda9a628ed4c237d1da987` で開始 gate を満たした。G3 は承認済み copy と限定 actor guard、6経路と境界回帰を統合し、[受入記録](../city-hall-fieldwork-acceptance.md)と status の roll-up を同じ PR に用意する。完了 gate は Sol 通常レビュー → Work 全体受入・merge → #29 報告 / #89 close。最終 head / CI / merge / close は PR review・Issue・#29 の実行記録を正本とし、実装提出だけで独立受入を完了扱いしない。
 **Baseline:** PR #86 merge `284eb5dcfb9e900e8d98a6a34e5a5ad2d058ce3c`。実行時には最新 `codex/modern-amfv` を取り込む。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。
 
@@ -130,19 +130,19 @@ EN / JA で command と可用性は同じにする。既存の対象外英語 UI
 - [x] 市役所・広場・職員の在室・会話と退場・LOOK を文脈ごとに承認候補へまとめる。話者と評価対象の関係、職員の退場、時刻や録画状態を原文どおり保持する。
 - [x] City Hall / Rockvil Centre の room、map `official`、既承認課題、人物、Talk、周囲の help を別行に整理し、visible / accessible copy と guard を揃える。未監査の actor verbs / aliases は翻訳承認しない。
 - [x] 未観測 failure、city noise、対象外 phase / year / room の English fallback、source-only 値と runtime 値の違いを明示する。
-- [ ] `git diff --check`、fixture との exact text / command / link 照合と applicable CI を確認する。文書のみで未実行の local E2E はそのまま未実行と記録し、current-head CI / artifact は提出 PR を正本にする。
-- [ ] Sol の独立 copy approval / merge を受け、G3 の開始 gate を解除する。提出だけで承認済みにしない。
+- [x] `git diff --check`、fixture との exact text / command / link 照合と applicable CI を確認する。文書のみで未実行の local E2E はそのまま未実行と記録し、current-head CI / artifact は提出 PR を正本にする。
+- [x] Sol の独立 copy approval / merge を受け、G3 の開始 gate を解除する。提出だけで承認済みにしない。
 
 ### G3: Integration — deliver and accept the complete City Hall route
 
-**Files:** 更新 `app/localization.ts`、必要箇所の `app/PrismEdition.tsx` / `app/StoryTools.tsx`、`tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。新規 `tests/e2e/city-hall-fieldwork.spec.ts`、`tests/e2e/city-hall-acceptance.ts`、`docs/city-hall-fieldwork-acceptance.md`。既存 `tests/e2e/restaurant-acceptance.ts` / reading observations は保証を保って再利用する。
+**Files:** 更新 `app/localization.ts`、必要箇所の `app/PrismEdition.tsx` / `app/StoryTools.tsx` / `app/presentation-history.ts` / `app/globals.css`、`tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。新規 `tests/e2e/city-hall-fieldwork.spec.ts`、`tests/e2e/city-hall-acceptance.ts`、`docs/city-hall-fieldwork-acceptance.md`。既存 `tests/e2e/restaurant-acceptance.ts` / reading observations は保証を保って再利用する。
 **Interfaces:** G2 の exact leaf / command-qualified entry と identity 別 lookup を既存 catalog に加える。既存 `localizeSimulationPlace` / `localizeSimulationMapLabel` / scene label helpers を使う。Actor 可用性の変更は G1 の在室・退場観測を消費し、既存 SceneActions の draft / sendCommand 契約を保つ。新しい production observation API は追加しない。
 
-- [ ] G1 の現行 UI の不足に対応する failing regression を先に再現し、RED の根拠を記録する。既存挙動が満たす部分には同じ実装を写すだけのテストや追加 state を作らない。
-- [ ] 承認済み story / room / map / actor / action copy を統合する。必要なら在室・退場の局所修正を行い、会話後の cache と長い履歴から Talk が復活しないことを GREEN で確認する。
-- [ ] 6本の full fresh-session browser route を追加する。actual command / echo / current input、会話前後の recording、退場・LOOK、明示停止・帰着を記録する。Guided の編集可能 draft・submit、Actions の一回送信、Classic の非表示を実操作で確認する。
-- [ ] 非録画会話の checklist 負例と、受入境界に挙げた locale / actor 不在 / room / phase / input / history / recovery の regression を追加する。実測と controlled probes を分け、既存の全回帰を保持する。
-- [ ] 6経路で reading / a11y / scroll / focus を確認し、screenshots と JSON observations を passing artifact に保存する。Narrow の未出力時刻を含む限界を明記する。
+- [x] G1 の現行 UI の不足に対応する failing regression を先に再現し、RED の根拠を記録する。既存挙動が満たす部分には同じ実装を写すだけのテストや追加 state を作らない。
+- [x] 承認済み story / room / map / actor / action copy を統合する。必要なら在室・退場の局所修正を行い、会話後の cache と長い履歴から Talk が復活しないことを GREEN で確認する。
+- [x] 6本の full fresh-session browser route を追加する。actual command / echo / current input、会話前後の recording、退場・LOOK、明示停止・帰着を記録する。Guided の編集可能 draft・submit、Actions の一回送信、Classic の非表示を実操作で確認する。
+- [x] 非録画会話の checklist 負例と、受入境界に挙げた locale / actor 不在 / room / phase / input / history / recovery の regression を追加する。実測と controlled probes を分け、既存の全回帰を保持する。
+- [x] 6経路で reading / a11y / scroll / focus を確認し、screenshots と JSON observations を passing artifact に保存する。Narrow の未出力時刻を含む限界を明記する。
 - [ ] full verification を実行し、受入条件→fixture / test / screenshot / current-head CI の対応表を作る。本書・status・受入記録を最終実装 PR に揃え、Sol の通常レビューを受ける。
 - [ ] Work へ reviewed head / base、差分、未解決指摘、6経路の evidence、CI / artifact と期限、未観測事項を渡す。Work の全体受入と merge、#29 報告、G3 close で milestone を完了する。
 

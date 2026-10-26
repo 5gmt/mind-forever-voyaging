@@ -240,4 +240,5 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
   await expect(page.getByRole("button", { name: /^送信/ })).toBeEnabled();
   await attach("restaurant-return", await page.screenshot(), "image/png");
   await attach("restaurant-turns", JSON.stringify({ controls, viewport: page.viewportSize(), turns, newspaperTurns, beforeMeal, mealTurn, currentInput: (await snapshot()).id }));
+  return { frame, presentation, canonical, input, status, blocks, send, snapshot, locale, turns, newspaperTurns, attach };
 }
