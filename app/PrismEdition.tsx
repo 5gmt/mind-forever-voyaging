@@ -52,6 +52,9 @@ type Discovery = {
 };
 type Note = { id: string; text: string; quote?: string; year: number | null; room: string | null };
 type CommandNotice = { key: "understoodAs" | "draftedFromPassage" | "routeDrafted"; value?: string; destinationId?: string };
+type CityHallOfficialPresence = "unknown" | "present" | "departed";
+const CITY_HALL_OFFICIAL_PRESENT = "A government official is sitting on a bench in the center of the lobby, eating a snack.";
+
 type InitialSimulationState = "unknown" | "eligible" | "active" | "complete";
 
 const EMPTY_DISCOVERY: Discovery = {
@@ -369,6 +372,7 @@ export default function PrismEdition() {
   const presentationRef = useRef<HTMLDivElement>(null);
   const followPresentationRef = useRef(true);
   const initialSimulationRef = useRef<InitialSimulationState>("unknown");
+  const cityHallOfficialRef = useRef<CityHallOfficialPresence>("unknown");
   // The canonical interpreter stays live across QA visits. Its mode history
   // must survive wrapper resets and must never be updated by the QA story.
   const canonicalModeRef = useRef<Mode | null>(null);
@@ -428,6 +432,7 @@ export default function PrismEdition() {
   const [debugMessage, setDebugMessage] = useState("");
   const [localizedHost, setLocalizedHost] = useState<HTMLElement | null>(null);
   const [initialSimulationState, setInitialSimulationState] = useState<InitialSimulationState>("unknown");
+  const [cityHallOfficial, setCityHallOfficial] = useState<CityHallOfficialPresence>("unknown");
 
   const phase = phaseFor(discovery);
   const displayYear = year && ALL_YEARS.includes(year as (typeof ALL_YEARS)[number]) ? year : null;
@@ -528,15 +533,17 @@ export default function PrismEdition() {
   const initialFieldworkActive = discovery.simulationEntered && !discovery.partTwo;
   const initial2041Presentation = mode === "Simulation Mode" && initialFieldworkActive && displayYear === 2041 && initialSimulationState === "active" && !qaEnabled;
   const sceneActionObjects = useMemo(() => {
+    const available = contextualObjects.filter((object) => object.id !== "GOVERNMENT-OFFICIAL"
+      || (initial2041Presentation && room?.id === "CITY-HALL" && inputKind === "line" && cityHallOfficial === "present"));
     // The generic word list collapses "newspaper" into "newspaper dispenser".
     // Keep this approved Buy / Read target within Guided's six visible words.
     const newspaper = OBJECTS_BY_ID.get("NEWSPAPER");
     return initial2041Presentation && room?.id === "BODANSKI-SQUARE" && newspaper
-      && contextualObjects.some((object) => object.id === "NEWSPAPER-DISPENSER")
-      && !contextualObjects.some((object) => object.id === newspaper.id)
-      ? [newspaper, ...contextualObjects]
-      : contextualObjects;
-  }, [contextualObjects, initial2041Presentation, room?.id]);
+      && available.some((object) => object.id === "NEWSPAPER-DISPENSER")
+      && !available.some((object) => object.id === newspaper.id)
+      ? [newspaper, ...available]
+      : available;
+  }, [cityHallOfficial, contextualObjects, initial2041Presentation, inputKind, room?.id]);
   const navigationLocale = initial2041Presentation ? locale : "en";
   const navigationText = (key: Parameters<typeof navigationUiText>[1]) => navigationUiText(navigationLocale, key);
   const navigationPlace = (name: string) => localizeSimulationPlace(navigationLocale, name);
@@ -631,6 +638,8 @@ export default function PrismEdition() {
           setPresentationState({ history: [], recovering: true });
           initialSimulationRef.current = "unknown";
           setInitialSimulationState("unknown");
+          cityHallOfficialRef.current = "unknown";
+          setCityHallOfficial("unknown");
         }
         if (/^(?:record|ron)$/i.test(entered)) setRecording(true);
         if (/^(?:record off|roff)$/i.test(entered)) setRecording(false);
@@ -689,6 +698,8 @@ export default function PrismEdition() {
         activeOutletRef.current = null;
         sceneTextRef.current = "";
         sceneCacheRef.current.clear();
+        cityHallOfficialRef.current = "unknown";
+        setCityHallOfficial("unknown");
         setSceneText("");
         try {
           for (const key of ["amfv:designation", "amfv:modes", "amfv:years", "amfv:rooms", "amfv:discoveries", "amfv:notes", "amfv:history"]) localStorage.removeItem(key);
@@ -733,6 +744,20 @@ export default function PrismEdition() {
           setInitialSimulationState(nextInitialSimulationState);
         }
       }
+      const cityHallScope = !qaEnabled && nextMode === "Simulation Mode" && nextYear === 2041
+        && initialSimulationRef.current === "active";
+      let officialPresence = cityHallOfficialRef.current;
+      if (!cityHallScope || nextRoom?.id !== "CITY-HALL" || event.data.inputKind !== "line") {
+        if (officialPresence !== "departed") officialPresence = "unknown";
+      } else if (event.data.acceptsInput && officialPresence !== "departed") {
+        const official = OBJECTS_BY_ID.get("GOVERNMENT-OFFICIAL")!;
+        const responseLines = responseAfterCommand.split(/\r?\n/).map((line: string) => line.replace(/\s+/g, " ").trim());
+        if (actorHasDeparted(official, responseAfterCommand)) officialPresence = "departed";
+        else if (responseLines.includes(CITY_HALL_OFFICIAL_PRESENT)) officialPresence = "present";
+        else if (/^look$/i.test(lastCommandRef.current.trim())) officialPresence = "unknown";
+      }
+      cityHallOfficialRef.current = officialPresence;
+      setCityHallOfficial(officialPresence);
       const enteredCommand = lastCommandRef.current.trim().toLowerCase();
       const enteredOutlet = parseOutlets(nextTranscript).find((outlet) => outlet.code.toLowerCase() === enteredCommand)?.code ?? null;
       const sceneChanged = Boolean(nextRoom && nextRoom.id !== priorRoom?.id)
@@ -765,7 +790,9 @@ export default function PrismEdition() {
       if (!qaEnabled && event.data.acceptsInput) {
         setLiveCanonicalPresentation(nextPresentation);
         setPresentationState((previous) => {
-          const reconciliation = reconcilePresentationHistory(previous.history, nextPresentation);
+          const reconciliation = reconcilePresentationHistory(previous.history, nextPresentation, {
+            cityHall2041: cityHallScope ? nextRoom?.id : undefined,
+          });
           return { history: reconciliation.history, recovering: !reconciliation.representable };
         });
       }
@@ -850,6 +877,8 @@ export default function PrismEdition() {
       setPresentationState({ history: [], recovering: true });
       initialSimulationRef.current = "unknown";
       setInitialSimulationState("unknown");
+      cityHallOfficialRef.current = "unknown";
+      setCityHallOfficial("unknown");
     }
     setAcceptsInput(false);
     activeFrame.contentWindow.postMessage({ channel: BRIDGE_CHANNEL, type: "command", command: normalized }, window.location.origin);
@@ -1043,6 +1072,8 @@ export default function PrismEdition() {
     setInputKind("line");
     sceneTextRef.current = "";
     sceneCacheRef.current.clear();
+    cityHallOfficialRef.current = "unknown";
+    setCityHallOfficial("unknown");
     setSceneText("");
     setGridText("");
     setPresentationState({ history: [], recovering: true });

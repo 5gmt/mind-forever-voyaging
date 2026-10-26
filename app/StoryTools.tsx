@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
 import { FormEvent, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
+import { cityHallTalkHelp, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -157,8 +157,10 @@ const PEOF_SCENE_NOUNS = new Set(["perelman", "desk", "decoder", "map", "pen", "
 
 export function SceneActions({ objects, roomId, level, locale, initial2041 = false, lineInput = false, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; locale: Locale; initial2041?: boolean; lineInput?: boolean; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
   const usableObjects = useMemo(() => objects.filter((object) =>
-    hasUsefulSceneAction(object, roomId) && (roomId !== "OFFICE" || PEOF_SCENE_NOUNS.has(object.commandNoun!)),
-  ), [objects, roomId]);
+    hasUsefulSceneAction(object, roomId)
+      && (object.id !== "GOVERNMENT-OFFICIAL" || (initial2041 && lineInput && roomId === "CITY-HALL"))
+      && (roomId !== "OFFICE" || PEOF_SCENE_NOUNS.has(object.commandNoun!)),
+  ), [initial2041, lineInput, objects, roomId]);
   if (level === "classic") return null;
   // This approved, observed order is deliberately separate from prose-derived
   // nouns: arrival never mentions food. Do not expose generic GLOBAL-OBJECTS
@@ -184,6 +186,7 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
 
   if (level === "guided") return <section className="scene-actions scene-words" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "guidedLandmark")}>
     <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "guidedHeading")}</span><small>{sceneActionUiText(displayLocale, "guidedInstruction")}</small></div>
+    {usableObjects.some((object) => object.id === "GOVERNMENT-OFFICIAL") && <p className="scene-official-help">{cityHallTalkHelp(displayLocale, "guided")}</p>}
     <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{objectName(object)}<small>{actionLabel(object, action)}</small></button>; })}</div>
   </section>;
 
@@ -194,6 +197,7 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
         {usableObjects.map((object) => {
           return <article className="scene-object" key={object.id}>
             <strong>{objectName(object)}</strong>
+            {object.id === "GOVERNMENT-OFFICIAL" && <p className="scene-official-help">{cityHallTalkHelp(displayLocale, "actions")}</p>}
             <div>{visibleActionsFor(object, roomId).map((action) => <button type="button" key={action.id} onClick={() => sendCommand(actionCommand(object, action))} disabled={disabled}>{actionLabel(object, action)}</button>)}</div>
           </article>;
         })}

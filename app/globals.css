@@ -4839,3 +4839,13 @@ summary:focus-visible {
     width: 130px;
   }
 }
+
+/* Scoped Talk instructions stay readable in both command and companion views. */
+.scene-official-help {
+  color: #a2b3a9;
+  font-size: 12px;
+  line-height: 1.5;
+  letter-spacing: normal;
+  text-transform: none;
+  margin: 6px 0;
+}

@@ -517,7 +517,13 @@ const MEAL_ACTION_UI = {
 } as const;
 export const mealActionUiText = (locale: Locale, key: keyof typeof MEAL_ACTION_UI.en) => MEAL_ACTION_UI[locale][key];
 
-const INITIAL_ROUTE_ROOMS = new Set(["KENNEDY-PARK", "ELM-AND-PARK", "COURTHOUSE", "MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE", "ELM-AND-UNIVERSITY", "ELM-UNDERPASS", "ROYS-PAGODA"]);
+const CITY_HALL_TALK_HELP = {
+  en: { guided: "Draft a command to talk to the government official. You can edit it before sending.", actions: "Choose Talk to send the command once." },
+  ja: { guided: "政府職員と話すコマンドを下書きします。編集してから送信できます。", actions: "「話す」を押すと、コマンドを1回送信します。" },
+} as const;
+export const cityHallTalkHelp = (locale: Locale, mode: "guided" | "actions") => CITY_HALL_TALK_HELP[locale][mode];
+
+const INITIAL_ROUTE_ROOMS = new Set(["ROCKVIL-CENTRE", "CITY-HALL", "KENNEDY-PARK", "ELM-AND-PARK", "COURTHOUSE", "MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE", "ELM-AND-UNIVERSITY", "ELM-UNDERPASS", "ROYS-PAGODA"]);
 export const sceneActionsLocale = (locale: Locale, roomId: string | null | undefined, initial2041 = false): Locale =>
   roomId === "OFFICE" || (initial2041 && roomId && INITIAL_ROUTE_ROOMS.has(roomId)) ? locale : "en";
 
@@ -545,12 +551,14 @@ const isPeofSceneObject = (objectId: string): objectId is PeofSceneObjectId => o
 const isPeofSceneAction = (actionId: string): actionId is PeofSceneActionId => actionId in PEOF_SCENE_ACTION_LABELS;
 
 export const localizeSceneObjectName = (locale: Locale, roomId: string | null | undefined, objectId: string, canonicalName: string) =>
-  locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) ? PEOF_SCENE_OBJECT_NAMES[objectId]
+  locale === "ja" && roomId === "CITY-HALL" && objectId === "GOVERNMENT-OFFICIAL" ? "政府職員"
+    : locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) ? PEOF_SCENE_OBJECT_NAMES[objectId]
     : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" ? "新聞"
       : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER-DISPENSER" ? "新聞販売機" : locale === "ja" && roomId === "ROYS-PAGODA" && objectId === "MEAL" ? "食事" : canonicalName;
 
 export const localizeSceneActionLabel = (locale: Locale, roomId: string | null | undefined, objectId: string, actionId: string, canonicalLabel: string) =>
-  locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) && isPeofSceneAction(actionId)
+  locale === "ja" && roomId === "CITY-HALL" && objectId === "GOVERNMENT-OFFICIAL" && actionId === "talk" ? "話す"
+    : locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) && isPeofSceneAction(actionId)
     ? PEOF_SCENE_ACTION_LABELS[actionId]
     : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "buy" ? "買う"
       : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "read" ? "読む" : locale === "ja" && roomId === "ROYS-PAGODA" && objectId === "MEAL" && actionId === "buy" ? "注文する" : canonicalLabel;
@@ -591,6 +599,8 @@ const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, st
     "Elm & University": "エルム通りとユニバーシティ大通り",
     "Elm Underpass": "エルム通りの高架下",
     "Roy's Pagoda": "ロイズ・パゴダ",
+    "Rockvil Centre": "ロックヴィル中央広場",
+    "City Hall": "市役所",
     "Main & Kennedy": "メイン通りとケネディ通り",
     "Centre & Kennedy": "センター通りとケネディ通り",
     "Bodanski Square": "ボダンスキー広場",
@@ -610,6 +620,7 @@ const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, stri
     "north-central": "ノース・セントラル駅",
     newspaper: "新聞",
     meal: "レストラン",
+    official: "市役所",
     infotech: "インフォテック・ビル",
     kennedy: "ケネディ公園",
     court: "裁判所",
@@ -675,6 +686,13 @@ export type StoryContentId =
   | "part1.simulation.newspaper.article"
   | "part1.simulation.restaurant.route"
   | "part1.simulation.restaurant.meal"
+  | "part1.simulation.city-hall.plaza-heading"
+  | "part1.simulation.city-hall.plaza"
+  | "part1.simulation.city-hall.heading"
+  | "part1.simulation.city-hall.building"
+  | "part1.simulation.city-hall.presence"
+  | "part1.simulation.city-hall.conversation"
+  | "part1.simulation.city-hall.return"
   | "part1.simulation.record-activated"
   | "part1.simulation.record-deactivated";
 
@@ -1040,6 +1058,24 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
     },
     { canonicalCommand: "E", canonicalLeaf: "Elm & Park", translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & Park"), kind: "title" } },
     { canonicalCommand: "EAST", canonicalLeaf: "Elm & Park", translation: { contentId: "part1.simulation.restaurant.route", text: localizeSimulationPlace("ja", "Elm & Park"), kind: "title" } },
+    // G2 exact City Hall leaves; host history scopes these to initial 2041.
+    { canonicalCommand: "W", canonicalLeaf: "Rockvil Centre", translation: { contentId: "part1.simulation.city-hall.plaza-heading", text: "ロックヴィル中央広場", kind: "title" } },
+    { canonicalCommand: "WEST", canonicalLeaf: "Rockvil Centre", translation: { contentId: "part1.simulation.city-hall.plaza-heading", text: "ロックヴィル中央広場", kind: "title" } },
+    { canonicalCommand: "E", canonicalLeaf: "Rockvil Centre", translation: { contentId: "part1.simulation.city-hall.plaza-heading", text: "ロックヴィル中央広場", kind: "title" } },
+    { canonicalCommand: "EAST", canonicalLeaf: "Rockvil Centre", translation: { contentId: "part1.simulation.city-hall.plaza-heading", text: "ロックヴィル中央広場", kind: "title" } },
+    { canonicalCommand: "W", canonicalLeaf: "The name of this plaza tells it all. The well-maintained portico of City Hall stretches along the west side of the plaza, and Dunbar's lies on the southeast corner. Park Street leads north and south. Main Street and Centre Street both begin here, leading eastward and northeastward, respectively. The street is bustling with lunchtime crowds.", translation: { contentId: "part1.simulation.city-hall.plaza", text: "この広場は、その名のとおり街の中心だ。市役所の手入れが行き届いた柱廊が広場の西側に延び、南東の角にはダンバーズがある。パーク通りは北と南へ延びている。メイン通りとセンター通りはいずれもここを起点とし、それぞれ東と北東へ延びている。通りは昼食時の人々でにぎわっている。" } },
+    { canonicalCommand: "WEST", canonicalLeaf: "The name of this plaza tells it all. The well-maintained portico of City Hall stretches along the west side of the plaza, and Dunbar's lies on the southeast corner. Park Street leads north and south. Main Street and Centre Street both begin here, leading eastward and northeastward, respectively. The street is bustling with lunchtime crowds.", translation: { contentId: "part1.simulation.city-hall.plaza", text: "この広場は、その名のとおり街の中心だ。市役所の手入れが行き届いた柱廊が広場の西側に延び、南東の角にはダンバーズがある。パーク通りは北と南へ延びている。メイン通りとセンター通りはいずれもここを起点とし、それぞれ東と北東へ延びている。通りは昼食時の人々でにぎわっている。" } },
+    { canonicalCommand: "W", canonicalLeaf: "City Hall", translation: { contentId: "part1.simulation.city-hall.heading", text: "市役所", kind: "title" } },
+    { canonicalCommand: "WEST", canonicalLeaf: "City Hall", translation: { contentId: "part1.simulation.city-hall.heading", text: "市役所", kind: "title" } },
+    { canonicalCommand: "LOOK", canonicalLeaf: "City Hall", translation: { contentId: "part1.simulation.city-hall.heading", text: "市役所", kind: "title" } },
+    { canonicalCommand: "W", canonicalLeaf: "The city's seat of government is an old concrete-slab building dating back to the late twentieth century. The only exit is east.", translation: { contentId: "part1.simulation.city-hall.building", text: "市政の拠点となっているのは、20世紀末に建てられた古いコンクリート板造りの建物だ。出口は東に一つだけある。" } },
+    { canonicalCommand: "WEST", canonicalLeaf: "The city's seat of government is an old concrete-slab building dating back to the late twentieth century. The only exit is east.", translation: { contentId: "part1.simulation.city-hall.building", text: "市政の拠点となっているのは、20世紀末に建てられた古いコンクリート板造りの建物だ。出口は東に一つだけある。" } },
+    { canonicalCommand: "LOOK", canonicalLeaf: "The city's seat of government is an old concrete-slab building dating back to the late twentieth century. The only exit is east.", translation: { contentId: "part1.simulation.city-hall.building", text: "市政の拠点となっているのは、20世紀末に建てられた古いコンクリート板造りの建物だ。出口は東に一つだけある。" } },
+    { canonicalCommand: "W", canonicalLeaf: "A government official is sitting on a bench in the center of the lobby, eating a snack.", translation: { contentId: "part1.simulation.city-hall.presence", text: "政府職員が一人、ロビー中央のベンチに腰掛け、軽食を食べている。" } },
+    { canonicalCommand: "WEST", canonicalLeaf: "A government official is sitting on a bench in the center of the lobby, eating a snack.", translation: { contentId: "part1.simulation.city-hall.presence", text: "政府職員が一人、ロビー中央のベンチに腰掛け、軽食を食べている。" } },
+    { canonicalCommand: "GOVERNMENT OFFICIAL, HELLO", canonicalLeaf: "You have a brief chat with the government official, who cheerily comments on how well things in the city are running, and how rewarding his job has been lately. Suddenly he glances at his watch, mumbles a polite parting message, and hurries away.", translation: { contentId: "part1.simulation.city-hall.conversation", text: "政府職員と短い会話を交わす。職員は、市の物事が順調に進んでいることや、最近は自分の仕事に大いにやりがいを感じていることを、上機嫌で話す。突然、時計にちらりと目をやり、丁寧な別れの言葉をぼそぼそと口にすると、足早に去っていく。" } },
+    { canonicalCommand: "E", canonicalLeaf: "Main & Kennedy", translation: { contentId: "part1.simulation.city-hall.return", text: localizeSimulationPlace("ja", "Main & Kennedy"), kind: "title" } },
+    { canonicalCommand: "EAST", canonicalLeaf: "Main & Kennedy", translation: { contentId: "part1.simulation.city-hall.return", text: localizeSimulationPlace("ja", "Main & Kennedy"), kind: "title" } },
     {
       canonicalCommand: "BUY NEWSPAPER",
       canonicalLeaf: "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",

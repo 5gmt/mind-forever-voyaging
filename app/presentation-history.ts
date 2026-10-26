@@ -4,6 +4,9 @@ import type { Locale } from "./localization.ts";
 export type PresentationHistoryEntry = {
   id: string;
   presentation: BridgePresentation;
+  // Resolved room captured by the host from raw mode/year/session observations.
+  // It belongs to this history entry, not the currently selected locale.
+  cityHall2041?: string;
 };
 
 export type PresentationHistory = PresentationHistoryEntry[];
@@ -38,6 +41,7 @@ const isSafeObservation = (presentation: BridgePresentation | null): presentatio
 export const reconcilePresentationHistory = (
   previous: PresentationHistory,
   presentation: BridgePresentation | null,
+  scope: { cityHall2041?: string } = {},
 ): PresentationReconciliation => {
   if (!isSafeObservation(presentation)) return { history: previous, representable: false };
   const localized = storyPresentation(presentation, "ja");
@@ -49,7 +53,7 @@ export const reconcilePresentationHistory = (
   if (existingIndex >= 0) {
     if (observationRichness(presentation) <= observationRichness(previous[existingIndex].presentation)) return { history: previous, representable: true };
     return {
-      history: previous.map((entry, index) => index === existingIndex ? { id, presentation } : entry),
+      history: previous.map((entry, index) => index === existingIndex ? { ...entry, presentation } : entry),
       representable: true,
     };
   }
@@ -60,7 +64,7 @@ export const reconcilePresentationHistory = (
   const restoreBoundary = fallback?.[0]?.kind === "command"
     && /^RESTORE$/i.test(fallback[0].canonicalText ?? fallback[0].text);
   return {
-    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation }],
+    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}) }],
     representable: true,
   };
 };
@@ -91,12 +95,25 @@ export const fallbackTurnPresentation = (
   return blocks;
 };
 
+const CITY_HALL_COPY_ROOMS: Record<string, string> = {
+  "part1.simulation.city-hall.plaza-heading": "ROCKVIL-CENTRE",
+  "part1.simulation.city-hall.plaza": "ROCKVIL-CENTRE",
+  "part1.simulation.city-hall.heading": "CITY-HALL",
+  "part1.simulation.city-hall.building": "CITY-HALL",
+  "part1.simulation.city-hall.presence": "CITY-HALL",
+  "part1.simulation.city-hall.conversation": "CITY-HALL",
+  "part1.simulation.city-hall.return": "MAIN-AND-KENNEDY",
+};
+
 export const projectPresentationHistory = (
   history: PresentationHistory,
   locale: Locale,
 ): Array<{ entryId: string; blocks: StoryPresentationBlock[] }> => history.map((entry) => ({
   entryId: entry.id,
-  blocks: storyPresentation(entry.presentation, locale)
+  blocks: (storyPresentation(entry.presentation, locale)
     ?? fallbackTurnPresentation(entry.presentation)
-    ?? [],
+    ?? []).map((block) => block.contentId?.startsWith("part1.simulation.city-hall.")
+      && entry.cityHall2041 !== CITY_HALL_COPY_ROOMS[block.contentId]
+      ? { ...block, text: block.canonicalText ?? block.text }
+      : block),
 })).filter((entry) => entry.blocks.length > 0);

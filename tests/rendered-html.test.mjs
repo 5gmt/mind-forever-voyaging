@@ -217,7 +217,7 @@ test("localizes only presentation while preserving raw English mechanics", async
   ]);
   assert.match(shell, /progressFromTranscript\(freshCanonicalOpening \? EMPTY_DISCOVERY : previous, nextTranscript\)/);
   assert.match(shell, /projectPresentationHistory\(presentationState\.history, locale\)/);
-  assert.match(shell, /reconcilePresentationHistory\(previous\.history, nextPresentation\)/);
+  assert.match(shell, /reconcilePresentationHistory\(previous\.history, nextPresentation/);
   assert.match(shell, /event\.data\.type === "command"[\s\S]*\^restore\$[\s\S]*setPresentationState\(\{ history: \[\], recovering: true \}\)/i);
   assert.match(shell, /!qaEnabled && event\.data\.acceptsInput/);
   assert.match(shell, /createPortal\(/);
@@ -1027,6 +1027,82 @@ test("records the approved restaurant candidate without full-buffer interruption
   }
 });
 
+test("projects the approved City Hall packet with qualified reuse and per-leaf fallback", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
+  const plaza = "この広場は、その名のとおり街の中心だ。市役所の手入れが行き届いた柱廊が広場の西側に延び、南東の角にはダンバーズがある。パーク通りは北と南へ延びている。メイン通りとセンター通りはいずれもここを起点とし、それぞれ東と北東へ延びている。通りは昼食時の人々でにぎわっている。";
+  const building = "市政の拠点となっているのは、20世紀末に建てられた古いコンクリート板造りの建物だ。出口は東に一つだけある。";
+  const official = "政府職員が一人、ロビー中央のベンチに腰掛け、軽食を食べている。";
+  const chat = "政府職員と短い会話を交わす。職員は、市の物事が順調に進んでいることや、最近は自分の仕事に大いにやりがいを感じていることを、上機嫌で話す。突然、時計にちらりと目をやり、丁寧な別れの言葉をぼそぼそと口にすると、足早に去っていく。";
+  const packets = [[40, ["ロックヴィル中央広場", plaza]], [41, ["市役所", building, official]], [43, [chat]], [45, ["市役所", building]], [46, ["ロックヴィル中央広場"]], [47, ["メイン通りとケネディ通り"]]];
+  for (const session of fixture.sessions) for (const [index, expected] of packets) {
+    const p = session.observations[index].presentation;
+    const blocks = observedOrdinaryTurnPresentation(p, "ja");
+    assert.ok(blocks, `observed City Hall turn ${index}`);
+    assert.deepEqual(blocks.filter(({ kind }) => kind !== "command" && kind !== "spacer").map(({ text }) => text), expected);
+    assert.equal(blocks.at(-1).kind, "spacer");
+    const cityHall2041 = [40, 46].includes(index) ? "ROCKVIL-CENTRE" : index === 47 ? "MAIN-AND-KENNEDY" : "CITY-HALL";
+    const history = reconcilePresentationHistory([], p, { cityHall2041 }).history;
+    assert.deepEqual(projectPresentationHistory(history, "ja")[0].blocks, blocks);
+    const unknown = reconcilePresentationHistory([], p).history;
+    for (const block of projectPresentationHistory(unknown, "ja")[0].blocks) {
+      if (block.contentId?.startsWith("part1.simulation.city-hall.")) assert.equal(block.text, block.canonicalText);
+    }
+    const english = projectPresentationHistory(history, "en")[0].blocks.map(({ text }) => text).join("\n");
+    for (const line of p.lines.slice(1, -1).filter(({ text }) => text.trim())) assert.ok(english.includes(line.text));
+  }
+  for (const [id, en, ja] of [["ROCKVIL-CENTRE", "Rockvil Centre", "ロックヴィル中央広場"], ["CITY-HALL", "City Hall", "市役所"]]) {
+    assert.equal(localizeSimulationPlace("ja", en), ja, id);
+    assert.equal(localizeSimulationPlace("en", en), en);
+  }
+  assert.equal(localizeSimulationMapLabel("ja", "official", "City Hall"), "市役所");
+  assert.equal(localizeSimulationMapLabel("ja", "unknown-official", "City Hall"), "City Hall");
+  assert.equal(localizeSceneObjectName("ja", "CITY-HALL", "GOVERNMENT-OFFICIAL", "government official"), "政府職員");
+  assert.equal(localizeSceneActionLabel("ja", "CITY-HALL", "GOVERNMENT-OFFICIAL", "talk", "Talk"), "話す");
+  assert.equal(localizeSceneActionLabel("ja", "CITY-HALL", "GOVERNMENT-OFFICIAL", "sit-next", "Sit beside"), "Sit beside");
+  assert.equal(localizeSceneObjectName("ja", "ST-MICHAELS", "GOVERNMENT-OFFICIAL", "government official"), "government official");
+  for (const index of [40, 41, 45, 46, 47]) {
+    const turn = fixture.sessions[0].observations[index];
+    for (const line of turn.presentation.lines.slice(1,-1).filter(({text}) => text.trim())) {
+      const alias = turn.command === "W" ? "WEST" : turn.command === "E" ? "EAST" : "LOOK";
+      assert.deepEqual(observedStoryLeafTranslation(line.text, "ja", alias), observedStoryLeafTranslation(line.text, "ja", turn.command));
+      assert.equal(observedStoryLeafTranslation(line.text, "ja", "UNAPPROVED COMMAND"), undefined);
+      assert.equal(observedStoryLeafTranslation(`${line.text} Unapproved variant`, "ja", turn.command), undefined);
+    }
+  }
+});
+
+test("keeps new City Hall copy English for an unknown or mismatched source room", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
+  const arrival = fixture.sessions[0].observations[41].presentation;
+  for (const cityHall2041 of ["UNKNOWN-ROOM", "ROCKVIL-CENTRE", "MAIN-AND-KENNEDY"]) {
+    const history = reconcilePresentationHistory([], arrival, { cityHall2041 }).history;
+    const blocks = projectPresentationHistory(history, "ja")[0].blocks;
+    assert.equal(blocks[1].text, "City Hall", cityHall2041);
+    assert.equal(blocks[2].text, arrival.lines[2].text);
+  }
+});
+
+test("keeps City Hall history scope with its original observation across locale and phase changes", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
+  const arrival = fixture.sessions[0].observations[41].presentation;
+  const accepted = reconcilePresentationHistory([], arrival, { cityHall2041: "CITY-HALL" }).history;
+  const later = structuredClone(arrival);
+  later.lines.at(-1).id = "later-year-input";
+  const combined = reconcilePresentationHistory(accepted, later).history;
+  const japanese = projectPresentationHistory(combined, "ja");
+  assert.equal(japanese[0].blocks[1].text, "市役所", "past valid Japanese is retained");
+  assert.equal(japanese[1].blocks[1].text, "City Hall", "later or unknown observation receives no new Japanese");
+  for (const entry of projectPresentationHistory(combined, "en")) assert.ok(entry.blocks[1].text.startsWith("City Hall\n"));
+  assert.deepEqual(projectPresentationHistory(combined, "ja"), japanese, "EN to JA does not reclassify scope");
+  const recovery = reconcilePresentationHistory(combined, null);
+  assert.equal(recovery.representable, false);
+  assert.deepEqual(projectPresentationHistory(recovery.history, "ja"), japanese);
+  const restored = structuredClone(later);
+  restored.lines[0].text = ">RESTORE";
+  restored.lines.at(-1).id = "restored-input";
+  assert.equal(reconcilePresentationHistory(combined, restored).history.length, 1, "RESTORE drops the previous display timeline");
+});
+
 test("retains two fresh City Hall continuations with current input identities and safe projection", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
   const previous = JSON.parse(await readFile(new URL("./fixtures/parchment-restaurant-recording-a-observed.json", import.meta.url), "utf8"));
@@ -1107,11 +1183,11 @@ test("retains two fresh City Hall continuations with current input identities an
     assert.equal(minutes(city[4].status.time) - minutes(city[3].status.time), 8, "measured GridWindow delta, independent of source estimate");
     for (const index of [1, 2, 4, 6]) {
       const turn = city[index];
-      assert.equal(observedOrdinaryTurnPresentation(turn.presentation, "ja"), null, "new City Hall output is not copy-approved");
+      assert.ok(observedOrdinaryTurnPresentation(turn.presentation, "ja"), "the adopted G2 leaves are now in the exact catalog");
       const blocks = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation).history, "ja")[0].blocks;
-      assert.deepEqual(blocks.map(({ kind }) => kind), ["command", "prose"]);
       assert.equal(blocks[0].canonicalText.toUpperCase(), cityCommands[index]);
-      assert.equal(blocks[1].text, leaves(turn).filter((text) => text.trim()).join("\n"), "canonical English fallback preserves all new text in order");
+      assert.ok(blocks.slice(1).every((block) => block.text === (block.canonicalText ?? "")), "without a known initial-2041 host scope, new leaves remain English");
+      for (const leaf of leaves(turn).filter((text) => text.trim())) assert.ok(blocks.some(({ text }) => text === leaf), "all new raw leaves survive fallback in order");
     }
     for (const [index, translation] of [[3, "記録機能を起動しました。"], [5, "記録機能を停止しました。"]]) {
       const blocks = observedOrdinaryTurnPresentation(city[index].presentation, "ja");

@@ -217,7 +217,8 @@ for (const viewport of ["desktop", "narrow"] as const) for (const controls of ["
       await expect(navigator).toHaveAttribute("lang", "ja");
       await expect(navigator.getByRole("button", { name: "新聞、調査目的地", exact: true })).toBeVisible();
       await expect(navigator.getByRole("button", { name: "ノース・セントラル駅", exact: true })).toBeVisible();
-      await expect(navigator.getByRole("button", { name: "City Hall, fieldwork destination", exact: true })).toHaveAttribute("lang", "en");
+      await expect(navigator.getByRole("button", { name: "市役所、調査目的地", exact: true })).toHaveAttribute("lang", "ja");
+      await expect(navigator.getByRole("button", { name: "Power Station, fieldwork destination", exact: true })).toHaveAttribute("lang", "en");
       const close = drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" });
       await close.click();
       await expect(launcher).toBeFocused();
@@ -519,7 +520,7 @@ test("keeps rolling first-entry state, re-entry, unknown places, and later phase
   const narrowNavigator = narrowDrawer.locator(".rockvil-navigator");
   await expect(narrowNavigator).toHaveAttribute("lang", "ja");
   expect((await narrowNavigator.boundingBox())!.height).toBeLessThanOrEqual((await narrowBody.boundingBox())!.height);
-  await narrowNavigator.getByRole("button", { name: /City Hall, fieldwork destination/ }).click();
+  await narrowNavigator.getByRole("button", { name: "市役所、調査目的地", exact: true }).click();
   await expect(narrowNavigator).toContainText("名前のある通りへ移動すると経路案内を開始できます。");
   await expect(narrowNavigator.locator(".navigator-route-actions").getByRole("button", { name: "解除" })).toBeVisible();
   await narrowDrawer.getByRole("tab", { name: /要項/ }).click();
