@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、room / map lookup、SceneActions を拡張する。状態と対象の在室根拠は canonical raw English から得る。録画中の会話・退場・明示停止・帰着を実測してから copy と実装を承認する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「設計判断」と「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #90、G1 / #87、G2 / #88 は独立レビュー後に merge 済み。G1 は [#91 の採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/91#pullrequestreview-5646050774)、G2 は [#92 の copy approval](https://github.com/5gmt/mind-forever-voyaging/pull/92#pullrequestreview-5646941509)と merge `c0b790184ee4e0f36fcda9a628ed4c237d1da987` で開始 gate を満たした。G3 は承認済み copy と限定 actor guard、6経路と境界回帰を統合し、[受入記録](../city-hall-fieldwork-acceptance.md)と status の roll-up を同じ PR に用意する。完了 gate は Sol 通常レビュー → Work 全体受入・merge → #29 報告 / #89 close。最終 head / CI / merge / close は PR review・Issue・#29 の実行記録を正本とし、実装提出だけで独立受入を完了扱いしない。
+**Status:** 完了。計画 PR #90、G1 #87 / PR #91、G2 #88 / PR #92 に続き、G3 #89 / [PR #93](https://github.com/5gmt/mind-forever-voyaging/pull/93) を merge `967036d818583806e88d4d77f541e41af56b3d9f` で統合した。最終 head `2571595cda8abbb2e32b4194c7aa7e7fd07d05aa` に対する [Sol 通常レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/93#pullrequestreview-5647913588)と [Work 全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/93#pullrequestreview-5648983599)、[CI 35 unit / 43 browser 成功](https://github.com/5gmt/mind-forever-voyaging/actions/runs/40272195826)、[#29 完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6411200960)、#89 close を確認済み。実測と限界は[市役所受入記録](../city-hall-fieldwork-acceptance.md)に保持する。次の計画は[発電所](./2041-power-station-fieldwork.md)を参照する。
 **Baseline:** PR #86 merge `284eb5dcfb9e900e8d98a6a34e5a5ad2d058ce3c`。実行時には最新 `codex/modern-amfv` を取り込む。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。
 
@@ -143,8 +143,8 @@ EN / JA で command と可用性は同じにする。既存の対象外英語 UI
 - [x] 6本の full fresh-session browser route を追加する。actual command / echo / current input、会話前後の recording、退場・LOOK、明示停止・帰着を記録する。Guided の編集可能 draft・submit、Actions の一回送信、Classic の非表示を実操作で確認する。
 - [x] 非録画会話の checklist 負例と、受入境界に挙げた locale / actor 不在 / room / phase / input / history / recovery の regression を追加する。実測と controlled probes を分け、既存の全回帰を保持する。
 - [x] 6経路で reading / a11y / scroll / focus を確認し、screenshots と JSON observations を passing artifact に保存する。Narrow の未出力時刻を含む限界を明記する。
-- [ ] full verification を実行し、受入条件→fixture / test / screenshot / current-head CI の対応表を作る。本書・status・受入記録を最終実装 PR に揃え、Sol の通常レビューを受ける。
-- [ ] Work へ reviewed head / base、差分、未解決指摘、6経路の evidence、CI / artifact と期限、未観測事項を渡す。Work の全体受入と merge、#29 報告、G3 close で milestone を完了する。
+- [x] full verification を実行し、受入条件→fixture / test / screenshot / current-head CI の対応表を作る。本書・status・受入記録を最終実装 PR に揃え、Sol の通常レビューを受ける。
+- [x] Work へ reviewed head / base、差分、未解決指摘、6経路の evidence、CI / artifact と期限、未観測事項を渡す。Work の全体受入と merge、#29 報告、G3 close で milestone を完了する。
 
 ## 検証とレビューの運用
 
