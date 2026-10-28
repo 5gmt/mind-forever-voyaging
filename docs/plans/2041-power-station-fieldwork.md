@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時の room scope、room / map lookup と録画操作を拡張する。先行四課題を保持した実測で経路を採択してから、本文と必要な UI の copy を承認し、統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画提案。計画 PR の独立 Sol review / merge が P1 の開始 gate。新経路の runtime 成功と翻訳は未承認。
+**Status:** 計画 PR #97 は独立 Sol review 後に merge `901945a3aee98cfec3a4bea816ebdf11760ba247` で採択済み。P1 #94 は2 fresh sessionsで67送信の成功を実測し、[実測証拠](../power-station-runtime-evidence.md)を提出。成功経路と操作契約の独立 Sol 採択 / merge は未了で、P2 / P3 は引き続き blocked。新しい翻訳は未承認。
 **Baseline:** City Hall の PR #93 merge `967036d818583806e88d4d77f541e41af56b3d9f`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。今回の milestone 選定とタスク化は2026-10-26 JST の依頼に基づく。
 
@@ -130,13 +130,20 @@ City Hall の人物 guard を発電所のために変更せず、catalog 拡張�
 **Files:** 新規 `scripts/capture-power-station-runtime.mjs`、`tests/fixtures/parchment-power-station-runtime-observed.json`、`docs/power-station-runtime-evidence.md`。更新 `tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。
 **Interfaces:** `scripts/capture-city-hall-runtime.mjs` の `prefixPath` / `courthousePath` / `newspaperPath` / `restaurantPath` / `cityHallPath` と bridge-v3 observation の形式を参照する。成果物は `sessions`、actual command、送信元 input ID、新 echo、次 input ID、status、行構造の対応、stable / dynamic / optional の分類、alias、surface 台帳、採択または停止判断。既存 capture / fixture を置換しない。
 
-- [ ] 現行規則と最新 base を確認し、候補67送信の capture を用意する。Production code は変更せず、失敗途中の観測も保存する。
-- [ ] 2 fresh sessions以上で先行四課題から発電所、公園帰着まで採取する。起動 character input と numeric decoder answer の特殊な echo を保持し、反復する移動は current input identity で待つ。
-- [ ] 現地到着、RECORD、LOOK、OFF、帰着の raw status と施設本文を照合する。容量警告と optional interrupt を分類し、経路不成立なら採択を止める。
-- [ ] EN / JA と3 interaction modesで room / map / route / compass / recording / LOOK、現地の既存 SceneActions を監査する。Visible / accessible name、`lang`、送信元、draft / 直接送信、guard、不足を台帳化する。未実装の日本語を P1 の完了条件にしない。
-- [ ] `tests/rendered-html.test.mjs` に fixture の67送信、先行50件の順序、施設内と入口の区別、current input chain、警告、既存 ordinary projection での構造保持を固定する regression を追加し実行する。Fixture 内に欠落があれば翻訳に進まない。
-- [ ] Applicable checks、checksum、diff check を実行する。Evidence と status / plan を揃え、source / runtime / UI の区別と未確認範囲を提出する。
+- [x] 現行規則と最新 base を確認し、候補67送信の capture を用意する。Production code は変更せず、失敗途中の観測も保存する。
+- [x] 2 fresh sessions以上で先行四課題から発電所、公園帰着まで採取する。起動 character input と numeric decoder answer の特殊な echo を保持し、反復する移動は current input identity で待つ。
+- [x] 現地到着、RECORD、LOOK、OFF、帰着の raw status と施設本文を照合する。容量警告と optional interrupt を分類し、経路不成立なら採択を止める。
+- [x] EN / JA と3 interaction modesで room / map / route / compass / recording / LOOK、現地の既存 SceneActions を監査する。Visible / accessible name、`lang`、送信元、draft / 直接送信、guard、不足を台帳化する。未実装の日本語を P1 の完了条件にしない。
+- [x] `tests/rendered-html.test.mjs` に fixture の67送信、先行50件の順序、施設内と入口の区別、current input chain、警告、既存 ordinary projection での構造保持を固定する regression を追加し実行する。Fixture 内に欠落があれば翻訳に進まない。
+- [x] Applicable checks、checksum、diff check を実行する。Evidence と status / plan を揃え、source / runtime / UI の区別と未確認範囲を提出する。
 - [ ] Sol が連続経路と操作契約を採択し merge。失敗記録だけの merge では P2 を開始しない。
+
+P1 提出時の実測は [runtime evidence](../power-station-runtime-evidence.md) と新規 fixture を正本とする。
+両 session で施設内の非録画到着、録画中 LOOK、明示 OFF、公園帰着を確認し、先行50送信と全録画窓を維持した。
+Guided map route は draft、既存 compass / companion exits は Guided でも直接送信する契約を台帳に記録した。
+この既存動作を P1 で変更せず、Guided の往路は map draft と明示 Send で実測した。
+施設と入口の SceneActions は空で、object verb や guard の拡張は不要だった。
+最後の独立採択 / merge checkbox は実装セッションでは完了にしない。
 
 ### P2: Approve Power Station story and navigation copy
 
