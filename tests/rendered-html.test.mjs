@@ -1103,6 +1103,138 @@ test("keeps City Hall history scope with its original observation across locale 
   assert.equal(reconcilePresentationHistory(combined, restored).history.length, 1, "RESTORE drops the previous display timeline");
 });
 
+test("retains two fresh Power Station continuations after the accepted fifty submissions", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
+  const previous = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
+  const normalize = (commands) => commands.map((command, index) => index === 6 ? "<observed decoder answer>" : command.toUpperCase());
+  const route = ["SE", "E", "S", "S", "SE", "SE", "S", "RECORD", "LOOK", "RECORD OFF", "N", "NW", "NW", "N", "N", "W", "NW"];
+  const aliases = { east: "E", south: "S", north: "N", west: "W" };
+  const canonical = (command) => aliases[command.toLowerCase()] ?? command.toUpperCase();
+  assert.equal(fixture.canonicalSha256, "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+  assert.match(fixture.provenance, /Runtime-observed with Playwright in Chromium/);
+  assert.deepEqual(fixture.powerStationPath, route);
+  assert.deepEqual(fixture.powerStationLocations, ["Elm & Kennedy", "Elm & River", "Southway & River", "Bend", "Wicker & River", "Power Station Entrance", "Power Station", "Power Station", "Power Station", "Power Station", "Power Station Entrance", "Wicker & River", "Bend", "Southway & River", "Elm & River", "Elm & Kennedy", "Kennedy Park"]);
+  assert.equal(fixture.sessions.length, 2);
+  for (const session of fixture.sessions) {
+    assert.equal(session.harnessFailure, undefined);
+    assert.equal(session.routeFailure, undefined);
+    assert.equal(session.submittedCommands.length, 67);
+    assert.deepEqual(normalize(session.submittedCommands.slice(0, 50)), normalize(previous.sessions[0].submittedCommands));
+    assert.deepEqual(session.submittedCommands.slice(50).map(canonical), route);
+    assert.deepEqual(session.bridgeCommands, [" ", ...session.submittedCommands]);
+    assert.equal(session.startup.before.presentation.activeInput.kind, "char");
+    assert.equal(session.startup.after.activeInput.kind, "line");
+    assert.equal(session.startup.nextInputId, session.submissions[0].submittedInputId);
+    assert.equal(session.submissions.length, 67);
+    for (const [index, submission] of session.submissions.entries()) {
+      assert.equal(submission.command, session.submittedCommands[index]);
+      assert.equal(submission.inputKind, "line");
+      assert.equal(submission.echo.id, submission.submittedInputId);
+      assert.notEqual(submission.nextInputId, submission.submittedInputId);
+      if (index) assert.equal(submission.submittedInputId, session.submissions[index - 1].nextInputId);
+      if (submission.role === "security-answer") {
+        assert.ok(submission.echo.runs.some((run) => run.classes.includes("Style_input") && run.text === submission.command));
+        assert.ok(submission.echo.text.endsWith(`>${submission.command}`));
+      } else assert.equal(submission.echo.text.toUpperCase(), `>${submission.command.toUpperCase()}`);
+    }
+    assert.equal(session.observations.length, 66);
+    for (const [index, turn] of session.observations.entries()) {
+      const p = turn.presentation;
+      assert.equal(p.version, 3);
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.equal(p.terminalLine, p.lines.length - 1);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.lines[p.activeInput.line].id, turn.nextInputId);
+      if (index) assert.equal(turn.submittedInputId, session.observations[index - 1].nextInputId);
+      assert.equal(reconcilePresentationHistory([], p).representable, true, `${index}: ${turn.command}`);
+      assert.doesNotMatch(p.lines.map(({ text }) => text).join("\n"), /Record buffer full|Auto-deactivation|not currently active/i);
+    }
+    for (const index of [13, 23, 33, 43]) {
+      assert.equal(session.observations[index].status.mode, "Simulation Mode (recording)");
+      assert.equal(session.observations[index].presentation.lines[1].text, previous.sessions[0].observations[index].presentation.lines[1].text);
+    }
+    assert.deepEqual(session.observations.slice(0, 49).map(({ status }) => [status.location, status.mode]), previous.sessions[0].observations.map(({ status }) => [status.location, status.mode]), "all earlier recording windows and room transitions remain unchanged");
+    const power = session.observations.slice(49);
+    assert.deepEqual(power.map(({ command }) => canonical(command)), route);
+    assert.deepEqual(power.map(({ status }) => status.location), fixture.powerStationLocations);
+    assert.notEqual(power[5].status.location, power[6].status.location, "entrance and facility are distinct");
+    assert.equal(power[5].status.location, "Power Station Entrance");
+    assert.equal(power[6].status.location, "Power Station");
+    assert.deepEqual(power.map(({ status }) => status.mode), route.map((_, index) => [7, 8].includes(index) ? "Simulation Mode (recording)" : "Simulation Mode"));
+    assert.equal(power[7].presentation.lines[1].text, "Record feature activated.");
+    assert.equal(power[8].presentation.lines[1].text, "Power Station");
+    const facilityText = "This is the central power station for all of Rockvil. Power is generated here by fusion reactors, and is received here from distant generators via a huge array of microwave receivers. The main entrance is on the north side of the plant.";
+    assert.deepEqual(power[6].presentation.lines.slice(1, -1).map(({ text }) => text), ["Power Station", facilityText, " "]);
+    assert.deepEqual(power[8].presentation.lines.slice(1, -1).map(({ text }) => text), ["Power Station", facilityText, " "]);
+    assert.deepEqual(power[5].presentation.lines.slice(1, -1).map(({ text }) => text), ["Power Station Entrance", "You are on River Street at the entrance of a utility station which lies to the south. The street continues southeast towards the River Street Bridge. Northeast of here is the entrance to a huge factory complex, and tenements line the street to the west and southwest.", " "]);
+    assert.equal(observedStoryLeafTranslation(facilityText, "ja", power[8].command), undefined, "P1 approves no new story translation");
+    assert.equal(power[9].presentation.lines[1].text, "Record feature deactivated.");
+    assert.equal(power.at(-1).status.location, "Kennedy Park");
+    for (const turn of power) {
+      const rawLeaves = turn.presentation.lines.slice(1, -1);
+      const english = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation).history, "en")[0].blocks;
+      assert.equal(english.slice(1).map(({ text }) => text).join("\n"), rawLeaves.map(({ text }) => text.trim()).filter(Boolean).join("\n"), "current English fallback retains every nonblank raw leaf");
+      for (const line of turn.presentation.lines) assert.equal(line.runs.map(({ text }) => text).join(""), line.text);
+      // Controlled shape probe only: the new route is NOT yet in the catalog.
+      // Add an existing approved anchor to exercise ordinary per-line projection
+      // while keeping every captured line unchanged. This is not runtime evidence.
+      const probe = structuredClone(turn.presentation);
+      probe.lines.splice(-1, 0, { ...structuredClone(probe.lines[1]), id: "controlled-approved-anchor", text: "Kennedy Park", runs: [{ text: "Kennedy Park", classes: ["Style_normal"], tag: "span" }] });
+      probe.terminalLine += 1;
+      probe.activeInput.line += 1;
+      const blocks = observedOrdinaryTurnPresentation(probe, "ja");
+      assert.ok(blocks, "existing ordinary path can carry the captured structure after copy approval");
+      const preserved = blocks.slice(1, -1);
+      assert.deepEqual(preserved.map((block) => block.canonicalText ?? block.text), rawLeaves.map(({ text }) => text.trim()));
+      assert.deepEqual(preserved.map(({ sourceLines }) => sourceLines), rawLeaves.map((_, index) => [index + 1]));
+      assert.deepEqual(preserved.filter(({ kind }) => kind === "spacer").map(({ sourceLines }) => sourceLines), rawLeaves.flatMap(({ text }, index) => text.trim() ? [] : [[index + 1]]));
+      assert.equal(rawLeaves[0].runs[0].classes.includes("Style_normal"), true, "raw location lines carry normal style; P2 must explicitly assign new heading kinds");
+    }
+    assert.equal(session.warnings.length, 1);
+    assert.equal(session.warnings[0].turnId, session.observations[32].turnId);
+    assert.deepEqual(session.warnings[0].texts, ["WARNING: Record buffer is now half-full."]);
+    assert.deepEqual(session.surfaceAudit.map(({ phase }) => phase), ["before-power-station", "outbound-0", "outbound-1", "outbound-2", "outbound-3", "outbound-4", "entrance", "facility-off", "facility-recording", "recorded-look", "explicit-off", "returned-park"]);
+    for (const audit of session.surfaceAudit) {
+      assert.equal(audit.inputBefore, audit.inputAfter);
+      assert.equal(audit.samples.length, 6);
+      assert.deepEqual(audit.samples.map(({ locale, mode }) => [locale, mode]), ["English", "日本語"].flatMap((locale) => ["classic", "guided", "actions"].map((mode) => [locale, mode])));
+      for (const sample of audit.samples) {
+        assert.equal(sample.inputAfter, audit.inputBefore);
+        if (!["before-power-station", "returned-park"].includes(audit.phase)) {
+          const location = session.observations[audit.observationIndex].status.location;
+          assert.ok(sample.location.flatMap(({ leaves }) => leaves).some(({ text, lang }) => text === location && lang === "en"));
+        }
+        if (sample.mode === "classic") {
+          assert.equal(sample.mapButtonVisible, false);
+          assert.equal(sample.compass.length, 0);
+          assert.equal(sample.sceneActions.length, 0);
+        } else {
+          assert.match(sample.map, /Power Station/);
+          assert.ok(sample.quickActions.length);
+          assert.ok(sample.mapSurface.flatMap(({ leaves }) => leaves).some(({ text, lang }) => text === "Power Station" && lang === "en"));
+          const facility = ["facility-off", "facility-recording", "recorded-look", "explicit-off"].includes(audit.phase);
+          const powerButton = sample.mapSurface.flatMap(({ buttons }) => buttons).find(({ ariaLabel }) => ariaLabel?.startsWith("Power Station, fieldwork destination"));
+          assert.equal(powerButton.ariaLabel, `Power Station, fieldwork destination${facility ? ", current location" : ""}`);
+          if (["entrance", "facility-off", "facility-recording", "recorded-look", "explicit-off"].includes(audit.phase)) {
+            assert.equal(sample.sceneActions.filter(({ aria }) => aria).length, 0, "no new object verb is needed at entrance or facility");
+            assert.equal(sample.context.filter(({ aria }) => aria.includes('region "')).length, 0);
+          }
+        }
+      }
+    }
+  }
+  const optional = fixture.sessions.flatMap((session) => session.observations.slice(49).flatMap((turn, index) => {
+    const stableCount = [0, 1, 2, 3, 4, 5, 6, 8].includes(index) ? 2 : 1;
+    return turn.presentation.lines.slice(1, -1).map(({ text }) => text).filter((text) => text.trim()).slice(stableCount)
+      .map((text) => [session.id, index + 49, text]);
+  }));
+  assert.deepEqual(optional, [
+    [1, 52, "A car alarm shrieks momentarily, then trails off into merciful silence."],
+    [2, 52, "A stranger bumps against you, mumbles an apology, and is swallowed by the crowds."],
+    [2, 64, "The ground shakes as a huge truck rumbles down the street."],
+  ], "preserve every observed optional interrupt at its original session and turn");
+});
+
 test("retains two fresh City Hall continuations with current input identities and safe projection", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
   const previous = JSON.parse(await readFile(new URL("./fixtures/parchment-restaurant-recording-a-observed.json", import.meta.url), "utf8"));

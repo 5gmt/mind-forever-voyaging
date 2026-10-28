@@ -85,13 +85,15 @@ G1 #87 / PR #91、G2 #88 / PR #92、G3 #89 / PR #93 は独立レビューと各 
 
 次の到達点は、同じ初回2041年 session の四課題に続く **発電所の見学録画と Kennedy Park への帰着** とする。
 [発電所計画](./docs/plans/2041-power-station-fieldwork.md)に候補経路、録画容量の実測 gate、copy の範囲と P1–P3 をまとめる。
-計画 PR の独立 Sol review / merge が P1 の開始 gate。
-選定は source と current code に基づくもので、新経路の成功や copy 承認を先取りしない。
+[計画 PR #97](https://github.com/5gmt/mind-forever-voyaging/pull/97) は独立 Sol review 後に merge `901945a3aee98cfec3a4bea816ebdf11760ba247` で採択済み。
+P1 [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94) は2 fresh canonical sessionsで先行50送信を保持した計67送信を完走し、[実測証拠と操作面の台帳](./docs/power-station-runtime-evidence.md)を提出した。
+施設内での録画中 LOOK、明示 OFF、公園の通常入力を観測したが、独立した Chat モード Sol による成功経路と操作契約の採択 / merge は未了である。
+P2 / P3 は引き続き blocked とし、player-facing の日本語 coverage と正式な課題達成は追加済みと扱わない。
 
 ## 基本的な作業順
 
-1. 発電所の計画 PR を独立した Chat モードの Sol がレビューし、current-head CI と merge gate を確認して merge する。
-2. P1 [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94): 先行50送信を保持し、発電所の往復を2 fresh sessions以上で実測する。Sol が成功経路と操作契約を採択して merge する。失敗 evidence-only の merge では P2 を開始しない。
+1. 発電所の計画 PR #97 は独立した Chat モード Sol のレビューと merge を完了。P1 の開始 gate は解除済み。
+2. P1 [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94): 先行50送信を保持した67送信を2 fresh sessionsで実測済み。Sol による成功経路と操作契約の独立採択 / merge を待つ。失敗 evidence-only の merge では P2 を開始しない。
 3. P2 [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95): P1 の原文と surface 台帳から、本文、地名、地図と必要な操作の copy を作り、Sol の独立承認と merge を受ける。
 4. P3 [#96](https://github.com/5gmt/mind-forever-voyaging/issues/96): 承認 copy を統合し、先行四課題を含む6経路、入口だけの録画と施設内非録画の負例、history / recovery / accessibility の回帰を検証する。実装者が status / plan / acceptance を集約し、Sol 通常レビュー後に Work が全体受入と merge、#29 報告、Issue close を行う。
 
