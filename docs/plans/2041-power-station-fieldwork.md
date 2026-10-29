@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時の room scope、room / map lookup と録画操作を拡張する。先行四課題を保持した実測で経路を採択してから、本文と必要な UI の copy を承認し、統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #97 は独立 Sol review 後に merge `901945a3aee98cfec3a4bea816ebdf11760ba247` で採択済み。P1 #94 は2 fresh sessionsで67送信の成功を実測し、[実測証拠](../power-station-runtime-evidence.md)を提出。成功経路と操作契約の独立 Sol 採択 / merge は未了で、P2 / P3 は引き続き blocked。新しい翻訳は未承認。
+**Status:** 計画 PR #97 と P1 / PR #98 は独立 Sol review 後に採択済み。P1 merge は `df1b5c5295f67cae556d1ffd85b589b917a4f657`。[P2 copy packet](../power-station-copy-packet.md)を承認候補として提出し、独立 copy approval / merge を待つ。新しい日本語は production 未実装で、P3 は引き続き blocked。
 **Baseline:** City Hall の PR #93 merge `967036d818583806e88d4d77f541e41af56b3d9f`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。今回の milestone 選定とタスク化は2026-10-26 JST の依頼に基づく。
 
@@ -65,7 +65,8 @@
 | 復路（非録画） | `N` → `NW` → `NW` → `N` → `N` → `W` → `NW`。同じ地点を逆順に通り、Kennedy Park の通常 line input で終える。 |
 
 計画時の追加は17送信、合計67 line commandsである。
-現行 `walkingRoute` と `WORLD_ROOMS` の順序から得た列で、runtime での採択済み経路ではない。
+計画時には `walkingRoute` と `WORLD_ROOMS` の順序から得た列だった。
+その後、P1 の2 fresh sessionsと [PR #98 の独立採択](https://github.com/5gmt/mind-forever-voyaging/pull/98#pullrequestreview-5677684770)を経て、先行50送信を保持した上記67送信と実測 alias の経路を採択した。
 Assisted controls が送る `east` / `south` / `north` / `west` などの alias と実際の大文字小文字は P1 で採取し、copy と catalog の command qualifier に渡す。
 地図操作や locale 切替は parser へ送信しない。
 
@@ -136,26 +137,30 @@ City Hall の人物 guard を発電所のために変更せず、catalog 拡張�
 - [x] EN / JA と3 interaction modesで room / map / route / compass / recording / LOOK、現地の既存 SceneActions を監査する。Visible / accessible name、`lang`、送信元、draft / 直接送信、guard、不足を台帳化する。未実装の日本語を P1 の完了条件にしない。
 - [x] `tests/rendered-html.test.mjs` に fixture の67送信、先行50件の順序、施設内と入口の区別、current input chain、警告、既存 ordinary projection での構造保持を固定する regression を追加し実行する。Fixture 内に欠落があれば翻訳に進まない。
 - [x] Applicable checks、checksum、diff check を実行する。Evidence と status / plan を揃え、source / runtime / UI の区別と未確認範囲を提出する。
-- [ ] Sol が連続経路と操作契約を採択し merge。失敗記録だけの merge では P2 を開始しない。
+- [x] Sol が連続経路と操作契約を採択し merge。失敗記録だけの merge では P2 を開始しない。
 
 P1 提出時の実測は [runtime evidence](../power-station-runtime-evidence.md) と新規 fixture を正本とする。
 両 session で施設内の非録画到着、録画中 LOOK、明示 OFF、公園帰着を確認し、先行50送信と全録画窓を維持した。
 Guided map route は draft、既存 compass / companion exits は Guided でも直接送信する契約を台帳に記録した。
 この既存動作を P1 で変更せず、Guided の往路は map draft と明示 Send で実測した。
 施設と入口の SceneActions は空で、object verb や guard の拡張は不要だった。
-最後の独立採択 / merge checkbox は実装セッションでは完了にしない。
+P1 の独立採択は [PR #98 review](https://github.com/5gmt/mind-forever-voyaging/pull/98#pullrequestreview-5677684770)と merge `df1b5c5295f67cae556d1ffd85b589b917a4f657` を根拠に完了とし、[P2 開始通知](https://github.com/5gmt/mind-forever-voyaging/issues/95#issuecomment-6460562489)で gate の解除を確認した。
 
 ### P2: Approve Power Station story and navigation copy
 
 **Files:** 新規 `docs/power-station-copy-packet.md`。更新 本書、`PROJECT_STATUS.md`。
 **Interfaces:** P1 の fixture / aliases / surface 台帳を消費し、exact English leaf と観測 command / room → Japanese、再利用 leaf、room / map / assignment identity、visible / accessible name、動的値、適用条件、canonical command を P3 に渡す。
 
-- [ ] 採択した往復の新規 leaf と再利用 leaf を一覧にし、原文の heading、段落、空行、動的な時刻や city noise を区別する。
-- [ ] 発電方式と地理関係を原文どおり訳し、2041年に観測していない後続年の石炭発電描写を混ぜない。Source-only prose は承認しない。
-- [ ] 7地点の room identity、map `power`、既承認課題 index 2、route / exits / recording / LOOK を別行で整理する。既存日本語を再利用し、未使用の SceneActions と unknown output の英語境界を明記する。
-- [ ] 観測した command alias、初回2041年と観測時 room、visible / accessible name、`lang` の対応を承認候補にする。推定5/9を正式評価と書かない。
-- [ ] `git diff --check` と fixture の exact text / command / relative link の照合を行う。Local 未実施の E2E を CI 実行と混同せず、PR の current-head checks を提示する。
+- [x] 採択した往復の新規 leaf と再利用 leaf を一覧にし、原文の heading、段落、空行、動的な時刻や city noise を区別する。
+- [x] 発電方式と地理関係を原文どおり訳し、2041年に観測していない後続年の石炭発電描写を混ぜない。Source-only prose は承認しない。
+- [x] 7地点の room identity、map `power`、既承認課題 index 2、route / exits / recording / LOOK を別行で整理する。既存日本語を再利用し、未使用の SceneActions と unknown output の英語境界を明記する。
+- [x] 観測した command alias、初回2041年と観測時 room、visible / accessible name、`lang` の対応を承認候補にする。推定5/9を正式評価と書かない。
+- [x] `git diff --check` と fixture の exact text / command / relative link の照合を行う。Local 未実施の E2E を CI 実行と混同せず、PR の current-head checks を提示する。
 - [ ] Sol の copy approval と merge 後に P3 の開始 gate を解除する。
+
+P2 の提出内容は [copy packet](../power-station-copy-packet.md)を正本とする。
+新規14 leaf、既承認3 leaf の再利用、7つの room と map / assignment / object の別 identity、共通 UI と actual aliases、観測時 scope と English fallback を整理した。
+Production と runtime fixture は変更せず、独立 copy approval と merge の checkbox は未了のままとする。
 
 ### P3: Integrate and accept the complete Power Station fieldwork route
 
