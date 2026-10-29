@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と SceneActions を拡張する。先行五課題を保持した runtime capture で経路・人物の出現・録画容量を確認し、copy approval 後に限定した会話支援を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** [計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) と C1 #102 / C2 #103 / C3 #104 を提出。計画 PR の独立 Sol review / merge 待ち。教会の成功経路、runtime fixture、copy はまだ採択していない。
+**Status:** 計画 PR #101 は独立 Sol review 後、merge `ae73f1eeb14b8c7f88977876c8db569e8d20b71f` で採択済み。C1 #102 は2 fresh sessionsで各81送信を完走し、[実測証拠](../church-runtime-evidence.md)と132 UI samplesを提出する。成功経路の独立採択と merge は未了で、C2 #103 / C3 #104 は blocked。Copy approval と日本語統合は未実施。
 **Baseline:** Power Station の [PR #100](https://github.com/5gmt/mind-forever-voyaging/pull/100) merge `b1ce50995f4c44faa0dcd241177e5f0386a42868`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-10-29 JST の次期 milestone 選定・タスク作成依頼に対する提案。
 
@@ -136,13 +136,14 @@ First Methodist や後続年の同文、未承認 leaf は English fallback と�
 **Files:** 新規 `scripts/capture-church-runtime.mjs`、`tests/fixtures/parchment-church-runtime-observed.json`、`docs/church-runtime-evidence.md`。更新 `tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。
 **Interfaces:** `scripts/capture-power-station-runtime.mjs` の67送信と bridge-v3 observation 形式を参照する。成果物は `sessions`、actual command、送信元 input ID、新 echo、次 input ID、status、行構造、stable / dynamic / optional 分類、実 UI alias、surface 台帳、採択または停止判断。Production code、既存 capture / fixture を変更しない。
 
-- [ ] 最新 base と規則を確認し、候補81送信の capture を用意する。失敗途中も保存する。
-- [ ] 2 fresh sessions以上で全経路を採取する。Decoder answer と起動 character input を分離し、反復する移動を current input identity で待つ。
-- [ ] 時刻が出る status、在室、録画中会話、退場、明示 OFF、LOOK、公園帰着、容量警告を照合する。失敗・optional output・未観測を区別し、source の原文で runtime fixture を補わない。
-- [ ] EN / JA と3 interaction modesで route / compass / exits / recording / LOOK / main・companion SceneActions を監査する。Visible / accessible name、`lang`、送信元、draft / 直接送信、人物の既存 guard と不足を台帳に残す。まだ実装していない日本語や guard の不足は C3 への明示 handoff とし、C1 の production 修正にしない。
-- [ ] `tests/rendered-html.test.mjs` に fixture の全81送信候補と先行67件の順序、input chain、在室・会話・退場・録画窓、既存 ordinary projection の構造保持を固定する regression を追加し実行する。採択経路が変わる場合は先に設計判断を記録する。
-- [ ] Applicable checks、checksum、diff check を行い、実測・source・UI の区別、未確認範囲、plan / status をそろえて PR を提出する。
+- [x] 最新 base と規則を確認し、候補81送信の capture を用意する。失敗途中も保存する。
+- [x] 2 fresh sessions以上で全経路を採取する。Decoder answer と起動 character input を分離し、反復する移動を current input identity で待つ。
+- [x] 時刻が出る status、在室、録画中会話、退場、明示 OFF、LOOK、公園帰着、容量警告を照合する。失敗・optional output・未観測を区別し、source の原文で runtime fixture を補わない。
+- [x] EN / JA と3 interaction modesで route / compass / exits / recording / LOOK / main・companion SceneActions を監査する。Visible / accessible name、`lang`、送信元、draft / 直接送信、人物の既存 guard と不足を台帳に残す。まだ実装していない日本語や guard の不足は C3 への明示 handoff とし、C1 の production 修正にしない。
+- [x] `tests/rendered-html.test.mjs` に fixture の全81送信候補と先行67件の順序、input chain、在室・会話・退場・録画窓、既存 ordinary projection の構造保持を固定する regression を追加し実行する。採択経路が変わる場合は先に設計判断を記録する。
+- [x] Applicable checks、checksum、diff check を行い、実測・source・UI の区別、未確認範囲、plan / status をそろえて PR を提出する。
 - [ ] Sol が成功経路と操作契約を独立採択し merge。失敗 evidence-only の merge では C2 を開始しない。
+
 
 ### C2: Approve church story, navigation, and Talk copy
 

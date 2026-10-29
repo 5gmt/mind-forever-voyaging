@@ -88,13 +88,15 @@ P1 #94 / PR #98、P2 #95 / PR #99、P3 #96 / PR #100 は独立レビューと各
 
 次の到達点として、同じ初回2041年 session の五課題に続く **St. Michael’s の教会関係者との会話録画と Kennedy Park への帰着** を提案する。
 [教会計画](./docs/plans/2041-church-fieldwork.md)に候補経路、人物出現と録画容量の実測 gate、copy / actor guard の範囲、C1–C3 をまとめる。
-[計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) の独立 Sol review / merge 待ちであり、教会経路の実測採択・copy approval・日本語実装はまだ行っていない。
-現行の地図と source から候補81送信を設計した段階で、成功を確認した経路とは区別する。
+[計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) は独立 Sol review 後、merge `ae73f1eeb14b8c7f88977876c8db569e8d20b71f` で採択済み。
+C1 [#102](https://github.com/5gmt/mind-forever-voyaging/issues/102) の提出 branch では先行67送信を保持した各81送信を2 fresh sessionsで完走し、在室・録画中会話と退場・明示OFF・LOOK・公園帰着、132 UI samplesを[実測証拠](./docs/church-runtime-evidence.md)に保存した。
+Production code と日本語 coverage は変更していない。
+教会の成功経路の独立採択と merge、copy approval、日本語統合は未了で、C2 / C3 の開始条件はまだ解除しない。
 
 ## 基本的な作業順
 
-1. 教会の [計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) を、独立した Chat モード Sol がレビューして merge する。これが C1 の開始 gate。
-2. C1 [#102](https://github.com/5gmt/mind-forever-voyaging/issues/102): 先行67送信を保持した教会候補経路を2 fresh sessions以上で実測し、人物出現・会話・退場・録画容量・実 UI の操作契約を確定する。Sol の成功経路採択と merge 後に C2 を開始する。
+1. 教会の [計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) は独立した Chat モード Sol のレビューと merge を完了。C1 の開始 gate は解除済み。
+2. C1 [#102](https://github.com/5gmt/mind-forever-voyaging/issues/102): 先行67送信を保持した81送信を2 fresh sessionsで実測済み。Fixture / 回帰 / surface台帳と C3 の限定人物guardへの不足を提出する。独立 Chat モード Sol の成功経路採択と merge 後に C2 を開始する。
 3. C2 [#103](https://github.com/5gmt/mind-forever-voyaging/issues/103): 実測原文と surface 台帳に基づく本文・地名・人物・Talk の copy packet を作成する。Sol の独立 copy approval と merge 後に C3 を開始する。
 4. C3 [#104](https://github.com/5gmt/mind-forever-voyaging/issues/104): 承認 copy と限定 actor guard、6経路・非録画負例・境界回帰を統合し、実装者が status / plan / acceptance を同じ PR に集約する。Sol 通常レビュー後、Work が最終 head の全体受入と merge、#29 報告、Issue close を行う。
 
@@ -114,6 +116,8 @@ Security wrong-answer / failure、PEOF の別 timing、対象経路外の timed 
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
 - CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。現在の default branch は39 unit / 52 browser testsを持ち、browser job 上限は35分である。#82 の merge により、default branch は Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を14日間保持する。#82 reviewed-head run の実期限もレビュー記録で確認済み。
 - PR #100 の受入 CI は52 browser testsを retry / skip なしで完走し、step 22分50秒 / job 23分35秒だった。教会 C3 は追加後の全体実行時間も記録する。計画時点で timeout、並列度、artifact retention は変更しない。
+
+C1 / #102 の提出 branch は40 unit / 52 browser testsを持つ。教会の81送信 capture は既存 browser suite と別に実測し、[実測証拠](./docs/church-runtime-evidence.md)へ記録する。
 
 ## 更新の契機
 
