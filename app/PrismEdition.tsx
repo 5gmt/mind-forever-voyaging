@@ -744,10 +744,10 @@ export default function PrismEdition() {
           setInitialSimulationState(nextInitialSimulationState);
         }
       }
-      const cityHallScope = !qaEnabled && nextMode === "Simulation Mode" && nextYear === 2041
+      const initial2041Scope = !qaEnabled && nextMode === "Simulation Mode" && nextYear === 2041
         && initialSimulationRef.current === "active";
       let officialPresence = cityHallOfficialRef.current;
-      if (!cityHallScope || nextRoom?.id !== "CITY-HALL" || event.data.inputKind !== "line") {
+      if (!initial2041Scope || nextRoom?.id !== "CITY-HALL" || event.data.inputKind !== "line") {
         if (officialPresence !== "departed") officialPresence = "unknown";
       } else if (event.data.acceptsInput && officialPresence !== "departed") {
         const official = OBJECTS_BY_ID.get("GOVERNMENT-OFFICIAL")!;
@@ -791,7 +791,8 @@ export default function PrismEdition() {
         setLiveCanonicalPresentation(nextPresentation);
         setPresentationState((previous) => {
           const reconciliation = reconcilePresentationHistory(previous.history, nextPresentation, {
-            cityHall2041: cityHallScope ? nextRoom?.id : undefined,
+            cityHall2041: initial2041Scope ? nextRoom?.id : undefined,
+            powerStation2041: initial2041Scope ? nextRoom?.id : undefined,
           });
           return { history: reconciliation.history, recovering: !reconciliation.representable };
         });

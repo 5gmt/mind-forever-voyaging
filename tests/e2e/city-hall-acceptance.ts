@@ -1,5 +1,6 @@
 import { expect, type Locator, type Page, type TestInfo } from "@playwright/test";
 import { readFile } from "node:fs/promises";
+import { attachEvidence } from "./evidence-attachments";
 import { acceptRestaurantMilestone } from "./restaurant-acceptance";
 import { clickRouteStep } from "./navigation-acceptance";
 import { observeReadingLifecycle, readingTrace } from "./reading-observations";
@@ -121,7 +122,9 @@ export async function probeCityHallBoundary(page: Page, testInfo: TestInfo, scen
     await expect(talk()).toHaveCount(0);
     observed.push("QA never offers the canonical-only official action");
   }
-  await testInfo.attach(`city-hall-controlled-${scenario}`, { body: JSON.stringify({ provenance: "controlled wrapper bridge reports, not VM mutations, runtime route or actual saved-game RESTORE", observed }), contentType: "application/json" });
+  await attachEvidence(testInfo, `city-hall-controlled-${scenario}`, JSON.stringify({ provenance: "controlled wrapper bridge reports, not VM mutations, runtime route or actual saved-game RESTORE", observed }));
+  await attachEvidence(testInfo, `city-hall-controlled-${scenario}-accessibility`, await page.locator("body").ariaSnapshot(), "text/plain");
+  await attachEvidence(testInfo, `city-hall-controlled-${scenario}`, await page.screenshot(), "image/png");
 }
 
 const PLAZA_EN = "The name of this plaza tells it all. The well-maintained portico of City Hall stretches along the west side of the plaza, and Dunbar's lies on the southeast corner. Park Street leads north and south. Main Street and Centre Street both begin here, leading eastward and northeastward, respectively. The street is bustling with lunchtime crowds.";
@@ -376,4 +379,5 @@ export async function acceptCityHallMilestone(page: Page, controls: "classic" | 
   for (const raw of trace.inputs) expect(JSON.stringify(raw.presentation)).not.toMatch(/Record buffer full|Auto-deactivation|WARNING: Deactivating record feature/i);
   await attach("city-hall-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release 79; live existing bridge observations and parent-to-player requests, no VM state edits", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), recordConversation, trace, cityHallTurns: turns, beforeTalk, afterTalk: chatTurn.status, elapsedMinutes, timeLimitation: elapsedMinutes === null ? "narrow canonical status emits no clock/date; no inferred time" : null, optionalFallback, finalInputId: turns.at(-1)!.nextInputId, checklist: controls === "classic" ? "not displayed in Classic" : recordConversation ? "4/9 auxiliary inference, not original assignment evaluation" : "3/9; government assignment not inferred" }));
   await attach("city-hall-return", await page.screenshot(), "image/png");
+  return { frame, presentation, canonical, input, status, blocks, send, locale, attach, rawTrace, snapshot: () => canonicalSnapshot(page) };
 }

@@ -7,6 +7,7 @@ export type PresentationHistoryEntry = {
   // Resolved room captured by the host from raw mode/year/session observations.
   // It belongs to this history entry, not the currently selected locale.
   cityHall2041?: string;
+  powerStation2041?: string;
 };
 
 export type PresentationHistory = PresentationHistoryEntry[];
@@ -41,7 +42,7 @@ const isSafeObservation = (presentation: BridgePresentation | null): presentatio
 export const reconcilePresentationHistory = (
   previous: PresentationHistory,
   presentation: BridgePresentation | null,
-  scope: { cityHall2041?: string } = {},
+  scope: { cityHall2041?: string; powerStation2041?: string } = {},
 ): PresentationReconciliation => {
   if (!isSafeObservation(presentation)) return { history: previous, representable: false };
   const localized = storyPresentation(presentation, "ja");
@@ -49,7 +50,11 @@ export const reconcilePresentationHistory = (
   if (!localized && !fallback) return { history: previous, representable: false };
 
   const id = observationId(presentation);
-  const existingIndex = previous.findIndex((entry) => entry.id === id);
+  const pristineOpening = presentation.activeInput?.kind === "char" && Boolean(localized);
+  // A restarted canonical window can reuse IDs after a line-input timeline.
+  // Repeated startup reports still enrich one opening without losing PART I.
+  const restartedOpening = pristineOpening && previous.some((entry) => entry.presentation.activeInput?.kind === "line");
+  const existingIndex = restartedOpening ? -1 : previous.findIndex((entry) => entry.id === id);
   if (existingIndex >= 0) {
     if (observationRichness(presentation) <= observationRichness(previous[existingIndex].presentation)) return { history: previous, representable: true };
     return {
@@ -57,14 +62,13 @@ export const reconcilePresentationHistory = (
       representable: true,
     };
   }
-  const pristineOpening = presentation.activeInput?.kind === "char" && Boolean(localized);
   // RESTORE hands timeline selection back to canonical Parchment. Its result
   // cannot safely inherit display entries from the pre-restore timeline, so
   // discard that disposable cache and rebuild from canonical observations.
   const restoreBoundary = fallback?.[0]?.kind === "command"
     && /^RESTORE$/i.test(fallback[0].canonicalText ?? fallback[0].text);
   return {
-    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}) }],
+    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}), ...(scope.powerStation2041 ? { powerStation2041: scope.powerStation2041 } : {}) }],
     representable: true,
   };
 };
@@ -105,6 +109,23 @@ const CITY_HALL_COPY_ROOMS: Record<string, string> = {
   "part1.simulation.city-hall.return": "MAIN-AND-KENNEDY",
 };
 
+const POWER_STATION_COPY_ROOMS: Record<string, string> = {
+  "part1.simulation.power-station.elm-kennedy.heading": "ELM-AND-KENNEDY",
+  "part1.simulation.power-station.elm-kennedy.description": "ELM-AND-KENNEDY",
+  "part1.simulation.power-station.elm-river.heading": "ELM-AND-RIVER",
+  "part1.simulation.power-station.elm-river.description": "ELM-AND-RIVER",
+  "part1.simulation.power-station.southway-river.heading": "SOUTHWAY-AND-RIVER",
+  "part1.simulation.power-station.southway-river.description": "SOUTHWAY-AND-RIVER",
+  "part1.simulation.power-station.bend.heading": "BEND",
+  "part1.simulation.power-station.bend.description": "BEND",
+  "part1.simulation.power-station.wicker-river.heading": "WICKER-AND-RIVER",
+  "part1.simulation.power-station.wicker-river.description": "WICKER-AND-RIVER",
+  "part1.simulation.power-station.entrance.heading": "POWER-STATION-ENTRANCE",
+  "part1.simulation.power-station.entrance.description": "POWER-STATION-ENTRANCE",
+  "part1.simulation.power-station.station.heading": "POWER-STATION",
+  "part1.simulation.power-station.station.description": "POWER-STATION",
+};
+
 export const projectPresentationHistory = (
   history: PresentationHistory,
   locale: Locale,
@@ -115,5 +136,8 @@ export const projectPresentationHistory = (
     ?? []).map((block) => block.contentId?.startsWith("part1.simulation.city-hall.")
       && entry.cityHall2041 !== CITY_HALL_COPY_ROOMS[block.contentId]
       ? { ...block, text: block.canonicalText ?? block.text }
-      : block),
+      : block.contentId?.startsWith("part1.simulation.power-station.")
+        && entry.powerStation2041 !== POWER_STATION_COPY_ROOMS[block.contentId]
+        ? { ...block, text: block.canonicalText ?? block.text }
+        : block),
 })).filter((entry) => entry.blocks.length > 0);
