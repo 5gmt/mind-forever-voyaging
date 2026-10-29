@@ -596,6 +596,13 @@ export const localizeOutletLabel = (locale: Locale, code: string, canonicalLabel
 
 const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
+    "Elm & Kennedy": "エルム通りとケネディ通り",
+    "Elm & River": "エルム通りとリバー通り",
+    "Southway & River": "サウスウェイ通りとリバー通り",
+    "Bend": "曲がり角",
+    "Wicker & River": "ウィッカー通りとリバー通り",
+    "Power Station Entrance": "発電所入口",
+    "Power Station": "発電所",
     "Elm & University": "エルム通りとユニバーシティ大通り",
     "Elm Underpass": "エルム通りの高架下",
     "Roy's Pagoda": "ロイズ・パゴダ",
@@ -621,6 +628,7 @@ const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, stri
     newspaper: "新聞",
     meal: "レストラン",
     official: "市役所",
+    power: "発電所",
     infotech: "インフォテック・ビル",
     kennedy: "ケネディ公園",
     court: "裁判所",
@@ -693,6 +701,20 @@ export type StoryContentId =
   | "part1.simulation.city-hall.presence"
   | "part1.simulation.city-hall.conversation"
   | "part1.simulation.city-hall.return"
+  | "part1.simulation.power-station.elm-kennedy.heading"
+  | "part1.simulation.power-station.elm-kennedy.description"
+  | "part1.simulation.power-station.elm-river.heading"
+  | "part1.simulation.power-station.elm-river.description"
+  | "part1.simulation.power-station.southway-river.heading"
+  | "part1.simulation.power-station.southway-river.description"
+  | "part1.simulation.power-station.bend.heading"
+  | "part1.simulation.power-station.bend.description"
+  | "part1.simulation.power-station.wicker-river.heading"
+  | "part1.simulation.power-station.wicker-river.description"
+  | "part1.simulation.power-station.entrance.heading"
+  | "part1.simulation.power-station.entrance.description"
+  | "part1.simulation.power-station.station.heading"
+  | "part1.simulation.power-station.station.description"
   | "part1.simulation.record-activated"
   | "part1.simulation.record-deactivated";
 
@@ -1076,6 +1098,21 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
     { canonicalCommand: "GOVERNMENT OFFICIAL, HELLO", canonicalLeaf: "You have a brief chat with the government official, who cheerily comments on how well things in the city are running, and how rewarding his job has been lately. Suddenly he glances at his watch, mumbles a polite parting message, and hurries away.", translation: { contentId: "part1.simulation.city-hall.conversation", text: "政府職員と短い会話を交わす。職員は、市の物事が順調に進んでいることや、最近は自分の仕事に大いにやりがいを感じていることを、上機嫌で話す。突然、時計にちらりと目をやり、丁寧な別れの言葉をぼそぼそと口にすると、足早に去っていく。" } },
     { canonicalCommand: "E", canonicalLeaf: "Main & Kennedy", translation: { contentId: "part1.simulation.city-hall.return", text: localizeSimulationPlace("ja", "Main & Kennedy"), kind: "title" } },
     { canonicalCommand: "EAST", canonicalLeaf: "Main & Kennedy", translation: { contentId: "part1.simulation.city-hall.return", text: localizeSimulationPlace("ja", "Main & Kennedy"), kind: "title" } },
+    // P2 #95 exact observed leaves; history supplies the matching initial-2041 room scope.
+    ...["SE", "W", "WEST"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Elm & Kennedy", translation: { contentId: "part1.simulation.power-station.elm-kennedy.heading" as const, text: "エルム通りとケネディ通り", kind: "title" as const } })),
+    ...["SE"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "This is an intersection with streets heading in the four cardinal directions. There is a park entrance on the northwest corner and a hospital on the southwest corner. To the southeast lies a shopping mall, and a large, old building with an impressive facade can be entered to the northeast.", translation: { contentId: "part1.simulation.power-station.elm-kennedy.description" as const, text: "ここは、東西南北の四方向に通りが延びる交差点だ。北西の角には公園の入口、南西の角には病院がある。南東にはショッピングモールがあり、北東には見事な正面構えの大きな古い建物があって、中へ入れる。" } })),
+    ...["E", "EAST", "N", "NORTH"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Elm & River", translation: { contentId: "part1.simulation.power-station.elm-river.heading" as const, text: "エルム通りとリバー通り", kind: "title" as const } })),
+    ...["E", "EAST"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Elm Street begins here and crosses the downtown area to the west. Along the eastern side of River Street stands the vast Heiman Village building. You can enter Rockvil Mall to the southwest, or the old Stock Exchange building to the northwest. An entrance to a Tube station graces one corner of the intersection.", translation: { contentId: "part1.simulation.power-station.elm-river.description" as const, text: "エルム通りはここを起点に、西へ延びて中心街を横切っている。リバー通りの東側には、巨大なハイマン・ヴィレッジの建物が建っている。南西にはロックヴィルモール、北西には古い証券取引所の建物があり、どちらにも入れる。交差点の一角には、地下交通網チューブの駅への入口がある。" } })),
+    ...["S", "SOUTH", "N", "NORTH"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Southway & River", translation: { contentId: "part1.simulation.power-station.southway-river.heading" as const, text: "サウスウェイ通りとリバー通り", kind: "title" as const } })),
+    ...["S", "SOUTH"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Here at River Street, Southway ends its long trip from the western suburbs. South of here, the street bends toward the river. To the southwest are some brick houses, and a car lot occupies the northwest corner. All along the east side of the street is a huge construction site.", translation: { contentId: "part1.simulation.power-station.southway-river.description" as const, text: "西の郊外から長く延びてきたサウスウェイ通りは、ここリバー通りで終わっている。ここから南では、リバー通りが川のほうへ曲がっている。南西にはれんが造りの住宅が何軒かあり、北西の角には駐車場がある。通りの東側一帯は、広大な建設現場になっている。" } })),
+    ...["S", "SOUTH", "NW"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Bend", translation: { contentId: "part1.simulation.power-station.bend.heading" as const, text: "曲がり角", kind: "title" as const } })),
+    ...["S", "SOUTH"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "River Street curves here, heading downtown to the north and under an old railroad bridge to the southeast. To the northeast is an opening in a tall fence. A row of stores round the curve on the other side of the street: a laundromat to the west, a pharmacy to the southwest, and a hardware store to the south.", translation: { contentId: "part1.simulation.power-station.bend.description" as const, text: "ここでリバー通りは曲がり、北へ行けば中心街へ、南東へ行けば古い鉄道橋の下へ通じている。北東には、高いフェンスの切れ目がある。通りの反対側では、曲がり角に沿って店が並んでいる。西にはコインランドリー、南西には薬局、南には金物店がある。" } })),
+    ...["SE", "NW"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Wicker & River", translation: { contentId: "part1.simulation.power-station.wicker-river.heading" as const, text: "ウィッカー通りとリバー通り", kind: "title" as const } })),
+    ...["SE"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "You have crossed the proverbial railroad tracks. The optimism and economic recovery don't seem to have spilled over into this run-down section of Rockvil, near the river. Wicker Drive, which runs northeast to southwest, cuts perpendicularly across River Street here. To the northwest, River dips under an unused rail bridge. There are factories on the northern and eastern corners. To the west is a dingy warehouse, and south of here are some dilapidated apartments. The smell of stale urine wafts from a stairway leading down to a gloomy Tube station.", translation: { contentId: "part1.simulation.power-station.wicker-river.description" as const, text: "いわゆる「線路の向こう側」にやって来た。楽観的な空気や景気回復の恩恵は、川に近いロックヴィルのこの荒れた一角までは及んでいないようだ。北東から南西へ延びるウィッカー通りが、ここでリバー通りと直角に交わっている。北西では、リバー通りが使われていない鉄道橋の下へ潜っている。北と東の角には工場がある。西には薄汚れた倉庫があり、南には老朽化したアパートがある。薄暗い地下交通網チューブの駅へ下る階段から、すえた尿の臭いが漂ってくる。" } })),
+    ...["SE", "N", "NORTH"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Power Station Entrance", translation: { contentId: "part1.simulation.power-station.entrance.heading" as const, text: "発電所入口", kind: "title" as const } })),
+    ...["SE"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "You are on River Street at the entrance of a utility station which lies to the south. The street continues southeast towards the River Street Bridge. Northeast of here is the entrance to a huge factory complex, and tenements line the street to the west and southwest.", translation: { contentId: "part1.simulation.power-station.entrance.description" as const, text: "ここはリバー通りにある発電所の入口で、施設は南にある。通りは南東のリバー通り橋へ向かって延びている。北東には巨大な工場群への入口があり、通りの西と南西には集合住宅が並んでいる。" } })),
+    ...["S", "SOUTH", "LOOK"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "Power Station", translation: { contentId: "part1.simulation.power-station.station.heading" as const, text: "発電所", kind: "title" as const } })),
+    ...["S", "SOUTH", "LOOK"].map((canonicalCommand) => ({ canonicalCommand, canonicalLeaf: "This is the central power station for all of Rockvil. Power is generated here by fusion reactors, and is received here from distant generators via a huge array of microwave receivers. The main entrance is on the north side of the plant.", translation: { contentId: "part1.simulation.power-station.station.description" as const, text: "ここはロックヴィル全域に電力を供給する中央発電所だ。ここでは核融合炉で発電し、遠方の発電機からも、巨大なマイクロ波受信装置群を通じて電力を受けている。施設の正面入口は北側にある。" } })),
     {
       canonicalCommand: "BUY NEWSPAPER",
       canonicalLeaf: "You insert your card into the newspaper dispenser. A readout flashes \"NEW BALANCE: $599\" and a newspaper pops out into your hands.",

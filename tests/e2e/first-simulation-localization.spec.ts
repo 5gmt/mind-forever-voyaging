@@ -218,7 +218,8 @@ for (const viewport of ["desktop", "narrow"] as const) for (const controls of ["
       await expect(navigator.getByRole("button", { name: "新聞、調査目的地", exact: true })).toBeVisible();
       await expect(navigator.getByRole("button", { name: "ノース・セントラル駅", exact: true })).toBeVisible();
       await expect(navigator.getByRole("button", { name: "市役所、調査目的地", exact: true })).toHaveAttribute("lang", "ja");
-      await expect(navigator.getByRole("button", { name: "Power Station, fieldwork destination", exact: true })).toHaveAttribute("lang", "en");
+      await expect(navigator.getByRole("button", { name: "発電所、調査目的地", exact: true })).toHaveAttribute("lang", "ja");
+      await expect(navigator.getByRole("button", { name: "Cinema, fieldwork destination", exact: true })).toHaveAttribute("lang", "en");
       const close = drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" });
       await close.click();
       await expect(launcher).toBeFocused();

@@ -1103,6 +1103,82 @@ test("keeps City Hall history scope with its original observation across locale 
   assert.equal(reconcilePresentationHistory(combined, restored).history.length, 1, "RESTORE drops the previous display timeline");
 });
 
+test("projects the approved Power Station packet only for its observed room and aliases", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
+  const packet = await readFile(new URL("../docs/power-station-copy-packet.md", import.meta.url), "utf8");
+  const approved = new Map(packet.split("\n").filter((line) => /^\| [HD]\d;/.test(line)).map((line) => {
+    const cells = line.split("|");
+    return [cells[2].trim().slice(1, -1), cells[3].trim().slice(1, -1)];
+  }));
+  assert.equal(approved.size, 14);
+  const rooms = ["ELM-AND-KENNEDY", "ELM-AND-RIVER", "SOUTHWAY-AND-RIVER", "BEND", "WICKER-AND-RIVER", "POWER-STATION-ENTRANCE", "POWER-STATION"];
+  const names = ["エルム通りとケネディ通り", "エルム通りとリバー通り", "サウスウェイ通りとリバー通り", "曲がり角", "ウィッカー通りとリバー通り", "発電所入口", "発電所"];
+  const roomFor = Object.fromEntries(fixture.powerStationLocations.slice(0, 7).map((name, i) => [name, rooms[i]]));
+  for (const [i, en] of fixture.powerStationLocations.slice(0, 7).entries()) {
+    assert.equal(localizeSimulationPlace("ja", en), names[i]);
+    assert.equal(localizeSimulationPlace("en", en), en);
+    assert.equal(localizeSimulationPlace("ja", `${en} annex`), `${en} annex`);
+  }
+  assert.equal(localizeSimulationMapLabel("ja", "power", "Power Station"), "発電所");
+  assert.equal(localizeSimulationMapLabel("ja", "movie", "Cinema"), "Cinema");
+  assert.equal(localizeSceneObjectName("ja", "POWER-STATION", "POWER-STATION-OBJECT", "power station"), "power station");
+  for (const session of fixture.sessions) for (const turn of session.observations.slice(49)) {
+    const scope = roomFor[turn.status.location];
+    const p = turn.presentation;
+    const blocks = projectPresentationHistory(reconcilePresentationHistory([], p, { powerStation2041: scope }).history, "ja")[0].blocks;
+    const expected = p.lines.slice(1, -1).map(({ text }) => approved.get(text) ?? observedStoryLeafTranslation(text, "ja", turn.command)?.text ?? text.trim());
+    assert.deepEqual(blocks.slice(1).map(({ text }) => text), expected, turn.command);
+    assert.deepEqual(blocks.slice(1).map(({ sourceLines }) => sourceLines), expected.map((_, i) => [i + 1]));
+    for (const [i, line] of p.lines.slice(1, -1).entries()) if (approved.has(line.text)) {
+      const translated = observedStoryLeafTranslation(line.text, "ja", turn.command);
+      assert.equal(translated.text, approved.get(line.text));
+      assert.equal(blocks[i + 1].kind, names.includes(approved.get(line.text)) ? "title" : "prose");
+      assert.equal(observedStoryLeafTranslation(line.text, "ja", "UNAPPROVED COMMAND"), undefined);
+      assert.equal(observedStoryLeafTranslation(`${line.text} Unapproved variant`, "ja", turn.command), undefined);
+    }
+    for (const powerStation2041 of [undefined, "UNKNOWN-ROOM", scope === "POWER-STATION" ? "POWER-STATION-ENTRANCE" : "POWER-STATION"]) {
+      const unknown = projectPresentationHistory(reconcilePresentationHistory([], p, { powerStation2041 }).history, "ja")[0].blocks;
+      for (const line of p.lines.slice(1, -1).filter(({ text }) => approved.has(text))) assert.equal(unknown.find(({ canonicalText }) => canonicalText === line.text).text, line.text);
+    }
+  }
+  assert.equal(observedStoryLeafTranslation("Power Station", "ja", "OUT"), undefined);
+  assert.equal(observedStoryLeafTranslation("Power Station Entrance", "ja", "IN"), undefined);
+});
+
+test("retains Power Station observation scope across locale, later rooms and recovery", async () => {
+  const f = JSON.parse(await readFile(new URL("./fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
+  const p = f.sessions[0].observations[55].presentation;
+  const accepted = reconcilePresentationHistory([], p, { powerStation2041: "POWER-STATION" }).history;
+  assert.equal(projectPresentationHistory(accepted, "ja")[0].blocks[1].text, "発電所");
+  const later = structuredClone(p); later.lines.at(-1).id = "unknown-later-input";
+  const combined = reconcilePresentationHistory(accepted, later).history;
+  const japanese = projectPresentationHistory(combined, "ja");
+  assert.equal(japanese[0].blocks[1].text, "発電所");
+  assert.equal(japanese[1].blocks[1].text, "Power Station");
+  for (const entry of projectPresentationHistory(combined, "en")) assert.ok(entry.blocks[1].text.startsWith("Power Station\n"));
+  assert.deepEqual(projectPresentationHistory(combined, "ja"), japanese);
+  const recovery = reconcilePresentationHistory(combined, null);
+  assert.equal(recovery.representable, false);
+  assert.deepEqual(projectPresentationHistory(recovery.history, "ja"), japanese);
+  const restored = structuredClone(later); restored.lines[0].text = ">RESTORE"; restored.lines.at(-1).id = "restored-power-input";
+  const history = reconcilePresentationHistory(combined, restored).history;
+  assert.equal(history.length, 1);
+  assert.equal(history[0].powerStation2041, undefined);
+  assert.equal(projectPresentationHistory(history, "ja")[0].blocks[1].text.includes("発電所"), false);
+});
+
+test("resets scoped history when a fresh canonical window reuses its opening input ID", async () => {
+  const f = JSON.parse(await readFile(new URL("./fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
+  const opening = f.sessions[0].startup.before.presentation;
+  const initial = reconcilePresentationHistory([], opening).history;
+  const prior = reconcilePresentationHistory(initial, f.sessions[0].observations[55].presentation, { powerStation2041: "POWER-STATION" }).history;
+  assert.equal(projectPresentationHistory(prior, "ja")[1].blocks[1].text, "発電所");
+  const restarted = reconcilePresentationHistory(prior, structuredClone(opening)).history;
+  assert.equal(restarted.length, 1, "a fresh VM may restart line IDs; old display timeline must be discarded");
+  assert.equal(restarted[0].powerStation2041, undefined);
+  assert.equal(projectPresentationHistory(restarted, "ja").some(({ blocks }) => blocks.some(({ text }) => text === "発電所")), false);
+});
+
 test("retains two fresh Power Station continuations after the accepted fifty submissions", async () => {
   const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
   const previous = JSON.parse(await readFile(new URL("./fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
@@ -1167,7 +1243,7 @@ test("retains two fresh Power Station continuations after the accepted fifty sub
     assert.deepEqual(power[6].presentation.lines.slice(1, -1).map(({ text }) => text), ["Power Station", facilityText, " "]);
     assert.deepEqual(power[8].presentation.lines.slice(1, -1).map(({ text }) => text), ["Power Station", facilityText, " "]);
     assert.deepEqual(power[5].presentation.lines.slice(1, -1).map(({ text }) => text), ["Power Station Entrance", "You are on River Street at the entrance of a utility station which lies to the south. The street continues southeast towards the River Street Bridge. Northeast of here is the entrance to a huge factory complex, and tenements line the street to the west and southwest.", " "]);
-    assert.equal(observedStoryLeafTranslation(facilityText, "ja", power[8].command), undefined, "P1 approves no new story translation");
+    assert.equal(observedStoryLeafTranslation(facilityText, "ja", power[8].command)?.contentId, "part1.simulation.power-station.station.description", "P3 integrates the separately approved P2 copy; historical fixture remains unchanged");
     assert.equal(power[9].presentation.lines[1].text, "Record feature deactivated.");
     assert.equal(power.at(-1).status.location, "Kennedy Park");
     for (const turn of power) {

@@ -88,16 +88,18 @@ G1 #87 / PR #91、G2 #88 / PR #92、G3 #89 / PR #93 は独立レビューと各 
 [計画 PR #97](https://github.com/5gmt/mind-forever-voyaging/pull/97) は独立 Sol review 後に merge `901945a3aee98cfec3a4bea816ebdf11760ba247` で採択済み。
 P1 [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94) は2 fresh canonical sessionsで先行50送信を保持した計67送信を完走し、[実測証拠と操作面の台帳](./docs/power-station-runtime-evidence.md)を提出した。
 [PR #98 の独立 Sol 採択](https://github.com/5gmt/mind-forever-voyaging/pull/98#pullrequestreview-5677684770)、同一 head の CI / artifact の確認を経て、merge `df1b5c5295f67cae556d1ffd85b589b917a4f657` で成功経路と操作契約を採択済みである。
-P2 [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95) の開始条件は解除され、[本文と経路の copy packet](./docs/power-station-copy-packet.md)を承認候補として提出した。
-新規本文14 leaf と地名、既承認 copy の再利用、表示条件を整理したが、独立 copy approval / merge は未了で、P3 は引き続き blocked とする。
-Player-facing の日本語 coverage と原作の正式な課題達成は追加済みと扱わない。
+P2 [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95) の [copy packet](./docs/power-station-copy-packet.md)は、[PR #99 の独立 Sol copy review](https://github.com/5gmt/mind-forever-voyaging/pull/99#pullrequestreview-5691442332)と merge `f4a489ee2484c7f1656ce6bfac3a9c0221b3119e` で承認済みである。
+P3 [#96](https://github.com/5gmt/mind-forever-voyaging/issues/96) では承認済み14 leaf、7地点と map `power` の日本語を既存の catalog と観測時 room scope に統合した。
+先行四課題に続く発電所の録画見学・明示 OFF・公園帰着の6経路、別 session の入口録画 / 施設内非録画の負例、history / recovery / locale / accessibility の証拠を[発電所受入記録](./docs/power-station-fieldwork-acceptance.md)へ集約している。
+この実装は提出 branch 上の追加 coverage であり、最新 default branch の受入済み coverage は City Hall までである。
+Sol 通常レビューと Work 全体受入・merge は未実施で、発電所 milestone と原作の正式な課題達成を完了済みと扱わない。
 
 ## 基本的な作業順
 
 1. 発電所の計画 PR #97 は独立した Chat モード Sol のレビューと merge を完了。P1 の開始 gate は解除済み。
 2. P1 [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94): 先行50送信を保持した67送信を2 fresh sessionsで実測済み。PR #98 の独立採択と merge を完了。成功経路を根拠に P2 開始条件を解除済み。
-3. P2 [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95): P1 の原文と surface 台帳に基づく copy packet を提出済み。Sol の独立 copy approval と merge を待ち、それまでは P3 を開始しない。
-4. P3 [#96](https://github.com/5gmt/mind-forever-voyaging/issues/96): 承認 copy を統合し、先行四課題を含む6経路、入口だけの録画と施設内非録画の負例、history / recovery / accessibility の回帰を検証する。実装者が status / plan / acceptance を集約し、Sol 通常レビュー後に Work が全体受入と merge、#29 報告、Issue close を行う。
+3. P2 [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95): P1 の原文と surface 台帳に基づく copy packet を PR #99 で独立 copy approval・merge 済み。P3 の開始条件を解除済み。
+4. P3 [#96](https://github.com/5gmt/mind-forever-voyaging/issues/96): 承認 copy と受入回帰を統合し、実装者が status / plan / acceptance を同じ PR に集約。Sol 通常レビュー後、Work が同一最終 head の全体受入と merge、#29 報告、Issue close を行う。これらの独立 gate は未了。
 
 P1–P3 の依存関係と完了条件の正本は発電所計画と各 Issue とする。
 新経路が成立しない場合は設計判断へ戻り、先行経路、録画区間、完了条件を暗黙に変更しない。
@@ -114,6 +116,7 @@ Security wrong-answer / failure、PEOF の別 timing、対象経路外の timed 
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
 - CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。現在の default branch は36 unit / 43 browser testsを持ち、browser job 上限は35分である。#82 の merge により、default branch は Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を14日間保持する。#82 reviewed-head run の実期限もレビュー記録で確認済み。
+- P3 / #96 の提出 branch は39 unit / 52 browser testsを持つ。検証結果と current-head CI は[発電所受入記録](./docs/power-station-fieldwork-acceptance.md)と提出 PR に記録し、default branch の受入実績とは区別する。
 
 ## 更新の契機
 
