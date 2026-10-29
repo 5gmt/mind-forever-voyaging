@@ -88,15 +88,15 @@ P1 #94 / PR #98、P2 #95 / PR #99、P3 #96 / PR #100 は独立レビューと各
 
 次の到達点として、同じ初回2041年 session の五課題に続く **St. Michael’s の教会関係者との会話録画と Kennedy Park への帰着** を提案する。
 [教会計画](./docs/plans/2041-church-fieldwork.md)に候補経路、人物出現と録画容量の実測 gate、copy / actor guard の範囲、C1–C3 をまとめる。
-計画 PR の独立 Sol review / merge 待ちであり、教会経路の実測採択・copy approval・日本語実装はまだ行っていない。
+[計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) の独立 Sol review / merge 待ちであり、教会経路の実測採択・copy approval・日本語実装はまだ行っていない。
 現行の地図と source から候補81送信を設計した段階で、成功を確認した経路とは区別する。
 
 ## 基本的な作業順
 
-1. 教会の計画 PR を、独立した Chat モード Sol がレビューして merge する。これが C1 の開始 gate。
-2. C1: 先行67送信を保持した教会候補経路を2 fresh sessions以上で実測し、人物出現・会話・退場・録画容量・実 UI の操作契約を確定する。Sol の成功経路採択と merge 後に C2 を開始する。
-3. C2: 実測原文と surface 台帳に基づく本文・地名・人物・Talk の copy packet を作成する。Sol の独立 copy approval と merge 後に C3 を開始する。
-4. C3: 承認 copy と限定 actor guard、6経路・非録画負例・境界回帰を統合し、実装者が status / plan / acceptance を同じ PR に集約する。Sol 通常レビュー後、Work が最終 head の全体受入と merge、#29 報告、Issue close を行う。
+1. 教会の [計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) を、独立した Chat モード Sol がレビューして merge する。これが C1 の開始 gate。
+2. C1 [#102](https://github.com/5gmt/mind-forever-voyaging/issues/102): 先行67送信を保持した教会候補経路を2 fresh sessions以上で実測し、人物出現・会話・退場・録画容量・実 UI の操作契約を確定する。Sol の成功経路採択と merge 後に C2 を開始する。
+3. C2 [#103](https://github.com/5gmt/mind-forever-voyaging/issues/103): 実測原文と surface 台帳に基づく本文・地名・人物・Talk の copy packet を作成する。Sol の独立 copy approval と merge 後に C3 を開始する。
+4. C3 [#104](https://github.com/5gmt/mind-forever-voyaging/issues/104): 承認 copy と限定 actor guard、6経路・非録画負例・境界回帰を統合し、実装者が status / plan / acceptance を同じ PR に集約する。Sol 通常レビュー後、Work が最終 head の全体受入と merge、#29 報告、Issue close を行う。
 
 C1–C3 の依存関係と完了条件の正本は教会計画と各 Issue とする。
 新経路が成立しない場合は設計判断へ戻り、先行経路、録画区間、完了条件を暗黙に変更しない。

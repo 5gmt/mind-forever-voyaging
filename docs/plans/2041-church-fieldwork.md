@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と SceneActions を拡張する。先行五課題を保持した runtime capture で経路・人物の出現・録画容量を確認し、copy approval 後に限定した会話支援を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画と C1–C3 のタスク化。計画 PR の独立 Sol review / merge 待ち。教会の成功経路、runtime fixture、copy はまだ採択していない。
+**Status:** [計画 PR #101](https://github.com/5gmt/mind-forever-voyaging/pull/101) と C1 #102 / C2 #103 / C3 #104 を提出。計画 PR の独立 Sol review / merge 待ち。教会の成功経路、runtime fixture、copy はまだ採択していない。
 **Baseline:** Power Station の [PR #100](https://github.com/5gmt/mind-forever-voyaging/pull/100) merge `b1ce50995f4c44faa0dcd241177e5f0386a42868`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-10-29 JST の次期 milestone 選定・タスク作成依頼に対する提案。
 
@@ -127,9 +127,9 @@ First Methodist や後続年の同文、未承認 leaf は English fallback と�
 
 | ID | 成果物 | 依存関係と完了 gate |
 | --- | --- | --- |
-| C1 | 五課題後の runtime fixture、操作面の台帳、教会往復の採択 | 計画 PR merge 後。Sol が実測をレビューして成功経路を採択し merge。 |
-| C2 | 本文、地名、人物・Talk の copy packet | C1 採択と merge 後。Sol が copy を独立承認して merge。 |
-| C3 | 日本語統合、限定 actor guard、6経路と負例、境界回帰、最終受入記録 | C1 / C2 merge 後。Sol 通常レビュー → Work 全体受入と merge → #29 報告と Issue close。 |
+| C1 / [#102](https://github.com/5gmt/mind-forever-voyaging/issues/102) | 五課題後の runtime fixture、操作面の台帳、教会往復の採択 | 計画 PR merge 後。Sol が実測をレビューして成功経路を採択し merge。 |
+| C2 / [#103](https://github.com/5gmt/mind-forever-voyaging/issues/103) | 本文、地名、人物・Talk の copy packet | C1 採択と merge 後。Sol が copy を独立承認して merge。 |
+| C3 / [#104](https://github.com/5gmt/mind-forever-voyaging/issues/104) | 日本語統合、限定 actor guard、6経路と負例、境界回帰、最終受入記録 | C1 / C2 merge 後。Sol 通常レビュー → Work 全体受入と merge → #29 報告と Issue close。 |
 
 ### C1: Capture and adopt the church route after five fieldwork tasks
 
