@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時の room scope、room / map lookup と録画操作を拡張する。先行四課題を保持した実測で経路を採択してから、本文と必要な UI の copy を承認し、統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #97、P1 / PR #98、P2 / PR #99 は独立 Sol review 後に採択・merge 済み。P2 merge `f4a489ee2484c7f1656ce6bfac3a9c0221b3119e` を base として P3 / #96 の承認 copy と回帰検証を統合した。[受入記録](../power-station-fieldwork-acceptance.md)と提出 PR に証拠を集約し、Sol 通常レビューと Work 全体受入を待つ。最終 merge、#29 報告、#96 close は未実施。
+**Status:** P1 / PR #98、P2 / PR #99、P3 / PR #100 を独立レビュー後に merge し完了。P3 の最終 head `96677efb2059dac2083357b4f1bf5723de20460b` を Sol と Work が受け入れ、2026-10-29 JST に merge `b1ce50995f4c44faa0dcd241177e5f0386a42868` で統合した。[Work 全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/100#pullrequestreview-5696011417)、[#29 完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6493884021)、[#96 完了記録](https://github.com/5gmt/mind-forever-voyaging/issues/96)を最終 gate の正本とする。
 **Baseline:** City Hall の PR #93 merge `967036d818583806e88d4d77f541e41af56b3d9f`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。今回の milestone 選定とタスク化は2026-10-26 JST の依頼に基づく。
 
@@ -173,16 +173,20 @@ P2 では production と runtime fixture を変更していない。
 - [x] 新規6 fresh routesを実装し、先行50＋採択追加区間の順序と current input chain を保存する。Assisted の実 controls、録画中の現地本文、明示 OFF、公園通常入力を確認する。
 - [x] 別の自然な負例で入口だけの録画と施設内の非録画 LOOK を検証する。観測時 room / year、re-entry、QA、RESTORE 不明、新 session、long history と過去の非録画 heading は適切な unit / controlled browser regression で固定する。
 - [x] Power Station の旧 fallback assertion を正例へ更新し、Cinema の English fallback assertion を追加する。未知地名と対象外 phase の既存保証を残す。
-- [ ] 6経路の reading / scroll / focus / locale / a11y を保存する。PNG、JSON、accessibility snapshot と controlled probe の JSON はすべて `testInfo.outputPath` 等へファイル保存し、その path を添付する。Body-only 添付だけにせず、passing artifact ZIP 内に存在することを確認する。City Hall の既存2 controlled probesも同じ保存 helper へ接続し、判定内容は変えない。
-- [ ] Full verification を行い、CI の browser job 上限35分に対する実行時間を記録する。超過する場合は原因を分け、単なる timeout 増加なら実測根拠を同じ PR に記録して Sol と最終 Work review に渡す。CI 分割や並列化は別の設計判断とする。テスト削除や retry 追加で成功扱いにしない。
-- [ ] 受入条件→fixture / test / screenshot / CI の対応表、6経路の実測、失敗と再実行、既知の限界を受入記録へまとめる。Status / plan の roll-up を同じ PR に含め、Sol 通常レビューを受ける。
-- [ ] Work へ head / base、review 後差分、未解決指摘、current-head CI / artifact / expiry を渡す。Work の全体受入と merge、#29 完了報告、P3 close で milestone を完了する。
+- [x] 6経路の reading / scroll / focus / locale / a11y を保存する。PNG、JSON、accessibility snapshot と controlled probe の JSON はすべて `testInfo.outputPath` 等へファイル保存し、その path を添付する。Body-only 添付だけにせず、passing artifact ZIP 内に存在することを確認する。City Hall の既存2 controlled probesも同じ保存 helper へ接続し、判定内容は変えない。
+- [x] Full verification を行い、CI の browser job 上限35分に対する実行時間を記録する。超過する場合は原因を分け、単なる timeout 増加なら実測根拠を同じ PR に記録して Sol と最終 Work review に渡す。CI 分割や並列化は別の設計判断とする。テスト削除や retry 追加で成功扱いにしない。
+- [x] 受入条件→fixture / test / screenshot / CI の対応表、6経路の実測、失敗と再実行、既知の限界を受入記録へまとめる。Status / plan の roll-up を同じ PR に含め、Sol 通常レビューを受ける。
+- [x] Work へ head / base、review 後差分、未解決指摘、current-head CI / artifact / expiry を渡す。Work の全体受入と merge、#29 完了報告、P3 close で milestone を完了する。
 
 P3 の catalog / room / map と観測時 scope、6 fresh routes と別負例、controlled probes、実ファイル添付の実装を統合した。
 39 unit tests と自然な targeted run の6経路・負例は成功した。
 Local full run の QA probe race と修正・再検証を[受入記録](../power-station-fieldwork-acceptance.md)に残し、最終 head の全52件と CI 実行時間は提出 PR の current-head checks を正本とする。
-添付の local ファイル保存は確認したが、CI ZIP の local 転送が通信制限で拒否されたため、ZIP 実体監査の完了を主張しない。
-上の未了 checkbox は、CI / ZIP と独立 Sol review、Work 全体受入・merge・報告・close を含む gate を先取りしないために残す。
+提出時点では実装者の CI ZIP 転送が通信制限で拒否され、実体監査を未了としていた。
+その後 Work が同じ head / tree の CI artifact を実ダウンロード・展開し、7自然 session と Power Station / City Hall の controlled probes 計4組の JSON / PNG / TXT、CRC / SHA-256 を確認した。
+Current-head CI は39 unit / 52 browser tests成功、browser step 22分50秒 / job 23分35秒、retry / skip 0、35分上限の変更なし。
+Sol 通常レビューと Work 全体受入、merge、#29 完了報告、#96 close を完了したため、対応 checkbox を完了へ更新する。
+最終判定・artifact 期限・未検証範囲は上記 Work review と #29 記録を正本とする。実 screen reader 音声、実 saved-game RESTORE、原作内部の正式評価は未検証のまま。
+次期候補は [教会 milestone](./2041-church-fieldwork.md) に分離し、本 milestone の完了条件を追加変更しない。
 
 ## 検証とレビューの運用
 

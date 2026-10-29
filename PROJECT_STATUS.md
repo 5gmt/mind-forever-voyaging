@@ -11,16 +11,16 @@
 
 ## 現在の到達点
 
-日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室の deterministic inspection、初回 Simulation Mode 移行、Kennedy Park の録画開始、Courthouse、新聞購入と四段落の読書、Roy’s Pagoda の食事、City Hall の政府職員との会話録画と公園帰着まで到達した。
-[PR #93](https://github.com/5gmt/mind-forever-voyaging/pull/93) を merge `967036d818583806e88d4d77f541e41af56b3d9f` で統合し、同じ fresh session の四課題を Classic / Guided / Actions × desktop / narrow の6経路で受け入れた。
-[市役所受入記録](./docs/city-hall-fieldwork-acceptance.md)と [#29 完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6411200960)に証拠と限界を記録している。
+日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室の deterministic inspection、初回 Simulation Mode 移行、Kennedy Park の録画開始、Courthouse、新聞購入と四段落の読書、Roy’s Pagoda の食事、City Hall の政府職員との会話録画、発電所の録画見学と公園帰着まで到達した。
+[PR #100](https://github.com/5gmt/mind-forever-voyaging/pull/100) を merge `b1ce50995f4c44faa0dcd241177e5f0386a42868` で統合し、同じ fresh session の五課題を Classic / Guided / Actions × desktop / narrow の6経路で受け入れた。
+[発電所受入記録](./docs/power-station-fieldwork-acceptance.md)、[Work 全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/100#pullrequestreview-5696011417)、[#29 完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6493884021)に証拠と限界を記録している。
 
 現在到達済みの opening、Communications Mode、最初の PEOF を取り囲む wrapper UI についても、承認済みの範囲を日本語化している。これには core header、reading/play settings、introduction overlay、companion shell、PEOF SceneActions、original-package overlay、identity rail、shared story shell、visible label、accessible name が含まれる。
 
 | 層 | 現在の日本語 coverage | 意図的に未対応の境界 |
 | --- | --- | --- |
-| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復、Main & Kennedy / Centre & Kennedy / Bodanski Square 経由の新聞購入・四段落の読書・帰着、Elm & University / Elm Underpass / Roy’s Pagoda の来店・食事・支払・公園帰着、Rockvil Centre / City Hall の到着・政府職員との会話・退場・LOOK・帰着 | 他 fieldwork、正式 assignment completion、後続の Simulation story output |
-| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、初回2041年の Simulation 入場 CTA / assisted security decoder / 基本操作 / fieldwork launcher・drawer・九課題、地図の共通操作・採用経路・新聞対象操作、初回2041年 Roy’s Pagoda 限定 meal の英日 draft / 一回送信、初回2041年 City Hall の在室が確認された政府職員に限る英日 Talk・説明・draft / 一回送信 | later mode / later phase 固有 UI、未承認の地名・対象・動詞、QA/debug |
+| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復、Main & Kennedy / Centre & Kennedy / Bodanski Square 経由の新聞購入・四段落の読書・帰着、Elm & University / Elm Underpass / Roy’s Pagoda の来店・食事・支払・公園帰着、Rockvil Centre / City Hall の到着・政府職員との会話・退場・LOOK・帰着、Elm & River / Southway & River / Bend / Wicker & River 経由の発電所到着・録画中 LOOK・明示 OFF・帰着 | 他 fieldwork、正式 assignment completion、後続の Simulation story output |
+| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、初回2041年の Simulation 入場 CTA / assisted security decoder / 基本操作 / fieldwork launcher・drawer・九課題、地図の共通操作・採用経路・新聞対象操作、初回2041年 Roy’s Pagoda 限定 meal の英日 draft / 一回送信、初回2041年 City Hall の在室が確認された政府職員に限る英日 Talk・説明・draft / 一回送信、発電所往復7地点と map `power` の英日表示 | later mode / later phase 固有 UI、未承認の地名・対象・動詞、QA/debug |
 | Input and actions | Guided / Action-menu の日本語表示、canonical command に解決される支援操作 | 日本語 parser input |
 | Fallback | 対応済み leaf / surface の日本語表示と EN → JA → EN recovery | 未観測または未承認の内容は canonical English |
 
@@ -74,37 +74,34 @@ Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立し�
 
 - [PR #93](https://github.com/5gmt/mind-forever-voyaging/pull/93) / [Issue #89](https://github.com/5gmt/mind-forever-voyaging/issues/89): 同一初回2041年 session の先行三課題に City Hall の会話録画、退場後 LOOK、公園帰着を追加。6経路と非録画負例、限定 actor guard、観測時 room scope を受け入れ、G1–G3 / 市役所 milestone を完了。
 
+- [PR #100](https://github.com/5gmt/mind-forever-voyaging/pull/100) / [Issue #96](https://github.com/5gmt/mind-forever-voyaging/issues/96): 同一初回2041年 session の先行四課題に発電所の録画見学と公園帰着を追加。6経路と入口録画・施設内非録画の負例、観測時 room scope、履歴・添付実体を受け入れ、P1–P3 / 発電所 milestone を完了。
+
 ## 現在の frontier
 
-初回 Simulation / recording loop、Courthouse、Newspaper と初期 fieldwork UI、Restaurant、City Hall は完了した。
-City Hall の [計画](./docs/plans/2041-city-hall-fieldwork.md)、[実測](./docs/city-hall-runtime-evidence.md)、[受入記録](./docs/city-hall-fieldwork-acceptance.md)が直前 milestone の根拠である。
-G1 #87 / PR #91、G2 #88 / PR #92、G3 #89 / PR #93 は独立レビューと各 merge gate を経て完了した。
-#93 の最終 head `2571595cda8abbb2e32b4194c7aa7e7fd07d05aa` に対する [Sol 通常レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/93#pullrequestreview-5647913588)と [Work 全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/93#pullrequestreview-5648983599)、[CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/40272195826)を確認し、merge、#29 完了報告、#89 close まで実施した。
-検証実績は35 unit / 43 browser tests。
-原作の録画中会話と補助推定4/9を区別し、390pxで出力されない時計、実 saved-game RESTORE、実 screen reader 音声を検証済みとは扱わない。
+初回 Simulation / recording loop、Courthouse、Newspaper と初期 fieldwork UI、Restaurant、City Hall、Power Station は完了した。
+直前 milestone は [発電所計画](./docs/plans/2041-power-station-fieldwork.md)、[実測](./docs/power-station-runtime-evidence.md)、[受入記録](./docs/power-station-fieldwork-acceptance.md)を根拠とする。
+P1 #94 / PR #98、P2 #95 / PR #99、P3 #96 / PR #100 は独立レビューと各 merge gate を経て完了した。
+#100 の最終 head `96677efb2059dac2083357b4f1bf5723de20460b` に対する [Sol 通常レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/100#pullrequestreview-5692360038)と [Work 全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/100#pullrequestreview-5696011417)、[CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/40800854441)を確認し、merge、[#29 完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6493884021)、#96 close まで実施した。
+検証実績は39 unit / 52 browser tests。
+提出時に未了だった CI ZIP 実体監査も Work が完了し、Power Station / City Hall の controlled probes と7自然 session の証拠を確認した。
+原作の録画出力と補助推定5/9を区別し、390pxで未出力の時計、実 saved-game RESTORE、実 screen reader 音声、原作の正式評価は検証済みとは扱わない。
 
-次の到達点は、同じ初回2041年 session の四課題に続く **発電所の見学録画と Kennedy Park への帰着** とする。
-[発電所計画](./docs/plans/2041-power-station-fieldwork.md)に候補経路、録画容量の実測 gate、copy の範囲と P1–P3 をまとめる。
-[計画 PR #97](https://github.com/5gmt/mind-forever-voyaging/pull/97) は独立 Sol review 後に merge `901945a3aee98cfec3a4bea816ebdf11760ba247` で採択済み。
-P1 [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94) は2 fresh canonical sessionsで先行50送信を保持した計67送信を完走し、[実測証拠と操作面の台帳](./docs/power-station-runtime-evidence.md)を提出した。
-[PR #98 の独立 Sol 採択](https://github.com/5gmt/mind-forever-voyaging/pull/98#pullrequestreview-5677684770)、同一 head の CI / artifact の確認を経て、merge `df1b5c5295f67cae556d1ffd85b589b917a4f657` で成功経路と操作契約を採択済みである。
-P2 [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95) の [copy packet](./docs/power-station-copy-packet.md)は、[PR #99 の独立 Sol copy review](https://github.com/5gmt/mind-forever-voyaging/pull/99#pullrequestreview-5691442332)と merge `f4a489ee2484c7f1656ce6bfac3a9c0221b3119e` で承認済みである。
-P3 [#96](https://github.com/5gmt/mind-forever-voyaging/issues/96) では承認済み14 leaf、7地点と map `power` の日本語を既存の catalog と観測時 room scope に統合した。
-先行四課題に続く発電所の録画見学・明示 OFF・公園帰着の6経路、別 session の入口録画 / 施設内非録画の負例、history / recovery / locale / accessibility の証拠を[発電所受入記録](./docs/power-station-fieldwork-acceptance.md)へ集約している。
-この実装は提出 branch 上の追加 coverage であり、最新 default branch の受入済み coverage は City Hall までである。
-Sol 通常レビューと Work 全体受入・merge は未実施で、発電所 milestone と原作の正式な課題達成を完了済みと扱わない。
+次の到達点として、同じ初回2041年 session の五課題に続く **St. Michael’s の教会関係者との会話録画と Kennedy Park への帰着** を提案する。
+[教会計画](./docs/plans/2041-church-fieldwork.md)に候補経路、人物出現と録画容量の実測 gate、copy / actor guard の範囲、C1–C3 をまとめる。
+計画 PR の独立 Sol review / merge 待ちであり、教会経路の実測採択・copy approval・日本語実装はまだ行っていない。
+現行の地図と source から候補81送信を設計した段階で、成功を確認した経路とは区別する。
 
 ## 基本的な作業順
 
-1. 発電所の計画 PR #97 は独立した Chat モード Sol のレビューと merge を完了。P1 の開始 gate は解除済み。
-2. P1 [#94](https://github.com/5gmt/mind-forever-voyaging/issues/94): 先行50送信を保持した67送信を2 fresh sessionsで実測済み。PR #98 の独立採択と merge を完了。成功経路を根拠に P2 開始条件を解除済み。
-3. P2 [#95](https://github.com/5gmt/mind-forever-voyaging/issues/95): P1 の原文と surface 台帳に基づく copy packet を PR #99 で独立 copy approval・merge 済み。P3 の開始条件を解除済み。
-4. P3 [#96](https://github.com/5gmt/mind-forever-voyaging/issues/96): 承認 copy と受入回帰を統合し、実装者が status / plan / acceptance を同じ PR に集約。Sol 通常レビュー後、Work が同一最終 head の全体受入と merge、#29 報告、Issue close を行う。これらの独立 gate は未了。
+1. 教会の計画 PR を、独立した Chat モード Sol がレビューして merge する。これが C1 の開始 gate。
+2. C1: 先行67送信を保持した教会候補経路を2 fresh sessions以上で実測し、人物出現・会話・退場・録画容量・実 UI の操作契約を確定する。Sol の成功経路採択と merge 後に C2 を開始する。
+3. C2: 実測原文と surface 台帳に基づく本文・地名・人物・Talk の copy packet を作成する。Sol の独立 copy approval と merge 後に C3 を開始する。
+4. C3: 承認 copy と限定 actor guard、6経路・非録画負例・境界回帰を統合し、実装者が status / plan / acceptance を同じ PR に集約する。Sol 通常レビュー後、Work が最終 head の全体受入と merge、#29 報告、Issue close を行う。
 
-P1–P3 の依存関係と完了条件の正本は発電所計画と各 Issue とする。
+C1–C3 の依存関係と完了条件の正本は教会計画と各 Issue とする。
 新経路が成立しない場合は設計判断へ戻り、先行経路、録画区間、完了条件を暗黙に変更しない。
 [レストラン A案](./docs/restaurant-recording-a-evidence.md)、[#82 の容量不足の証拠](./docs/restaurant-runtime-evidence.md)、従来の成功 fixture と回帰を保持する。
-原作側の正式な九課題達成と帰還評価、教会、自宅、映画、公共交通、再入場と後続年、他 Communications outlet、未承認の地名や対象操作は今回の翻訳範囲に含めない。
+原作側の正式な九課題達成と帰還評価、First Methodist や他の教会、自宅、映画、公共交通、再入場と後続年、他 Communications outlet、未承認の地名や対象操作は今回の翻訳範囲に含めない。
 Security wrong-answer / failure、PEOF の別 timing、対象経路外の timed events、general GridWindow renderer、geometry-derived identity、runtime machine translation、日本語 parser input も対象外とする。
 原作 recording と補助 checklist の推定を区別し、unknown output、optional interrupt、RESTORE 後の不明状態の English fallback を保持する。
 [#44](https://github.com/5gmt/mind-forever-voyaging/issues/44) の provenance conventions は独立して扱う。
@@ -115,8 +112,8 @@ Security wrong-answer / failure、PEOF の別 timing、対象経路外の timed 
 - Current delivery baseline は Next.js static export と Netlify である。
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
-- CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。現在の default branch は36 unit / 43 browser testsを持ち、browser job 上限は35分である。#82 の merge により、default branch は Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を14日間保持する。#82 reviewed-head run の実期限もレビュー記録で確認済み。
-- P3 / #96 の提出 branch は39 unit / 52 browser testsを持つ。検証結果と current-head CI は[発電所受入記録](./docs/power-station-fieldwork-acceptance.md)と提出 PR に記録し、default branch の受入実績とは区別する。
+- CI は canonical story checksum、lint、TypeScript、build/unit path を `verify` で検証し、その成功後に Chromium Playwright acceptance を `browser-e2e` で検証する。現在の default branch は39 unit / 52 browser testsを持ち、browser job 上限は35分である。#82 の merge により、default branch は Playwright failure artifacts と成功時の受入 screenshot / accessibility 記録を14日間保持する。#82 reviewed-head run の実期限もレビュー記録で確認済み。
+- PR #100 の受入 CI は52 browser testsを retry / skip なしで完走し、step 22分50秒 / job 23分35秒だった。教会 C3 は追加後の全体実行時間も記録する。計画時点で timeout、並列度、artifact retention は変更しない。
 
 ## 更新の契機
 
