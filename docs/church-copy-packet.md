@@ -2,9 +2,9 @@
 
 ## 承認対象と開始根拠
 
-本書は C2 / [#103](https://github.com/5gmt/mind-forever-voyaging/issues/103) の copy 承認候補である。
+本書は C2 / [#103](https://github.com/5gmt/mind-forever-voyaging/issues/103) の承認済み copy packet である。
 C1 / #102 は [PR #105 の独立採択レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/105#pullrequestreview-5721119301)と merge `91d5b6fdb16515500dc5af901636e321751053d1` で完了し、[C2 開始 gate](https://github.com/5gmt/mind-forever-voyaging/issues/103#issuecomment-6538795912)が解除された。
-独立した Chat モード Sol の copy approval と merge が完了するまで、以下の日本語は候補であり、C3 / #104 は blocked のままとする。
+[PR #106 の独立 Sol copy approval](https://github.com/5gmt/mind-forever-voyaging/pull/106#pullrequestreview-5721974351)と merge `e11634762c35b518377a87fbbdd6a10717ea57a6` が完了し、[C3 / #104 の開始条件](https://github.com/5gmt/mind-forever-voyaging/issues/104#issuecomment-6541097000)は解除済みである。
 
 本文の正本は [C1 成功 fixture](../tests/fixtures/parchment-church-runtime-observed.json)（blob `145f2b42130a1d82cb19692e5c0be8b68da6f59a`）である。
 2 fresh canonical sessions、各81 line submissions、132 UI samples を使い、[失敗 fixture](../tests/fixtures/parchment-church-runtime-harness-failure.json)から成功本文を補完しない。
