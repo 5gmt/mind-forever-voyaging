@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と SceneActions を拡張する。先行五課題を保持した runtime capture で経路・人物の出現・録画容量を確認し、copy approval 後に限定した会話支援を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #101 と C1 #102 / PR #105 は独立 Sol review と merge を完了。C1 の採択 merge は `91d5b6fdb16515500dc5af901636e321751053d1`。C2 #103 は[本文と人物操作の copy packet](../church-copy-packet.md)を提出し、独立 copy approval と merge 待ち。C3 #104 は blocked。教会の日本語と限定人物 guard は未実装。
+**Status:** 計画 PR #101、C1 #102 / PR #105、C2 #103 / PR #106 は独立 Sol review と merge を完了。C2 の copy approval と merge `e11634762c35b518377a87fbbdd6a10717ea57a6` を受け、C3 #104 は承認 copy、限定人物 guard、6経路と負例の統合を実装した。[最終受入記録](../church-fieldwork-acceptance.md)を同じ PR に用意し、Sol 通常レビューと Work 全体受入に提出する。Milestone の最終 merge、#29 報告、Issue close は未了。
 **Baseline:** Power Station の [PR #100](https://github.com/5gmt/mind-forever-voyaging/pull/100) merge `b1ce50995f4c44faa0dcd241177e5f0386a42868`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-10-29 JST の次期 milestone 選定・タスク作成依頼に対する提案。
 
@@ -154,21 +154,23 @@ First Methodist や後続年の同文、未承認 leaf は English fallback と�
 - [x] 建物と原教会の関係、教会関係者が礼拝参加の増加を国の道徳的風潮と結びつける発言主体、会話後退場を保持する。2051年の宗教的寛容に関する別会話を混ぜない。
 - [x] 経路の room、map `church`、人物、課題 index 6、Talk / draft help / route / recording / LOOK の visible・accessible copy と `lang` を別行で承認候補にする。Command は English のまま、人物の不明・不在時に翻訳を理由として guard を広げない。
 - [x] Fixture の exact text / alias / link を照合して `git diff --check` を行い、local 未実施の E2E と current-head CI を区別して提出する。
-- [ ] Sol の copy approval と merge 後に C3 の開始 gate を解除する。
+- [x] [PR #106 の独立 copy approval](https://github.com/5gmt/mind-forever-voyaging/pull/106#pullrequestreview-5721974351)と merge `e11634762c35b518377a87fbbdd6a10717ea57a6` を完了し、[#104 の開始 gate](https://github.com/5gmt/mind-forever-voyaging/issues/104#issuecomment-6541097000)を解除した。
 
 ### C3: Integrate church localization and accept the six-task route
 
-**Files:** 更新 `app/localization.ts`、`app/PrismEdition.tsx`、`app/StoryTools.tsx`、`app/presentation-history.ts`、`tests/rendered-html.test.mjs`。新規 `tests/e2e/church-acceptance.ts`、`tests/e2e/church-fieldwork.spec.ts`、`docs/church-fieldwork-acceptance.md`。必要な最小変更のみ `tests/e2e/power-station-acceptance.ts` / `tests/e2e/first-simulation-localization.spec.ts` / `.github/workflows/ci.yml`。本書と `PROJECT_STATUS.md` を同期する。
+**Files:** 更新 `app/localization.ts`、`app/PrismEdition.tsx`、`app/StoryTools.tsx`、`app/presentation-history.ts`、`tests/rendered-html.test.mjs`。新規 `app/church-elder.ts`（配置を委ねた一人物の限定 helper）、`tests/e2e/church-acceptance.ts`、`tests/e2e/church-fieldwork.spec.ts`、`docs/church-fieldwork-acceptance.md`。必要な最小変更のみ `tests/e2e/power-station-acceptance.ts` / `tests/e2e/first-simulation-localization.spec.ts` / `.github/workflows/ci.yml`。C2 review の route 文の空白除去に伴い、`tests/e2e/navigation-acceptance.ts` の既存期待文字列も1か所更新する。本書と `PROJECT_STATUS.md` を同期する。
 **Interfaces:** C1 の観測契約と C2 の承認 copy を消費する。`acceptPowerStationMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordFacility = true)` を先行67送信・全 assertion の入口として再利用する。現在は戻り値がないため、既存の `frame` / `input` / `status` / `send` / `snapshot` / `rawTrace` 等を返す最小拡張を許可する。先行 assertion、録画窓、添付を削らず、残る未送信 draft は送信せず消去する。新 helper `acceptChurchMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true)` が教会区間と帰着を検証する。
 
-- [ ] C1 の不足に対応する catalog / scope / 人物 guard の regression を追加し RED を確認する。既存挙動で足りるところに余分な state や汎用化を追加しない。
-- [ ] 承認本文・地名・人物・Talk を統合し、観測時 room scope と session 内人物境界を GREEN にする。City Hall と全既存回帰を維持する。
-- [ ] 新規6 fresh routesで、先行67＋教会区間の順序と actual input chain、実 assisted controls、録画中の会話・退場、明示 OFF、LOOK、公園通常入力を保存する。
-- [ ] 別 fresh session の非録画負例と推定5/9、controlled の後付け録画負例を検証する。Room 名・出現だけを加点しない。
-- [ ] Main / companion の在室・会話後・時刻退場・再訪・別教会、busy / char、long history、RESTORE 不明、新 session、対象外 phase / year / QA を unit と controlled browser regression で固定する。自然な runtime 証拠と分けて記録する。
-- [ ] 現地と帰着の reading / scroll / focus / locale / a11y を保存する。PNG、JSON、accessibility snapshot と controlled probe はすべて `testInfo.outputPath` 等に実ファイルとして保存して添付し、passing artifact ZIP 内の存在も確認する。
-- [ ] Full verification と checksum / diff check を行い、全 suite の件数・retry / skip・browser job / step 所要時間・artifact size を記録する。CI 時間の扱いは下記運用に従う。
-- [ ] 受入条件→fixture / test / screenshot / CI の対応、6経路と負例、失敗・再実行、既知の限界を受入記録へ集約し、status / plan の roll-up と共に Sol 通常レビューへ提出する。
+- [x] C1 の不足に対応する catalog / scope / 人物 guard の regression を追加し RED を確認する。既存挙動で足りるところに余分な state や汎用化を追加しない。
+- [x] 承認本文・地名・人物・Talk を統合し、観測時 room scope と session 内人物境界を GREEN にする。City Hall と全既存回帰を維持する。
+- [x] 新規6 fresh routesで、先行67＋教会区間の順序と actual input chain、実 assisted controls、録画中の会話・退場、明示 OFF、LOOK、公園通常入力を保存する。
+- [x] 別 fresh session の非録画負例と推定5/9、controlled の後付け録画負例を検証する。Room 名・出現だけを加点しない。
+- [x] Main / companion の在室・会話後・時刻退場・再訪・別教会、busy / char、long history、RESTORE 不明、新 session、対象外 phase / year / QA を unit と controlled browser regression で固定する。自然な runtime 証拠と分けて記録する。
+- [x] 現地と帰着の reading / scroll / focus / locale / a11y を保存した。PNG、JSON、accessibility snapshot と controlled probe はすべて `testInfo.outputPath` に実ファイルとして保存して添付し、local の内容を照合した。
+- [ ] Passing current-head CI artifact ZIP 内のファイル実体と内容を確認する。転送先が環境の許可リスト外であるため、local 照合を CI ZIP 監査の代用にしない。取得状況と結果は提出 PR を正本とする。
+- [x] Local lint / tsc、production build と47 unit、対象10 browser tests（16.8分、retry / skipなし）、checksum / diff check を完了した。
+- [ ] Current-head CI の全62 browser tests、job / step 実時間、artifact size / expiry を確認する。最終結果は提出 PR を正本とする。
+- [x] 受入条件→fixture / test / screenshot / CI の対応、6経路と負例、失敗・再実行、既知の限界を受入記録へ集約し、status / plan の roll-up と共に Sol 通常レビューへ提出する。
 - [ ] Work へ head / base、review 後差分、未解決指摘、current-head CI / artifact / expiry を渡す。Work の全体受入と merge、#29 報告、C3 close で milestone を完了する。
 
 ## 検証とレビューの運用
@@ -191,3 +193,8 @@ Shared account による self-approval 制限時は reviewed SHA・判断・prov
 Artifact retention は14日を維持し、実際の期限を handoff に記載する。Raw fixture は repository に残す。
 締めではレビュー回数、差し戻し理由、引継ぎから受入までの経過時間を記録し、未計測の usage 削減量を主張しない。
 [#44](https://github.com/5gmt/mind-forever-voyaging/issues/44) の provenance conventions は別件として継続する。
+
+C3 の提出差分は browser job 上限を35分から50分にする。
+直前の C2 CI の job 28分14秒と、新規10件の local 16.8分から合計約45分を見積もった。
+これは full suite の実測と区別し、最終 head の全62件の成否、job / step 所要時間、artifact 実期限を提出 PR に記録する。
+1 worker、retryなし、既存52件と成功 / 失敗 fixture、14日保持を維持する。

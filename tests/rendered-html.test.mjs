@@ -1923,3 +1923,148 @@ test("retains two fresh church routes after all 67 accepted submissions", async 
     [2, 68, "A skycopter drones by far overhead and disappears into the distance."],
   ], "retain optional output verbatim at its observed session and turn");
 });
+
+test("projects church copy only for its observed room and preserves every raw leaf boundary", async () => {
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
+  const packet = await readFile(new URL("../docs/church-copy-packet.md", import.meta.url), "utf8");
+  const approved = new Map(packet.split("\n").filter((line) => /^\| (?:H|D|P|T|R)\d;/.test(line)).map((line) => {
+    const cells = line.split("|");
+    return [cells[2].trim().slice(1, -1), { text: cells[3].trim().slice(1, -1), kind: cells[1].includes("`title`") ? "title" : "prose", fresh: !cells[1].trim().startsWith("R") }];
+  }));
+  assert.equal(approved.size, 15);
+  for (const session of fixture.sessions) for (const turn of session.observations.slice(66)) {
+    const p = turn.presentation;
+    const scoped = reconcilePresentationHistory([], p, { church2041: turn.roomId }).history;
+    const blocks = projectPresentationHistory(scoped, "ja")[0].blocks;
+    const raw = p.lines.slice(1, -1);
+    assert.deepEqual(blocks.slice(1).map(({ text }) => text), raw.map(({ text }) => approved.get(text)?.text ?? text.trim()), turn.command);
+    assert.deepEqual(blocks.slice(1).map(({ sourceLines }) => sourceLines), raw.map((_, i) => [i + 1]));
+    for (const [i, line] of raw.entries()) {
+      if (approved.has(line.text)) assert.equal(blocks[i + 1].kind, approved.get(line.text).kind);
+      else if (!line.text.trim()) assert.equal(blocks[i + 1].kind, "spacer");
+      else assert.equal(blocks[i + 1].canonicalText ?? blocks[i + 1].text, line.text);
+      if (approved.get(line.text)?.fresh) {
+        assert.equal(observedStoryLeafTranslation(line.text, "ja", "UNAPPROVED COMMAND"), undefined);
+        assert.equal(observedStoryLeafTranslation(`${line.text} An unknown variant.`, "ja", turn.command), undefined);
+      }
+    }
+    for (const room of [undefined, "FIRST-METHODIST-CHURCH", "UNKNOWN", turn.roomId === "ST-MICHAELS" ? "CHURCH-ENTRANCE" : "ST-MICHAELS"]) {
+      const unknown = projectPresentationHistory(reconcilePresentationHistory([], p, { church2041: room }).history, "ja")[0].blocks;
+      for (const line of raw.filter(({ text }) => approved.get(text)?.fresh)) {
+        assert.equal(unknown.find(({ canonicalText }) => canonicalText === line.text)?.text, line.text);
+      }
+    }
+  }
+});
+
+test("retains church observation scope after movement, locale switching and recovery", async () => {
+  const f = JSON.parse(await readFile(new URL("./fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
+  const p = f.sessions[0].observations[72].presentation;
+  const accepted = reconcilePresentationHistory([], p, { church2041: "ST-MICHAELS" }).history;
+  const later = structuredClone(p); later.lines.at(-1).id = "church-later-year";
+  const combined = reconcilePresentationHistory(accepted, later).history;
+  const ja = projectPresentationHistory(combined, "ja");
+  assert.match(ja[0].blocks[1].text, /教会の長老/);
+  assert.equal(ja[1].blocks[1].text, p.lines[1].text);
+  assert.equal(projectPresentationHistory(combined, "en")[0].blocks[1].text, p.lines[1].text);
+  assert.deepEqual(projectPresentationHistory(combined, "ja"), ja);
+  assert.deepEqual(projectPresentationHistory(reconcilePresentationHistory(combined, null).history, "ja"), ja);
+  const restored = structuredClone(later); restored.lines[0].text = ">RESTORE"; restored.lines.at(-1).id = "church-restored";
+  const history = reconcilePresentationHistory(combined, restored).history;
+  assert.equal(history.length, 1);
+  assert.equal(history[0].church2041, undefined);
+  assert.doesNotMatch(projectPresentationHistory(history, "ja")[0].blocks.map(({ text }) => text).join("\n"), /教会の長老/);
+  const restarted = reconcilePresentationHistory(combined, f.sessions[0].startup.before.presentation).history;
+  assert.equal(restarted.length, 1);
+  assert.equal(restarted[0].church2041, undefined);
+});
+
+test("limits church names and Talk copy to the approved identities", async () => {
+  for (const [en, ja] of [["Main & River", "メイン通りとリバー通り"], ["Main & Church", "メイン通りとチャーチ通り"], ["Church Entrance", "教会入口"], ["St. Michael's", "聖ミカエル教会"]]) {
+    assert.equal(localizeSimulationPlace("ja", en), ja);
+    assert.equal(localizeSimulationPlace("en", en), en);
+    assert.equal(localizeSimulationPlace("ja", `${en} annex`), `${en} annex`);
+  }
+  assert.equal(localizeSimulationPlace("ja", "Vacant Lot"), "Vacant Lot");
+  assert.equal(localizeSimulationMapLabel("ja", "church", "St. Michael's Church"), "聖ミカエル教会");
+  assert.equal(localizeSimulationMapLabel("ja", "movie", "Cinema"), "Cinema");
+  assert.equal(localizeSceneObjectName("ja", "ST-MICHAELS", "CHURCH-OFFICIAL", "church elder"), "教会の長老");
+  assert.equal(localizeSceneActionLabel("ja", "ST-MICHAELS", "CHURCH-OFFICIAL", "talk", "Talk"), "話す");
+  for (const room of ["FIRST-METHODIST-CHURCH", "UNKNOWN", undefined]) {
+    assert.equal(localizeSceneObjectName("ja", room, "CHURCH-OFFICIAL", "church elder"), "church elder");
+    assert.equal(sceneActionsLocale("ja", room, true), "en");
+  }
+  assert.equal(localizeSceneObjectName("ja", "ST-MICHAELS", "CHURCH-OBJECT", "church"), "church");
+  assert.equal(localizeSceneActionLabel("ja", "ST-MICHAELS", "CHURCH-OBJECT", "examine", "Examine"), "Examine");
+  assert.equal(sceneActionsLocale("ja", "ST-MICHAELS", false), "en");
+  assert.equal(sceneActionsLocale("ja", "ST-MICHAELS", true), "ja");
+});
+
+test("requires current-visit church presence and distinguishes conversation from time departure", async () => {
+  const { createChurchElderState, observeChurchElder, CHURCH_ELDER_PRESENCE, CHURCH_ELDER_CONVERSATION } = await import("../app/church-elder.ts");
+  const valid = { eligible: true, roomId: "ST-MICHAELS", inputKind: "line", acceptsInput: true, hasStatus: true, turnId: "arrival", command: "W", response: CHURCH_ELDER_PRESENCE };
+  const fresh = createChurchElderState();
+  const present = observeChurchElder(fresh, valid);
+  assert.equal(present.present, true);
+  assert.equal(present.completed, false);
+  assert.equal(observeChurchElder(present, { ...valid, turnId: "record", command: "RECORD", response: "Record feature activated." }).present, true);
+  const timed = observeChurchElder(present, { ...valid, turnId: "timed", response: "The church official wanders off." });
+  assert.equal(timed.present, false);
+  assert.equal(timed.completed, false);
+  assert.equal(observeChurchElder(timed, valid).present, false, "old arrival is consumed, not new presence");
+  assert.equal(observeChurchElder(timed, { ...valid, turnId: "new-visit" }).present, true, "a genuinely new presence may establish another visit before conversation");
+  const talked = observeChurchElder(present, { ...valid, turnId: "chat", command: "CHURCH ELDER, HELLO", response: CHURCH_ELDER_CONVERSATION });
+  assert.equal(talked.present, false);
+  assert.equal(talked.completed, true);
+  for (const turnId of ["arrival", "revisit", "rolling-window", "locale"]) assert.equal(observeChurchElder(talked, { ...valid, turnId }).present, false);
+  assert.equal(observeChurchElder(createChurchElderState(), valid).present, true, "fresh session resets old completion and reused IDs");
+});
+
+test("fails closed on missing church reports, other rooms, unknown scope and non-line input", async () => {
+  const { createChurchElderState, observeChurchElder, CHURCH_ELDER_PRESENCE } = await import("../app/church-elder.ts");
+  const valid = { eligible: true, roomId: "ST-MICHAELS", inputKind: "line", acceptsInput: true, hasStatus: true, turnId: "arrival", command: "W", response: CHURCH_ELDER_PRESENCE };
+  for (const invalid of [{ eligible: false }, { roomId: "FIRST-METHODIST-CHURCH" }, { roomId: "UNKNOWN" }, { roomId: null }, { inputKind: "char" }, { inputKind: undefined }, { acceptsInput: undefined }, { hasStatus: false }, { turnId: undefined }]) {
+    const present = observeChurchElder(createChurchElderState(), valid);
+    const hidden = observeChurchElder(present, { ...valid, ...invalid });
+    assert.equal(hidden.present, false, JSON.stringify(invalid));
+    assert.equal(observeChurchElder(hidden, valid).present, false, "a missing/foreign report cannot recycle the previous visit");
+  }
+  const present = observeChurchElder(createChurchElderState(), valid);
+  assert.equal(observeChurchElder(present, { ...valid, acceptsInput: false }).present, true, "busy preserves evidence but UI disables submission");
+  assert.equal(observeChurchElder(present, { ...valid, command: "LOOK", turnId: "absent-look", response: "St. Michael's\nThe way out is to the east." }).present, false);
+  assert.equal(observeChurchElder(createChurchElderState(), { ...valid, response: "A government official is waiting here." }).present, false);
+});
+
+test("requires a complete stable input report for church presence identity", async () => {
+  const { churchEchoId } = await import("../app/church-elder.ts");
+  const fixture = JSON.parse(await readFile(new URL("./fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
+  const arrival = fixture.sessions[0].observations[70].presentation;
+  assert.equal(churchEchoId(arrival), arrival.lines[0].id);
+  for (const change of [
+    { activeInput: null },
+    { activeInput: { ...arrival.activeInput, kind: "char" } },
+    { activeInput: { ...arrival.activeInput, line: null } },
+    { activeInput: { ...arrival.activeInput, classes: [] } },
+    { lines: arrival.lines.map((line, index) => index === arrival.terminalLine ? { ...line, text: "No prompt here" } : line) },
+    { lines: arrival.lines.map((line, index) => index === arrival.terminalLine ? { ...line, id: arrival.lines[0].id } : line) },
+    { terminalLine: arrival.terminalLine - 1 },
+    { lines: arrival.lines.map((line, index) => index === arrival.terminalLine ? { ...line, id: undefined } : line) },
+  ]) assert.equal(churchEchoId({ ...arrival, ...change }), undefined);
+  assert.equal(churchEchoId(null), undefined);
+});
+
+
+test("uses exact church response leaves as actor evidence", async () => {
+  const { createChurchElderState, observeChurchElder, CHURCH_ELDER_PRESENCE, CHURCH_ELDER_CONVERSATION } = await import("../app/church-elder.ts");
+  const valid = { eligible: true, roomId: "ST-MICHAELS", inputKind: "line", acceptsInput: true, hasStatus: true, turnId: "arrival", command: "W", response: CHURCH_ELDER_PRESENCE };
+  for (const response of [`Someone quotes: "${CHURCH_ELDER_PRESENCE}"`, `${CHURCH_ELDER_PRESENCE} This is an unobserved variant.`]) {
+    assert.equal(observeChurchElder(createChurchElderState(), { ...valid, response }).present, false);
+  }
+  const present = observeChurchElder(createChurchElderState(), valid);
+  for (const response of [`Someone quotes: "${CHURCH_ELDER_CONVERSATION}"`, `${CHURCH_ELDER_CONVERSATION} This is an unobserved variant.`, 'Someone quotes: "The church official wanders off."']) {
+    const unchanged = observeChurchElder(present, { ...valid, turnId: "variant", command: "WAIT", response });
+    assert.equal(unchanged.completed, false);
+    assert.equal(unchanged.present, true);
+  }
+  assert.equal(observeChurchElder(createChurchElderState(), { ...valid, response: `St. Michael's\n  ${CHURCH_ELDER_PRESENCE}  \n \n>` }).present, true);
+});
