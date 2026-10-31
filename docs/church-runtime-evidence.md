@@ -2,6 +2,10 @@
 
 ## C1 の提出判断
 
+以下は PR #105 提出時の判断である。
+その後、[独立 Sol レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/105#pullrequestreview-5721119301)が成功経路と操作契約を採択し、merge `91d5b6fdb16515500dc5af901636e321751053d1` で C1 は完了した。
+C2 の開始条件は解除済みであり、C3 は C2 の copy approval と merge を待つ。
+
 C1 / [#102](https://github.com/5gmt/mind-forever-voyaging/issues/102) の候補81送信を、2つの独立した fresh canonical session で完走した。
 先行67送信と全録画窓を保持し、St. Michael’s の人物在室、録画中の会話と退場、明示 OFF、退場後 LOOK、Kennedy Park の通常 line input を確認した。
 成功経路と操作契約を独立した Chat モード Sol の採択候補として提出する。
@@ -71,7 +75,7 @@ Session 2 は先行67件も同じ form、教会往路は Guided map の draft �
 実際の送信方法は各 turn の `submissionMethod` に保存した。
 全82 bridge requests は起動 character input と81 line submissions に一致し、draft / locale / map 選択の監査は input ID を進めていない。
 
-Half-full warning は両 session の index32、Roy’s Pagoda の `BUY MEAL` で発生した。
+Half-full warning は両 session の index32、Roy’s Pagoda の `RECORD` で発生した。
 原文は `WARNING: Record buffer is now half-full.` で、`warnings` に turn ID と raw status からの値も保存した。
 全経路で full / auto-deactivation、人物不在、会話不成立、帰着失敗を観測していない。
 数値残量、内部 flag、原作の正式課題評価は未観測であり、補助 checklist の6/9とは区別する。

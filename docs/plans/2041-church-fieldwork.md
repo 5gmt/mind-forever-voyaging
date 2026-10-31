@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と SceneActions を拡張する。先行五課題を保持した runtime capture で経路・人物の出現・録画容量を確認し、copy approval 後に限定した会話支援を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #101 は独立 Sol review 後、merge `ae73f1eeb14b8c7f88977876c8db569e8d20b71f` で採択済み。C1 #102 は2 fresh sessionsで各81送信を完走し、[実測証拠](../church-runtime-evidence.md)と132 UI samplesを提出する。成功経路の独立採択と merge は未了で、C2 #103 / C3 #104 は blocked。Copy approval と日本語統合は未実施。
+**Status:** 計画 PR #101 と C1 #102 / PR #105 は独立 Sol review と merge を完了。C1 の採択 merge は `91d5b6fdb16515500dc5af901636e321751053d1`。C2 #103 は[本文と人物操作の copy packet](../church-copy-packet.md)を提出し、独立 copy approval と merge 待ち。C3 #104 は blocked。教会の日本語と限定人物 guard は未実装。
 **Baseline:** Power Station の [PR #100](https://github.com/5gmt/mind-forever-voyaging/pull/100) merge `b1ce50995f4c44faa0dcd241177e5f0386a42868`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-10-29 JST の次期 milestone 選定・タスク作成依頼に対する提案。
 
@@ -142,18 +142,18 @@ First Methodist や後続年の同文、未承認 leaf は English fallback と�
 - [x] EN / JA と3 interaction modesで route / compass / exits / recording / LOOK / main・companion SceneActions を監査する。Visible / accessible name、`lang`、送信元、draft / 直接送信、人物の既存 guard と不足を台帳に残す。まだ実装していない日本語や guard の不足は C3 への明示 handoff とし、C1 の production 修正にしない。
 - [x] `tests/rendered-html.test.mjs` に fixture の全81送信候補と先行67件の順序、input chain、在室・会話・退場・録画窓、既存 ordinary projection の構造保持を固定する regression を追加し実行する。採択経路が変わる場合は先に設計判断を記録する。
 - [x] Applicable checks、checksum、diff check を行い、実測・source・UI の区別、未確認範囲、plan / status をそろえて PR を提出する。
-- [ ] Sol が成功経路と操作契約を独立採択し merge。失敗 evidence-only の merge では C2 を開始しない。
+- [x] Sol が [PR #105 の独立レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/105#pullrequestreview-5721119301)で成功経路と操作契約を採択し、merge `91d5b6fdb16515500dc5af901636e321751053d1` で C1 を完了。C2 開始条件を解除した。
 
 
 ### C2: Approve church story, navigation, and Talk copy
 
-**Files:** 新規 `docs/church-copy-packet.md`。更新 本書、`PROJECT_STATUS.md`。
+**Files:** 新規 `docs/church-copy-packet.md`。更新 本書、`PROJECT_STATUS.md`、独立 C1 レビューで指定された `docs/church-runtime-evidence.md` の警告 command 誤記。
 **Interfaces:** C1 の fixture / aliases / surface 台帳を消費し、exact English leaf と観測 command / room → Japanese、再利用 leaf、room / map / actor / assignment identity、visible / accessible name、動的値、適用条件、canonical command を C3 に渡す。
 
-- [ ] 採択した経路の新規 leaf と再利用 leaf を整理し、heading、段落、空行、時刻と optional noise を区別する。Source-only prose は承認しない。
-- [ ] 建物と原教会の関係、教会関係者が礼拝参加の増加を国の道徳的風潮と結びつける発言主体、会話後退場を保持する。2051年の宗教的寛容に関する別会話を混ぜない。
-- [ ] 経路の room、map `church`、人物、課題 index 6、Talk / draft help / route / recording / LOOK の visible・accessible copy と `lang` を別行で承認候補にする。Command は English のまま、人物の不明・不在時に翻訳を理由として guard を広げない。
-- [ ] Fixture の exact text / alias / link を照合して `git diff --check` を行い、local 未実施の E2E と current-head CI を区別して提出する。
+- [x] 採択した経路の新規 leaf と再利用 leaf を整理し、heading、段落、空行、時刻と optional noise を区別する。Source-only prose は承認しない。
+- [x] 建物と原教会の関係、教会関係者が礼拝参加の増加を国の道徳的風潮と結びつける発言主体、会話後退場を保持する。2051年の宗教的寛容に関する別会話を混ぜない。
+- [x] 経路の room、map `church`、人物、課題 index 6、Talk / draft help / route / recording / LOOK の visible・accessible copy と `lang` を別行で承認候補にする。Command は English のまま、人物の不明・不在時に翻訳を理由として guard を広げない。
+- [x] Fixture の exact text / alias / link を照合して `git diff --check` を行い、local 未実施の E2E と current-head CI を区別して提出する。
 - [ ] Sol の copy approval と merge 後に C3 の開始 gate を解除する。
 
 ### C3: Integrate church localization and accept the six-task route
