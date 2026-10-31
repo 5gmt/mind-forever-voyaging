@@ -1790,3 +1790,136 @@ test("projects the runtime-observed PEOF office scene through exact leaf identit
   assert.equal(fallbackBlocks?.[3].text, "An adjacent untranslated canonical leaf.");
   assert.equal(fallbackBlocks?.[3].canonicalText, "An adjacent untranslated canonical leaf.");
 });
+// Catch dropped/reordered canonical sends, reused echoes, recording-window drift,
+// or ordinary projection that collapses the newly observed church line structure.
+test("retains two fresh church routes after all 67 accepted submissions", async () => {
+  const path = new URL("./fixtures/parchment-church-runtime-observed.json", import.meta.url);
+  await assert.doesNotReject(access(path), "church runtime evidence must be captured before route adoption");
+  const f = JSON.parse(await readFile(path, "utf8"));
+  const previous = JSON.parse(await readFile(new URL("./fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
+  const aliases = { east: "E", west: "W", north: "N", south: "S" };
+  const canonical = (command) => aliases[command.toLowerCase()] ?? command.toUpperCase();
+  const normalize = (commands) => commands.map((command, i) => i === 6 ? "<observed decoder answer>" : canonical(command));
+  const route = ["NE", "E", "E", "N", "W", "RECORD", "CHURCH ELDER, HELLO", "RECORD OFF", "LOOK", "E", "S", "W", "W", "SW"];
+  assert.deepEqual(f.churchPath, route);
+  assert.deepEqual(f.churchLocations, ["Main & Kennedy", "Main & River", "Main & Church", "Church Entrance", "St. Michael's", "St. Michael's", "St. Michael's", "St. Michael's", "St. Michael's", "Church Entrance", "Main & Church", "Main & River", "Main & Kennedy", "Kennedy Park"]);
+  assert.deepEqual(f.churchRoomIds, ["MAIN-AND-KENNEDY", "MAIN-AND-RIVER", "MAIN-AND-CHURCH", "CHURCH-ENTRANCE", "ST-MICHAELS", "ST-MICHAELS", "ST-MICHAELS", "ST-MICHAELS", "ST-MICHAELS", "CHURCH-ENTRANCE", "MAIN-AND-CHURCH", "MAIN-AND-RIVER", "MAIN-AND-KENNEDY", "KENNEDY-PARK"]);
+  const presence = "You suddenly notice a church elder, pacing around at the other end of the building.";
+  const conversation = "You have a brief chat with the church elder, who smiles and comments on how happy he is about the recent increase in church attendance, which he attributes to an improving national moral climate. Suddenly he glances at his watch, mumbles a polite parting message, and hurries away.";
+  const minutes = (time) => {
+    const [, hour, minute, suffix] = time.match(/^(\d+):(\d+)(am|pm)$/);
+    return Number(hour) % 12 * 60 + Number(minute) + (suffix === "pm" ? 720 : 0);
+  };
+  assert.equal(f.canonicalSha256, "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+  assert.equal(f.sessions.length, 2);
+  for (const s of f.sessions) {
+    assert.equal(s.harnessFailure, undefined);
+    assert.equal(s.routeFailure, undefined);
+    assert.equal(s.submittedCommands.length, 81);
+    assert.deepEqual(normalize(s.submittedCommands.slice(0, 67)), normalize(previous.sessions[0].submittedCommands));
+    assert.deepEqual(s.submittedCommands.slice(67).map(canonical), route);
+    assert.deepEqual(s.bridgeCommands, [" ", ...s.submittedCommands]);
+    assert.equal(s.startup.before.presentation.activeInput.kind, "char");
+    assert.equal(s.startup.after.activeInput.kind, "line");
+    assert.equal(s.startup.nextInputId, s.submissions[0].submittedInputId);
+    assert.equal(s.submissions.length, 81);
+    for (const [i, input] of s.submissions.entries()) {
+      assert.equal(input.command, s.submittedCommands[i]);
+      assert.equal(input.echo.id, input.submittedInputId);
+      assert.notEqual(input.nextInputId, input.submittedInputId);
+      if (i) assert.equal(input.submittedInputId, s.submissions[i - 1].nextInputId);
+      if (input.role === "security-answer") assert.ok(input.echo.runs.some((run) => run.classes.includes("Style_input") && run.text === input.command));
+      else assert.equal(input.echo.text.toUpperCase(), `>${input.command.toUpperCase()}`);
+    }
+    assert.deepEqual(s.observations.slice(0, 66).map(({status}) => [status.location, status.mode]), previous.sessions[0].observations.map(({status}) => [status.location, status.mode]));
+    assert.equal(s.observations.length, 80);
+    const turns = s.observations.slice(66);
+    assert.deepEqual(turns.map(({status})=>status.location), f.churchLocations);
+    assert.deepEqual(turns.map(({status})=>status.mode), route.map((_, i)=>[5,6].includes(i)?"Simulation Mode (recording)":"Simulation Mode"));
+    for (const [i, turn] of s.observations.entries()) {
+      const p=turn.presentation;
+      assert.equal(p.version, 3);
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.equal(p.terminalLine, p.lines.length-1);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.lines[p.activeInput.line].id, turn.nextInputId);
+      if (i) assert.equal(turn.submittedInputId, s.observations[i-1].nextInputId);
+      assert.match(turn.statusText, /Time:\s+\d+:\d+(?:am|pm)/);
+      assert.doesNotMatch(p.lines.map(({text})=>text).join("\n"), /Record buffer full|Auto-deactivation|not currently active/i);
+      assert.equal(reconcilePresentationHistory([],p).representable,true);
+    }
+    assert.ok(turns[4].presentation.lines.some(({ text }) => text === presence));
+    assert.equal(turns[6].presentation.lines[1].text, conversation);
+    assert.equal(minutes(turns[6].status.time) - minutes(turns[5].status.time), 8);
+    assert.equal(turns[5].presentation.lines[1].text,"Record feature activated.");
+    assert.match(turns[6].presentation.lines.map(({text})=>text).join("\n"), /brief chat.*church (?:official|elder)/i);
+    assert.equal(turns[7].presentation.lines[1].text,"Record feature deactivated.");
+    assert.doesNotMatch(turns[8].presentation.lines.map(({text})=>text).join("\n"), /church (?:official|elder)/i);
+    assert.equal(turns.at(-1).status.location,"Kennedy Park");
+    assert.deepEqual(s.warnings.map(({texts})=>texts),[["WARNING: Record buffer is now half-full."]]);
+    assert.equal(s.warnings[0].turnId,s.observations[32].turnId);
+    for (const turn of turns) {
+      const raw=turn.presentation.lines.slice(1,-1);
+      for(const line of turn.presentation.lines) assert.equal(line.runs.map(({text})=>text).join(""),line.text);
+      const english=projectPresentationHistory(reconcilePresentationHistory([],turn.presentation).history,"en")[0].blocks;
+      assert.equal(english.slice(1).map(({text})=>text).join("\n"),raw.map(({text})=>text.trim()).filter(Boolean).join("\n"));
+      // Controlled structural probe, never runtime evidence or approved copy.
+      const probe=structuredClone(turn.presentation);
+      probe.lines.splice(-1,0,{...structuredClone(probe.lines[1]),id:"controlled-approved-anchor",text:"Kennedy Park",runs:[{text:"Kennedy Park",classes:["Style_normal"],tag:"span"}]});
+      probe.terminalLine++; probe.activeInput.line++;
+      const blocks=observedOrdinaryTurnPresentation(probe,"ja");
+      assert.ok(blocks);
+      const preserved=blocks.slice(1,-1);
+      assert.deepEqual(preserved.map((b)=>b.canonicalText??b.text),raw.map(({text})=>text.trim()));
+      assert.deepEqual(preserved.map(({sourceLines})=>sourceLines),raw.map((_,i)=>[i+1]));
+      assert.deepEqual(preserved.filter(({kind})=>kind==="spacer").map(({sourceLines})=>sourceLines),raw.flatMap(({text},i)=>text.trim()?[]:[[i+1]]));
+    }
+    assert.deepEqual(s.surfaceAudit.map(({ phase }) => phase), ["before-church", "outbound-0", "outbound-1", "outbound-2", "entrance", "actor-present-off", "actor-present-recording", "conversation-departure", "explicit-off", "after-departure-look", "returned-park"]);
+    for(const audit of s.surfaceAudit) {
+      assert.equal(audit.inputBefore,audit.inputAfter);
+      assert.deepEqual(audit.samples.map(({locale,mode})=>[locale,mode]),["English","日本語"].flatMap(locale=>["classic","guided","actions"].map(mode=>[locale,mode])));
+      for (const sample of audit.samples) {
+        assert.equal(sample.inputAfter, audit.inputBefore);
+        if (sample.mode === "classic") {
+          assert.equal(sample.mapButtonVisible, false);
+          assert.equal(sample.compass.length, 0);
+          assert.equal(sample.sceneActions.length, 0);
+          assert.equal(sample.companionSceneActions.length, 0);
+          continue;
+        }
+        assert.match(sample.map, /St\. Michael's Church/);
+        const present = ["actor-present-off", "actor-present-recording"].includes(audit.phase);
+        const departed = ["conversation-departure", "explicit-off", "after-departure-look", "returned-park"].includes(audit.phase);
+        for (const surface of [sample.sceneActions, sample.companionSceneActions]) {
+          const aria = surface.map(({ aria }) => aria).join("\n");
+          if (present) {
+            assert.match(aria, /church elder/);
+            assert.match(aria, /Talk/);
+            assert.ok(surface.flatMap(({ leaves }) => leaves).some(({ text, lang }) => text === "church elder" && lang === "en"));
+          }
+          if (departed) assert.doesNotMatch(aria, /church elder|button "Talk"/);
+        }
+        if (present && sample.mode === "guided") {
+          assert.ok(sample.sceneDrafts.some(({ command }) => command === "church elder, hello"));
+          assert.ok(sample.companionDrafts.some(({ command }) => command === "church elder, hello"));
+        }
+        assert.match(sample.map, departed ? /6 of 9 recorded|9件中6件を録画/ : /5 of 9 recorded|9件中5件を録画/);
+        if (["actor-present-off", "actor-present-recording", "conversation-departure", "explicit-off", "after-departure-look"].includes(audit.phase)) {
+          const church = sample.mapSurface.flatMap(({ buttons }) => buttons).find(({ ariaLabel }) => ariaLabel?.startsWith("St. Michael's Church"));
+          assert.equal(church.ariaLabel, "St. Michael's Church, current location");
+          assert.ok(sample.location.flatMap(({ leaves }) => leaves).some(({ text, lang }) => text === "St. Michael's" && lang === "en"));
+        }
+      }
+    }
+  }
+  const stableCounts = [1, 3, 2, 2, 3, 1, 1, 1, 2, 1, 1, 1, 1, 1];
+  const optional = f.sessions.flatMap((session) => session.observations.slice(66).flatMap((turn, i) =>
+    turn.presentation.lines.slice(1, -1).map(({ text }) => text).filter((text) => text.trim())
+      .slice(stableCounts[i]).map((text) => [session.id, i + 66, text])));
+  assert.deepEqual(optional, [
+    [1, 68, "You are startled as a taxi horn blares nearby."],
+    [1, 75, "Across the street, two policemen are frisking a youth. As you watch, they usher the youth into a waiting car and fly off."],
+    [1, 78, "The ground shakes as a huge truck rumbles down the street."],
+    [2, 68, "A skycopter drones by far overhead and disappears into the distance."],
+  ], "retain optional output verbatim at its observed session and turn");
+});
