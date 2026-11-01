@@ -8,6 +8,7 @@ export type PresentationHistoryEntry = {
   // It belongs to this history entry, not the currently selected locale.
   cityHall2041?: string;
   powerStation2041?: string;
+  church2041?: string;
 };
 
 export type PresentationHistory = PresentationHistoryEntry[];
@@ -42,7 +43,7 @@ const isSafeObservation = (presentation: BridgePresentation | null): presentatio
 export const reconcilePresentationHistory = (
   previous: PresentationHistory,
   presentation: BridgePresentation | null,
-  scope: { cityHall2041?: string; powerStation2041?: string } = {},
+  scope: { cityHall2041?: string; powerStation2041?: string; church2041?: string } = {},
 ): PresentationReconciliation => {
   if (!isSafeObservation(presentation)) return { history: previous, representable: false };
   const localized = storyPresentation(presentation, "ja");
@@ -68,7 +69,7 @@ export const reconcilePresentationHistory = (
   const restoreBoundary = fallback?.[0]?.kind === "command"
     && /^RESTORE$/i.test(fallback[0].canonicalText ?? fallback[0].text);
   return {
-    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}), ...(scope.powerStation2041 ? { powerStation2041: scope.powerStation2041 } : {}) }],
+    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}), ...(scope.powerStation2041 ? { powerStation2041: scope.powerStation2041 } : {}), ...(scope.church2041 ? { church2041: scope.church2041 } : {}) }],
     representable: true,
   };
 };
@@ -126,6 +127,21 @@ const POWER_STATION_COPY_ROOMS: Record<string, string> = {
   "part1.simulation.power-station.station.description": "POWER-STATION",
 };
 
+const CHURCH_COPY_ROOMS: Record<string, string> = {
+  "part1.simulation.church.main-river.heading": "MAIN-AND-RIVER",
+  "part1.simulation.church.main-church.heading": "MAIN-AND-CHURCH",
+  "part1.simulation.church.entrance.heading": "CHURCH-ENTRANCE",
+  "part1.simulation.church.church.heading": "ST-MICHAELS",
+  "part1.simulation.church.main-river.description-1": "MAIN-AND-RIVER",
+  "part1.simulation.church.main-river.description-2": "MAIN-AND-RIVER",
+  "part1.simulation.church.main-church.description": "MAIN-AND-CHURCH",
+  "part1.simulation.church.entrance.description": "CHURCH-ENTRANCE",
+  "part1.simulation.church.church.description": "ST-MICHAELS",
+  "part1.simulation.church.presence": "ST-MICHAELS",
+  "part1.simulation.church.conversation": "ST-MICHAELS",
+  "part1.simulation.church.return": "MAIN-AND-KENNEDY",
+};
+
 export const projectPresentationHistory = (
   history: PresentationHistory,
   locale: Locale,
@@ -139,5 +155,8 @@ export const projectPresentationHistory = (
       : block.contentId?.startsWith("part1.simulation.power-station.")
         && entry.powerStation2041 !== POWER_STATION_COPY_ROOMS[block.contentId]
         ? { ...block, text: block.canonicalText ?? block.text }
-        : block),
+        : block.contentId?.startsWith("part1.simulation.church.")
+          && entry.church2041 !== CHURCH_COPY_ROOMS[block.contentId]
+          ? { ...block, text: block.canonicalText ?? block.text }
+          : block),
 })).filter((entry) => entry.blocks.length > 0);

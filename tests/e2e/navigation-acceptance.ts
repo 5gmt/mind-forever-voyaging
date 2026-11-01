@@ -27,7 +27,7 @@ export const clickRouteStep = async (
       await expect(page.locator("#command-help")).toContainText("Route to Newspaper:");
       await expect(input).toHaveValue(command.toLowerCase());
       await toggle("日本語");
-      await expect(page.locator("#command-help")).toContainText("新聞 への経路");
+      await expect(page.locator("#command-help")).toContainText("新聞への経路");
       await expect(commands).toHaveCount(previousCount);
       await input.click();
       await expect(input).toBeFocused();

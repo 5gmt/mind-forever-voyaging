@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
 import { FormEvent, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { cityHallTalkHelp, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
+import { churchTalkHelp, cityHallTalkHelp, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -159,6 +159,7 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
   const usableObjects = useMemo(() => objects.filter((object) =>
     hasUsefulSceneAction(object, roomId)
       && (object.id !== "GOVERNMENT-OFFICIAL" || (initial2041 && lineInput && roomId === "CITY-HALL"))
+      && (object.id !== "CHURCH-OFFICIAL" || (initial2041 && lineInput && roomId === "ST-MICHAELS"))
       && (roomId !== "OFFICE" || PEOF_SCENE_NOUNS.has(object.commandNoun!)),
   ), [initial2041, lineInput, objects, roomId]);
   if (level === "classic") return null;
@@ -187,6 +188,7 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
   if (level === "guided") return <section className="scene-actions scene-words" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "guidedLandmark")}>
     <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "guidedHeading")}</span><small>{sceneActionUiText(displayLocale, "guidedInstruction")}</small></div>
     {usableObjects.some((object) => object.id === "GOVERNMENT-OFFICIAL") && <p className="scene-official-help">{cityHallTalkHelp(displayLocale, "guided")}</p>}
+    {usableObjects.some((object) => object.id === "CHURCH-OFFICIAL") && <p className="scene-official-help">{churchTalkHelp(displayLocale, "guided")}</p>}
     <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{objectName(object)}<small>{actionLabel(object, action)}</small></button>; })}</div>
   </section>;
 
@@ -198,6 +200,7 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
           return <article className="scene-object" key={object.id}>
             <strong>{objectName(object)}</strong>
             {object.id === "GOVERNMENT-OFFICIAL" && <p className="scene-official-help">{cityHallTalkHelp(displayLocale, "actions")}</p>}
+            {object.id === "CHURCH-OFFICIAL" && <p className="scene-official-help">{churchTalkHelp(displayLocale, "actions")}</p>}
             <div>{visibleActionsFor(object, roomId).map((action) => <button type="button" key={action.id} onClick={() => sendCommand(actionCommand(object, action))} disabled={disabled}>{actionLabel(object, action)}</button>)}</div>
           </article>;
         })}

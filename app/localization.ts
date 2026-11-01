@@ -262,7 +262,7 @@ const UI = {
     absentObjectHelp: "それは現在ここにありません。LOOK で周囲を再表示できます。",
     understoodAs: "{command} として受け付けました",
     draftedFromPassage: "本文の言葉から下書きしました。編集するか、送信を押してください。",
-    routeDrafted: "{destination} への経路：この手順を編集するか、送信を押してください。",
+    routeDrafted: "{destination}への経路：この手順を編集するか、送信を押してください。",
     shared: "共有しました",
     linkCopied: "リンクをコピーしました",
     linkCopyFailed: "リンクをコピーできませんでした",
@@ -523,7 +523,13 @@ const CITY_HALL_TALK_HELP = {
 } as const;
 export const cityHallTalkHelp = (locale: Locale, mode: "guided" | "actions") => CITY_HALL_TALK_HELP[locale][mode];
 
-const INITIAL_ROUTE_ROOMS = new Set(["ROCKVIL-CENTRE", "CITY-HALL", "KENNEDY-PARK", "ELM-AND-PARK", "COURTHOUSE", "MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE", "ELM-AND-UNIVERSITY", "ELM-UNDERPASS", "ROYS-PAGODA"]);
+const CHURCH_TALK_HELP = {
+  en: { guided: "Draft a command to talk to the church elder. You can edit it before sending.", actions: "Choose Talk to send the command once." },
+  ja: { guided: "教会の長老と話すコマンドを下書きします。編集してから送信できます。", actions: "「話す」を押すと、コマンドを1回送信します。" },
+} as const;
+export const churchTalkHelp = (locale: Locale, mode: "guided" | "actions") => CHURCH_TALK_HELP[locale][mode];
+
+const INITIAL_ROUTE_ROOMS = new Set(["ST-MICHAELS", "ROCKVIL-CENTRE", "CITY-HALL", "KENNEDY-PARK", "ELM-AND-PARK", "COURTHOUSE", "MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE", "ELM-AND-UNIVERSITY", "ELM-UNDERPASS", "ROYS-PAGODA"]);
 export const sceneActionsLocale = (locale: Locale, roomId: string | null | undefined, initial2041 = false): Locale =>
   roomId === "OFFICE" || (initial2041 && roomId && INITIAL_ROUTE_ROOMS.has(roomId)) ? locale : "en";
 
@@ -551,13 +557,15 @@ const isPeofSceneObject = (objectId: string): objectId is PeofSceneObjectId => o
 const isPeofSceneAction = (actionId: string): actionId is PeofSceneActionId => actionId in PEOF_SCENE_ACTION_LABELS;
 
 export const localizeSceneObjectName = (locale: Locale, roomId: string | null | undefined, objectId: string, canonicalName: string) =>
-  locale === "ja" && roomId === "CITY-HALL" && objectId === "GOVERNMENT-OFFICIAL" ? "政府職員"
+  locale === "ja" && roomId === "ST-MICHAELS" && objectId === "CHURCH-OFFICIAL" ? "教会の長老"
+    : locale === "ja" && roomId === "CITY-HALL" && objectId === "GOVERNMENT-OFFICIAL" ? "政府職員"
     : locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) ? PEOF_SCENE_OBJECT_NAMES[objectId]
     : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" ? "新聞"
       : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER-DISPENSER" ? "新聞販売機" : locale === "ja" && roomId === "ROYS-PAGODA" && objectId === "MEAL" ? "食事" : canonicalName;
 
 export const localizeSceneActionLabel = (locale: Locale, roomId: string | null | undefined, objectId: string, actionId: string, canonicalLabel: string) =>
-  locale === "ja" && roomId === "CITY-HALL" && objectId === "GOVERNMENT-OFFICIAL" && actionId === "talk" ? "話す"
+  locale === "ja" && roomId === "ST-MICHAELS" && objectId === "CHURCH-OFFICIAL" && actionId === "talk" ? "話す"
+    : locale === "ja" && roomId === "CITY-HALL" && objectId === "GOVERNMENT-OFFICIAL" && actionId === "talk" ? "話す"
     : locale === "ja" && roomId === "OFFICE" && isPeofSceneObject(objectId) && isPeofSceneAction(actionId)
     ? PEOF_SCENE_ACTION_LABELS[actionId]
     : locale === "ja" && roomId === "BODANSKI-SQUARE" && objectId === "NEWSPAPER" && actionId === "buy" ? "買う"
@@ -596,6 +604,10 @@ export const localizeOutletLabel = (locale: Locale, code: string, canonicalLabel
 
 const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
+    "Main & River": "メイン通りとリバー通り",
+    "Main & Church": "メイン通りとチャーチ通り",
+    "Church Entrance": "教会入口",
+    "St. Michael's": "聖ミカエル教会",
     "Elm & Kennedy": "エルム通りとケネディ通り",
     "Elm & River": "エルム通りとリバー通り",
     "Southway & River": "サウスウェイ通りとリバー通り",
@@ -629,6 +641,7 @@ const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, stri
     meal: "レストラン",
     official: "市役所",
     power: "発電所",
+    church: "聖ミカエル教会",
     infotech: "インフォテック・ビル",
     kennedy: "ケネディ公園",
     court: "裁判所",
@@ -715,6 +728,18 @@ export type StoryContentId =
   | "part1.simulation.power-station.entrance.description"
   | "part1.simulation.power-station.station.heading"
   | "part1.simulation.power-station.station.description"
+  | "part1.simulation.church.main-river.heading"
+  | "part1.simulation.church.main-church.heading"
+  | "part1.simulation.church.entrance.heading"
+  | "part1.simulation.church.church.heading"
+  | "part1.simulation.church.main-river.description-1"
+  | "part1.simulation.church.main-river.description-2"
+  | "part1.simulation.church.main-church.description"
+  | "part1.simulation.church.entrance.description"
+  | "part1.simulation.church.church.description"
+  | "part1.simulation.church.presence"
+  | "part1.simulation.church.conversation"
+  | "part1.simulation.church.return"
   | "part1.simulation.record-activated"
   | "part1.simulation.record-deactivated";
 
@@ -1138,6 +1163,39 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
       canonicalLeaf: "Record feature deactivated.",
       translation: { contentId: "part1.simulation.record-deactivated", text: "記録機能を停止しました。" },
     },
+    // C2-approved church copy: exact observed leaves and finite actual aliases.
+    {"canonicalCommand": "E", "canonicalLeaf": "Main & River", "translation": {"contentId": "part1.simulation.church.main-river.heading", "text": "メイン通りとリバー通り", "kind": "title"}},
+    {"canonicalCommand": "W", "canonicalLeaf": "Main & River", "translation": {"contentId": "part1.simulation.church.main-river.heading", "text": "メイン通りとリバー通り", "kind": "title"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "Main & River", "translation": {"contentId": "part1.simulation.church.main-river.heading", "text": "メイン通りとリバー通り", "kind": "title"}},
+    {"canonicalCommand": "WEST", "canonicalLeaf": "Main & River", "translation": {"contentId": "part1.simulation.church.main-river.heading", "text": "メイン通りとリバー通り", "kind": "title"}},
+    {"canonicalCommand": "E", "canonicalLeaf": "Main & Church", "translation": {"contentId": "part1.simulation.church.main-church.heading", "text": "メイン通りとチャーチ通り", "kind": "title"}},
+    {"canonicalCommand": "S", "canonicalLeaf": "Main & Church", "translation": {"contentId": "part1.simulation.church.main-church.heading", "text": "メイン通りとチャーチ通り", "kind": "title"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "Main & Church", "translation": {"contentId": "part1.simulation.church.main-church.heading", "text": "メイン通りとチャーチ通り", "kind": "title"}},
+    {"canonicalCommand": "SOUTH", "canonicalLeaf": "Main & Church", "translation": {"contentId": "part1.simulation.church.main-church.heading", "text": "メイン通りとチャーチ通り", "kind": "title"}},
+    {"canonicalCommand": "N", "canonicalLeaf": "Church Entrance", "translation": {"contentId": "part1.simulation.church.entrance.heading", "text": "教会入口", "kind": "title"}},
+    {"canonicalCommand": "E", "canonicalLeaf": "Church Entrance", "translation": {"contentId": "part1.simulation.church.entrance.heading", "text": "教会入口", "kind": "title"}},
+    {"canonicalCommand": "NORTH", "canonicalLeaf": "Church Entrance", "translation": {"contentId": "part1.simulation.church.entrance.heading", "text": "教会入口", "kind": "title"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "Church Entrance", "translation": {"contentId": "part1.simulation.church.entrance.heading", "text": "教会入口", "kind": "title"}},
+    {"canonicalCommand": "W", "canonicalLeaf": "St. Michael's", "translation": {"contentId": "part1.simulation.church.church.heading", "text": "聖ミカエル教会", "kind": "title"}},
+    {"canonicalCommand": "LOOK", "canonicalLeaf": "St. Michael's", "translation": {"contentId": "part1.simulation.church.church.heading", "text": "聖ミカエル教会", "kind": "title"}},
+    {"canonicalCommand": "WEST", "canonicalLeaf": "St. Michael's", "translation": {"contentId": "part1.simulation.church.church.heading", "text": "聖ミカエル教会", "kind": "title"}},
+    {"canonicalCommand": "E", "canonicalLeaf": "This is a typical four-way intersection between Main and River Streets. An entranceway through the massive walls of Heiman Village fills the southeast corner of the street, and a health care facility occupies the northeast corner.", "translation": {"contentId": "part1.simulation.church.main-river.description-1", "text": "ここは、メイン通りとリバー通りが交差する、よくある四つ角だ。南東の角にはハイマン・ヴィレッジの巨大な壁を通り抜ける入口があり、北東の角には医療施設がある。"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "This is a typical four-way intersection between Main and River Streets. An entranceway through the massive walls of Heiman Village fills the southeast corner of the street, and a health care facility occupies the northeast corner.", "translation": {"contentId": "part1.simulation.church.main-river.description-1", "text": "ここは、メイン通りとリバー通りが交差する、よくある四つ角だ。南東の角にはハイマン・ヴィレッジの巨大な壁を通り抜ける入口があり、北東の角には医療施設がある。"}},
+    {"canonicalCommand": "E", "canonicalLeaf": "To the southwest is 80 River Street, a brand new plastalloy and glass office building, with many floors still unoccupied according to the billboard over the entrance. The fourth corner, the northwest, is the site of Perez Towers, a luxury apartment building. The sidewalks and street are crowded with people.", "translation": {"contentId": "part1.simulation.church.main-river.description-2", "text": "南西にはリバー通り80番地の、プラスタロイとガラスで造られた真新しいオフィスビルがある。入口の上に掲げられた看板によると、まだ多くの階が空いている。残る北西の角には、高級アパートのペレス・タワーズが建っている。通りと歩道は人で混み合っている。"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "To the southwest is 80 River Street, a brand new plastalloy and glass office building, with many floors still unoccupied according to the billboard over the entrance. The fourth corner, the northwest, is the site of Perez Towers, a luxury apartment building. The sidewalks and street are crowded with people.", "translation": {"contentId": "part1.simulation.church.main-river.description-2", "text": "南西にはリバー通り80番地の、プラスタロイとガラスで造られた真新しいオフィスビルがある。入口の上に掲げられた看板によると、まだ多くの階が空いている。残る北西の角には、高級アパートのペレス・タワーズが建っている。通りと歩道は人で混み合っている。"}},
+    {"canonicalCommand": "E", "canonicalLeaf": "You are at the corner of bustling Main Street and quiet Church Street. There is construction in progress on the northwestern and southwestern corners. A conventional apartment building occupies the southeast corner, and an entrance to Midland Cemetery forms the fourth corner. Some greenery is visible down Church Street to the south.", "translation": {"contentId": "part1.simulation.church.main-church.description", "text": "にぎやかなメイン通りと静かなチャーチ通りの角にいる。北西と南西の角では建設工事が進んでいる。南東の角には普通のアパートがあり、残る角にはミッドランド墓地への入口がある。チャーチ通りの南のほうには、緑が見える。"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "You are at the corner of bustling Main Street and quiet Church Street. There is construction in progress on the northwestern and southwestern corners. A conventional apartment building occupies the southeast corner, and an entrance to Midland Cemetery forms the fourth corner. Some greenery is visible down Church Street to the south.", "translation": {"contentId": "part1.simulation.church.main-church.description", "text": "にぎやかなメイン通りと静かなチャーチ通りの角にいる。北西と南西の角では建設工事が進んでいる。南東の角には普通のアパートがあり、残る角にはミッドランド墓地への入口がある。チャーチ通りの南のほうには、緑が見える。"}},
+    {"canonicalCommand": "N", "canonicalLeaf": "You are on Church Street, just east of a large, opulent church displaying the architecture of the twentieth century. The street continues north and south, and construction sites lie to the northwest and southwest. The main entrance to Midland Cemetery is east of here.", "translation": {"contentId": "part1.simulation.church.entrance.description", "text": "ここはチャーチ通りで、20世紀様式の大きく豪華な教会のすぐ東にあたる。通りは北と南へ続き、北西と南西には建設現場がある。ミッドランド墓地の正門はここから東にある。"}},
+    {"canonicalCommand": "NORTH", "canonicalLeaf": "You are on Church Street, just east of a large, opulent church displaying the architecture of the twentieth century. The street continues north and south, and construction sites lie to the northwest and southwest. The main entrance to Midland Cemetery is east of here.", "translation": {"contentId": "part1.simulation.church.entrance.description", "text": "ここはチャーチ通りで、20世紀様式の大きく豪華な教会のすぐ東にあたる。通りは北と南へ続き、北西と南西には建設現場がある。ミッドランド墓地の正門はここから東にある。"}},
+    {"canonicalCommand": "W", "canonicalLeaf": "This is a large church with an obviously wealthy congregation. Although this building is over a century old, it is not the original St. Michael's, but is built on the site of the even older original church. The way out is to the east.", "translation": {"contentId": "part1.simulation.church.church.description", "text": "ここは大きな教会で、信徒たちが裕福であることは一目でわかる。この建物も建ってから100年を超えているが、聖ミカエル教会の最初の建物ではない。さらに古い元の教会があった場所に建てられている。出口は東にある。"}},
+    {"canonicalCommand": "LOOK", "canonicalLeaf": "This is a large church with an obviously wealthy congregation. Although this building is over a century old, it is not the original St. Michael's, but is built on the site of the even older original church. The way out is to the east.", "translation": {"contentId": "part1.simulation.church.church.description", "text": "ここは大きな教会で、信徒たちが裕福であることは一目でわかる。この建物も建ってから100年を超えているが、聖ミカエル教会の最初の建物ではない。さらに古い元の教会があった場所に建てられている。出口は東にある。"}},
+    {"canonicalCommand": "WEST", "canonicalLeaf": "This is a large church with an obviously wealthy congregation. Although this building is over a century old, it is not the original St. Michael's, but is built on the site of the even older original church. The way out is to the east.", "translation": {"contentId": "part1.simulation.church.church.description", "text": "ここは大きな教会で、信徒たちが裕福であることは一目でわかる。この建物も建ってから100年を超えているが、聖ミカエル教会の最初の建物ではない。さらに古い元の教会があった場所に建てられている。出口は東にある。"}},
+    {"canonicalCommand": "W", "canonicalLeaf": "You suddenly notice a church elder, pacing around at the other end of the building.", "translation": {"contentId": "part1.simulation.church.presence", "text": "ふと、建物の向こうの端で教会の長老が行ったり来たりしているのに気づく。"}},
+    {"canonicalCommand": "WEST", "canonicalLeaf": "You suddenly notice a church elder, pacing around at the other end of the building.", "translation": {"contentId": "part1.simulation.church.presence", "text": "ふと、建物の向こうの端で教会の長老が行ったり来たりしているのに気づく。"}},
+    {"canonicalCommand": "CHURCH ELDER, HELLO", "canonicalLeaf": "You have a brief chat with the church elder, who smiles and comments on how happy he is about the recent increase in church attendance, which he attributes to an improving national moral climate. Suddenly he glances at his watch, mumbles a polite parting message, and hurries away.", "translation": {"contentId": "part1.simulation.church.conversation", "text": "教会の長老と短い会話を交わす。長老は笑みを浮かべ、最近は礼拝への出席者が増えたことをとても喜んでいると話し、その増加は国全体の道徳的な風潮がよくなっているためだという。突然、時計にちらりと目をやり、丁寧な別れの言葉をぼそぼそと口にすると、足早に去っていく。"}},
+    {"canonicalCommand": "W", "canonicalLeaf": "Main & Kennedy", "translation": {"contentId": "part1.simulation.church.return", "text": "メイン通りとケネディ通り", "kind": "title"}},
+    {"canonicalCommand": "WEST", "canonicalLeaf": "Main & Kennedy", "translation": {"contentId": "part1.simulation.church.return", "text": "メイン通りとケネディ通り", "kind": "title"}},
+
   ],
 };
 

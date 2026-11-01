@@ -8,6 +8,7 @@ import { INTERFACE_PORTS, ROCKVIL_LANDMARKS, InterfaceWorkbench, PackageOverlay,
 import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./world-data";
 import { companionHeaderLanguage, localizeOutletLabel, localizeSimulationMapLabel, localizeSimulationPlace, navigationRouteLabel, navigationSteps, navigationUiText, plotAssignmentLabel, recordedProgress, simulationAssignment, uiText, type Locale, type UiKey } from "./localization";
 import { projectPresentationHistory, reconcilePresentationHistory, type PresentationHistory } from "./presentation-history";
+import { churchEchoId, createChurchElderState, observeChurchElder } from "./church-elder";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -372,6 +373,7 @@ export default function PrismEdition() {
   const presentationRef = useRef<HTMLDivElement>(null);
   const followPresentationRef = useRef(true);
   const initialSimulationRef = useRef<InitialSimulationState>("unknown");
+  const churchElderRef = useRef(createChurchElderState());
   const cityHallOfficialRef = useRef<CityHallOfficialPresence>("unknown");
   // The canonical interpreter stays live across QA visits. Its mode history
   // must survive wrapper resets and must never be updated by the QA story.
@@ -432,6 +434,7 @@ export default function PrismEdition() {
   const [debugMessage, setDebugMessage] = useState("");
   const [localizedHost, setLocalizedHost] = useState<HTMLElement | null>(null);
   const [initialSimulationState, setInitialSimulationState] = useState<InitialSimulationState>("unknown");
+  const [churchElder, setChurchElder] = useState(createChurchElderState);
   const [cityHallOfficial, setCityHallOfficial] = useState<CityHallOfficialPresence>("unknown");
 
   const phase = phaseFor(discovery);
@@ -535,15 +538,17 @@ export default function PrismEdition() {
   const sceneActionObjects = useMemo(() => {
     const available = contextualObjects.filter((object) => object.id !== "GOVERNMENT-OFFICIAL"
       || (initial2041Presentation && room?.id === "CITY-HALL" && inputKind === "line" && cityHallOfficial === "present"));
+    const churchAvailable = available.filter((object) => object.id !== "CHURCH-OFFICIAL"
+      || (initial2041Presentation && room?.id === "ST-MICHAELS" && inputKind === "line" && churchElder.present));
     // The generic word list collapses "newspaper" into "newspaper dispenser".
     // Keep this approved Buy / Read target within Guided's six visible words.
     const newspaper = OBJECTS_BY_ID.get("NEWSPAPER");
     return initial2041Presentation && room?.id === "BODANSKI-SQUARE" && newspaper
-      && available.some((object) => object.id === "NEWSPAPER-DISPENSER")
-      && !available.some((object) => object.id === newspaper.id)
-      ? [newspaper, ...available]
-      : available;
-  }, [cityHallOfficial, contextualObjects, initial2041Presentation, inputKind, room?.id]);
+      && churchAvailable.some((object) => object.id === "NEWSPAPER-DISPENSER")
+      && !churchAvailable.some((object) => object.id === newspaper.id)
+      ? [newspaper, ...churchAvailable]
+      : churchAvailable;
+  }, [churchElder.present, cityHallOfficial, contextualObjects, initial2041Presentation, inputKind, room?.id]);
   const navigationLocale = initial2041Presentation ? locale : "en";
   const navigationText = (key: Parameters<typeof navigationUiText>[1]) => navigationUiText(navigationLocale, key);
   const navigationPlace = (name: string) => localizeSimulationPlace(navigationLocale, name);
@@ -640,6 +645,8 @@ export default function PrismEdition() {
           setInitialSimulationState("unknown");
           cityHallOfficialRef.current = "unknown";
           setCityHallOfficial("unknown");
+          churchElderRef.current = createChurchElderState();
+          setChurchElder(churchElderRef.current);
         }
         if (/^(?:record|ron)$/i.test(entered)) setRecording(true);
         if (/^(?:record off|roff)$/i.test(entered)) setRecording(false);
@@ -700,6 +707,8 @@ export default function PrismEdition() {
         sceneCacheRef.current.clear();
         cityHallOfficialRef.current = "unknown";
         setCityHallOfficial("unknown");
+        churchElderRef.current = createChurchElderState();
+        setChurchElder(churchElderRef.current);
         setSceneText("");
         try {
           for (const key of ["amfv:designation", "amfv:modes", "amfv:years", "amfv:rooms", "amfv:discoveries", "amfv:notes", "amfv:history"]) localStorage.removeItem(key);
@@ -784,6 +793,20 @@ export default function PrismEdition() {
       const nextPresentation = [2, 3].includes(event.data.presentation?.version) && Array.isArray(event.data.presentation.lines)
         ? event.data.presentation
         : null;
+      // Raw current response and echo identity belong to this visit; cached
+      // sceneText and translated history are never presence evidence.
+      const nextChurchElder = observeChurchElder(churchElderRef.current, {
+        eligible: initial2041Scope && nextStatusLocation?.toLowerCase() === "st. michael's",
+        roomId: nextRoom?.id,
+        inputKind: event.data.inputKind,
+        acceptsInput: typeof event.data.acceptsInput === "boolean" ? event.data.acceptsInput : undefined,
+        hasStatus: Boolean(nextStatusLocation),
+        turnId: churchEchoId(nextPresentation),
+        command: recentCommand?.[1] ?? "",
+        response: responseAfterCommand,
+      });
+      churchElderRef.current = nextChurchElder;
+      setChurchElder(nextChurchElder);
       // Ignore transient reports while the interpreter is processing. A
       // stable active input can be projected or can deliberately request
       // canonical recovery (for example an unsupported character prompt).
@@ -793,6 +816,7 @@ export default function PrismEdition() {
           const reconciliation = reconcilePresentationHistory(previous.history, nextPresentation, {
             cityHall2041: initial2041Scope ? nextRoom?.id : undefined,
             powerStation2041: initial2041Scope ? nextRoom?.id : undefined,
+            church2041: initial2041Scope ? nextRoom?.id : undefined,
           });
           return { history: reconciliation.history, recovering: !reconciliation.representable };
         });
@@ -880,6 +904,8 @@ export default function PrismEdition() {
       setInitialSimulationState("unknown");
       cityHallOfficialRef.current = "unknown";
       setCityHallOfficial("unknown");
+      churchElderRef.current = createChurchElderState();
+      setChurchElder(churchElderRef.current);
     }
     setAcceptsInput(false);
     activeFrame.contentWindow.postMessage({ channel: BRIDGE_CHANNEL, type: "command", command: normalized }, window.location.origin);
@@ -1075,6 +1101,8 @@ export default function PrismEdition() {
     sceneCacheRef.current.clear();
     cityHallOfficialRef.current = "unknown";
     setCityHallOfficial("unknown");
+    churchElderRef.current = createChurchElderState();
+    setChurchElder(churchElderRef.current);
     setSceneText("");
     setGridText("");
     setPresentationState({ history: [], recovering: true });

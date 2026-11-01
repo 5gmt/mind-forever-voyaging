@@ -262,6 +262,7 @@ export async function acceptPowerStationMilestone(page: Page, controls: "classic
   }
   await attach("power-station-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release79, existing live bridge observations and actual parent-to-player requests; no VM edits/restores", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), recordFacility, trace, powerTurns: turns, warnings, clockLimitation: narrow ? "canonical narrow status emits no clock/date; no time synthesized" : null, finalInputId: turns.at(-1)!.nextInputId, checklist: controls === "classic" ? "not displayed" : recordFacility ? "5/9 auxiliary inference, not original assignment evaluation" : "4/9; entrance recording and unrecorded facility LOOK add no task" }));
   await attach("power-station-return", await page.screenshot(), "image/png");
+  return { ...prior, powerTurns: turns };
 }
 
 // Synthetic wrapper reports only. Parchment remains at its actual startup;
