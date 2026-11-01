@@ -7,7 +7,7 @@
 **Architecture:** 既存の 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と SceneActions を拡張する。先行五課題を保持した runtime capture で経路・人物の出現・録画容量を確認し、copy approval 後に限定した会話支援を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、既存 bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #101、C1 #102 / PR #105、C2 #103 / PR #106 は独立 Sol review と merge を完了。C2 の copy approval と merge `e11634762c35b518377a87fbbdd6a10717ea57a6` を受け、C3 #104 は承認 copy、限定人物 guard、6経路と負例の統合を実装した。[最終受入記録](../church-fieldwork-acceptance.md)を同じ PR に用意し、Sol 通常レビューと Work 全体受入に提出する。Milestone の最終 merge、#29 報告、Issue close は未了。
+**Status:** 計画 PR #101、C1 #102 / PR #105、C2 #103 / PR #106 は独立 Sol review と merge を完了。C2 の copy approval と merge `e11634762c35b518377a87fbbdd6a10717ea57a6` を受け、C3 #104 は承認 copy、限定人物 guard、6経路と負例の統合を実装した。[最終受入記録](../church-fieldwork-acceptance.md)を同じ PR に用意し、初回 head は Sol 通常レビューの ACCEPT を得た。Work は ZIP 実体を監査し、reading checkpoint の測定と保存の不一致を P2 で差し戻した。本再提出はその記録を修正し、Sol 差分レビューと Work 再受入を待つ。Milestone の最終 merge、#29 報告、Issue close は未了。
 **Baseline:** Power Station の [PR #100](https://github.com/5gmt/mind-forever-voyaging/pull/100) merge `b1ce50995f4c44faa0dcd241177e5f0386a42868`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-10-29 JST の次期 milestone 選定・タスク作成依頼に対する提案。
 
@@ -167,9 +167,11 @@ First Methodist や後続年の同文、未承認 leaf は English fallback と�
 - [x] 別 fresh session の非録画負例と推定5/9、controlled の後付け録画負例を検証する。Room 名・出現だけを加点しない。
 - [x] Main / companion の在室・会話後・時刻退場・再訪・別教会、busy / char、long history、RESTORE 不明、新 session、対象外 phase / year / QA を unit と controlled browser regression で固定する。自然な runtime 証拠と分けて記録する。
 - [x] 現地と帰着の reading / scroll / focus / locale / a11y を保存した。PNG、JSON、accessibility snapshot と controlled probe はすべて `testInfo.outputPath` に実ファイルとして保存して添付し、local の内容を照合した。
-- [ ] Passing current-head CI artifact ZIP 内のファイル実体と内容を確認する。転送先が環境の許可リスト外であるため、local 照合を CI ZIP 監査の代用にしない。取得状況と結果は提出 PR を正本とする。
+- [x] 初回 head の artifact `13039285748` は [Work](https://github.com/5gmt/mind-forever-voyaging/pull/107#pullrequestreview-5722748850) が実体を取得し、CRC / SHA-256 と自然7 session、controlled evidence、drawer、accessibility を監査した。
+- [ ] Work の P2（測定後の companion 開閉による PNG / JSON の不一致）を修正した head の reading 証拠を、レビュー側が再監査する。環境の許可リストは変更しない。
 - [x] Local lint / tsc、production build と47 unit、対象10 browser tests（16.8分、retry / skipなし）、checksum / diff check を完了した。
-- [ ] Current-head CI の全62 browser tests、job / step 実時間、artifact size / expiry を確認する。最終結果は提出 PR を正本とする。
+- [x] 初回 head の CI は47 unit / 62 browser成功、browser step43分32秒 / job45分15秒、artifact期限2026-11-14 19:10:53 JSTを確認した。
+- [ ] 修正 head の verification、Sol 差分レビュー、passing artifact と実 expiry をそろえ、Work の再受入へ渡す。最終結果は提出 PR を正本とする。
 - [x] 受入条件→fixture / test / screenshot / CI の対応、6経路と負例、失敗・再実行、既知の限界を受入記録へ集約し、status / plan の roll-up と共に Sol 通常レビューへ提出する。
 - [ ] Work へ head / base、review 後差分、未解決指摘、current-head CI / artifact / expiry を渡す。Work の全体受入と merge、#29 報告、C3 close で milestone を完了する。
 

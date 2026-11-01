@@ -16,7 +16,8 @@
 [発電所受入記録](./docs/power-station-fieldwork-acceptance.md)、[Work 全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/100#pullrequestreview-5696011417)、[#29 完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6493884021)に証拠と限界を記録している。
 
 本 C3 PR は、同じ初回2041年 session の聖ミカエル教会までの本文、教会の長老に限る Talk、観測時 room scope と session 内人物 guard を追加する。
-[教会受入記録](./docs/church-fieldwork-acceptance.md)に検証と証拠を集約し、独立 Sol 通常レビューと Work 全体受入へ提出する。
+[教会受入記録](./docs/church-fieldwork-acceptance.md)に検証と証拠を集約し、初回 head は独立 Sol 通常レビューの ACCEPT を得たが、Work の証拠照合で reading checkpoint の不一致を P2 として差し戻された。
+修正差分と新しい保存証拠を、Sol 差分レビューと Work 再受入に提出する。
 教会 milestone の merge、#29 報告、Issue close は未了である。
 
 現在到達済みの opening、Communications Mode、最初の PEOF を取り囲む wrapper UI についても、承認済みの範囲を日本語化している。これには core header、reading/play settings、introduction overlay、companion shell、PEOF SceneActions、original-package overlay、identity rail、shared story shell、visible label、accessible name が含まれる。
@@ -98,8 +99,9 @@ C1 [#102](https://github.com/5gmt/mind-forever-voyaging/issues/102) は先行67�
 C2 [#103](https://github.com/5gmt/mind-forever-voyaging/issues/103) の[教会 copy packet](./docs/church-copy-packet.md)は、[PR #106 の独立承認](https://github.com/5gmt/mind-forever-voyaging/pull/106#pullrequestreview-5721974351)と merge `e11634762c35b518377a87fbbdd6a10717ea57a6` を完了した。
 C3 [#104](https://github.com/5gmt/mind-forever-voyaging/issues/104) の本 PR は承認 copy と限定人物 guard、6自然経路、非録画負例、境界回帰を統合した。
 Local では47 unitと追加10 browser testsが成功し、[受入記録](./docs/church-fieldwork-acceptance.md)に7 session の実測と証拠の対応をまとめた。
-全62件の current-head CI、ZIP 内容監査、実 expiry は提出 PR を正本とする。
-独立 Sol 通常レビュー後、Work が同じ最終 head の milestone 全体を受け入れ、merge、#29 報告、Issue close を行う。
+初回 head の全62件 CI は成功し、Work は ZIP 実体を監査した。
+Reading 証拠の P2 対応後の全件 CI、保存 PNG / JSON の整合、実 expiry は PR #107 と再レビューを正本とする。
+Sol の修正差分レビュー後、Work が同じ最終 head の milestone 全体を再度確認し、merge、#29 報告、Issue close を行う。
 
 ## 基本的な作業順
 

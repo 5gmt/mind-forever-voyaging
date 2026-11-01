@@ -4,7 +4,10 @@
 
 本変更は [C3 #104](https://github.com/5gmt/mind-forever-voyaging/issues/104) の実装と検証をまとめる。
 初回2041年の先行五課題に続き、聖ミカエル教会で長老との会話を録画し、ケネディ公園の通常入力へ戻る区間を日本語化した。
-Sol の通常レビュー、Astra / ChatGPT Work の全体受入、merge、#29 完了報告、Issue close は提出時点では未実施である。
+初回 head `59b8b4c09280499d9916c549c262f11e7e4a062e` は [Sol 通常レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/107#pullrequestreview-5722706461)で code / copy / test contract の ACCEPT を得た。
+[Work の全体レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/107#pullrequestreview-5722748850)は ZIP 実体を監査し、reading checkpoint の測定時点と PNG 保存時点の不一致を P2 として差し戻した。
+本再提出はその指摘と影響する保存証拠を修正する。
+修正 head の Sol 差分レビュー、Work 再受入、merge、#29 完了報告、Issue close は未了である。
 
 開始 base は C2 merge `e11634762c35b518377a87fbbdd6a10717ea57a6`。
 C1 の [独立採択](https://github.com/5gmt/mind-forever-voyaging/pull/105#pullrequestreview-5721119301)と merge `91d5b6fdb16515500dc5af901636e321751053d1`、C2 の [独立 copy approval](https://github.com/5gmt/mind-forever-voyaging/pull/106#pullrequestreview-5721974351)と merge を確認し、[#104 の開始条件解除](https://github.com/5gmt/mind-forever-voyaging/issues/104#issuecomment-6541097000)を根拠として実装した。
@@ -84,6 +87,7 @@ Half-full warning は保持し、full / auto-deactivation を成功扱いしな�
 | actions / 390×844 | 09:16:14–09:18:22 | 81 | `line-364` | 6/9 |
 | actions / 非録画負例 / 1440×900 | 09:18:22–09:21:03 | 79 | `line-355` | 5/9 |
 
+上表は初回提出 head の local 実測であり、再提出 head の reading 証拠は最新 CI artifact と PR の記録を正本とする。
 7 sessions とも half-full warning は1回で、full / auto-deactivation はなく、公園の非録画 line input に戻った。
 保存した自然経路 JSON 7件、controlled JSON / PNG / TXT 各3件、390px drawer の末尾到達 JSON 8件の local 実体と内容を照合した。
 Desktop の Guided の Talk、390px Classic の長い会話末尾、390px Guided の drawer 最下部は保存 PNG を目視でも確認した。
@@ -98,10 +102,10 @@ Positive の6/9を含め、補助 checklist は wrapper の推定であり、原
 | --- | --- |
 | `npm run lint` / `npx tsc --noEmit` | 最終 production 差分で成功。 |
 | `npm test` | production build と47/47 unit が成功。既存40件に7件を追加。 |
-| 対象 `church-fieldwork.spec.ts` | 10/10成功、16.8分、1 worker、retry / skipなし。 |
+| 初回 head の対象 `church-fieldwork.spec.ts` | 10/10成功、16.8分、1 worker、retry / skipなし。保存時点の不整合は下記 Work review で別に判明した。 |
 | 全 browser suite | 既存52件と追加10件の全62件を保持。最終 head の `npm run test:e2e` は CI で実行し、成否と実時間を提出 PR に記録する。Local の全62件実行は重複させていない。 |
 | checksum / diff | 規定 SHA-256 を維持し、`git diff --check` 成功。保護対象の変更なし。 |
-| CI ZIP の実体監査 | Local の実ファイル照合と分け、passing current-head artifact の内容確認を必須 gate とする。提出時の取得可否、artifact size / expiry、監査結果は PR を正本とする。 |
+| CI ZIP の実体監査 | 初回 artifact の実体監査は Work が完了。修正 head の PNG / JSON 整合と実 expiry はレビュー側が再確認する。Local ファイル照合で代用しない。 |
 
 CI の browser job 上限を35分から50分へ変更した。
 直前の C2 [CI run 41177903626](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41177903626) の実測は、既存52件の step 26分36秒、job 28分14秒だった。
@@ -126,6 +130,29 @@ Harness の raw history を修正し、録画の production rule は変更して
 Canonical status の表示上の大文字地名に対する比較が厳しすぎたため、大文字の status を使う controlled RED を追加し、部屋の完全一致を保った大小文字の正規化を入れた。
 この途中実行は4成功、2失敗、1中断、3未実行であり、最終の全件結果とは区別する。
 
+## Work review で指摘された reading 証拠の修正
+
+初回 passing artifact `13039285748` は、Work が全3,592 entry の CRC と ZIP SHA-256 を検査し、自然7 session、controlled evidence、390px drawer と accessibility TXT の保存を確認した。
+その照合で、Guided / Actions desktop と非録画 desktop の PNG に会話末尾や公園の最終応答が見えない一方、対応する reading JSON が `lastTextVisible: true` を記録していることが判明した。
+初回 artifact の容量は399,221,678 bytes、実期限は2026-11-14 19:10:53 JSTである。
+環境の許可リストを変更せず、ZIP 監査はレビュー側で行う。
+
+原因は、末尾表示を測定してから人物監査のために companion を開閉し、input に focus を戻した後の PNG と、開閉前の測定値や accessibility snapshot を組み合わせていたことだった。
+最終状態で再測定する assertion を先に追加し、Guided / desktop の会話で `false` となる RED を再現した。
+この再現は証拠の不整合を示すもので、今回の production 差分が新たな scroll regression を作ったとの判断ではない。
+
+修正後は companion の `aria-hidden`、opacity と transition 終了を待つ。
+人物監査前後の実測値を `actorCheck.before` / `actorCheck.after` に分け、開閉による scroll 変化を隠さない。
+その後、通常の wheel scroll で末尾へ進み、input へ focus を戻した最終状態を測定する。
+PNG と新しい accessibility snapshot を保存し、PNG の直前と直後の末尾行矩形、clipping 範囲、scroll、input focus / viewport、閉じた companion の状態が一致することを assertion にする。
+`lastTextVisible` と単一 accessibility owner は、その checkpoint の実測結果を保存し、定数の `true` を記録しない。
+会話と帰着の各4 locale checkpoint は `checkpoint` 名で PNG / TXT と JSON を対応させ、同時点の lifecycle mark も保存する。
+最終 `church-return.png` は、検証済みの帰着 checkpoint の PNG buffer を再利用し、別の時点で撮り直さない。
+Production code、copy、経路、送信数、録画区間、既存52 browser tests は変更しない。
+Local では Guided / desktop の checkpoint 修正が1件成功（3.6分）し、最終 PNG の再利用後に Actions /390px と79送信の非録画 desktop が2件成功（5.4分）した。
+後者の16 checkpoint は実測値、PNG / TXT の実体、最終 PNG と recovery-4 PNG の byte 一致を照合した。
+修正差分の検証結果と最新 head の CI / artifact / expiry は PR を正本とする。
+
 ## 残るレビューと未検証事項
 
 実装側点検は独立した Chat モード Sol の通常レビューを代替しない。
@@ -135,8 +162,8 @@ Work が全体受入と merge、#29 報告、#104 close を担当する。
 
 | 項目 | 提出時点 |
 | --- | --- |
-| Sol 通常レビュー回数と差し戻し | 未実施。提出 PR の review を正本とする。 |
-| Work 全体受入と merge | 未実施。Sol レビュー後の最終 head で行う。 |
+| Sol 通常レビュー回数と差し戻し | 初回1回、code / copy / test contract ACCEPT。修正差分の再レビュー待ち。 |
+| Work 全体受入と merge | 初回1回、P2 による差し戻し1回。修正 head の全体再受入と merge は未了。 |
 | 引継ぎから受入までの経過時間 | 未確定。実時刻から記録し、推計しない。 |
 
 実 saved-game RESTORE、実 screen reader 音声、原作正式評価、後続年や再入場の自然な完走、本番配備は未検証である。

@@ -27,18 +27,23 @@ async function approvedCopy() {
   }));
 }
 
-const lastTextVisible = (paragraph: Locator) => paragraph.evaluate((element) => {
+const lastTextPosition = (paragraph: Locator) => paragraph.evaluate((element) => {
   const range = document.createRange(); range.selectNodeContents(element);
   const last = [...range.getClientRects()].at(-1);
-  if (!last) return false;
   const bounds = { top: 0, bottom: innerHeight, left: 0, right: innerWidth };
   for (let node: Element | null = element; node; node = node.parentElement) {
     const css = getComputedStyle(node), box = node.getBoundingClientRect();
     if (/hidden|clip|auto|scroll/.test(css.overflowY)) { bounds.top = Math.max(bounds.top, box.top + node.clientTop); bounds.bottom = Math.min(bounds.bottom, box.top + node.clientTop + node.clientHeight); }
     if (/hidden|clip|auto|scroll/.test(css.overflowX)) { bounds.left = Math.max(bounds.left, box.left); bounds.right = Math.min(bounds.right, box.right); }
   }
-  return last.top >= bounds.top && last.bottom <= bounds.bottom && last.left >= bounds.left && last.right <= bounds.right;
+  return {
+    lastTextVisible: Boolean(last && last.top >= bounds.top && last.bottom <= bounds.bottom && last.left >= bounds.left && last.right <= bounds.right),
+    lastTextRect: last ? { top: last.top, bottom: last.bottom, left: last.left, right: last.right } : null,
+    visibleBounds: bounds,
+    coordinates: "iframe viewport",
+  };
 });
+const lastTextVisible = async (paragraph: Locator) => (await lastTextPosition(paragraph)).lastTextVisible;
 
 export async function acceptChurchMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true) {
   const startedAt = new Date().toISOString();
@@ -55,7 +60,15 @@ export async function acceptChurchMilestone(page: Page, controls: "classic" | "g
     if (open) {
       await page.getByTitle(/Toggle companion|ガイドの表示を切り替える/).click();
       await page.locator(".companion-tabs").getByRole("tab").nth(1).click();
-    } else await page.locator(".close-context").click();
+    } else {
+      await page.locator(".close-context").click();
+      const panel = page.locator(".companion-panel");
+      await expect(panel).toHaveAttribute("aria-hidden", "true");
+      await expect(panel).toHaveCSS("opacity", "0");
+      await panel.evaluate(async (element) => {
+        await Promise.all(element.getAnimations().map((animation) => animation.finished.catch(() => {})));
+      });
+    }
   };
   const act = async (command: string, trigger?: () => Promise<void>, focus: "input" | "map" = "input") => {
     const previous = await inputId(), count = await requestCount();
@@ -218,28 +231,65 @@ export async function acceptChurchMilestone(page: Page, controls: "classic" | "g
   const recover = async (stage: "conversation" | "return", anchor: Locator) => {
     const raw = await canonical.innerText(), requests = await requestCount(), id = await inputId(), historyCount = await blocks.count();
     await input.fill("LOOK"); const recovery = [];
+    let finalScreenshot: Buffer | undefined;
     for (const name of ["English", "日本語", "English", "日本語"] as const) {
       await locale(name); await expect(input).toHaveValue("LOOK");
       expect(await requestCount()).toBe(requests); expect(await inputId()).toBe(id); expect(await canonical.innerText()).toBe(raw);
-      const aria = await frame.locator("body").ariaSnapshot();
       if (name === "English") {
         await expect(presentation).toBeHidden(); await expect(canonical).not.toHaveAttribute("aria-hidden", "true");
-        expect(aria.split(DEPARTURE)).toHaveLength(2); expect(aria).not.toContain(chatJapanese);
-        const original = frame.locator(".BufferWindow"); await original.hover(); await page.mouse.wheel(0, await original.evaluate((el) => el.scrollHeight));
-        const end = stage === "conversation" ? canonical.locator(".BufferLine", { hasText: DEPARTURE }) : canonical.locator(".BufferLine").filter({ hasText: /^Kennedy Park$/ }).last();
-        await expect.poll(() => lastTextVisible(end)).toBe(true);
       } else {
         await expect(presentation).toHaveAttribute("lang", "ja"); await expect(canonical).toHaveAttribute("aria-hidden", "true"); await expect(canonical).toHaveAttribute("inert", "");
-        await expect(blocks).toHaveCount(historyCount); expect(aria.split(chatJapanese)).toHaveLength(2); expect(aria).not.toContain(DEPARTURE);
-        await surface.hover(); await page.mouse.wheel(0, await surface.evaluate((el) => el.scrollHeight));
-        await expect.poll(() => lastTextVisible(anchor)).toBe(true);
+        await expect(blocks).toHaveCount(historyCount);
       }
-      await assertActors(false, name); await input.click(); await expect(input).toBeFocused(); await expect(input).toBeInViewport({ ratio: 1 });
-      recovery.push({ locale: name, inputId: id, requests, singleOwner: true, lastTextVisible: true });
+      const finalEnd = name === "日本語" ? anchor : stage === "conversation"
+        ? canonical.locator(".BufferLine", { hasText: DEPARTURE }) : canonical.locator(".BufferLine").filter({ hasText: /^Kennedy Park$/ }).last();
+      const activeSurface = name === "English" ? frame.locator(".BufferWindow") : surface;
+      const readingState = async () => ({
+        ...await lastTextPosition(finalEnd),
+        scroll: await activeSurface.evaluate((element) => ({ top: element.scrollTop, height: element.clientHeight, total: element.scrollHeight, width: element.clientWidth })),
+        input: await input.evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          return { focused: document.activeElement === element,
+            visible: rect.width > 0 && rect.height > 0 && rect.top >= 0 && rect.bottom <= innerHeight && rect.left >= 0 && rect.right <= innerWidth,
+            bounds: { top: rect.top, bottom: rect.bottom, left: rect.left, right: rect.right }, coordinates: "parent viewport" };
+        }),
+        companion: await page.locator(".companion-panel").evaluate((element) => ({ ariaHidden: element.getAttribute("aria-hidden"), opacity: getComputedStyle(element).opacity,
+          transform: getComputedStyle(element).transform, activeAnimations: element.getAnimations().filter((animation) => animation.playState !== "finished").length })),
+      });
+      const scrollToTail = async () => {
+        await activeSurface.hover(); await page.mouse.wheel(0, await activeSurface.evaluate((element) => element.scrollHeight));
+        await expect.poll(() => lastTextVisible(finalEnd)).toBe(true);
+      };
+      await scrollToTail();
+      const beforeActorCheck = await readingState();
+      await assertActors(false, name);
+      const afterActorCheck = await readingState();
+      // Actor audits may reflow the story. Establish the final reading state
+      // only after the companion is fully closed, then refocus the input.
+      await scrollToTail(); await input.click();
+      await expect(input).toBeFocused(); await expect(input).toBeInViewport({ ratio: 1 });
+      await expect.poll(() => lastTextVisible(finalEnd)).toBe(true);
+      const checkpoint: string = `church-${stage}-recovery-${recovery.length + 1}`;
+      const beforeScreenshot = await readingState();
+      expect(beforeScreenshot.lastTextVisible).toBe(true); expect(beforeScreenshot.input.focused).toBe(true); expect(beforeScreenshot.input.visible).toBe(true);
+      expect(beforeScreenshot.companion).toMatchObject({ ariaHidden: "true", opacity: "0", activeAnimations: 0 });
+      const aria = await frame.locator("body").ariaSnapshot();
+      const singleOwner = name === "English" ? aria.split(DEPARTURE).length === 2 && !aria.includes(chatJapanese)
+        : aria.split(chatJapanese).length === 2 && !aria.includes(DEPARTURE);
+      expect(singleOwner).toBe(true);
+      const lifecycle = await readingTrace(frame, checkpoint);
+      const png = await page.screenshot();
+      finalScreenshot = png;
+      const afterScreenshot = await readingState();
+      expect(afterScreenshot).toEqual(beforeScreenshot);
+      expect(await requestCount()).toBe(requests); expect(await inputId()).toBe(id);
+      recovery.push({ checkpoint, locale: name, inputId: id, requests, singleOwner, lastTextVisible: afterScreenshot.lastTextVisible,
+        actorCheck: { before: beforeActorCheck, after: afterActorCheck }, beforeScreenshot, afterScreenshot, lifecycle });
       await attach(`church-${stage}-recovery-${recovery.length}-accessibility`, aria, "text/plain");
-      await attach(`church-${stage}-recovery-${recovery.length}`, await page.screenshot(), "image/png");
+      await attach(checkpoint, png, "image/png");
     }
     await attach(`church-${stage}-reading`, JSON.stringify({ recovery, lifecycle: await readingTrace(frame, `church-${stage}-recovery`) }));
+    return finalScreenshot!;
   };
   await recover("conversation", paragraph); await input.fill("");
   if (recordConversation) { const start = await act("RECORD OFF", quick("録画停止")); await checkLeaves(start); await recording(false); }
@@ -253,7 +303,7 @@ export async function acceptChurchMilestone(page: Page, controls: "classic" | "g
     await expect(presentation).toContainText(chatJapanese);
   }
   await map(false, recordConversation ? 6 : 5, "church-return-map");
-  await recover("return", presentation.locator(".story-presentation-title").last());
+  const returnScreenshot = await recover("return", presentation.locator(".story-presentation-title").last());
   const trace = await rawTrace(), requests = trace.requests.slice(1);
   const fixture = JSON.parse(await readFile(new URL("../fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
   expect(trace.requests[0]).toBe(" "); expect(requests).toHaveLength(recordConversation ? 81 : 79);
@@ -274,7 +324,7 @@ export async function acceptChurchMilestone(page: Page, controls: "classic" | "g
   const narrow = page.viewportSize()!.width < 500;
   for (const turn of turns) { if (narrow) expect(turn.status).not.toMatch(/Time:|Date:/i); else expect(turn.status).toMatch(/Time:[\s\S]*Date:/i); }
   await attach("church-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release 79; live bridge-v3 output and actual parent-to-player requests; no VM edits, injected route reports or saved-game RESTORE", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), recordConversation, trace, churchTurns: turns, warnings, elapsedMinutes, scrollStart, clockLimitation: narrow ? "canonical narrow status emits no clock/date; no time synthesized" : null, checklist: controls === "classic" ? "not displayed" : recordConversation ? "6/9 auxiliary inference, not original assignment evaluation" : "5/9; unrecorded church conversation adds no task", finalInputId: await inputId() }));
-  await attach("church-return", await page.screenshot(), "image/png");
+  await attach("church-return", returnScreenshot, "image/png");
 }
 
 // These probes replace only wrapper reports. Parchment stays at its actual
