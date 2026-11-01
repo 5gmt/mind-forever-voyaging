@@ -1,6 +1,24 @@
 # 2041 Church Fieldwork Acceptance
 
-## 提出範囲とレビューの状態
+## 最終受入
+
+2026-11-01 13:59:39 JSTに[PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107)をmerge `06e6633ff2a3572959955d320ef1e9d8477a5de4` で統合した。
+最終head `9e09e4f125f473b23d32c7d84730445e882464cd` に対する[Sol差分レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/107#pullrequestreview-5726523333)と[Work全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/107#pullrequestreview-5726308616)はともにACCEPT。
+Reading証拠のP2は解消し、#104をcompletedでclose、[#29に完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6553674912)を記録した。
+受入head、CI merge ref、実mergeのtreeは `c0dd32998f266df344fc83d0cc1adcaf5139ab5b` で一致した。
+
+[CI #41267285902](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は47 unit /62 browser成功、retry /skipなし、step38分21秒 /job39分50秒。
+[新artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries、SHA-256 `a7428659eb677c88fe67699d8f34dce29bd315e3bedba8c12bef24e3e8ee3ae9`、実期限2026-11-15 12:39:22 JST。
+WorkがCRC /SHA、自然7session、reading56checkpoint、accessibility56件、最終PNG7件のbyte一致を照合し、PNG20枚を目視した。
+Controlled7組とnarrow drawer末尾8件も確認した。
+同じheadのfull E2EをWorkで再実行したとは扱わない。
+
+Sol通常レビュー2回、Work全体レビュー2回、差し戻し1回。
+初回Sol引継ぎからmergeまで16時間31分49秒、修正提出返信から1時間18分15秒で、待機を含む経過時間である。
+以下は提出時点の検証と差し戻しの経緯として保持する。
+「未了」「再レビュー待ち」の最終状態はこの節とリンク先のreview /#29で確定した。
+
+## 提出範囲とレビューの状態（提出時の記録）
 
 本変更は [C3 #104](https://github.com/5gmt/mind-forever-voyaging/issues/104) の実装と検証をまとめる。
 初回2041年の先行五課題に続き、聖ミカエル教会で長老との会話を録画し、ケネディ公園の通常入力へ戻る区間を日本語化した。
@@ -153,7 +171,7 @@ Local では Guided / desktop の checkpoint 修正が1件成功（3.6分）し�
 後者の16 checkpoint は実測値、PNG / TXT の実体、最終 PNG と recovery-4 PNG の byte 一致を照合した。
 修正差分の検証結果と最新 head の CI / artifact / expiry は PR を正本とする。
 
-## 残るレビューと未検証事項
+## 提出時のレビュー引継ぎと未検証事項
 
 実装側点検は独立した Chat モード Sol の通常レビューを代替しない。
 Sol のレビュー後、同じ最終 head の base、変更差分、未解決指摘、受入条件と証拠の対応、CI、artifact の実期限を Work に渡す。
