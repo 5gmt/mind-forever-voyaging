@@ -84,3 +84,26 @@ node scripts/cleanup-actions-artifacts.mjs
 これはアカウント全体の無料枠残量を保証する値ではない。
 削除後も既に積算されたストレージ使用量は戻らず、GitHubの使用量表示にも更新待ちが生じる。
 PR #114の証拠を引き続き残す必要がなくなれば別の明示的な整理対象にする。
+
+## 導入時の実測結果
+
+[PR #115](https://github.com/5gmt/mind-forever-voyaging/pull/115)を2026-11-07に統合した。
+以下のCI全体時間は、最初のjob開始から最後のjob終了までである。
+単発の比較であり、runner性能や負荷による変動を含む。
+
+| 実行 | CI全体 | Browser job | 結果 |
+| --- | ---: | --- | --- |
+| [変更前](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42248061774) | 49分3秒 | 47分35秒 | 49 unit /62 browser成功 |
+| [変更後](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42271260614) | 18分7秒 | church 16分33秒 /power 10分55秒 /remaining 12分39秒 | 49 unit /62 browser /8 CI制御テスト成功、ci-gate成功、artifact 0件 |
+
+変更後の検証headは `e55b1ef2bbe22c4b4c98554ab1a146d17914ea03`、mergeは `bd42170cb7e6bc2ca7bceb7d707ea53d986effec` である。
+[Artifact maintenance](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42276424916)は36件、6,636,487,010 bytesを削除して成功した。
+処理後のAPI一覧でも、保護したPR #114のartifact `13512501098` だけが残り、1件 /396,203,446 bytesであることを確認した。
+
+アカウント全体の課金使用量やPackagesの保存量は未確認であり、この数値は当リポジトリのartifact実容量である。
+次の証拠保存前には残した#114の証拠も必要に応じて退避・整理し、新しい3 ZIPを保存できる容量を確保する。
+明示的な手動証拠保存の実アップロードとexpiryは、今回の導入検証では未実施である。
+
+次の容量改善候補として、退避した#107 ZIPの3,592ファイルをSHA-256で比較すると、同一内容の余分なコピーが2,465件、圧縮後合計215,875,088 bytesあった。
+これは理論的な重複量であり、削除済み容量や実装済みの圧縮効果ではない。
+重複除去を行う場合は、監査が参照する元の証拠パスと内容の対応を維持する別の変更として検証する。
