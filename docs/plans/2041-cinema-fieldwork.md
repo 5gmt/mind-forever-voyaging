@@ -7,7 +7,7 @@
 **Architecture:** 既存 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と限定 SceneActions を使う。先に映画の一ターン内の出力構造と録画容量を実測し、copy approval 後に本文と購入 / 入場操作を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #111、旧候補の失敗証拠 PR #112、Work の候補A設計同期 PR #113 は独立 Sol review を経て merge 済み。#113 の merge は `f527d07084e0055d13d35dd64148fa00e57c866e`。候補Aは2 fresh sessionsで全96送信、映画録画、明示 OFF / LOOK、公園帰着を実測した。[追加実測](../cinema-recording-a-evidence.md)を成功採択候補として提出し、独立 Sol 採択 / merge までは F1 未完了、F2 / F3 は blocked。旧 [失敗実測](../cinema-runtime-evidence.md)と全既存回帰を保持する。
+**Status:** 計画 PR #111、旧候補の失敗証拠 PR #112、Work の候補A設計同期 PR #113 は独立 Sol review を経て merge 済み。#113 の merge は `f527d07084e0055d13d35dd64148fa00e57c866e`。候補Aは2 fresh sessionsで全96送信、映画録画、明示 OFF / LOOK、公園帰着を実測した。[追加実測](../cinema-recording-a-evidence.md)は [PR #114 の独立 Sol review](https://github.com/5gmt/mind-forever-voyaging/pull/114#pullrequestreview-5802952413)で採択され、merge `22945dc75b1fbc45b8d9b5e72248870e7dda495f` 済み。F1 は完了、F2 の copy承認が開始可能であり、F3 は F2 の承認 / merge まで blocked。旧 [失敗実測](../cinema-runtime-evidence.md)と全既存回帰を保持する。
 **Baseline:** 教会 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) の merge `06e6633ff2a3572959955d320ef1e9d8477a5de4`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-01 JST の owner の次期 milestone 設計 / タスク作成依頼に対する提案。
 
@@ -58,7 +58,7 @@ Catalog だけでは Guided の語一覧や compass に出ない操作を通せ�
 先行区間は [教会実測](../church-runtime-evidence.md) と [教会受入](../church-fieldwork-acceptance.md) の81 line commandsを基礎とする。
 旧候補はこの全列を維持して容量不足になった。
 次の候補Aでは12–18番目だけを `SW NW RECORD LOOK RECORD OFF SE NE` に置換し、Courthouse の LOOK を現地で録画する。
-1–11番目と19–81番目は維持する。成功経路の採択前であり、詳細と追加条件は [候補Aの設計判断](../cinema-recording-a-design.md)を正本とする。
+1–11番目と19–81番目は維持する。候補Aは PR #114 で採択済みであり、詳細と追加条件は [候補Aの設計判断](../cinema-recording-a-design.md)を正本とする。
 `scripts/capture-church-runtime.mjs` と既存 milestone の全経路 / 録画窓は変更しない。
 81件には実測 decoder answer を含み、起動 character input は別記する。
 
@@ -139,7 +139,8 @@ Companion / drawer の監査前後の観測と、通常の wheel scroll / focus 
 F3 の受入記録に「条件 → test → JSON / PNG / TXT の path」をまとめ、Sol / Work が証拠を探し直さずに済むようにする。
 先行 milestone の assertion と添付は保持し、同じ head の確認済み ZIP をレビュー段階ごとに再取得することは要求しない。
 実装者は local のファイル内容を照合し、Sol は通常の code / test / copy review と実測の整合を確認する。
-Work は最終 head の passing ZIP を独立に監査する。
+Work は最終 head の手動証拠実行（`save_evidence=true`）で生成した、同一run /attemptの3群すべてのpassing ZIPを独立に監査する。
+各ZIPの `ci-provenance.json` とレビュー対象headの一致を確認し、1日の保存期限内に監査または退避する。
 他の担当が行った監査は担当者と記録を引用し、自分で行ったように書かない。
 取得に失敗した場合は利用経路と未了項目を記録し、OpenAI 側転送ホストの許可リスト追加をタスクの既定条件にしない。
 
@@ -160,11 +161,11 @@ Work は最終 head の passing ZIP を独立に監査する。
 
 2026-11-06 の実測では、先行81送信を保持した2 fresh attempts が89送信目の `IN` で容量不足と自動停止になった。
 [失敗 fixture](../../tests/fixtures/parchment-cinema-runtime-failure.json) に全入力対応、本文、時計、通常入力への復帰、別 fresh 券なし probe と先行 harness failure を保存した。
-これは停止証拠の提出であり、以下の96送信の成功採択条件は未達である。
+これは旧候補の停止証拠であり、この時点では以下の96送信の成功採択条件は未達だった。
 明示 OFF / LOOK / 帰着へ進まず、Work に経路設計を戻した。
 Work の候補Aは設計同期 PR #113 の独立 review / merge 後に追加実測し、2 fresh sessionsで全96送信と映画録画、明示 OFF / LOOK、公園帰着を確認した。
-[候補Aの実測](../cinema-recording-a-evidence.md)は独立成功採択の候補であり、上記の失敗証拠と区別する。
-独立 Sol 採択 / merge まで F2 / F3 の開始条件を解除しない。
+[候補Aの実測](../cinema-recording-a-evidence.md)は PR #114 で独立 Sol が成功採択 / merge し、上記の失敗証拠と区別して保持する。
+F2 の開始条件は満たした。F3 は F2 の独立承認 / merge を待つ。
 
 **Files:** 更新 `scripts/capture-cinema-runtime.mjs`（明示 `--candidate-a`）、`tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。新規 `tests/fixtures/parchment-cinema-recording-a-observed.json`、`docs/cinema-recording-a-evidence.md`。失敗時は別 `tests/fixtures/parchment-cinema-recording-a-failure.json` に経過を残す。Flagなしの旧候補と #112 の failure fixture / evidence / regression、以前の capture / fixture を保持する。Production code は変更しない。
 **Interfaces:** 既存教会 capture の81送信に候補Aの7送信置換を適用する。全送信、decoder交換、起動char、各 input ID / echo / next input、raw status、bridge-v3 presentation、地点照合、warnings、実 UI alias / 表示条件、stable / dynamic / optional leaf 台帳、別の券なし probe を F2 / F3 に渡す。新 fixture は既存形式に合わせ、成功 session と failure / probe を区別する。
@@ -174,7 +175,7 @@ Work の候補Aは設計同期 PR #113 の独立 review / merge 後に追加実�
 - [x] 2 fresh full sessionsを保存する。独立した券なし probe は #112 の元 SHA / fixture / session ID を明記して再利用できる。Input / 観測境界への影響があれば再採取する。起動 / harness 失敗と canonical 経路失敗を区別し、途中までの出力も残す。
 - [x] `tests/rendered-html.test.mjs` に先行81件への明示的7送信置換、全送信数、裁判所 LOOK 本文と録画、room / input chain、鑑賞前後の録画、購入成功、full警告なし、明示OFF、帰着とprobe拒否を検査する regression を追加する。
 - [x] 生の見出し / 段落 / 空行が既存 projector で表現できることを確認し、金額、映画名、時刻、UI不足、optional出力を台帳にする。
-- [ ] 検証を記録し、成功採択または停止理由を明示して Sol に渡す。Sol の成功採択と merge 後に F2 を開始する。
+- [x] 検証を記録し、PR #114 で独立 Sol が成功採択 / merge した。F2 の copy承認が開始可能。
 
 ### F2: 観測済み映画本文と限定操作の copy を承認する
 
@@ -209,10 +210,11 @@ F1候補Aは production build / preview に対し `node scripts/capture-cinema-r
 計画 PR / F2は文書、fixtureとの照合、リンク、diffを確認し、local未実施項目と current-head CIを区別する。
 
 Baselineの #107最終CIは47 unit /62 browser、1 worker、retry / skipなし、browser step38分21秒 /job39分50秒、上限50分、artifact397,434,042 bytes /14日保持だった。
-新規の長い経路で50分を超える場合は、正常な実行時間と起動待ち / failureを分けて測定する。
+新規の長い経路で各群の現行上限に近づく場合は、正常な実行時間と起動待ち / failureを分けて測定する。
 必要最小限のtimeout変更は、根拠と新上限をF3の同じPRでSol / Workに渡す。
-計画時点でCIを変更しない。
-CI分割、並列化、test削除、retry追加は別設計判断とし、単に上限を延ばして起動失敗を隠さない。
+映画計画とは別の2026-11-07 CI保守で、変更分類と3群分散、通常artifactの保存停止を導入した。
+各群は1 worker、retryなし、job上限35分とし、テストの内容と添付生成を維持する。
+最新の実行方法は[CI運用](../ci-operation.md)を参照し、F3では全群の実測時間を記録する。
 同じheadのfull suiteが成功し、artifactに必要な実体がそろうまで最終受入しない。
 
 引継ぎにはhead / base、review後差分、未解決指摘、current-head CI / artifact /実expiry、受入条件と保存path、失敗 /再実行 /未実施を記す。
