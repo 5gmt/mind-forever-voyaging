@@ -88,14 +88,18 @@ C1 #102 / PR #105、C2 #103 / PR #106、C3 #104 / PR #107は独立レビュー�
 Workはpassing ZIPの実体、自然7session、reading56checkpoint、controlled証拠を確認し、merge、#29報告、#104closeを完了した。
 390pxで未出力の時計、実saved-game RESTORE、実screen reader音声、原作の正式評価は検証済みとは扱わない。
 
-次の提案は、同じ初回2041年sessionの六課題に続く **映画館での入場券購入、鑑賞録画、公園帰着** である。
+次の milestone は、同じ初回2041年sessionの六課題に続く **映画館での入場券購入、鑑賞録画、公園帰着** である。
 [映画計画](./docs/plans/2041-cinema-fieldwork.md)に候補96送信、録画容量と一ターン内の見出し / 現在地の実測gate、限定操作、F1–F3をまとめる。
-計画PRは独立Solレビュー待ちであり、映画のruntime成功や翻訳承認はまだ行っていない。
+[計画 PR #111](https://github.com/5gmt/mind-forever-voyaging/pull/111) は独立 Sol review を経て merge 済み。
+F1 #108 の2 fresh attempts は先行81送信を保持したが、89送信目の映画 `IN` で原作の record buffer full / auto-deactivation を観測して停止した。
+[失敗実測](./docs/cinema-runtime-evidence.md) に証拠と別 fresh 券なし probe を保存した。
+96送信の成功採択は未了で、経路設計を Astra / ChatGPT Work に戻す。
+F2 / F3 は引き続き blocked。映画の日本語 coverage は追加していない。
 
 ## 基本的な作業順
 
-1. 映画計画PRを独立したChatモードSolがレビューし、mergeする。
-2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 先行81件を保持した映画区間の2 fresh sessions以上と券なしprobeを実測し、Solが成功経路を採択してmergeする。
+1. 映画計画 PR #111 の独立 Sol review / merge は完了。F1 の停止証拠をレビューし、Work が経路設計を判断する。
+2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 設計判断後に先行81件を保持した成功経路を再実測し、Sol が成功採択して merge する。今回の failure-only evidence の merge では後続 gate を解除しない。
 3. [F2 #109](https://github.com/5gmt/mind-forever-voyaging/issues/109): F1の採択fixtureから本文、地名、購入 / 入場操作のcopyを承認してmergeする。
 4. [F3 #110](https://github.com/5gmt/mind-forever-voyaging/issues/110): 日本語統合と6自然経路、非録画負例、境界回帰を実装する。Sol通常レビュー後、Workが最終headの全体受入とZIP監査、merge、#29報告、Issue closeを行う。
 

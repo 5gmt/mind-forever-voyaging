@@ -7,7 +7,7 @@
 **Architecture:** 既存 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と限定 SceneActions を使う。先に映画の一ターン内の出力構造と録画容量を実測し、copy approval 後に本文と購入 / 入場操作を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画提案。計画 PR の独立 Sol review / merge を F1 の開始条件とする。F1 の新規 runtime 成功、F2 の copy approval、F3 の実装は未実施。
+**Status:** 計画 PR #111 は独立 Sol review を経て merge `586b98c6a6f86b6fe3c3d9efc8868c0249b3d20b` 済み。F1 #108 は2 fresh attempts とも映画 IN で record buffer full / auto-deactivation を観測して停止した。成功採択は未了、F2 / F3 は blocked。詳細は [失敗実測](../cinema-runtime-evidence.md)。
 **Baseline:** 教会 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) の merge `06e6633ff2a3572959955d320ef1e9d8477a5de4`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-01 JST の owner の次期 milestone 設計 / タスク作成依頼に対する提案。
 
@@ -155,10 +155,16 @@ Work は最終 head の passing ZIP を独立に監査する。
 
 ### F1: 六課題後の映画鑑賞を実測して採択する
 
+2026-11-06 の実測では、先行81送信を保持した2 fresh attempts が89送信目の `IN` で容量不足と自動停止になった。
+[失敗 fixture](../../tests/fixtures/parchment-cinema-runtime-failure.json) に全入力対応、本文、時計、通常入力への復帰、別 fresh 券なし probe と先行 harness failure を保存した。
+これは停止証拠の提出であり、以下の96送信の成功採択条件は未達である。
+明示 OFF / LOOK / 帰着へ進まず、Work に経路設計を戻す。
+F2 / F3 の開始条件は解除しない。
+
 **Files:** 新規 `scripts/capture-cinema-runtime.mjs`、`tests/fixtures/parchment-cinema-runtime-observed.json`、`docs/cinema-runtime-evidence.md`。更新 `tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。失敗時は別 `tests/fixtures/parchment-cinema-runtime-failure.json` に経過を残す。Production code と既存 capture / fixture は変更しない。
 **Interfaces:** 既存教会 capture の81送信を消費する。全送信、decoder交換、起動char、各 input ID / echo / next input、raw status、bridge-v3 presentation、地点照合、warnings、実 UI alias / 表示条件、stable / dynamic / optional leaf 台帳、別の券なし probe を F2 / F3 に渡す。新 fixture は既存形式に合わせ、成功 session と failure / probe を区別する。
 
-- [ ] 最新 default branch と教会採択 fixture を照合し、上記 candidate を新しい capture に定義する。
+- [x] 最新 default branch と教会採択 fixture を照合し、上記 candidate を新しい capture に定義する。
 - [ ] 2 fresh full sessionsと独立した券なし probe を保存する。起動 / harness 失敗と canonical 経路失敗を区別し、途中までの出力も残す。
 - [ ] `tests/rendered-html.test.mjs` に先行81件との同値、全送信数、room / input chain、鑑賞前後の録画、購入成功、full警告なし、明示OFF、帰着とprobe拒否を検査する regression を追加する。
 - [ ] 生の見出し / 段落 / 空行が既存 projector で表現できることを確認し、金額、映画名、時刻、UI不足、optional出力を台帳にする。
