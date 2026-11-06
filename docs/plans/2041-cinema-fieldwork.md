@@ -7,7 +7,7 @@
 **Architecture:** 既存 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と限定 SceneActions を使う。先に映画の一ターン内の出力構造と録画容量を実測し、copy approval 後に本文と購入 / 入場操作を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #111 は独立 Sol review を経て merge `586b98c6a6f86b6fe3c3d9efc8868c0249b3d20b` 済み。F1 #108 は2 fresh attempts とも映画 IN で record buffer full / auto-deactivation を観測して停止した。成功採択は未了、F2 / F3 は blocked。#112 は失敗証拠として merge 済み。Work は [裁判所を現地録画する候補A](../cinema-recording-a-design.md)を追加実測方針に選定した。設計同期 PR の独立 Sol review / merge 後に F1 を再開する。詳細は [失敗実測](../cinema-runtime-evidence.md)。
+**Status:** 計画 PR #111、旧候補の失敗証拠 PR #112、Work の候補A設計同期 PR #113 は独立 Sol review を経て merge 済み。#113 の merge は `f527d07084e0055d13d35dd64148fa00e57c866e`。候補Aは2 fresh sessionsで全96送信、映画録画、明示 OFF / LOOK、公園帰着を実測した。[追加実測](../cinema-recording-a-evidence.md)を成功採択候補として提出し、独立 Sol 採択 / merge までは F1 未完了、F2 / F3 は blocked。旧 [失敗実測](../cinema-runtime-evidence.md)と全既存回帰を保持する。
 **Baseline:** 教会 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) の merge `06e6633ff2a3572959955d320ef1e9d8477a5de4`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-01 JST の owner の次期 milestone 設計 / タスク作成依頼に対する提案。
 
@@ -106,7 +106,7 @@ F1 が採択するのは、全96送信の成功、購入応答、15分鑑賞、�
 
 F1 は room heading、current place / identity rail、map `movie`、route / compass、録画 reminder、購入 / 入場の visible label と accessible name を別々の台帳行にする。
 Museum Entrance は map `railroad` の目的地でもあるが、映画経路への地名追加を Railroad Museum 全体の翻訳承認と扱わない。
-`Cinema`、本文内 `Movie Theatre`、`Downtown Cinema Quad`、`Upbeat Patrol II`、対象物 `TICKET`、課題 index 7「映画を観ること」は別 identity として扱い、既承認の課題訳を再利用する。
+`Cinema`、本文内 `Movie Theatre`、`Downtown Cinema Quad`、`Upbeat Patrol II`、対象物 `TICKET`、課題 index 7「映画を見に行くこと」は別 identity として扱い、既承認の課題訳を再利用する。
 
 新規支援は初回2041年 / CINEMA / line input の `BUY TICKET` と `IN` に限る。
 Guided は編集可能な English draft と明示 submit、Actions は1押下1送信とし、busy / char input では送信しない。
@@ -145,7 +145,7 @@ Work は最終 head の passing ZIP を独立に監査する。
 
 ## タスクと依存関係
 
-計画 PR #111 と失敗証拠 PR #112 は merge 済み。候補Aの設計同期 PR の独立 Sol review / merge → F1 の追加実測・成功採択 / merge → F2 の copy approval / merge → F3 の実装、Sol通常レビュー、Work全体受入 / mergeの順とする。
+計画 PR #111、失敗証拠 PR #112、候補Aの設計同期 PR #113 は merge 済み。F1 の追加実測の独立成功採択 / merge → F2 の copy approval / merge → F3 の実装、Sol通常レビュー、Work全体受入 / mergeの順とする。
 今回は本文と操作の identity が F1 の実測に依存するため、独立した先行翻訳タスクを作らない。
 次の三タスクは別々に却下 / 採択できる単位である。
 
@@ -162,16 +162,18 @@ Work は最終 head の passing ZIP を独立に監査する。
 [失敗 fixture](../../tests/fixtures/parchment-cinema-runtime-failure.json) に全入力対応、本文、時計、通常入力への復帰、別 fresh 券なし probe と先行 harness failure を保存した。
 これは停止証拠の提出であり、以下の96送信の成功採択条件は未達である。
 明示 OFF / LOOK / 帰着へ進まず、Work に経路設計を戻した。
-Work は候補Aの追加実測を選定した。設計同期 PR の merge 後に再開し、F2 / F3 の開始条件は成功採択まで解除しない。
+Work の候補Aは設計同期 PR #113 の独立 review / merge 後に追加実測し、2 fresh sessionsで全96送信と映画録画、明示 OFF / LOOK、公園帰着を確認した。
+[候補Aの実測](../cinema-recording-a-evidence.md)は独立成功採択の候補であり、上記の失敗証拠と区別する。
+独立 Sol 採択 / merge まで F2 / F3 の開始条件を解除しない。
 
 **Files:** 更新 `scripts/capture-cinema-runtime.mjs`（明示 `--candidate-a`）、`tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。新規 `tests/fixtures/parchment-cinema-recording-a-observed.json`、`docs/cinema-recording-a-evidence.md`。失敗時は別 `tests/fixtures/parchment-cinema-recording-a-failure.json` に経過を残す。Flagなしの旧候補と #112 の failure fixture / evidence / regression、以前の capture / fixture を保持する。Production code は変更しない。
 **Interfaces:** 既存教会 capture の81送信に候補Aの7送信置換を適用する。全送信、decoder交換、起動char、各 input ID / echo / next input、raw status、bridge-v3 presentation、地点照合、warnings、実 UI alias / 表示条件、stable / dynamic / optional leaf 台帳、別の券なし probe を F2 / F3 に渡す。新 fixture は既存形式に合わせ、成功 session と failure / probe を区別する。
 
 - [x] 旧候補を最新 default branch と教会採択 fixture から定義し、#112 に失敗証拠を保存した。
-- [ ] 設計同期 PR の merge 後に候補Aを明示 flag と別出力先で追加する。
-- [ ] 2 fresh full sessionsを保存する。独立した券なし probe は #112 の元 SHA / fixture / session ID を明記して再利用できる。Input / 観測境界への影響があれば再採取する。起動 / harness 失敗と canonical 経路失敗を区別し、途中までの出力も残す。
-- [ ] `tests/rendered-html.test.mjs` に先行81件への明示的7送信置換、全送信数、裁判所 LOOK 本文と録画、room / input chain、鑑賞前後の録画、購入成功、full警告なし、明示OFF、帰着とprobe拒否を検査する regression を追加する。
-- [ ] 生の見出し / 段落 / 空行が既存 projector で表現できることを確認し、金額、映画名、時刻、UI不足、optional出力を台帳にする。
+- [x] 設計同期 PR の merge 後に候補Aを明示 flag と別出力先で追加する。
+- [x] 2 fresh full sessionsを保存する。独立した券なし probe は #112 の元 SHA / fixture / session ID を明記して再利用できる。Input / 観測境界への影響があれば再採取する。起動 / harness 失敗と canonical 経路失敗を区別し、途中までの出力も残す。
+- [x] `tests/rendered-html.test.mjs` に先行81件への明示的7送信置換、全送信数、裁判所 LOOK 本文と録画、room / input chain、鑑賞前後の録画、購入成功、full警告なし、明示OFF、帰着とprobe拒否を検査する regression を追加する。
+- [x] 生の見出し / 段落 / 空行が既存 projector で表現できることを確認し、金額、映画名、時刻、UI不足、optional出力を台帳にする。
 - [ ] 検証を記録し、成功採択または停止理由を明示して Sol に渡す。Sol の成功採択と merge 後に F2 を開始する。
 
 ### F2: 観測済み映画本文と限定操作の copy を承認する

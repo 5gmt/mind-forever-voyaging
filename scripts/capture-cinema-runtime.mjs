@@ -7,10 +7,15 @@ const argument = (name, fallback) => {
   return index >= 0 ? process.argv[index + 1] : fallback;
 };
 
+const candidateA = process.argv.includes("--candidate-a");
 const baseURL = argument("--base-url", "http://127.0.0.1:3100");
-const output = argument("--output", "/tmp/parchment-cinema-runtime-observed.json");
+const output = argument("--output", candidateA ? "/tmp/parchment-cinema-recording-a-observed.json" : "/tmp/parchment-cinema-runtime-observed.json");
 const prefixPath = ["PEOF", "WAIT", "WAIT", "WAIT", "WAIT", "ENTER SIMULATION MODE", "<observed decoder answer>", "LOOK", "RECORD", "WAIT", "RECORD OFF"];
 const courthousePath = ["RECORD", "SW", "NW", "LOOK", "SE", "NE", "RECORD OFF"];
+// Work-approved cinema-only opt-in; previous milestones and the unflagged
+// candidate keep their recorded round trip unchanged.
+const selectedCourthousePath = candidateA ? ["SW", "NW", "RECORD", "LOOK", "RECORD OFF", "SE", "NE"] : courthousePath;
+const candidateACourtLocations = ["Elm & Park", "Courthouse", "Courthouse", "Courthouse", "Courthouse", "Elm & Park", "Kennedy Park"];
 // The accepted restaurant A prefix remains exactly 40 actual line submissions,
 // including the runtime-derived decoder answer. City Hall adds ten submissions.
 const newspaperPath = ["INVENTORY", "NE", "N", "NE", "RECORD", "BUY NEWSPAPER", "READ NEWSPAPER", "RECORD OFF", "SW", "S", "SW"];
@@ -33,6 +38,12 @@ const failureOutput = argument("--failure-output", output.replace(/(?:-observed)
 const routeFailure = (message) => { const error = new Error(message); error.name = "RouteFailure"; throw error; };
 const aliases = { east: "E", west: "W", north: "N", south: "S", northeast: "NE", northwest: "NW", southeast: "SE", southwest: "SW" };
 const canonical = (command) => aliases[command.toLowerCase()] ?? command.toUpperCase();
+
+const clockMinutes = (time) => {
+  const match = time.match(/^(\d+):(\d+)(am|pm)$/);
+  if (!match) routeFailure(`Missing raw clock: ${time}`);
+  return Number(match[1]) % 12 * 60 + Number(match[2]) + (match[3] === "pm" ? 720 : 0);
+};
 
 const parseStatus = (text) => Object.fromEntries([
   ["mode", "Mode", "Time"],
@@ -205,7 +216,7 @@ const captureSession = async (browser, id, kind = "full") => {
   let startup;
   const submissions = [];
   let bridgeCommands = [];
-  const result = () => ({ id, kind, startedAt, finishedAt: new Date().toISOString(), recordingWindow: kind === "full" ? "accepted six-task prefix plus cinema IN only" : "none",
+  const result = () => ({ id, kind, startedAt, finishedAt: new Date().toISOString(), recordingWindow: kind === "full" ? candidateA ? "courthouse on-site; other accepted windows unchanged; cinema IN" : "accepted six-task prefix plus cinema IN only" : "none",
     viewport: { width: 1440, height: 900 }, commands: observations.map(({ command }) => command),
     submittedCommands, bridgeCommands, submissions, startup, securityPrompt, observations, surfaceAudit,
     warnings: observations.flatMap((turn) => {
@@ -342,17 +353,41 @@ const captureSession = async (browser, id, kind = "full") => {
     });
 
     if (kind === "full") {
-      // Consume, never change, the accepted church capture's exact 81-command
-      // prefix and recording windows. Only the decoder answer is runtime-derived.
-      for (const command of ["LOOK", "RECORD", "WAIT", "RECORD OFF", ...courthousePath, ...newspaperPath,
-        ...restaurantPath, ...cityHallPath, ...powerStationPath, ...churchPath]) await submit(command);
+      // Consume the accepted 81-command prefix; only Candidate A substitutes
+      // submissions 12–18. All other commands and recording windows stay intact.
       const accepted = churchFixture.sessions[0];
+      const expectedCommands = [...accepted.submittedCommands];
+      if (candidateA) expectedCommands.splice(11, 7, ...selectedCourthousePath);
+      const expectedStatus = (index) => candidateA && index >= 10 && index <= 16
+        ? { location: candidateACourtLocations[index - 10], mode: [12, 13].includes(index) ? "Simulation Mode (recording)" : "Simulation Mode" }
+        : accepted.observations[index].status;
+      for (const command of ["LOOK", "RECORD", "WAIT", "RECORD OFF", ...selectedCourthousePath, ...newspaperPath,
+        ...restaurantPath, ...cityHallPath, ...powerStationPath, ...churchPath]) {
+        await submit(command);
+        if (candidateA) {
+          const index = observations.length - 1;
+          const turn = observations[index];
+          const expected = expectedStatus(index);
+          if (turn.status.location !== expected.location || turn.status.mode !== expected.mode) routeFailure(`Candidate A prefix status/recording mismatch: ${index}`);
+          const actual = turn.presentation.lines.map(({ text }) => text.trim());
+          if ([13, 22, 23, 33, 43, 57, 72].includes(index)) {
+            // Required task prose common to BOTH previously accepted sessions;
+            // no warning placement, optional interrupt or clock is copied.
+            const leaves = accepted.observations[index].presentation.lines.slice(1, -1)
+              .map(({ text }) => text.trim()).filter((text) => text && !text.startsWith("WARNING:")
+                && churchFixture.sessions[1].observations[index].presentation.lines.some((line) => line.text.trim() === text));
+            if (!leaves.length || leaves.some((text) => !actual.includes(text))) routeFailure(`Candidate A recorded task body missing: ${index}`);
+          }
+          if (index === 13 && !actual.includes("The court is in session. A woman is being tried for petty theft.")) routeFailure("Candidate A court LOOK is not in session.");
+          if (["RECORD", "RECORD OFF"].includes(command) && !actual.includes(command === "RECORD" ? "Record feature activated." : "Record feature deactivated.")) routeFailure(`Candidate A explicit recording response missing: ${index}`);
+        }
+      }
       if (submittedCommands.length !== 81 || observations.length !== 80) routeFailure("Incomplete church prefix.");
       for (const [i, command] of submittedCommands.entries()) {
-        if (i !== 6 && canonical(command) !== canonical(accepted.submittedCommands[i])) routeFailure(`Prefix command mismatch: ${i}`);
+        if (i !== 6 && canonical(command) !== canonical(expectedCommands[i])) routeFailure(`Prefix command mismatch: ${i}`);
       }
       for (const [i, turn] of observations.entries()) {
-        const expected = accepted.observations[i].status;
+        const expected = expectedStatus(i);
         if (turn.status.location !== expected.location || turn.status.mode !== expected.mode) routeFailure(`Prefix status/recording mismatch: ${i}`);
       }
       surfaceAudit.push(await auditSurfaces(page, observations.length - 1, "before-cinema"));
@@ -398,7 +433,11 @@ const captureSession = async (browser, id, kind = "full") => {
         if (turn.status.location !== cinemaLocations[index] || turn.status.mode !== expectedMode
           || /Record buffer full|Auto-deactivation|not currently active/i.test(text)
           || (index === 5 && (!/ticket/i.test(text) || !/\$\d/.test(text)))
-          || (index === 7 && !/The usher takes your ticket[\s\S]*Movie Theatre[\s\S]*Upbeat Patrol II[\s\S]*fifteen minutes[\s\S]*lobby/.test(text))) {
+          || (index === 7 && !/The usher takes your ticket[\s\S]*Movie Theatre[\s\S]*Upbeat Patrol II[\s\S]*fifteen minutes[\s\S]*lobby/.test(text))
+          || (candidateA && index === 5 && !/NEW BALANCE: \$554.*ticket pops out into your hands/.test(text))
+          || (candidateA && index === 7 && clockMinutes(turn.status.time) - clockMinutes(observations.at(-2).status.time) !== 15)
+          || (candidateA && index === 8 && !/Record feature deactivated\./.test(text))
+          || (candidateA && index === 9 && !/The Downtown Cinema Quad is a modern, four-theatre movie complex/.test(text))) {
           if (index === 7) surfaceAudit.push(await auditSurfaces(page, observations.length - 1, "stopped-after-movie"));
           routeFailure(`Cinema step ${index}: expected ${cinemaLocations[index]} / ${expectedMode}; observed ${turn.status.location} / ${turn.status.mode}`);
         }
@@ -436,12 +475,13 @@ try {
   let noTicketProbe;
   const fixture = () => ({
     provenance: `Runtime-observed with Playwright in Chromium against canonical Release 79 Parchment; production static export at ${baseURL}; isolated fresh contexts captured ${new Date().toISOString()}. No VM edits, restores, or historical-source prose.`,
-    candidate: "Cinema after six accepted fieldwork tasks; no route adoption implied",
+    candidate: candidateA ? "cinema-courthouse-on-site-a" : "Cinema after six accepted fieldwork tasks; no route adoption implied",
+    ...(candidateA ? { candidateA: true } : {}),
     outcome: sessions.some(({ warnings }) => warnings.some(({ texts }) => texts.some((text) => /Record buffer full/.test(text))))
       ? "stopped-record-buffer-full" : sessions.length === 2 && noTicketProbe
         && !sessions.some(({ harnessFailure, routeFailure }) => harnessFailure || routeFailure)
         && !noTicketProbe.harnessFailure && !noTicketProbe.routeFailure ? "adoption-pending" : "incomplete",
-    canonicalSha256, prefixPath, courthousePath, newspaperPath, restaurantPath, cityHallPath,
+    canonicalSha256, prefixPath, courthousePath: selectedCourthousePath, newspaperPath, restaurantPath, cityHallPath,
     powerStationPath, powerStationLocations, churchPath, churchLocations, churchRoomIds,
     cinemaPath, cinemaLocations, cinemaRoomIds, sessions, noTicketProbe,
   });
