@@ -93,18 +93,21 @@ Workはpassing ZIPの実体、自然7session、reading56checkpoint、controlled�
 [計画 PR #111](https://github.com/5gmt/mind-forever-voyaging/pull/111) は独立 Sol review を経て merge 済み。
 F1 #108 の2 fresh attempts は先行81送信を保持したが、89送信目の映画 `IN` で原作の record buffer full / auto-deactivation を観測して停止した。
 [失敗実測](./docs/cinema-runtime-evidence.md) に証拠と別 fresh 券なし probe を保存した。
-96送信の成功採択は未了で、経路設計を Astra / ChatGPT Work に戻す。
+#112 は失敗証拠として merge 済みで、96送信の成功採択は未了である。
+Work は [裁判所を現地録画する候補A](./docs/cinema-recording-a-design.md)を追加実測方針として選定した。
+候補Aは12–18番目の RECORD / OFF の位置だけを変更し、先行六課題と全96送信を維持する。
+設計同期 PR の独立 Sol review / merge 後に F1 を再開する。
 F2 / F3 は引き続き blocked。映画の日本語 coverage は追加していない。
 
 ## 基本的な作業順
 
-1. 映画計画 PR #111 の独立 Sol review / merge は完了。F1 の停止証拠をレビューし、Work が経路設計を判断する。
-2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 設計判断後に先行81件を保持した成功経路を再実測し、Sol が成功採択して merge する。今回の failure-only evidence の merge では後続 gate を解除しない。
+1. 映画計画 PR #111 と失敗証拠 PR #112 は merge 済み。候補Aの設計同期 PR を独立 Sol がレビュー / merge する。
+2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 裁判所の録画区間だけを変更した候補Aの全経路を2 fresh sessions以上で再実測し、Sol が成功採択して merge する。旧経路 / 証拠 / 回帰は保持し、failure-only evidence の merge では後続 gate を解除しない。
 3. [F2 #109](https://github.com/5gmt/mind-forever-voyaging/issues/109): F1の採択fixtureから本文、地名、購入 / 入場操作のcopyを承認してmergeする。
 4. [F3 #110](https://github.com/5gmt/mind-forever-voyaging/issues/110): 日本語統合と6自然経路、非録画負例、境界回帰を実装する。Sol通常レビュー後、Workが最終headの全体受入とZIP監査、merge、#29報告、Issue closeを行う。
 
 F1–F3の依存関係と停止条件の正本は映画計画と各Issueとする。
-新経路が成立しない場合は設計判断に戻り、先行経路、録画窓、完了条件を暗黙に変更しない。
+候補Aが成立しない場合は設計判断に戻り、許可した裁判所区間以外の先行経路、録画窓、完了条件を暗黙に変更しない。
 [レストランA案](./docs/restaurant-recording-a-evidence.md)、[#82の容量不足の証拠](./docs/restaurant-runtime-evidence.md)、教会のharness failureを含む既存fixtureと回帰を保持する。
 自宅、公共交通、原作の正式な九課題評価と帰還、再入場 / 後続年、他Communications outletは後続候補である。
 映画券の印字 /乱数、marquee、未承認の検査操作、対象経路外のtimed events、新renderer、日本語parser、runtime machine translationは今回の範囲に含めない。
@@ -118,7 +121,7 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
 - CIはcanonical checksum、lint、TypeScript、build /unitを `verify` で検証し、その成功後にChromiumの `browser-e2e` を実行する。
-- 現在のdefault branchは47 unit /62 browser testsを持つ。Browser job上限50分、1 worker、retryなし、成功時の受入証拠と失敗artifactを14日保持する。
+- #112 merge後のdefault branchは48 unit /62 browser testsを持つ。[#112のSolレビュー](https://github.com/5gmt/mind-forever-voyaging/pull/112#pullrequestreview-5797200087)は[当該headのCI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42173732949)成功を確認している。Browser job上限50分、1 worker、retryなし、成功時の受入証拠と失敗artifactを14日保持する。
 - [PR #107最終CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は全件成功し、browser step38分21秒 /job39分50秒だった。初回full runのjob45分15秒を根拠として旧35分上限を50分に変更した。
 - Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries、実期限2026-11-15 12:39:22 JST。CRCとSHA-256を確認済み。
 - 映画計画時点でCIは変更しない。F3は全体実測を記録し、必要最小限のtimeout調整を同じPRでレビューする。CI分割 /並列化 /test削除 /retry追加は別設計判断とする。
