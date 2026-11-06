@@ -2068,3 +2068,161 @@ test("uses exact church response leaves as actor evidence", async () => {
   }
   assert.equal(observeChurchElder(createChurchElderState(), { ...valid, response: `St. Michael's\n  ${CHURCH_ELDER_PRESENCE}  \n \n>` }).present, true);
 });
+
+// Catch a lost prefix recording window, stale echo, premature movie success,
+// and a projector that collapses the in-turn theatre heading or blank lines.
+test("retains cinema capacity failures after the complete 81-command church prefix", async () => {
+  const path = new URL("./fixtures/parchment-cinema-runtime-failure.json", import.meta.url);
+  await assert.doesNotReject(access(path), "preserve the stopped cinema attempts before classifying their outcome");
+  const f = JSON.parse(await readFile(path, "utf8"));
+  const church = JSON.parse(await readFile(new URL("./fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
+  const aliases = { east: "E", west: "W", north: "N", south: "S", northeast: "NE", northwest: "NW", southeast: "SE", southwest: "SW" };
+  const canonical = (command) => aliases[command.toLowerCase()] ?? command.toUpperCase();
+  const normalize = (commands) => commands.map((command, i) => i === 6 ? "<observed decoder answer>" : canonical(command));
+  const route = ["NE", "N", "NE", "E", "NW", "BUY TICKET", "RECORD", "IN", "RECORD OFF", "LOOK", "SE", "W", "SW", "S", "SW"];
+  const locations = ["Main & Kennedy", "Centre & Kennedy", "Bodanski Square", "Museum Entrance", "Cinema", "Cinema", "Cinema", "Cinema", "Cinema", "Cinema", "Museum Entrance", "Bodanski Square", "Centre & Kennedy", "Main & Kennedy", "Kennedy Park"];
+  const rooms = ["MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE", "MUSEUM-ENTRANCE", "CINEMA", "CINEMA", "CINEMA", "CINEMA", "CINEMA", "CINEMA", "MUSEUM-ENTRANCE", "BODANSKI-SQUARE", "CENTRE-AND-KENNEDY", "MAIN-AND-KENNEDY", "KENNEDY-PARK"];
+  const minutes = (time) => {
+    const [, h, m, suffix] = time.match(/^(\d+):(\d+)(am|pm)$/);
+    return Number(h) % 12 * 60 + Number(m) + (suffix === "pm" ? 720 : 0);
+  };
+  assert.equal(f.canonicalSha256, "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+  assert.deepEqual(f.cinemaPath, route);
+  assert.equal(f.sessions.length, 2);
+  for (const s of [...f.sessions, f.noTicketProbe]) {
+    assert.equal(s.harnessFailure, undefined);
+    if (s.kind === "full") assert.match(s.routeFailure.message, /Recording capacity|Cinema step 7/);
+    else assert.equal(s.routeFailure, undefined);
+    assert.deepEqual(s.bridgeCommands, [" ", ...s.submittedCommands]);
+    assert.equal(s.startup.before.presentation.activeInput.kind, "char");
+    assert.equal(s.startup.after.activeInput.kind, "line");
+    assert.equal(s.startup.nextInputId, s.submissions[0].submittedInputId);
+    assert.equal(s.submissions.length, s.submittedCommands.length);
+    for (const [i, input] of s.submissions.entries()) {
+      assert.equal(input.command, s.submittedCommands[i]);
+      assert.equal(input.inputKind, "line");
+      assert.equal(input.echo.id, input.submittedInputId);
+      assert.notEqual(input.nextInputId, input.submittedInputId);
+      if (i) assert.equal(input.submittedInputId, s.submissions[i - 1].nextInputId);
+      if (input.role === "security-answer") assert.ok(input.echo.runs.some((run) => run.classes.includes("Style_input") && run.text === input.command));
+      else assert.equal(input.echo.text.toUpperCase(), `>${input.command.toUpperCase()}`);
+    }
+    for (const [i, turn] of s.observations.entries()) {
+      const p = turn.presentation;
+      assert.equal(p.version, 3);
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.equal(p.terminalLine, p.lines.length - 1);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.lines[p.activeInput.line].id, turn.nextInputId);
+      if (i) assert.equal(turn.submittedInputId, s.observations[i - 1].nextInputId);
+      assert.equal(reconcilePresentationHistory([], p).representable, true);
+      if (i !== 87) assert.doesNotMatch(p.lines.map(({ text }) => text).join("\n"), /Record buffer full|Auto-deactivation|not currently active/i);
+    }
+  }
+  assert.equal(f.outcome, "stopped-record-buffer-full");
+  for (const s of f.sessions) {
+    assert.equal(s.submittedCommands.length, 89);
+    assert.equal(s.observations.length, 88); // decoder exchange combined, never an invented echo
+    assert.deepEqual(normalize(s.submittedCommands.slice(0, 81)), normalize(church.sessions[0].submittedCommands));
+    assert.deepEqual(s.observations.slice(0, 80).map(({ status }) => [status.location, status.mode]), church.sessions[0].observations.map(({ status }) => [status.location, status.mode]));
+    // Both accepted church sessions independently contain these stable leaves.
+    // Decoder text is runtime-derived and is verified through input runs above.
+    for (let i = 0; i < 80; i++) {
+      if (i === 5 || i === 40) continue; // decoder and clock-dependent Rockvil Centre crowd prose
+      const accepted = church.sessions.map((session) => session.observations[i].presentation.lines.slice(1, -1).map(({ text }) => text).filter((text) => text.trim()));
+      const stable = accepted[0].filter((text) => accepted[1].includes(text));
+      const actual = s.observations[i].presentation.lines.slice(1, -1).map(({ text }) => text);
+      let cursor = 0;
+      for (const text of stable) {
+        const found = actual.indexOf(text, cursor);
+        assert.ok(found >= cursor, `accepted prefix leaf missing at turn ${i}: ${text}`);
+        cursor = found + 1;
+      }
+    }
+    assert.deepEqual(s.submittedCommands.slice(81).map(canonical), route.slice(0, 8));
+    const turns = s.observations.slice(80);
+    assert.deepEqual(turns.map(({ status }) => status.location), locations.slice(0, 8));
+    // The initial detector stopped inside submit before annotating the last
+    // turn. Its raw location still independently proves CINEMA.
+    assert.deepEqual(turns.slice(0, 7).map(({ roomId }) => roomId), rooms.slice(0, 7));
+    assert.ok(turns[7].roomId === undefined || turns[7].roomId === "CINEMA");
+    assert.deepEqual(turns.map(({ status }) => status.mode), route.slice(0, 8).map((_, i) => i === 6 ? "Simulation Mode (recording)" : "Simulation Mode"));
+    const text = (i) => turns[i].presentation.lines.map(({ text }) => text).join("\n");
+    assert.equal(turns[5].presentation.lines[1].text, 'You insert your card into the ticket seller. A readout flashes "NEW BALANCE: $554" and a ticket pops out into your hands.');
+    assert.match(s.observations[33].presentation.lines[1].text, /new balance is \$569/);
+    assert.match(text(6), /Record feature activated\./);
+    assert.match(text(7), /The usher takes your ticket/);
+    assert.match(text(7), /Movie Theatre/);
+    assert.match(text(7), /Upbeat Patrol II/);
+    assert.match(text(7), /fifteen minutes.*lobby/s);
+    assert.equal(minutes(turns[7].status.time) - minutes(turns[6].status.time), 15);
+    assert.equal(turns[7].presentation.lines[6].text, "WARNING: Record buffer full. Auto-deactivation of record feature.");
+    assert.deepEqual(turns[7].presentation.lines.map(({ text }) => text.trim()), [
+      `>${turns[7].command}`, "The usher takes your ticket and you step into the darkened theatre and find an empty seat.", "", "Movie Theatre",
+      'You begin watching "Upbeat Patrol II," which is funny and fast-moving like the prequel, but seems to lack some of the originality and freshness. The soundtrack, locations, and special effects are all top notch. After about fifteen minutes, you decide you\'ve seen enough, and head out to the lobby.',
+      "", "WARNING: Record buffer full. Auto-deactivation of record feature.", "", ">",
+    ]);
+    assert.equal(turns[7].presentation.lines[3].runs[0].classes.includes("Style_normal"), true);
+    assert.equal(turns.at(-1).status.location, "Cinema");
+    assert.deepEqual(s.warnings.map(({ texts }) => texts), [["WARNING: Record buffer is now half-full."], ["WARNING: Record buffer full. Auto-deactivation of record feature."]]);
+    assert.equal(s.warnings[1].turnId, turns[7].turnId);
+    assert.equal(s.warnings[0].turnId, s.observations[32].turnId);
+    for (const turn of turns) {
+      const raw = turn.presentation.lines.slice(1, -1);
+      for (const line of turn.presentation.lines) assert.equal(line.runs.map(({ text }) => text).join(""), line.text);
+      const english = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation).history, "en")[0].blocks;
+      assert.equal(english.slice(1).map(({ text }) => text).join("\n"), raw.map(({ text }) => text.trim()).filter(Boolean).join("\n"));
+      // Controlled approved anchor activates the EXISTING ordinary projector.
+      // This is a shape probe, never an observed movie translation.
+      const probe = structuredClone(turn.presentation);
+      probe.lines.splice(-1, 0, { ...structuredClone(probe.lines[1]), id: "controlled-approved-anchor", text: "Kennedy Park", runs: [{ text: "Kennedy Park", classes: ["Style_normal"], tag: "span" }] });
+      probe.terminalLine++; probe.activeInput.line++;
+      const blocks = observedOrdinaryTurnPresentation(probe, "ja");
+      assert.ok(blocks);
+      assert.deepEqual(blocks.slice(1, -1).map((b) => b.canonicalText ?? b.text), raw.map(({ text }) => text.trim()));
+      assert.deepEqual(blocks.slice(1, -1).map(({ sourceLines }) => sourceLines), raw.map((_, i) => [i + 1]));
+      assert.deepEqual(blocks.slice(1, -1).filter(({ kind }) => kind === "spacer").map(({ sourceLines }) => sourceLines), raw.flatMap(({ text }, i) => text.trim() ? [] : [[i + 1]]));
+    }
+    assert.deepEqual(s.surfaceAudit.slice(0, 8).map(({ phase }) => phase), ["before-cinema", "outbound-0", "outbound-1", "outbound-2", "museum-entrance", "cinema-before-ticket", "ticket-purchased", "recording-before-movie"]);
+    for (const audit of s.surfaceAudit) {
+      assert.equal(audit.inputBefore, audit.inputAfter);
+      assert.equal(audit.samples.length, 6);
+      for (const sample of audit.samples) {
+        assert.equal(sample.inputAfter, audit.inputBefore);
+        const scene = [...sample.sceneActions, ...sample.companionSceneActions].map(({ aria }) => aria).join("\n");
+        if (sample.mode === "classic") assert.equal(scene, "");
+        for (const draft of [...(sample.sceneDrafts ?? []), ...sample.companionDrafts]) assert.ok(!["BUY TICKET", "IN"].includes(canonical(draft.command)));
+        if (["cinema-before-ticket", "ticket-purchased", "recording-before-movie", "stopped-after-movie"].includes(audit.phase)) {
+          assert.doesNotMatch(scene, /button "(?:Enter|IN)"/);
+          if (audit.phase !== "stopped-after-movie") assert.doesNotMatch(scene, /button "(?:Buy|BUY TICKET)"/);
+          assert.ok(sample.location.flatMap(({ leaves }) => leaves).some(({ text, lang }) => text === "Cinema" && lang === "en"));
+          assert.doesNotMatch(sample.compass.map(({ aria }) => aria).join("\n"), /button "IN/);
+          if (sample.mode !== "classic") assert.ok(sample.mapSurface.flatMap(({ buttons }) => buttons).some(({ ariaLabel }) => ariaLabel === "Cinema, fieldwork destination, current location"));
+        }
+      }
+    }
+  }
+  assert.ok(f.sessions[0].observations.slice(80, 87).every(({ submissionMethod }) => submissionMethod === "canonical command form"));
+  assert.ok(f.sessions[1].observations.slice(80).some(({ submissionMethod }) => submissionMethod.includes("Guided map route")));
+  assert.ok(f.sessions[1].observations.slice(80).some(({ submissionMethod }) => submissionMethod.includes("Guided companion exit")));
+  assert.equal(f.sessions[1].surfaceAudit.at(-1).phase, "stopped-after-movie");
+  assert.equal(f.sessions[1].observations[80].presentation.lines[3].text, "A car alarm shrieks momentarily, then trails off into merciful silence.");
+  const stoppedUI = f.sessions[1].surfaceAudit.at(-1).samples.find(({ locale, mode }) => locale === "English" && mode === "guided");
+  assert.match(stoppedUI.compass[0].aria, /7\/9 recorded/); // helper inference is explicitly NOT movie recording success
+  assert.equal(f.sessions[0].observations[40].presentation.lines[2].text, "The name of this plaza tells it all. The well-maintained portico of City Hall stretches along the west side of the plaza, and Dunbar's lies on the southeast corner. Park Street leads north and south. Main Street and Centre Street both begin here, leading eastward and northeastward, respectively. The street is bustling with lunchtime crowds.");
+  const harness = f.harnessAttempts[0];
+  assert.match(harness.harnessFailure.message, /locator.fill/);
+  assert.equal(harness.submissions.length, 6);
+  assert.equal(harness.submittedCommands.length, 7); // numeric send was attempted, never reached the VM
+  assert.deepEqual(harness.bridgeCommands, [" ", ...harness.submittedCommands.slice(0, 6)]);
+  const probe = f.noTicketProbe;
+  assert.equal(probe.kind, "no-ticket-probe");
+  assert.equal(probe.submittedCommands.length, 13);
+  assert.deepEqual(normalize(probe.submittedCommands.slice(0, 7)), normalize(church.sessions[0].submittedCommands.slice(0, 7)));
+  assert.deepEqual(probe.submittedCommands.slice(7).map(canonical), ["NE", "N", "NE", "E", "NW", "IN"]);
+  const refusal = probe.observations.at(-1);
+  assert.equal(refusal.status.location, "Cinema");
+  assert.equal(refusal.status.mode, "Simulation Mode");
+  assert.equal(refusal.presentation.lines[1].text, "You don't have a ticket.");
+  assert.doesNotMatch(refusal.presentation.lines.map(({ text }) => text).join("\n"), /Movie Theatre|You begin watching|usher takes/);
+});
