@@ -7,16 +7,52 @@ on:
   push:
     branches:
       - codex/modern-amfv
+  workflow_dispatch:
+    inputs:
+      save_evidence:
+        description: 'Upload complete acceptance evidence for 1 day (check storage and arrange audit first)'
+        type: boolean
+        default: false
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 jobs:
+  changes:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      scope: ${{ steps.scope.outputs.scope }}
+    steps:
+      - name: Checkout comparison history
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
+        with:
+          node-version: '22'
+          package-manager-cache: false
+
+      - name: Validate workflows
+        run: bash scripts/lint-workflows.sh
+
+      - name: Test CI policy
+        run: node --test tests/ci/*.test.mjs
+
+      - name: Classify the complete change
+        id: scope
+        run: node scripts/ci-scope.mjs
+
   verify:
+    needs: changes
+    if: needs.changes.outputs.scope != 'docs'
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
@@ -52,10 +88,18 @@ jobs:
       - name: Test
         run: npm test
 
+      - name: Check complete browser test partition
+        run: node scripts/ci-e2e.mjs --check
+
   browser-e2e:
-    needs: verify
+    needs: [changes, verify]
+    if: needs.changes.outputs.scope == 'full'
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        group: [church, power, remaining]
 
     steps:
       - name: Checkout
@@ -79,13 +123,53 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run browser acceptance
-        run: npm run test:e2e
+        env:
+          E2E_GROUP: ${{ matrix.group }}
+        run: node scripts/ci-e2e.mjs "$E2E_GROUP"
+
+      - name: Record acceptance provenance
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.save_evidence }}
+        env:
+          E2E_GROUP: ${{ matrix.group }}
+        run: |
+          mkdir -p test-results
+          node --input-type=module <<'JS'
+          import { writeFileSync } from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const evidence = {
+            commit: execFileSync('git', ['rev-parse', 'HEAD'], {encoding: 'utf8'}).trim(),
+            runId: process.env.GITHUB_RUN_ID,
+            runAttempt: process.env.GITHUB_RUN_ATTEMPT,
+            group: process.env.E2E_GROUP,
+            repository: process.env.GITHUB_REPOSITORY,
+          };
+          writeFileSync('test-results/ci-provenance.json', JSON.stringify(evidence, null, 2) + '\n');
+          JS
 
       - name: Upload Playwright acceptance artifacts
-        if: always()
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.save_evidence }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: playwright-test-results
+          name: playwright-${{ matrix.group }}-${{ github.run_id }}-${{ github.run_attempt }}
           path: test-results/
-          if-no-files-found: ignore
-          retention-days: 14
+          if-no-files-found: error
+          retention-days: 1
+
+  ci-gate:
+    if: always()
+    needs: [changes, verify, browser-e2e]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Check required results
+        env:
+          CI_SCOPE: ${{ needs.changes.outputs.scope }}
+          CHANGES_RESULT: ${{ needs.changes.result }}
+          VERIFY_RESULT: ${{ needs.verify.result }}
+          E2E_RESULT: ${{ needs.browser-e2e.result }}
+        run: node scripts/ci-scope.mjs gate

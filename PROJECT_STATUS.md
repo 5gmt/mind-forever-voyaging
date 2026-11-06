@@ -36,7 +36,9 @@ PR #21 / Issue #20 では、runtime-observed の `BufferLine` 順序、input run
 
 最終方針は、Option 2a の host/window boundary を維持し、plain ordinary turn に Option 2b の observed structure を利用する **2a+2b boundary** である。opening、initial tableau、`LOOK` や structurally richer な turn は specialized projection を優先する。ordinary-turn catalog の現在の identity は exact English leaf であり、同じ English leaf に文脈依存の異なる訳が必要な場合は、より狭い identity または specialized path が必要になる。責任分界、fallback、scroll recovery、deferred alternatives の詳細は [localization presentation boundary](./docs/localization-boundary.md) に記録している。
 
-Issue #13 で、Chromium Playwright acceptance を GitHub Actions の独立した `browser-e2e` job に組み込んだ。通常の `verify` が成功した後だけ browser setup を行い、`npm run test:e2e` を実行する。Playwright failure traces/screenshots は短期 Actions artifact として保持し、browser-only presentation regression も PR 上で可視かつ失敗可能な CI gate になっている。
+Issue #13 で導入した Chromium Playwright acceptance は、現在の完全検証では `verify` 成功後に3群の `browser-e2e` として実行する。
+既知の説明文書だけの変更は軽量検証とし、ブラウザーの回帰は `ci-gate` で失敗として扱う。
+通常実行は artifact を保存せず、独立監査に必要な証拠は明示的な完全実行で1日保存する。
 
 ## 完了した milestone
 
@@ -93,18 +95,18 @@ Workはpassing ZIPの実体、自然7session、reading56checkpoint、controlled�
 [計画 PR #111](https://github.com/5gmt/mind-forever-voyaging/pull/111) は独立 Sol review を経て merge 済み。
 F1 #108 の2 fresh attempts は先行81送信を保持したが、89送信目の映画 `IN` で原作の record buffer full / auto-deactivation を観測して停止した。
 [失敗実測](./docs/cinema-runtime-evidence.md) に証拠と別 fresh 券なし probe を保存した。
-#112 は失敗証拠として merge 済みで、96送信の成功採択は未了である。
+#112 は失敗証拠として merge 済みで、この時点では96送信の成功採択に至らなかった。
 Work は [裁判所を現地録画する候補A](./docs/cinema-recording-a-design.md)を追加実測方針として選定した。
 候補Aは12–18番目の RECORD / OFF の位置だけを変更し、先行六課題と全96送信を維持する。
 [設計同期 PR #113](https://github.com/5gmt/mind-forever-voyaging/pull/113) は独立 Sol review を経て merge `f527d07084e0055d13d35dd64148fa00e57c866e` 済み。
 [候補Aの実測](./docs/cinema-recording-a-evidence.md)では2 fresh sessionsで全96送信、六課題の成立と録画、映画15分の録画継続、明示 OFF / LOOK、公園帰着を確認した。
-成功採択候補を提出する段階であり、F1 の独立 Sol 採択 / merge は未了である。
-F2 / F3 は引き続き blocked。映画の日本語 coverage は追加していない。
+[PR #114 の独立 Sol review](https://github.com/5gmt/mind-forever-voyaging/pull/114#pullrequestreview-5802952413)で候補Aを採択し、merge `22945dc75b1fbc45b8d9b5e72248870e7dda495f` 済み。
+F1 は完了し、F2 の copy承認が開始可能。F3 は F2 の承認 / merge まで blocked。映画の日本語 coverage は追加していない。
 
 ## 基本的な作業順
 
 1. 映画計画 PR #111、失敗証拠 PR #112、候補Aの設計同期 PR #113 は独立 Sol review / merge 済み。
-2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 候補Aの2 fresh sessions の成功採択候補と操作契約を、独立 Sol がレビュー / merge する。旧経路 / 証拠 / 回帰は保持し、成功採択までは後続 gate を解除しない。
+2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 候補Aの2 fresh sessions と操作契約を PR #114 で独立 Sol が採択 / merge 済み。旧経路 / 証拠 / 回帰は保持する。
 3. [F2 #109](https://github.com/5gmt/mind-forever-voyaging/issues/109): F1の採択fixtureから本文、地名、購入 / 入場操作のcopyを承認してmergeする。
 4. [F3 #110](https://github.com/5gmt/mind-forever-voyaging/issues/110): 日本語統合と6自然経路、非録画負例、境界回帰を実装する。Sol通常レビュー後、Workが最終headの全体受入とZIP監査、merge、#29報告、Issue closeを行う。
 
@@ -122,11 +124,12 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - Current delivery baseline は Next.js static export と Netlify である。
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
-- CIはcanonical checksum、lint、TypeScript、build /unitを `verify` で検証し、その成功後にChromiumの `browser-e2e` を実行する。
-- 候補Aの新しい実測回帰を含む suite は49 unit /62 browser testsである。[#112のSolレビュー](https://github.com/5gmt/mind-forever-voyaging/pull/112#pullrequestreview-5797200087)は[当該headのCI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42173732949)成功を確認している。Browser job上限50分、1 worker、retryなし、成功時の受入証拠と失敗artifactを14日保持する。
+- CIは説明文書 / Verify / Fullを変更内容で選び、workflow検査とCI制御テストは常に実行する。Fullはcanonical checksum、lint、TypeScript、build /unitの後にChromiumを3群で実行し、最終結果を `ci-gate` に集約する。
+- #114 merge後の49 unit /62 browser testsを維持し、CI制御の回帰テストを追加した。Browserはchurch 10件 /power 9件 /remaining 43件、各1 worker、retryなし、job上限35分。新規specはremainingに入り、一覧照合で欠落と重複を検出する。
+- 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終headの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの3 ZIPを1日以内に監査する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
 - [PR #107最終CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は全件成功し、browser step38分21秒 /job39分50秒だった。初回full runのjob45分15秒を根拠として旧35分上限を50分に変更した。
-- Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries、実期限2026-11-15 12:39:22 JST。CRCとSHA-256を確認済み。
-- 映画計画時点でCIは変更しない。F3は全体実測を記録し、必要最小限のtimeout調整を同じPRでレビューする。CI分割 /並列化 /test削除 /retry追加は別設計判断とする。
+- Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries。2026-11-07の整理に先立ち、ZIPをActions外へ退避し、元のdigestとの一致とCRCを確認した。
+- 2026-11-07のCI保守で、映画実装とは別に実行分類と3群分散を導入した。自然経路、assertion、添付の生成、canonical artifactは保持する。旧artifact整理はレビュー済みIDの一覧に限定し、PR #114の現行証拠を保護する。削除の完了と実測時間は保守PR /workflowの結果で確認する。
 
 ## 更新の契機
 

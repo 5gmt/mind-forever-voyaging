@@ -1,0 +1,266 @@
+{
+  "repository": "5gmt/mind-forever-voyaging",
+  "observed_at": "2026-11-06T18:22:00Z",
+  "protected_ids": [
+    13512501098
+  ],
+  "notes": [
+    "PR #114 accepted current-head evidence is protected; the redundant post-merge run #205 is included.",
+    "PR #107 final evidence was archived outside Actions; SHA-256 a7428659eb677c88fe67699d8f34dce29bd315e3bedba8c12bef24e3e8ee3ae9, 397434042 bytes, ZIP CRC checked (3592 entries).",
+    "Only these exact observed IDs are eligible. Future artifacts are never selected."
+  ],
+  "artifacts": [
+    {
+      "id": 13521804000,
+      "name": "playwright-test-results",
+      "size_in_bytes": 397999370,
+      "digest": "sha256:3884311e955a470ca9c331c097d4e1a24709a2d63e069273a9d746698c3b57f0",
+      "run_id": 42248061774
+    },
+    {
+      "id": 13508768147,
+      "name": "playwright-test-results",
+      "size_in_bytes": 397384542,
+      "digest": "sha256:25b7e863a6e1893d48cba49d9d187b665a961071f7d259e8571e052cf0f9acfd",
+      "run_id": 42225606751
+    },
+    {
+      "id": 13490561431,
+      "name": "playwright-test-results",
+      "size_in_bytes": 396929618,
+      "digest": "sha256:b28031f440b7af88a92c6d39f9779027a341f703f6f4a4c55cbffdb313b2b4b6",
+      "run_id": 42186612117
+    },
+    {
+      "id": 13488528546,
+      "name": "playwright-test-results",
+      "size_in_bytes": 397215986,
+      "digest": "sha256:4070a40c218f428dde0470c4db421426ac849aae2fdc7fef4f13b8b6d4c3a58a",
+      "run_id": 42183096138
+    },
+    {
+      "id": 13484417744,
+      "name": "playwright-test-results",
+      "size_in_bytes": 397643852,
+      "digest": "sha256:ea2ee2de84fbc8386ea4558a6c24606ea6b32ce042e8a3d8631140d0cf312695",
+      "run_id": 42173732949
+    },
+    {
+      "id": 13083151504,
+      "name": "playwright-test-results",
+      "size_in_bytes": 397491174,
+      "digest": "sha256:7229d82ee07d0af346883334977eb7634fb415a18241f3b4e821b3468a901aae",
+      "run_id": 41301698376
+    },
+    {
+      "id": 13078773494,
+      "name": "playwright-test-results",
+      "size_in_bytes": 396615832,
+      "digest": "sha256:e57af435a72a3c3c9b00d9d35a53664d3bb4141bb4244537759c0fd664ec591b",
+      "run_id": 41291343556
+    },
+    {
+      "id": 13071712500,
+      "name": "playwright-test-results",
+      "size_in_bytes": 397523532,
+      "digest": "sha256:0fab3298584fb0f5c58d556e62d59c019a1c0d3eff770046d805b154147d3f0e",
+      "run_id": 41275168393
+    },
+    {
+      "id": 13068194532,
+      "name": "playwright-test-results",
+      "size_in_bytes": 397434042,
+      "digest": "sha256:a7428659eb677c88fe67699d8f34dce29bd315e3bedba8c12bef24e3e8ee3ae9",
+      "run_id": 41267285902
+    },
+    {
+      "id": 13039285748,
+      "name": "playwright-test-results",
+      "size_in_bytes": 399221678,
+      "digest": "sha256:bafa2734f0623c36df88ea705d2ab36a218c9488366c3cfd8a3c9f355548b481",
+      "run_id": 41188571762
+    },
+    {
+      "id": 13036387788,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207475598,
+      "digest": "sha256:ffa5625d19c3f71083e66e7380300a24488f185e4ddf848bb67070086567b000",
+      "run_id": 41184295699
+    },
+    {
+      "id": 13034532125,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207609840,
+      "digest": "sha256:80c442385ee937ee0a7d9973f46febb2f622dfd2d148f006ffc6f015b8f2e043",
+      "run_id": 41177903626
+    },
+    {
+      "id": 13029559902,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207160412,
+      "digest": "sha256:e488d7fa29b82208415aa52678673c9fc4aca7f40b5a80323a6e1b630ebe826a",
+      "run_id": 41167153637
+    },
+    {
+      "id": 12915098877,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207441182,
+      "digest": "sha256:37ff3d0b010ca87517d8b6022f9c9f62f206a177390dc0e011eac950aa1fcf1d",
+      "run_id": 40912686244
+    },
+    {
+      "id": 12911542194,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207324100,
+      "digest": "sha256:d1efdc7fcb1622e14c17811938f39cac25df5c1ecb074daf4eae037c9238278f",
+      "run_id": 40901971747
+    },
+    {
+      "id": 12907818221,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207165706,
+      "digest": "sha256:a58669491d76d480835781b17f83613292661ae38c4af63d9b5da7e106c21dea",
+      "run_id": 40895689027
+    },
+    {
+      "id": 12905404649,
+      "name": "playwright-test-results",
+      "size_in_bytes": 16135096,
+      "digest": "sha256:1895382fe31c33861d0beac723f224f2818fb96b836d5db946108249280f1acf",
+      "run_id": 40895089944
+    },
+    {
+      "id": 12889704401,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207013864,
+      "digest": "sha256:9f47aff704e1836bc49dba532167851e43e699a2a73e96a4e3c2a6f197946189",
+      "run_id": 40855375831
+    },
+    {
+      "id": 12867211253,
+      "name": "playwright-test-results",
+      "size_in_bytes": 207163300,
+      "digest": "sha256:cc8379dd0701ae5a85741c204be8e10a51d192e0bfb933087f672a1c059bb7fb",
+      "run_id": 40800854441
+    },
+    {
+      "id": 12863863077,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84267456,
+      "digest": "sha256:2e9e274476b2945d2102701b8584106af6fbac56489e585c0ba19c6d0caa525a",
+      "run_id": 40794700670
+    },
+    {
+      "id": 12792299857,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84938894,
+      "digest": "sha256:f1b549ef5ad65feaaa24c4c2a2da55fa6951500891abfc65faa7d9f0af78e463",
+      "run_id": 40632986385
+    },
+    {
+      "id": 12792058118,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84343904,
+      "digest": "sha256:224103708a0762487dd30a04d9c384c798d9f44b325add56ecbb56595c5fb360",
+      "run_id": 40631619866
+    },
+    {
+      "id": 12792010809,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84562758,
+      "digest": "sha256:794aebe151682511c557ec999feca27dfe41d1d724609dfdbc21487619ec5d0a",
+      "run_id": 40629717508
+    },
+    {
+      "id": 12789808366,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84345636,
+      "digest": "sha256:189b546b7425ea9eb34ee9d26d02f3dcf2658154fb6bcd431239fe03d9b0c102",
+      "run_id": 40625950504
+    },
+    {
+      "id": 12653848607,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84460166,
+      "digest": "sha256:f9e58dcf248ee031ee54d8d00d37f199136d02a3a404f67a3ccc14b6c845de14",
+      "run_id": 40329608191
+    },
+    {
+      "id": 12636463107,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84559812,
+      "digest": "sha256:ed88e7f159225bd53bb80b09b1950a398dd6bcc2fc1c982fe9d9b039fec06f79",
+      "run_id": 40289879527
+    },
+    {
+      "id": 12628754186,
+      "name": "playwright-test-results",
+      "size_in_bytes": 84469566,
+      "digest": "sha256:f5fc9eb24c7cd614df81e74926b1a93af1135b638c278f7ee82dbae0ea1d64e1",
+      "run_id": 40272195826
+    },
+    {
+      "id": 12625752457,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38520384,
+      "digest": "sha256:ca4b2f86816c4c369fff63d70c44d6b463098b8db65f027083d25b56aa1eaa31",
+      "run_id": 40262763748
+    },
+    {
+      "id": 12619289422,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38590966,
+      "digest": "sha256:ae023e613d007673df9b611cf9053c4c665f776f0f011b96a76a3f3c3e9a3a8b",
+      "run_id": 40249506371
+    },
+    {
+      "id": 12619121940,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38371174,
+      "digest": "sha256:33fa37fc79ea5c7b0d284381ab5cc5aeb9ac486f1cb8cb476c1e2c998716df04",
+      "run_id": 40247032289
+    },
+    {
+      "id": 12618890949,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38445136,
+      "digest": "sha256:66530c11c14c4c09809404dc3a1d6dc8a267e9d3d6eef134c722b3de34eef2b2",
+      "run_id": 40244724491
+    },
+    {
+      "id": 12594972940,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38527864,
+      "digest": "sha256:70990cbc977219f34f5fcd0c13711ccbfbaffad94b9d2f414dab6e31a83f81b8",
+      "run_id": 40182849874
+    },
+    {
+      "id": 12571821633,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38440318,
+      "digest": "sha256:3b583c393dd3410089a0b83b367535d287661b856230236edc41a08d72b01fd3",
+      "run_id": 40121219108
+    },
+    {
+      "id": 12555307241,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38506674,
+      "digest": "sha256:8e13446ffd1a430a6f2f5e4ae235928e5b610e1bf0ec4c55cf73acacbb39d136",
+      "run_id": 40080713315
+    },
+    {
+      "id": 12547415490,
+      "name": "playwright-test-results",
+      "size_in_bytes": 2735316,
+      "digest": "sha256:eb4abbb2b33685e1410ce0692ab17475df4fe6ed32f24c9c8da61b03316245de",
+      "run_id": 40059683712
+    },
+    {
+      "id": 12547341095,
+      "name": "playwright-test-results",
+      "size_in_bytes": 38452262,
+      "digest": "sha256:66686819c602c6bf36a0e996b9d20ac5f71326cdff5b8229cdfe2bb7b0675328",
+      "run_id": 40059801256
+    }
+  ]
+}
