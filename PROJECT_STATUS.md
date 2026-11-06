@@ -129,7 +129,7 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終headの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの3 ZIPを1日以内に監査する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
 - [PR #107最終CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は全件成功し、browser step38分21秒 /job39分50秒だった。初回full runのjob45分15秒を根拠として旧35分上限を50分に変更した。
 - Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries。2026-11-07の整理に先立ち、ZIPをActions外へ退避し、元のdigestとの一致とCRCを確認した。
-- 2026-11-07のCI保守で、映画実装とは別に実行分類と3群分散を導入した。自然経路、assertion、添付の生成、canonical artifactは保持する。旧artifact整理はレビュー済みIDの一覧に限定し、PR #114の現行証拠を保護する。削除の完了と実測時間は保守PR /workflowの結果で確認する。
+- 2026-11-07のCI保守で、映画実装とは別に実行分類と3群分散を導入した。自然経路、assertion、添付の生成、canonical artifactは保持する。[CI保守 PR #115](https://github.com/5gmt/mind-forever-voyaging/pull/115)は全49 unit /62 browser成功と独立差分レビュー後にmerge済み。CI全体は直前の49分3秒から18分7秒となった。レビュー済みの旧artifact 36件を削除し、PR #114の証拠1件 /396,203,446 bytesを保持している。実測値と未検証事項は[CI運用](./docs/ci-operation.md)に記録した。
 
 ## 更新の契機
 
