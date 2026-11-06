@@ -2226,3 +2226,160 @@ test("retains cinema capacity failures after the complete 81-command church pref
   assert.equal(refusal.presentation.lines[1].text, "You don't have a ticket.");
   assert.doesNotMatch(refusal.presentation.lines.map(({ text }) => text).join("\n"), /Movie Theatre|You begin watching|usher takes/);
 });
+
+// Protect the explicitly approved seven-command change while retaining the
+// complete six-task prefix and the canonical movie recording/input contract.
+test("retains two complete cinema candidate A sessions with on-site courthouse recording", async () => {
+  const path = new URL("./fixtures/parchment-cinema-recording-a-observed.json", import.meta.url);
+  await assert.doesNotReject(access(path), "candidate A requires fresh complete runtime evidence");
+  const f = JSON.parse(await readFile(path, "utf8"));
+  const church = JSON.parse(await readFile(new URL("./fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
+  const original = JSON.parse(await readFile(new URL("./fixtures/parchment-cinema-runtime-failure.json", import.meta.url), "utf8"));
+  const aliases = { east: "E", west: "W", north: "N", south: "S", northeast: "NE", northwest: "NW", southeast: "SE", southwest: "SW" };
+  const canonical = (command) => aliases[command.toLowerCase()] ?? command.toUpperCase();
+  const normalize = (commands) => commands.map((command, i) => i === 6 ? "<observed decoder answer>" : canonical(command));
+  const court = ["SW", "NW", "RECORD", "LOOK", "RECORD OFF", "SE", "NE"];
+  const movie = ["NE", "N", "NE", "E", "NW", "BUY TICKET", "RECORD", "IN", "RECORD OFF", "LOOK", "SE", "W", "SW", "S", "SW"];
+  const expectedPrefix = normalize(church.sessions[0].submittedCommands);
+  expectedPrefix.splice(11, 7, ...court);
+  const locations = ["Main & Kennedy", "Centre & Kennedy", "Bodanski Square", "Museum Entrance", "Cinema", "Cinema", "Cinema", "Cinema", "Cinema", "Cinema", "Museum Entrance", "Bodanski Square", "Centre & Kennedy", "Main & Kennedy", "Kennedy Park"];
+  const rooms = ["MAIN-AND-KENNEDY", "CENTRE-AND-KENNEDY", "BODANSKI-SQUARE", "MUSEUM-ENTRANCE", "CINEMA", "CINEMA", "CINEMA", "CINEMA", "CINEMA", "CINEMA", "MUSEUM-ENTRANCE", "BODANSKI-SQUARE", "CENTRE-AND-KENNEDY", "MAIN-AND-KENNEDY", "KENNEDY-PARK"];
+  const minutes = (time) => {
+    const [, h, m, suffix] = time.match(/^(\d+):(\d+)(am|pm)$/);
+    return Number(h) % 12 * 60 + Number(m) + (suffix === "pm" ? 720 : 0);
+  };
+  assert.equal(f.candidate, "cinema-courthouse-on-site-a");
+  assert.equal(f.candidateA, true);
+  assert.equal(f.outcome, "adoption-pending");
+  assert.equal(f.canonicalSha256, "14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d");
+  assert.deepEqual(f.courthousePath, court);
+  assert.deepEqual(f.cinemaPath, movie);
+  assert.equal(f.sessions.length, 2);
+  for (const session of [...f.sessions, f.noTicketProbe]) {
+    assert.equal(session.harnessFailure, undefined);
+    assert.equal(session.routeFailure, undefined);
+    assert.equal(session.startup.before.presentation.activeInput.kind, "char");
+    assert.equal(session.startup.after.activeInput.kind, "line");
+    assert.equal(session.startup.nextInputId, session.submissions[0].submittedInputId);
+    assert.deepEqual(session.bridgeCommands, [" ", ...session.submittedCommands]);
+    assert.equal(session.submittedCommands.length, session.submissions.length);
+    assert.equal(session.observations.length + 1, session.submissions.length);
+    for (const [i, input] of session.submissions.entries()) {
+      assert.equal(input.command, session.submittedCommands[i]);
+      assert.equal(input.inputKind, "line");
+      assert.equal(input.echo.id, input.submittedInputId);
+      assert.notEqual(input.nextInputId, input.submittedInputId);
+      if (i) assert.equal(input.submittedInputId, session.submissions[i - 1].nextInputId);
+      if (input.role === "security-answer") assert.ok(input.echo.runs.some((run) => run.classes.includes("Style_input") && run.text === input.command));
+      else assert.equal(input.echo.text.toUpperCase(), `>${input.command.toUpperCase()}`);
+    }
+    for (const [i, turn] of session.observations.entries()) {
+      const p = turn.presentation;
+      assert.equal(p.version, 3);
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.equal(p.terminalLine, p.lines.length - 1);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.lines[p.activeInput.line].id, turn.nextInputId);
+      if (i) assert.equal(turn.submittedInputId, session.observations[i - 1].nextInputId);
+      assert.equal(reconcilePresentationHistory([], p).representable, true);
+      assert.doesNotMatch(p.lines.map(({ text }) => text).join("\n"), /Record buffer full|Auto-deactivation|not currently active/i);
+      for (const line of p.lines) assert.equal(line.runs.map(({ text }) => text).join(""), line.text);
+    }
+  }
+  for (const session of f.sessions) {
+    assert.equal(session.recordingWindow, "courthouse on-site; other accepted windows unchanged; cinema IN");
+    assert.equal(session.submissions.length, 96);
+    assert.deepEqual(normalize(session.submittedCommands.slice(0, 81)), expectedPrefix);
+    assert.deepEqual(session.submittedCommands.slice(81).map(canonical), movie);
+    assert.deepEqual(normalize(session.submittedCommands).filter((command) => !["RECORD", "RECORD OFF"].includes(command)),
+      [...normalize(church.sessions[0].submittedCommands), ...movie].filter((command) => !["RECORD", "RECORD OFF"].includes(command)));
+    const expectedStatus = church.sessions[0].observations.map(({ status }) => [status.location, status.mode]);
+    expectedStatus.splice(10, 7, ...["Elm & Park", "Courthouse", "Courthouse", "Courthouse", "Courthouse", "Elm & Park", "Kennedy Park"].map((location, i) => [location, [2, 3].includes(i) ? "Simulation Mode (recording)" : "Simulation Mode"]));
+    assert.deepEqual(session.observations.slice(0, 80).map(({ status }) => [status.location, status.mode]), expectedStatus);
+    // Each task's actual body, including every newspaper article paragraph,
+    // must still appear during recording. Optional warnings/noise may move.
+    for (const index of [13, 22, 23, 33, 43, 57, 72]) {
+      const turn = session.observations[index];
+      assert.equal(turn.status.mode, "Simulation Mode (recording)");
+      const actual = turn.presentation.lines.slice(1, -1).map(({ text }) => text.trim());
+      const stable = church.sessions[0].observations[index].presentation.lines.slice(1, -1).map(({ text }) => text.trim()).filter((text) => text && !text.startsWith("WARNING:") && church.sessions[1].observations[index].presentation.lines.some((line) => line.text.trim() === text));
+      assert.ok(stable.length > 0);
+      let cursor = 0;
+      for (const text of stable) {
+        const found = actual.indexOf(text, cursor);
+        assert.ok(found >= cursor, `recorded task leaf missing at observation ${index}: ${text}`);
+        cursor = found + 1;
+      }
+    }
+    assert.ok(session.observations[13].presentation.lines.some(({ text }) => text === "The court is in session. A woman is being tried for petty theft."));
+    for (const turn of session.observations) {
+      if (["RECORD", "RECORD OFF"].includes(canonical(turn.command))) {
+        assert.equal(turn.presentation.lines[1].text, canonical(turn.command) === "RECORD" ? "Record feature activated." : "Record feature deactivated.");
+      }
+    }
+    const turns = session.observations.slice(80);
+    assert.deepEqual(turns.map(({ status }) => status.location), locations);
+    assert.deepEqual(turns.map(({ roomId }) => roomId), rooms);
+    assert.deepEqual(turns.map(({ status }) => status.mode), movie.map((_, i) => [6, 7].includes(i) ? "Simulation Mode (recording)" : "Simulation Mode"));
+    assert.equal(turns[5].presentation.lines[1].text, 'You insert your card into the ticket seller. A readout flashes "NEW BALANCE: $554" and a ticket pops out into your hands.');
+    assert.equal(minutes(turns[7].status.time) - minutes(turns[6].status.time), 15);
+    assert.deepEqual(turns[7].presentation.lines.map(({ text }) => text.trim()), [
+      `>${turns[7].command}`, "The usher takes your ticket and you step into the darkened theatre and find an empty seat.", "", "Movie Theatre",
+      'You begin watching "Upbeat Patrol II," which is funny and fast-moving like the prequel, but seems to lack some of the originality and freshness. The soundtrack, locations, and special effects are all top notch. After about fifteen minutes, you decide you\'ve seen enough, and head out to the lobby.', "", ">",
+    ]);
+    assert.ok(turns[9].presentation.lines.some(({ text }) => text.startsWith("The Downtown Cinema Quad is a modern, four-theatre movie complex")));
+    assert.equal(turns.at(-1).status.location, "Kennedy Park");
+    assert.deepEqual(session.warnings.map(({ texts }) => texts), [["WARNING: Record buffer is now half-full."]]);
+    assert.equal(session.warnings[0].turnId, session.observations[33].turnId);
+    assert.equal(session.warnings[0].command, "BUY MEAL");
+    assert.notEqual(session.warnings[0].turnId, session.observations[32].turnId, "do not copy the old warning placement into candidate A");
+    for (const turn of turns) {
+      const raw = turn.presentation.lines.slice(1, -1);
+      const english = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation).history, "en")[0].blocks;
+      assert.equal(english.slice(1).map(({ text }) => text).join("\n"), raw.map(({ text }) => text.trim()).filter(Boolean).join("\n"));
+      const probe = structuredClone(turn.presentation);
+      probe.lines.splice(-1, 0, { ...structuredClone(probe.lines[1]), id: "controlled-approved-anchor", text: "Kennedy Park", runs: [{ text: "Kennedy Park", classes: ["Style_normal"], tag: "span" }] });
+      probe.terminalLine++; probe.activeInput.line++;
+      const blocks = observedOrdinaryTurnPresentation(probe, "ja");
+      assert.ok(blocks); // controlled shape probe, not a new translation approval
+      assert.deepEqual(blocks.slice(1, -1).map((b) => b.canonicalText ?? b.text), raw.map(({ text }) => text.trim()));
+      assert.deepEqual(blocks.slice(1, -1).map(({ sourceLines }) => sourceLines), raw.map((_, i) => [i + 1]));
+      assert.deepEqual(blocks.slice(1, -1).filter(({ kind }) => kind === "spacer").map(({ sourceLines }) => sourceLines), raw.flatMap(({ text }, i) => text.trim() ? [] : [[i + 1]]));
+    }
+    assert.deepEqual(session.surfaceAudit.map(({ phase }) => phase), ["before-cinema", "outbound-0", "outbound-1", "outbound-2", "museum-entrance", "cinema-before-ticket", "ticket-purchased", "recording-before-movie", "movie-returned-lobby", "explicit-off", "lobby-look", "return-museum", "returned-park"]);
+    for (const audit of session.surfaceAudit) {
+      assert.equal(audit.inputBefore, audit.inputAfter);
+      assert.equal(audit.samples.length, 6);
+      for (const sample of audit.samples) {
+        assert.equal(sample.inputAfter, audit.inputBefore);
+        if (sample.mode === "classic") {
+          assert.equal(sample.sceneActions.length, 0);
+          assert.equal(sample.companionSceneActions.length, 0);
+        }
+        if (["cinema-before-ticket", "ticket-purchased", "recording-before-movie", "movie-returned-lobby", "explicit-off", "lobby-look"].includes(audit.phase)) {
+          assert.ok(sample.location.flatMap(({ leaves }) => leaves).some(({ text, lang }) => text === "Cinema" && lang === "en"));
+          assert.doesNotMatch(sample.compass.map(({ aria }) => aria).join("\n"), /button "IN/);
+          if (sample.mode !== "classic") assert.ok(sample.mapSurface.flatMap(({ buttons }) => buttons).some(({ ariaLabel }) => ariaLabel === "Cinema, fieldwork destination, current location"));
+        }
+        if (["cinema-before-ticket", "ticket-purchased", "recording-before-movie"].includes(audit.phase)) {
+          const actions = [...sample.sceneActions, ...sample.companionSceneActions].map(({ aria }) => aria).join("\n");
+          assert.doesNotMatch(actions, /button "(?:Buy|Enter|IN)"/);
+        }
+      }
+    }
+  }
+  assert.ok(f.sessions[0].observations[83].presentation.lines.some(({ text }) => text === "A man with a shaved head asks your views on some obscure religious point, then wanders off into the crowds."));
+  assert.ok(f.sessions[1].observations[80].presentation.lines.some(({ text }) => text === "A skycopter drones by far overhead and disappears into the distance."));
+  assert.ok(f.sessions[0].observations.slice(80).every(({ submissionMethod }) => submissionMethod === "canonical command form"));
+  assert.ok(f.sessions[1].observations.slice(80).some(({ submissionMethod }) => submissionMethod.includes("Guided map route")));
+  assert.ok(f.sessions[1].observations.slice(80).some(({ submissionMethod }) => submissionMethod.includes("Japanese Actions compass")));
+  assert.equal(f.noTicketProbe.kind, "no-ticket-probe");
+  assert.equal(f.noTicketProbe.submittedCommands.length, 13);
+  assert.deepEqual(normalize(f.noTicketProbe.submittedCommands.slice(0, 7)), normalize(original.noTicketProbe.submittedCommands.slice(0, 7)));
+  assert.deepEqual(f.noTicketProbe.submittedCommands.slice(7), ["NE", "N", "NE", "E", "NW", "IN"]);
+  const refusal = f.noTicketProbe.observations.at(-1);
+  assert.equal(refusal.presentation.lines[1].text, "You don't have a ticket.");
+  assert.equal(refusal.status.location, "Cinema");
+  assert.equal(refusal.status.mode, "Simulation Mode");
+  assert.doesNotMatch(refusal.presentation.lines.map(({ text }) => text).join("\n"), /Movie Theatre|You begin watching|usher takes/);
+});
