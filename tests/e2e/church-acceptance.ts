@@ -1,3 +1,4 @@
+import type { CinemaPrefixOptions } from "./restaurant-acceptance";
 import { expect, type Locator, type Page, type TestInfo } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { acceptPowerStationMilestone } from "./power-station-acceptance";
@@ -45,10 +46,10 @@ const lastTextPosition = (paragraph: Locator) => paragraph.evaluate((element) =>
 });
 const lastTextVisible = async (paragraph: Locator) => (await lastTextPosition(paragraph)).lastTextVisible;
 
-export async function acceptChurchMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true) {
+export async function acceptChurchMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true, cinema: CinemaPrefixOptions = {}) {
   const startedAt = new Date().toISOString();
   // Preserve every prior assertion, recording window, attachment and 67 sends.
-  const prior = await acceptPowerStationMilestone(page, controls, testInfo);
+  const prior = await acceptPowerStationMilestone(page, controls, testInfo, true, cinema);
   const { frame, presentation, canonical, input, status, blocks, send, locale, snapshot, rawTrace } = prior;
   await input.fill(""); // Power Station deliberately leaves an unsent LOOK draft.
   const attach = (name: string, body: string | Buffer, contentType = "application/json") => attachEvidence(testInfo, name, body, contentType);
@@ -305,7 +306,7 @@ export async function acceptChurchMilestone(page: Page, controls: "classic" | "g
   await map(false, recordConversation ? 6 : 5, "church-return-map");
   const returnScreenshot = await recover("return", presentation.locator(".story-presentation-title").last());
   const trace = await rawTrace(), requests = trace.requests.slice(1);
-  const fixture = JSON.parse(await readFile(new URL("../fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
+  const fixture = JSON.parse(await readFile(new URL(cinema.courtRecording === "cinema-on-site" ? "../fixtures/parchment-cinema-recording-a-observed.json" : "../fixtures/parchment-church-runtime-observed.json", import.meta.url), "utf8"));
   expect(trace.requests[0]).toBe(" "); expect(requests).toHaveLength(recordConversation ? 81 : 79);
   expect(requests.slice(0, 67).map((command, index) => index === 6 ? "<decoder>" : normalize(command))).toEqual(fixture.sessions[0].submittedCommands.slice(0, 67).map((command: string, index: number) => index === 6 ? "<decoder>" : normalize(command)));
   expect(turns.map(({ command }) => normalize(command))).toEqual([...OUT, ...(recordConversation ? ["RECORD"] : []), "CHURCH ELDER, HELLO", ...(recordConversation ? ["RECORD OFF"] : []), "LOOK", ...BACK]);
@@ -323,8 +324,9 @@ export async function acceptChurchMilestone(page: Page, controls: "classic" | "g
   const warnings = trace.inputs.filter(({ presentation: p }) => p.lines.some(({ text }) => text === "WARNING: Record buffer is now half-full.")); expect(warnings).toHaveLength(1);
   const narrow = page.viewportSize()!.width < 500;
   for (const turn of turns) { if (narrow) expect(turn.status).not.toMatch(/Time:|Date:/i); else expect(turn.status).toMatch(/Time:[\s\S]*Date:/i); }
-  await attach("church-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release 79; live bridge-v3 output and actual parent-to-player requests; no VM edits, injected route reports or saved-game RESTORE", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), recordConversation, trace, churchTurns: turns, warnings, elapsedMinutes, scrollStart, clockLimitation: narrow ? "canonical narrow status emits no clock/date; no time synthesized" : null, checklist: controls === "classic" ? "not displayed" : recordConversation ? "6/9 auxiliary inference, not original assignment evaluation" : "5/9; unrecorded church conversation adds no task", finalInputId: await inputId() }));
+  await attach("church-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release 79; live bridge-v3 output and actual parent-to-player requests; no VM edits, injected route reports or saved-game RESTORE", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), routeCandidate: cinema.courtRecording ?? "historical recorded round trip", recordConversation, trace, churchTurns: turns, warnings, elapsedMinutes, scrollStart, clockLimitation: narrow ? "canonical narrow status emits no clock/date; no time synthesized" : null, checklist: controls === "classic" ? "not displayed" : recordConversation ? "6/9 auxiliary inference, not original assignment evaluation" : "5/9; unrecorded church conversation adds no task", finalInputId: await inputId() }));
   await attach("church-return", returnScreenshot, "image/png");
+  return { ...prior, churchTurns: turns, finalInputId: await inputId() };
 }
 
 // These probes replace only wrapper reports. Parchment stays at its actual

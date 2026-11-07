@@ -1,3 +1,4 @@
+import type { CinemaPrefixOptions } from "./restaurant-acceptance";
 import { expect, type Locator, type Page, type TestInfo } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { attachEvidence } from "./evidence-attachments";
@@ -154,7 +155,7 @@ const paragraphEndVisible = (paragraph: Locator) => paragraph.evaluate((element)
   return last.top >= bounds.top && last.bottom <= bounds.bottom && last.left >= bounds.left && last.right <= bounds.right;
 });
 
-export async function acceptCityHallMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true) {
+export async function acceptCityHallMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true, cinema: CinemaPrefixOptions = {}) {
   const startedAt = new Date().toISOString();
   // Observe the existing protocol. No interpreter state is read or written.
   await page.addInitScript(() => {
@@ -184,7 +185,7 @@ export async function acceptCityHallMilestone(page: Page, controls: "classic" | 
       else state.cityHallInputs.push(observation);
     });
   });
-  const prior = await acceptRestaurantMilestone(page, controls, testInfo);
+  const prior = await acceptRestaurantMilestone(page, controls, testInfo, cinema);
   const { frame, presentation, canonical, input, status, blocks, send, locale, attach } = prior;
   await observeReadingLifecycle(frame);
   await input.fill("");
@@ -357,7 +358,7 @@ export async function acceptCityHallMilestone(page: Page, controls: "classic" | 
   await input.fill("LOOK"); await input.click(); await expect(input).toBeFocused(); await expect(input).toBeInViewport({ ratio: 1 }); await expect(page.getByRole("button", { name: /^送信/ })).toBeEnabled();
   const trace = await rawTrace();
   expect(trace.requests[0]).toBe(" ");
-  const accepted = JSON.parse(await readFile(new URL("../fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
+  const accepted = JSON.parse(await readFile(new URL(cinema.courtRecording === "cinema-on-site" ? "../fixtures/parchment-cinema-recording-a-observed.json" : "../fixtures/parchment-city-hall-runtime-observed.json", import.meta.url), "utf8"));
   const aliases: Record<string, string> = { NORTH: "N", SOUTH: "S", EAST: "E", WEST: "W" };
   const normalize = (command: string) => aliases[command.trim().toUpperCase()] ?? command.trim().toUpperCase();
   expect(trace.requests.slice(1,41).map((command, index) => index === 6 ? "<decoder>" : normalize(command))).toEqual(accepted.sessions[0].submittedCommands.slice(0,40).map((command: string, index: number) => index === 6 ? "<decoder>" : normalize(command)));
@@ -377,7 +378,7 @@ export async function acceptCityHallMilestone(page: Page, controls: "classic" | 
   expect(turns.map(({ command }) => normalize(command))).toEqual(recordConversation ? ["NE", "W", "W", "RECORD", "GOVERNMENT OFFICIAL, HELLO", "RECORD OFF", "LOOK", "E", "E", "SW"] : ["NE", "W", "W", "GOVERNMENT OFFICIAL, HELLO", "LOOK", "E", "E", "SW"]);
   for (let i = 1; i < turns.length; i++) expect(turns[i].submittedInputId).toBe(turns[i-1].nextInputId);
   for (const raw of trace.inputs) expect(JSON.stringify(raw.presentation)).not.toMatch(/Record buffer full|Auto-deactivation|WARNING: Deactivating record feature/i);
-  await attach("city-hall-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release 79; live existing bridge observations and parent-to-player requests, no VM state edits", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), recordConversation, trace, cityHallTurns: turns, beforeTalk, afterTalk: chatTurn.status, elapsedMinutes, timeLimitation: elapsedMinutes === null ? "narrow canonical status emits no clock/date; no inferred time" : null, optionalFallback, finalInputId: turns.at(-1)!.nextInputId, checklist: controls === "classic" ? "not displayed in Classic" : recordConversation ? "4/9 auxiliary inference, not original assignment evaluation" : "3/9; government assignment not inferred" }));
+  await attach("city-hall-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release 79; live existing bridge observations and parent-to-player requests, no VM state edits", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), routeCandidate: cinema.courtRecording ?? "historical recorded round trip", recordConversation, trace, cityHallTurns: turns, beforeTalk, afterTalk: chatTurn.status, elapsedMinutes, timeLimitation: elapsedMinutes === null ? "narrow canonical status emits no clock/date; no inferred time" : null, optionalFallback, finalInputId: turns.at(-1)!.nextInputId, checklist: controls === "classic" ? "not displayed in Classic" : recordConversation ? "4/9 auxiliary inference, not original assignment evaluation" : "3/9; government assignment not inferred" }));
   await attach("city-hall-return", await page.screenshot(), "image/png");
   return { frame, presentation, canonical, input, status, blocks, send, locale, attach, rawTrace, snapshot: () => canonicalSnapshot(page) };
 }

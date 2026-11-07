@@ -1,3 +1,4 @@
+import type { CinemaPrefixOptions } from "./restaurant-acceptance";
 import { expect, type Locator, type Page, type TestInfo } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 import { acceptCityHallMilestone } from "./city-hall-acceptance";
@@ -37,10 +38,10 @@ const lastTextVisible = (paragraph: Locator) => paragraph.evaluate((element) => 
 
 type PowerTurn = { command: string; submittedInputId: string; nextInputId: string; status: string; presentation: BridgePresentation };
 
-export async function acceptPowerStationMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordFacility = true) {
+export async function acceptPowerStationMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordFacility = true, cinema: CinemaPrefixOptions = {}) {
   const startedAt = new Date().toISOString();
   // Reuse every assertion and all fifty sends; the default records City Hall.
-  const prior = await acceptCityHallMilestone(page, controls, testInfo);
+  const prior = await acceptCityHallMilestone(page, controls, testInfo, true, cinema);
   const { frame, presentation, canonical, input, status, blocks, send, locale, snapshot, rawTrace } = prior;
   const attach = (name: string, body: string | Buffer, contentType = "application/json") => attachEvidence(testInfo, name, body, contentType);
   const copy = await approvedCopy();
@@ -105,7 +106,7 @@ export async function acceptPowerStationMilestone(page: Page, controls: "classic
     await expect(item.locator("small span").first()).toHaveText("発電所");
     await expect(item.locator("small span").first()).toHaveAttribute("lang", "ja");
     if (count === 5) await expect(item).toHaveClass(/complete/); else await expect(item).not.toHaveClass(/complete/);
-    await expect(drawer.locator(".rockvil-navigator button[lang=en]").filter({ hasText: "Cinema" })).toHaveAttribute("lang", "en");
+    await expect(drawer.locator('.rockvil-navigator button[aria-label="映画館、調査目的地"]')).toHaveAttribute("lang", "ja");
     await attach(name, await drawer.ariaSnapshot(), "text/plain");
     await attach(name, await page.screenshot(), "image/png");
     await drawer.getByRole("button", { name: "地図と現地調査要項を閉じる" }).click();
@@ -235,7 +236,7 @@ export async function acceptPowerStationMilestone(page: Page, controls: "classic
   }
   await attach("power-station-return-reading", JSON.stringify({ recovery: returnRecovery, lastResponse: await returnHeading.innerText(), lastTextVisible: await lastTextVisible(returnHeading), lifecycle: await readingTrace(frame, "power-station-return-recovery") }));
   const trace = await rawTrace();
-  const fixture = JSON.parse(await readFile(new URL("../fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
+  const fixture = JSON.parse(await readFile(new URL(cinema.courtRecording === "cinema-on-site" ? "../fixtures/parchment-cinema-recording-a-observed.json" : "../fixtures/parchment-power-station-runtime-observed.json", import.meta.url), "utf8"));
   const requests = trace.requests.slice(1);
   expect(trace.requests[0]).toBe(" ");
   expect(requests.slice(0, 50).map((command, index) => index === 6 ? "<decoder>" : normalize(command))).toEqual(fixture.sessions[0].submittedCommands.slice(0, 50).map((command: string, index: number) => index === 6 ? "<decoder>" : normalize(command)));
@@ -260,7 +261,7 @@ export async function acceptPowerStationMilestone(page: Page, controls: "classic
     if (narrow) expect(turn.status).not.toMatch(/Time:|Date:/i);
     else expect(turn.status).toMatch(/Time:[\s\S]*Date:/i);
   }
-  await attach("power-station-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release79, existing live bridge observations and actual parent-to-player requests; no VM edits/restores", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), recordFacility, trace, powerTurns: turns, warnings, clockLimitation: narrow ? "canonical narrow status emits no clock/date; no time synthesized" : null, finalInputId: turns.at(-1)!.nextInputId, checklist: controls === "classic" ? "not displayed" : recordFacility ? "5/9 auxiliary inference, not original assignment evaluation" : "4/9; entrance recording and unrecorded facility LOOK add no task" }));
+  await attach("power-station-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release79, existing live bridge observations and actual parent-to-player requests; no VM edits/restores", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), routeCandidate: cinema.courtRecording ?? "historical recorded round trip", recordFacility, trace, powerTurns: turns, warnings, clockLimitation: narrow ? "canonical narrow status emits no clock/date; no time synthesized" : null, finalInputId: turns.at(-1)!.nextInputId, checklist: controls === "classic" ? "not displayed" : recordFacility ? "5/9 auxiliary inference, not original assignment evaluation" : "4/9; entrance recording and unrecorded facility LOOK add no task" }));
   await attach("power-station-return", await page.screenshot(), "image/png");
   return { ...prior, powerTurns: turns };
 }

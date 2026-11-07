@@ -9,6 +9,7 @@ import { WORLD_OBJECTS, WORLD_ROOMS, type WorldObject, type WorldRoom } from "./
 import { companionHeaderLanguage, localizeOutletLabel, localizeSimulationMapLabel, localizeSimulationPlace, navigationRouteLabel, navigationSteps, navigationUiText, plotAssignmentLabel, recordedProgress, simulationAssignment, uiText, type Locale, type UiKey } from "./localization";
 import { projectPresentationHistory, reconcilePresentationHistory, type PresentationHistory } from "./presentation-history";
 import { churchEchoId, createChurchElderState, observeChurchElder } from "./church-elder";
+import { createCinemaRecordingState, observeCinemaRecording } from "./cinema-recording";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -374,6 +375,7 @@ export default function PrismEdition() {
   const followPresentationRef = useRef(true);
   const initialSimulationRef = useRef<InitialSimulationState>("unknown");
   const churchElderRef = useRef(createChurchElderState());
+  const cinemaRecordingRef = useRef(createCinemaRecordingState());
   const cityHallOfficialRef = useRef<CityHallOfficialPresence>("unknown");
   // The canonical interpreter stays live across QA visits. Its mode history
   // must survive wrapper resets and must never be updated by the QA story.
@@ -435,6 +437,8 @@ export default function PrismEdition() {
   const [localizedHost, setLocalizedHost] = useState<HTMLElement | null>(null);
   const [initialSimulationState, setInitialSimulationState] = useState<InitialSimulationState>("unknown");
   const [churchElder, setChurchElder] = useState(createChurchElderState);
+  const [cinemaRecorded, setCinemaRecorded] = useState(false);
+  const [cinemaLineInput, setCinemaLineInput] = useState(false);
   const [cityHallOfficial, setCityHallOfficial] = useState<CityHallOfficialPresence>("unknown");
 
   const phase = phaseFor(discovery);
@@ -530,8 +534,8 @@ export default function PrismEdition() {
   }, [describedDirections, displayYear, mapRoutePreview?.nextCommand, roomExits]);
   const fieldProgress = useMemo(() => {
     const passages = recordedPassages(transcript);
-    return FIELD_RECORDING_RULES.map(({ pattern }) => pattern.test(passages));
-  }, [transcript]);
+    return FIELD_RECORDING_RULES.map(({ pattern }, index) => index === 7 ? cinemaRecorded : pattern.test(passages));
+  }, [transcript, cinemaRecorded]);
   const fieldworkRecordedCount = fieldProgress.filter(Boolean).length;
   const initialFieldworkActive = discovery.simulationEntered && !discovery.partTwo;
   const initial2041Presentation = mode === "Simulation Mode" && initialFieldworkActive && displayYear === 2041 && initialSimulationState === "active" && !qaEnabled;
@@ -647,6 +651,8 @@ export default function PrismEdition() {
           setCityHallOfficial("unknown");
           churchElderRef.current = createChurchElderState();
           setChurchElder(churchElderRef.current);
+          cinemaRecordingRef.current = createCinemaRecordingState();
+          setCinemaRecorded(false);
         }
         if (/^(?:record|ron)$/i.test(entered)) setRecording(true);
         if (/^(?:record off|roff)$/i.test(entered)) setRecording(false);
@@ -709,6 +715,8 @@ export default function PrismEdition() {
         setCityHallOfficial("unknown");
         churchElderRef.current = createChurchElderState();
         setChurchElder(churchElderRef.current);
+        cinemaRecordingRef.current = createCinemaRecordingState();
+        setCinemaRecorded(false);
         setSceneText("");
         try {
           for (const key of ["amfv:designation", "amfv:modes", "amfv:years", "amfv:rooms", "amfv:discoveries", "amfv:notes", "amfv:history"]) localStorage.removeItem(key);
@@ -807,6 +815,12 @@ export default function PrismEdition() {
       });
       churchElderRef.current = nextChurchElder;
       setChurchElder(nextChurchElder);
+      cinemaRecordingRef.current = observeCinemaRecording(cinemaRecordingRef.current, {
+        eligible: initial2041Scope && event.data.inputKind === "line", roomId: nextRoom?.id, hasStatus: nextStatusLocation?.toLowerCase() === "cinema",
+        recording: /\(recording\)/i.test(status), acceptsInput: Boolean(event.data.acceptsInput), presentation: nextPresentation,
+      });
+      setCinemaRecorded(cinemaRecordingRef.current.complete);
+      setCinemaLineInput(event.data.inputKind === "line" && nextStatusLocation?.toLowerCase() === "cinema");
       // Ignore transient reports while the interpreter is processing. A
       // stable active input can be projected or can deliberately request
       // canonical recovery (for example an unsupported character prompt).
@@ -817,6 +831,7 @@ export default function PrismEdition() {
             cityHall2041: initial2041Scope ? nextRoom?.id : undefined,
             powerStation2041: initial2041Scope ? nextRoom?.id : undefined,
             church2041: initial2041Scope ? nextRoom?.id : undefined,
+            cinema2041: initial2041Scope && event.data.inputKind === "line" && Boolean(nextStatusLocation) ? nextRoom?.id : undefined,
           });
           return { history: reconciliation.history, recovering: !reconciliation.representable };
         });
@@ -906,6 +921,8 @@ export default function PrismEdition() {
       setCityHallOfficial("unknown");
       churchElderRef.current = createChurchElderState();
       setChurchElder(churchElderRef.current);
+      cinemaRecordingRef.current = createCinemaRecordingState();
+      setCinemaRecorded(false);
     }
     setAcceptsInput(false);
     activeFrame.contentWindow.postMessage({ channel: BRIDGE_CHANNEL, type: "command", command: normalized }, window.location.origin);
@@ -1103,6 +1120,8 @@ export default function PrismEdition() {
     setCityHallOfficial("unknown");
     churchElderRef.current = createChurchElderState();
     setChurchElder(churchElderRef.current);
+    cinemaRecordingRef.current = createCinemaRecordingState();
+    setCinemaRecorded(false);
     setSceneText("");
     setGridText("");
     setPresentationState({ history: [], recovering: true });
@@ -1372,7 +1391,7 @@ export default function PrismEdition() {
               <div className="command-meta" id="command-help"><span>{commandHelp}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
             {assisted && <div className="quick-actions" lang={locale} aria-label={uiText(locale, "commonActions")}>{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput} lang={mode === "Simulation Mode" ? initial2041Presentation ? locale : "en" : ["look", "display outlets", "enter library mode", "enter interface mode"].includes(value) ? locale : "en"}>{label}</button>)}</div>}
-            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={sceneActionObjects} roomId={mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line"} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
+            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={sceneActionObjects} roomId={mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line" && (room?.id !== "CINEMA" || cinemaLineInput)} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
           </>)}
         </section>
       </section>
@@ -1388,7 +1407,7 @@ export default function PrismEdition() {
 
           {activePanel === "context" && mode === "Interface Mode" && <section className="companion-section systems-section" lang="en"><span className="section-kicker">Interface Mode</span><h2>Active ports</h2><p>Status requests are read-only. Settings and schedules take effect immediately.</p><button className="context-primary" type="button" onClick={() => sendCommand("read list of active ports")} disabled={!acceptsInput}>Refresh active ports</button><InterfaceWorkbench portIds={interfacePortIds} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
 
-          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section" lang={navigationLocale}><span className="section-kicker">Rockvil</span><h2 lang={currentRoomName ? navigationPlaceLanguage(currentRoomName) : navigationLocale}>{currentRoomName ? navigationPlace(currentRoomName) : navigationText("directions")}</h2><p>{room ? navigationText("contextHelp") : describedDirections.length ? navigationText("contextFallback") : navigationText("contextEmpty")}</p><button className="context-primary" type="button" onClick={() => openFieldwork("map")}>{navigationText("openPlanner")}</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong lang={navigationPlaceLanguage(roomNameForYear(exit.targetId, displayYear) || exit.target)}>{navigationPlace(roomNameForYear(exit.targetId, displayYear) || exit.target)}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>{navigationLocale === "ja" ? `${direction}へ進む` : `Go ${direction}`}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>{navigationText("emptyExits")}</p></div>}<SceneActions objects={sceneActionObjects} roomId={room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line"} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
+          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section" lang={navigationLocale}><span className="section-kicker">Rockvil</span><h2 lang={currentRoomName ? navigationPlaceLanguage(currentRoomName) : navigationLocale}>{currentRoomName ? navigationPlace(currentRoomName) : navigationText("directions")}</h2><p>{room ? navigationText("contextHelp") : describedDirections.length ? navigationText("contextFallback") : navigationText("contextEmpty")}</p><button className="context-primary" type="button" onClick={() => openFieldwork("map")}>{navigationText("openPlanner")}</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong lang={navigationPlaceLanguage(roomNameForYear(exit.targetId, displayYear) || exit.target)}>{navigationPlace(roomNameForYear(exit.targetId, displayYear) || exit.target)}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>{navigationLocale === "ja" ? `${direction}へ進む` : `Go ${direction}`}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>{navigationText("emptyExits")}</p></div>}<SceneActions objects={sceneActionObjects} roomId={room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line" && (room?.id !== "CINEMA" || cinemaLineInput)} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
 
           {activePanel === "context" && (!mode || mode === "Sleep Mode") && <section className="companion-section" lang={mode === "Sleep Mode" ? "en" : locale}><span className="section-kicker">{mode === "Sleep Mode" ? "Sleep Mode" : uiText(locale, "incoming")}</span><h2>{mode === "Sleep Mode" ? "Background processing" : uiText(locale, "openingTransmission")}</h2><p>{mode === "Sleep Mode" ? "Time is passing. Return to Communications Mode when you are ready." : uiText(locale, "openingContextCopy")}</p></section>}
 
