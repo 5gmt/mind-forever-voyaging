@@ -57,6 +57,9 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
     expect(start).toBeGreaterThanOrEqual(0);
     const lines = next.lines.slice(start, next.lines.findIndex((line) => line.id === next.id));
     expect(lines[0].text.trim().toUpperCase()).toContain(command.toUpperCase());
+    // Native input can advance before React projects this turn. Settle its
+    // echo before any caller counts blocks or hands off to another helper.
+    await expect(blocks.nth(count)).toHaveText(`> ${command.trim().toUpperCase()}`);
     turns.push({ command, previousInput: previous, nextInput: next.id!, status: await status.innerText(), lines });
     return count;
   };

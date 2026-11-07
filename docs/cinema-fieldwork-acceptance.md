@@ -110,8 +110,26 @@ Remaining は映画館10件を含む52/53件が成功し、最後の既存レス
 
 Issue の許容範囲に従い、remaining の上限だけを40分に延ばす。
 Church / power の35分、分配、全72件、1 worker、retry 0、既存 assertion / 添付、通常 artifact 保存なしの方針は維持する。
-Application とテスト内容はこの再検証で変更しない。
+この時間上限変更では Application とテスト内容を変更していない。
 最終 head の full CI は PR の検証欄を正本とする。
+
+## CI #213 で検出した共有 helper の描画待ち
+
+[CI #213](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42351101727)（head `26fbbdd436e6de64b36f58397fc706f38d55d9a1`）では verify 52件、power 9件、church 10件が成功した。
+Remaining は51件成功、2件失敗で、時間上限には達していない。
+映画館 Actions /390px は裁判所 LOOK の位置に直前の RECORD 本文があり、市役所 Classic /390px は新聞 helper の INVENTORY の位置に直前の RECORD OFF echo があった。
+
+共有 Restaurant helper は原作側の次 input ID と input の enabled だけを待っていた。
+Input は送信中も編集できるため、日本語表示の反映完了を示さず、次の block 数の取得や helper 間の引継ぎが描画に先行した。
+現在のコマンドの日本語表示上の echo を待ってから return する assertion を1つ追加した。
+既存の input / echo / next input、本文、録画窓、添付の検査は保持し、固定 sleep と test retry は追加していない。
+
+作者の scratch browser で stable transcript の wrapper 到達だけを400ms遅らせ、同じ裁判所の誤った段落位置を RED として再現した。
+修正後は同じ遅延条件の Restaurant 全経路が GREEN（1.1分）となった。
+VM 出力や状態は編集していない。
+この遅延条件は、自然7 session とは別の回帰証拠として扱う。
+失敗した2つの自然経路の個別回帰は成功した（映画館 Actions /390px 3.7分、市役所 Classic /390px 39.5秒）。
+修正 head の full CI の結果は PR 検証欄に記録する。
 
 ## 独立レビューと証拠保存
 
