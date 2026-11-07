@@ -101,13 +101,15 @@ Work は [裁判所を現地録画する候補A](./docs/cinema-recording-a-desig
 [設計同期 PR #113](https://github.com/5gmt/mind-forever-voyaging/pull/113) は独立 Sol review を経て merge `f527d07084e0055d13d35dd64148fa00e57c866e` 済み。
 [候補Aの実測](./docs/cinema-recording-a-evidence.md)では2 fresh sessionsで全96送信、六課題の成立と録画、映画15分の録画継続、明示 OFF / LOOK、公園帰着を確認した。
 [PR #114 の独立 Sol review](https://github.com/5gmt/mind-forever-voyaging/pull/114#pullrequestreview-5802952413)で候補Aを採択し、merge `22945dc75b1fbc45b8d9b5e72248870e7dda495f` 済み。
-F1 は完了し、F2 の copy承認が開始可能。F3 は F2 の承認 / merge まで blocked。映画の日本語 coverage は追加していない。
+F1 は完了し、[F2 copy packet](./docs/cinema-copy-packet.md) に実測本文と限定購入／入場操作の英日候補を用意した。
+F2 の独立 Sol copy approval / merge は未了で、F3 は引き続き blocked。
+今回も文書だけの提出で、映画の日本語 coverage は追加していない。
 
 ## 基本的な作業順
 
 1. 映画計画 PR #111、失敗証拠 PR #112、候補Aの設計同期 PR #113 は独立 Sol review / merge 済み。
 2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 候補Aの2 fresh sessions と操作契約を PR #114 で独立 Sol が採択 / merge 済み。旧経路 / 証拠 / 回帰は保持する。
-3. [F2 #109](https://github.com/5gmt/mind-forever-voyaging/issues/109): F1の採択fixtureから本文、地名、購入 / 入場操作のcopyを承認してmergeする。
+3. [F2 #109](https://github.com/5gmt/mind-forever-voyaging/issues/109): 成功 fixture と別 fresh 券なし probe に基づく copy packet を独立 Sol がレビューし、copy approval / merge を行う。
 4. [F3 #110](https://github.com/5gmt/mind-forever-voyaging/issues/110): 日本語統合と6自然経路、非録画負例、境界回帰を実装する。Sol通常レビュー後、Workが最終headの全体受入とZIP監査、merge、#29報告、Issue closeを行う。
 
 F1–F3の依存関係と停止条件の正本は映画計画と各Issueとする。

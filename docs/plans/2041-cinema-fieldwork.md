@@ -7,7 +7,7 @@
 **Architecture:** 既存 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と限定 SceneActions を使う。先に映画の一ターン内の出力構造と録画容量を実測し、copy approval 後に本文と購入 / 入場操作を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #111、旧候補の失敗証拠 PR #112、Work の候補A設計同期 PR #113 は独立 Sol review を経て merge 済み。#113 の merge は `f527d07084e0055d13d35dd64148fa00e57c866e`。候補Aは2 fresh sessionsで全96送信、映画録画、明示 OFF / LOOK、公園帰着を実測した。[追加実測](../cinema-recording-a-evidence.md)は [PR #114 の独立 Sol review](https://github.com/5gmt/mind-forever-voyaging/pull/114#pullrequestreview-5802952413)で採択され、merge `22945dc75b1fbc45b8d9b5e72248870e7dda495f` 済み。F1 は完了、F2 の copy承認が開始可能であり、F3 は F2 の承認 / merge まで blocked。旧 [失敗実測](../cinema-runtime-evidence.md)と全既存回帰を保持する。
+**Status:** 計画 PR #111、旧失敗証拠 PR #112、候補A設計 PR #113 は merge 済み。候補Aは [PR #114 の独立 Sol review](https://github.com/5gmt/mind-forever-voyaging/pull/114#pullrequestreview-5802952413)で成功採択され、merge `22945dc75b1fbc45b8d9b5e72248870e7dda495f` により F1 は完了した。F2 は [copy packet](../cinema-copy-packet.md) を独立承認候補として提出する段階。F2 の Sol copy approval / merge までは F3 を開始しない。旧失敗証拠と既存回帰、CI保守 #115 / #116 の運用を保持する。
 **Baseline:** 教会 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) の merge `06e6633ff2a3572959955d320ef1e9d8477a5de4`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-01 JST の owner の次期 milestone 設計 / タスク作成依頼に対する提案。
 
@@ -179,13 +179,17 @@ F2 の開始条件は満たした。F3 は F2 の独立承認 / merge を待つ�
 
 ### F2: 観測済み映画本文と限定操作の copy を承認する
 
+[Copy packet](../cinema-copy-packet.md) に成功本文8 leaf、別 fresh 券なし拒否1 leaf、既承認7 leaf の再利用、役割別の地名と限定 BUY TICKET / IN の英日 copy をまとめた。
+原文の正本は候補Aの成功 fixture とし、新規 UI 案と実測 UI を区別する。
+本書の候補作成を独立 copy approval とせず、Sol の承認 / merge を F3 の開始条件に保つ。
+
 **Files:** 新規 `docs/cinema-copy-packet.md`。更新本書、`PROJECT_STATUS.md`。Catalog / production code は変更しない。
 **Interfaces:** F1 の採択 fixture / UI台帳を消費する。Exact English leaf、command alias、観測時 room、適用条件、再利用か新規か、EN / JA copy、fallback、visible / accessible name、送信 command の対応を F3 に渡す。
 
-- [ ] F1 の成功採択 / merge と採択 fixture を確認する。
-- [ ] 必須の本文、Museum Entrance / Cinema、映画名、購入 / 鑑賞操作の copy を作る。既存の地名、課題訳、録画、route文は再利用する。
-- [ ] `Movie Theatre` の本文内 identity と CINEMA の current placeを区別し、金額 / raw statusを創作しない。映画評の続編との比較と、15分で鑑賞を切り上げる内容を保持する。
-- [ ] 券なし拒否等を翻訳対象に含める場合は F1 の exact observed leaf に結び付ける。未観測の資金不足、券の印字、marqueeは承認しない。
+- [x] F1 の成功採択 / merge と採択 fixture を確認する。
+- [x] 必須の本文、Museum Entrance / Cinema、映画名、購入 / 鑑賞操作の copy を作る。既存の地名、課題訳、録画、route文は再利用する。
+- [x] `Movie Theatre` の本文内 identity と CINEMA の current placeを区別し、金額 / raw statusを創作しない。映画評の続編との比較と、15分で鑑賞を切り上げる内容を保持する。
+- [x] 券なし拒否等を翻訳対象に含める場合は F1 の exact observed leaf に結び付ける。未観測の資金不足、券の印字、marqueeは承認しない。
 - [ ] 原文との照合、リンクとdiffを確認し、Sol の copy approval / merge を受ける。
 
 ### F3: 映画鑑賞を日本語化して全体受入する
