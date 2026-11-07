@@ -139,8 +139,9 @@ Companion / drawer の監査前後の観測と、通常の wheel scroll / focus 
 F3 の受入記録に「条件 → test → JSON / PNG / TXT の path」をまとめ、Sol / Work が証拠を探し直さずに済むようにする。
 先行 milestone の assertion と添付は保持し、同じ head の確認済み ZIP をレビュー段階ごとに再取得することは要求しない。
 実装者は local のファイル内容を照合し、Sol は通常の code / test / copy review と実測の整合を確認する。
-Work は最終 head の手動証拠実行（`save_evidence=true`）で生成した、同一run /attemptの3群すべてのpassing ZIPを独立に監査する。
-各ZIPの `ci-provenance.json` とレビュー対象headの一致を確認し、1日の保存期限内に監査または退避する。
+Work は最終 head の手動証拠実行（`save_evidence=true`）で生成した、同一run /attemptの5群すべてのpassing ZIPを独立に監査する。
+各ZIPの `ci-provenance.json` の `commit` /`runId` /`runAttempt` /`group` をレビュー対象headとartifact名に照合し、[受入記録](../cinema-fieldwork-acceptance.md)の群別対応表からJSON /PNG /TXTの実体を確認する。
+1日の保存期限内に監査または退避する。
 他の担当が行った監査は担当者と記録を引用し、自分で行ったように書かない。
 取得に失敗した場合は利用経路と未了項目を記録し、OpenAI 側転送ホストの許可リスト追加をタスクの既定条件にしない。
 
@@ -195,7 +196,7 @@ F2 は PR #117 の独立承認 / merge を完了し、F3 の開始条件を満�
 
 ### F3: 映画鑑賞を日本語化して全体受入する
 
-**Files:** 更新 `app/localization.ts`、`app/PrismEdition.tsx`、`app/StoryTools.tsx`、操作説明の既存CSS、必要な観測時scopeの `app/presentation-history.ts`、`tests/rendered-html.test.mjs`。新規 `app/cinema-recording.ts` は映画の補助チェックだけを観測する。新規 `tests/e2e/cinema-acceptance.ts`、`tests/e2e/cinema-fieldwork.spec.ts`、`docs/cinema-fieldwork-acceptance.md`。必要な最小変更のみ `tests/e2e/restaurant-acceptance.ts`、`tests/e2e/city-hall-acceptance.ts`、`tests/e2e/power-station-acceptance.ts`、`tests/e2e/church-acceptance.ts`、既存 Cinema fallback を使う spec、`.github/workflows/ci.yml`。本書と `PROJECT_STATUS.md` を同期する。
+**Files:** 更新 `app/localization.ts`、`app/PrismEdition.tsx`、`app/StoryTools.tsx`、操作説明の既存CSS、必要な観測時scopeの `app/presentation-history.ts`、`tests/rendered-html.test.mjs`。新規 `app/cinema-recording.ts` は映画の補助チェックだけを観測する。新規 `tests/e2e/cinema-acceptance.ts`、desktopの `tests/e2e/cinema-fieldwork.spec.ts`、390pxの `tests/e2e/cinema-narrow.spec.ts`、描画遅延回帰の `tests/e2e/restaurant-projection.spec.ts`、`docs/cinema-fieldwork-acceptance.md`。必要な最小変更のみ `tests/e2e/restaurant-acceptance.ts`、`tests/e2e/city-hall-acceptance.ts`、`tests/e2e/power-station-acceptance.ts`、`tests/e2e/church-acceptance.ts`、既存 Cinema fallback を使う spec、`.github/workflows/ci.yml`。本書と `PROJECT_STATUS.md` を同期する。
 **Interfaces:** F1 の観測契約と F2 の承認 copy を消費する。`acceptChurchMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true)` を先行81送信の入口として再利用する。Church → Power Station → City Hall → Restaurant に映画専用の現地録画選択を渡す最小拡張を許可し、既定の旧往復録画と負例フラグを維持する。各 prefix 比較と添付には経路選択を明記する。着手時点では戻り値がないため、既存 `frame` / `input` / `status` / `send` / `snapshot` / `rawTrace` / 最終input ID等を返す最小拡張を許可する。既存経路の assertion / 録画窓 / 添付を削らず、候補Aでも LOOK と全課題の成立を検証する。残る未送信 draft は送信せず消去する。`acceptCinemaMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordMovie = true)` を新しい受入入口とする。
 
 - [x] 未登録 copy、本文内見出し / 現在地、限定操作と非録画判定に対する RED を保存する。
@@ -210,7 +211,9 @@ F2 は PR #117 の独立承認 / merge を完了し、F3 の開始条件を満�
 
 F1 / F3は必要に応じ `bash scripts/bootstrap-npm.sh`、続いて `npm ci`、`npm run lint`、`npx tsc --noEmit`、`npm test`、full `npm run test:e2e`、canonical checksum、`git diff --check` を実行する。
 Full E2Eは最終 head の CI実行を根拠にでき、同じ head で成功済みならローカルで重複実行することを必須にしない。
-対象確認は `npx playwright test tests/e2e/cinema-fieldwork.spec.ts` とし、対象成功をfull成功の代用にしない。
+対象確認は `npx playwright test tests/e2e/cinema-fieldwork.spec.ts tests/e2e/cinema-narrow.spec.ts` とし、対象成功をfull成功の代用にしない。
+Controlled 3件と `tests/e2e/restaurant-projection.spec.ts` の描画遅延回帰を先行させ、その後に影響する既存経路と390px経路を確認する。
+各実行で別の出力先を使い、再接続時は既存session /processとportの終了を確認してから起動する。
 F1候補Aは production build / preview に対し `node scripts/capture-cinema-runtime.mjs --candidate-a --base-url http://127.0.0.1:3100 --output /tmp/parchment-cinema-recording-a-observed.json --failure-output /tmp/parchment-cinema-recording-a-failure.json` を実行する。旧 flag なし経路は保持する。
 計画 PR / F2は文書、fixtureとの照合、リンク、diffを確認し、local未実施項目と current-head CIを区別する。
 
@@ -219,8 +222,12 @@ Baselineの #107最終CIは47 unit /62 browser、1 worker、retry / skipなし�
 必要最小限のtimeout変更は、根拠と新上限をF3の同じPRでSol / Workに渡す。
 映画計画とは別の2026-11-07 CI保守で、変更分類と3群分散、通常artifactの保存停止を導入した。
 各群は1 worker、retryなしで、テストの内容と添付生成を維持する。
-F3 の CI #212 は remaining が35分上限で52/53件成功時に打ち切られたため、remaining だけ40分にする。
-Church / power は35分を維持し、分配、件数、retry、添付生成を変えない。
+F3 の CI #212 は remaining が35分上限で52/53件成功時に打ち切られたため、一時的にremainingだけ40分に延長した。
+その後の [CI保守の明示方針](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に従い、Cinemaを分離した5群へ再配分し、全群35分へ戻す。
+Church 10件 /power 9件 /remaining 44件 /cinema-desktop 7件 /cinema-narrow 3件の全73件を実際のPlaywright一覧で照合する。
+既存72件を保持し、追加1件は共有Restaurant helperのstable bridge報告を400ms遅らせる回帰である。
+各96送信または94送信の自然経路は一群で完走し、経路、assertion、添付生成を削減しない。
+通常artifact保存なし、手動保存だけ1日保持を維持し、同一run /attemptの全5 ZIPを監査対象とする。
 最新の実行方法は[CI運用](../ci-operation.md)を参照し、F3では全群の実測時間を記録する。
 同じheadのfull suiteが成功し、artifactに必要な実体がそろうまで最終受入しない。
 

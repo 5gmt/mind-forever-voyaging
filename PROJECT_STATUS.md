@@ -39,7 +39,7 @@ PR #21 / Issue #20 では、runtime-observed の `BufferLine` 順序、input run
 
 最終方針は、Option 2a の host/window boundary を維持し、plain ordinary turn に Option 2b の observed structure を利用する **2a+2b boundary** である。opening、initial tableau、`LOOK` や structurally richer な turn は specialized projection を優先する。ordinary-turn catalog の現在の identity は exact English leaf であり、同じ English leaf に文脈依存の異なる訳が必要な場合は、より狭い identity または specialized path が必要になる。責任分界、fallback、scroll recovery、deferred alternatives の詳細は [localization presentation boundary](./docs/localization-boundary.md) に記録している。
 
-Issue #13 で導入した Chromium Playwright acceptance は、現在の完全検証では `verify` 成功後に3群の `browser-e2e` として実行する。
+Issue #13 で導入した Chromium Playwright acceptance は、現在の完全検証では `verify` 成功後に5群の `browser-e2e` として実行する。
 既知の説明文書だけの変更は軽量検証とし、ブラウザーの回帰は `ci-gate` で失敗として扱う。
 通常実行は artifact を保存せず、独立監査に必要な証拠は明示的な完全実行で1日保存する。
 
@@ -129,9 +129,9 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - Current delivery baseline は Next.js static export と Netlify である。
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
-- CIは説明文書 / Verify / Fullを変更内容で選び、workflow検査とCI制御テストは常に実行する。Fullはcanonical checksum、lint、TypeScript、build /unitの後にChromiumを3群で実行し、最終結果を `ci-gate` に集約する。
-- #114 merge後の49 unit /62 browser testsを維持し、本F3で3 unit /10 browserの回帰を追加した。検証対象は52 unit /72 browserと8 CI制御テストである。Browserはchurch 10件 /power 9件 /remaining 53件（本F3で10件追加）、各1 worker、retryなし、job上限はchurch /power 35分、remaining 40分。新規specはremainingに入り、一覧照合で欠落と重複を検出する。
-- 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終headの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの3 ZIPを1日以内に監査する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
+- CIは説明文書 / Verify / Fullを変更内容で選び、workflow検査とCI制御テストは常に実行する。Fullはcanonical checksum、lint、TypeScript、build /unitの後にChromiumを5群で実行し、最終結果を `ci-gate` に集約する。
+- #114 merge後の49 unit /62 browser testsを維持し、本F3で3 unit /10 browserの回帰を追加した。さらに[CI保守の修正依頼](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に対応し、共有Restaurant helperの描画遅延回帰1件を追加した。検証対象は52 unit /73 browserと8 CI制御テストである。Browserはchurch 10件 /power 9件 /remaining 44件 /cinema-desktop 7件 /cinema-narrow 3件で、各1 worker、retryなし、job上限は各35分。新規specはremainingに入り、実際のPlaywright一覧照合で欠落と重複を検出する。既存72件の経路、assertion、添付を保持する。
+- 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終headの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの5 ZIPを1日以内に監査する。各ZIPのhead /run /attempt /groupと受入記録の証拠パスを照合する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
 - [PR #107最終CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は全件成功し、browser step38分21秒 /job39分50秒だった。初回full runのjob45分15秒を根拠として旧35分上限を50分に変更した。
 - Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries。2026-11-07の整理に先立ち、ZIPをActions外へ退避し、元のdigestとの一致とCRCを確認した。
 - 2026-11-07のCI保守で、映画実装とは別に実行分類と3群分散を導入した。自然経路、assertion、添付の生成、canonical artifactは保持する。[CI保守 PR #115](https://github.com/5gmt/mind-forever-voyaging/pull/115)は全49 unit /62 browser成功と独立差分レビュー後にmerge済み。CI全体は直前の49分3秒から18分7秒となった。レビュー済みの旧artifact 36件を削除し、PR #114の証拠1件 /396,203,446 bytesを保持している。実測値と未検証事項は[CI運用](./docs/ci-operation.md)に記録した。

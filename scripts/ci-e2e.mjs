@@ -3,10 +3,12 @@ import { appendFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 
-export const groups = ["church", "power", "remaining"];
+export const groups = ["church", "power", "remaining", "cinema-desktop", "cinema-narrow"];
 export function groupForFile(file) {
   if (file === "church-fieldwork.spec.ts") return "church";
   if (file === "power-station-fieldwork.spec.ts") return "power";
+  if (file === "cinema-fieldwork.spec.ts") return "cinema-desktop";
+  if (file === "cinema-narrow.spec.ts") return "cinema-narrow";
   return "remaining"; // Includes new files, so adding a spec cannot silently omit it.
 }
 

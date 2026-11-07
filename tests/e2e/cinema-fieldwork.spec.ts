@@ -1,10 +1,10 @@
 import { test } from "@playwright/test";
 import { acceptCinemaMilestone, probeCinemaBoundary } from "./cinema-acceptance";
 
-for (const viewport of ["desktop", "narrow"] as const) for (const controls of ["classic", "guided", "actions"] as const) {
-  test(`${controls} records the complete cinema fieldwork (${viewport})`, async ({ page }, testInfo) => {
+for (const controls of ["classic", "guided", "actions"] as const) {
+  test(`${controls} records the complete cinema fieldwork (desktop)`, async ({ page }, testInfo) => {
     test.setTimeout(480_000);
-    await page.setViewportSize(viewport === "desktop" ? { width: 1440, height: 900 } : { width: 390, height: 844 });
+    await page.setViewportSize({ width: 1440, height: 900 });
     await acceptCinemaMilestone(page, controls, testInfo);
   });
 }

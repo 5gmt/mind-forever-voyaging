@@ -30,7 +30,7 @@ Classic に新しい操作や checklist はない。
 
 ## 証拠とテストの対応
 
-自然経路の入口は `tests/e2e/cinema-fieldwork.spec.ts`、実装は `cinema-acceptance.ts` の `acceptCinemaMilestone` である。
+自然経路の入口はdesktopの `tests/e2e/cinema-fieldwork.spec.ts` と390pxの `tests/e2e/cinema-narrow.spec.ts`、実装は共通の `cinema-acceptance.ts` の `acceptCinemaMilestone` である。
 各 test の出力ディレクトリを `T` と書く。
 JSON、PNG、accessibility TXT は `T/<name>.<extension>` に保存してから path 添付する。
 Playwright の `attachments/` 内に複製されたファイルは同じ添付の実体である。
@@ -56,9 +56,10 @@ Parchment 自体の状態や出力を変更せず、wrapper への報告だけ�
 
 ## 検証結果
 
-ローカルの自然7 session と controlled 3件を実行し、実装者が保存ファイルを照合した。
+初回実装時にローカルの自然7 session と controlled 3件を実行し、実装者が保存ファイルを照合した。
 自然経路はすべて fresh canonical Release 79 で、RESTORE や VM 編集を使っていない。
-起動 space は line 送信数に含めず、各表の T は `test-results/` 以下の実ディレクトリを示す。
+起動 space は line 送信数に含めず、下表の T は初回の `test-results/` 以下の実ディレクトリを示す。
+5群化後は390px specの分離に伴って出力ディレクトリ名が変わるため、後述の群別対応表で新しい証拠を探す。
 
 | Controls | Viewport | 映画録画 | Line送信 | 鑑賞時刻差 | T |
 | --- | --- | --- | ---: | --- | --- |
@@ -85,8 +86,9 @@ QA の支援ガードは、Classic から Actions に戻して操作が存在す
 最終のローカル `npm run lint`、`npx tsc --noEmit`、`npm test`（build と52 unit）、CI制御8件、checksum、`git diff --check` は成功した。
 Canonical SHA-256 は `14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d` を保持する。
 同じ head の full CI、各 job / browser step 時間、artifact 情報は本PRの検証欄を正本とする。
-CI は全72 browser（church 10 /power 9 /remaining 53）を一度ずつ列挙する。
-Full E2E の最終判定は current-head CI を使い、ローカルの対象別検証だけで全72件の成功とはしない。
+CI は全73 browser（church 10 /power 9 /remaining 44 /cinema-desktop 7 /cinema-narrow 3）を一度ずつ列挙する。
+既存72件に描画遅延回帰1件を追加した。
+Full E2E の最終判定は current-head CI を使い、ローカルの対象別検証だけで全73件の成功とはしない。
 
 ### RED と修正後の再実行
 
@@ -108,8 +110,8 @@ Remaining は映画館10件を含む52/53件が成功し、最後の既存レス
 テスト失敗はなく、ci-gate は cancellation を正しく拒否した。
 映画館10件は約21分4秒、remaining job は35分12秒で、起動待ちや harness failure による停止とは区別する。
 
-Issue の許容範囲に従い、remaining の上限だけを40分に延ばす。
-Church / power の35分、分配、全72件、1 worker、retry 0、既存 assertion / 添付、通常 artifact 保存なしの方針は維持する。
+この時点ではIssueの許容範囲に従い、remainingの上限だけを40分に延ばした。
+その後、[CI保守の設計方針](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に従って5群へ再配分し、全群35分へ戻した。
 この時間上限変更では Application とテスト内容を変更していない。
 最終 head の full CI は PR の検証欄を正本とする。
 
@@ -124,21 +126,63 @@ Input は送信中も編集できるため、日本語表示の反映完了を�
 現在のコマンドの日本語表示上の echo を待ってから return する assertion を1つ追加した。
 既存の input / echo / next input、本文、録画窓、添付の検査は保持し、固定 sleep と test retry は追加していない。
 
-作者の scratch browser で stable transcript の wrapper 到達だけを400ms遅らせ、同じ裁判所の誤った段落位置を RED として再現した。
+初回は作者の scratch browser で stable transcript の wrapper 到達だけを400ms遅らせ、同じ裁判所の誤った段落位置を RED として再現した。
 修正後は同じ遅延条件の Restaurant 全経路が GREEN（1.1分）となった。
 VM 出力や状態は編集していない。
 この遅延条件は、自然7 session とは別の回帰証拠として扱う。
 失敗した2つの自然経路の個別回帰は成功した（映画館 Actions /390px 3.7分、市役所 Classic /390px 39.5秒）。
 修正 head の full CI の結果は PR 検証欄に記録する。
 
+## CI保守の修正依頼への対応
+
+[修正依頼](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)の対象はhead `e10e692e4123c43bb8d5567e440b419f677d7386` であり、Sol通常レビューやWork最終受入とは別の限定確認である。
+Cinema desktop正例3件、非録画負例1件、controlled 3件をcinema-desktopへ、390px正例3件をcinema-narrowへ分離した。
+元の72件のtitle /projectと所属ファイルを分離前後の実際のPlaywright一覧で照合し、narrowの移動以外に欠落、重複、経路変更がないことを検査する。
+再実行可能な `tests/e2e/restaurant-projection.spec.ts` を1件追加し、remainingは43件から44件、全体は73件となる。
+各群1 worker、retry 0、上限35分、ci-gateの拒否条件、未知specのremainingへの割当てを維持する。
+
+追加回帰は390px /Actionsでstable bridge報告のwrapper到達だけを400ms遅らせ、候補AのRestaurant全経路を既存helperで検証する。
+遅延した報告数を実測し、`restaurant-projection-delay.json` に保存してpath添付する。
+この制御された時間条件は、自然7session、96送信、94送信の証拠には含めない。
+Controlled 3件、遅延回帰、影響するCity Hall Classic /Cinema Actions 390px経路をFullより先に検証する。
+実行ごとに新しい出力先を使い、既存processとportの終了後に次の実行へ進む。
+ローカル対象検証の結果、失敗理由、再実行、最終headのFull実測はPR本文に記録する。
+
+追補のローカル検証ではcontrolled 3件が53.4秒で成功した。
+追加遅延回帰は現在echo待機の1行だけを一時的に外すと17.5秒で同じ裁判所の段落ずれを再現し、復元後はRestaurant全経路が1.1分で成功した。
+`restaurant-projection-delay.json` には400ms遅延をかけた報告111件を保存した。
+移動後のCinema Actions /390pxは3.7分で全96送信を完走し、8 reading checkpointの撮影前後一致、単一owner、focus /viewport、PNG /TXT実体、最終帰着PNGの同一hashを照合した。
+新しい出力は `cinema-narrow-actions-reco-56259-te-cinema-fieldwork-narrow--chromium/` であり、直下のJSON 28件 /PNG 71件 /TXT 116件を点検した。
+影響する既存City Hall Classic /390pxも41.8秒で成功し、対象2件の実行全体は4.4分だった。
+最初のcontrolled実行はChromium未導入で起動前に停止したため、導入後に別出力先で再実行した。
+作業用backupの拡張子が型検査対象に入ったため、完了済みbackupを `.ts.txt` として保持し、型検査を再実行した。
+これらの環境設定と作業ファイルの問題を製品回帰や自動test retryとして数えない。
+
+### 手動保存ZIPから証拠を探す対応表
+
+5 ZIPの名前は `playwright-<group>-<runId>-<runAttempt>` である。
+すべて同じ成功run /attemptを選び、各ZIP内の `ci-provenance.json` の `commit` /`runId` /`runAttempt` /`group` をレビュー対象headとartifact名に照合する。
+以下の `T` はZIP展開先内の各test出力ディレクトリであり、hash部分はファイル名とtest titleからPlaywrightが生成する。
+
+| Group | 件数 | Spec /証拠パス |
+| --- | ---: | --- |
+| church | 10 | `church-fieldwork.spec.ts`。`church-fieldwork-*/` 内の既存教会証拠。 |
+| power | 9 | `power-station-fieldwork.spec.ts`。`power-station-fieldwork-*/` 内の既存発電所証拠。 |
+| remaining | 44 | 上記とCinemaを除くspec。追加回帰は `restaurant-projection-*/restaurant-projection-delay.json` と同ディレクトリのRestaurant証拠。 |
+| cinema-desktop | 7 | `cinema-fieldwork.spec.ts`。`cinema-fieldwork-*/` のdesktop正例3件と非録画負例1件には前掲の `T/cinema-runtime-observations.json`、reading JSON /PNG /TXT一式。Controlled 3件は `T/cinema-controlled-{history,input-scope,recording}.{json,png}` と `T/cinema-controlled-*-accessibility.txt`。 |
+| cinema-narrow | 3 | `cinema-narrow.spec.ts`。`cinema-narrow-*/` のClassic /Guided /Actionsそれぞれに前掲と同じruntime JSON、movie /return readingの各4 checkpoint、PNG /TXT一式。 |
+
+各自然testの `cinema-runtime-observations.json` のcontrols /viewport /録画と、readingのcheckpoint ID、同名PNG /TXT、path添付の実体を突き合わせる。
+名前の一覧だけで監査済みとは扱わず、7自然session /56 checkpointとcontrolled 3件、追加遅延回帰を別々に確認する。
+
 ## 独立レビューと証拠保存
 
 Sol 通常レビューと Work/Astra 最終受入は未了である。
 通常の PR / push CI は artifact を保存しない。
 F3 の明示証拠実行と独立 ZIP 監査は、Sol 通常レビュー後の最終 head で行う未了項目である。
-Work の ZIP 監査には、レビュー対象の最終 head で `save_evidence=true` の Full CI を明示実行し、同一 run / attempt の3群すべてを使用する。
+Work の ZIP 監査には、レビュー対象の最終 head で `save_evidence=true` の Full CI を明示実行し、同一 run / attempt の5群すべてを使用する。
 [CI 運用](ci-operation.md)に従い、容量と1日以内の監査予定を確認してから保存する。
-各 `ci-provenance.json` の head と実 expiry を確認し、過去の #114 / #117 CI を F3 の代わりにしない。
+各 `ci-provenance.json` のhead /run /attempt /group、前掲の証拠パス、実expiryを確認し、過去の #114 / #117 CI を F3 の代わりにしない。
 
 レビュー回数、差し戻し理由、引継ぎから最終受入までの経過時間は、実際のレビュー後に PR / Issue で追記する。
 実装者の自己点検や実装チーム内の差分レビューを独立 Sol / Work レビューとして数えない。
