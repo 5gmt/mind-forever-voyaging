@@ -218,7 +218,9 @@ Baselineの #107最終CIは47 unit /62 browser、1 worker、retry / skipなし�
 新規の長い経路で各群の現行上限に近づく場合は、正常な実行時間と起動待ち / failureを分けて測定する。
 必要最小限のtimeout変更は、根拠と新上限をF3の同じPRでSol / Workに渡す。
 映画計画とは別の2026-11-07 CI保守で、変更分類と3群分散、通常artifactの保存停止を導入した。
-各群は1 worker、retryなし、job上限35分とし、テストの内容と添付生成を維持する。
+各群は1 worker、retryなしで、テストの内容と添付生成を維持する。
+F3 の CI #212 は remaining が35分上限で52/53件成功時に打ち切られたため、remaining だけ40分にする。
+Church / power は35分を維持し、分配、件数、retry、添付生成を変えない。
 最新の実行方法は[CI運用](../ci-operation.md)を参照し、F3では全群の実測時間を記録する。
 同じheadのfull suiteが成功し、artifactに必要な実体がそろうまで最終受入しない。
 

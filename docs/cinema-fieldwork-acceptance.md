@@ -101,6 +101,18 @@ Full E2E の最終判定は current-head CI を使い、ローカルの対象別
 - 環境接続の切替後に旧 runner の継続を見落とし、重複起動は既存 port により停止した。競合時の不完全な保存ファイルは採用せず、runner の終了と保存先を確認して390pxの2件を再実行した。
 - 上記の失敗と手動停止を経て、ローカルは Classic desktop 1件、残りの成功7件、390px assisted の再実行2件で計10件を確認した。テストの自動 retry は0で、最終 CI は全件を再実行する。
 
+## CI #212 の時間上限と再検証
+
+[CI #212](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42348240196) は head `346a901acea43b6460220befb09a3c658572aa1d` の verify（52 unit）、power（9 browser）、church（10 browser）が成功した。
+Remaining は映画館10件を含む52/53件が成功し、最後の既存レストラン Actions /390px の途中で35分の job 上限に達した。
+テスト失敗はなく、ci-gate は cancellation を正しく拒否した。
+映画館10件は約21分4秒、remaining job は35分12秒で、起動待ちや harness failure による停止とは区別する。
+
+Issue の許容範囲に従い、remaining の上限だけを40分に延ばす。
+Church / power の35分、分配、全72件、1 worker、retry 0、既存 assertion / 添付、通常 artifact 保存なしの方針は維持する。
+Application とテスト内容はこの再検証で変更しない。
+最終 head の full CI は PR の検証欄を正本とする。
+
 ## 独立レビューと証拠保存
 
 Sol 通常レビューと Work/Astra 最終受入は未了である。

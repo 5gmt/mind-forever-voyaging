@@ -130,7 +130,7 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
 - CIは説明文書 / Verify / Fullを変更内容で選び、workflow検査とCI制御テストは常に実行する。Fullはcanonical checksum、lint、TypeScript、build /unitの後にChromiumを3群で実行し、最終結果を `ci-gate` に集約する。
-- #114 merge後の49 unit /62 browser testsを維持し、本F3で3 unit /10 browserの回帰を追加した。検証対象は52 unit /72 browserと8 CI制御テストである。Browserはchurch 10件 /power 9件 /remaining 53件（本F3で10件追加）、各1 worker、retryなし、job上限35分。新規specはremainingに入り、一覧照合で欠落と重複を検出する。
+- #114 merge後の49 unit /62 browser testsを維持し、本F3で3 unit /10 browserの回帰を追加した。検証対象は52 unit /72 browserと8 CI制御テストである。Browserはchurch 10件 /power 9件 /remaining 53件（本F3で10件追加）、各1 worker、retryなし、job上限はchurch /power 35分、remaining 40分。新規specはremainingに入り、一覧照合で欠落と重複を検出する。
 - 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終headの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの3 ZIPを1日以内に監査する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
 - [PR #107最終CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は全件成功し、browser step38分21秒 /job39分50秒だった。初回full runのjob45分15秒を根拠として旧35分上限を50分に変更した。
 - Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries。2026-11-07の整理に先立ち、ZIPをActions外へ退避し、元のdigestとの一致とCRCを確認した。
