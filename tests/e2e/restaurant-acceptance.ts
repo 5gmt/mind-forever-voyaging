@@ -10,7 +10,9 @@ const COLORS = ["WHITE", "DARK GREEN", "DARK BLUE", "PINK", "ORANGE", "PURPLE", 
 const INNER = [89, 61, 50, 18, 29, 82, 46, 77, 27, 68, 22, 95, 40, 58, 15, 86, 28, 33, 94, 11, 64, 98, 34, 49, 60, 16, 85, 52, 37, 53, 93, 91];
 const OUTER = [12, 66, 73, 36, 90, 41, 19, 48, 62, 92, 55, 23, 84, 99, 57, 20, 78, 67, 51, 88, 17, 31, 70, 39, 96, 25, 81, 83, 47, 54, 13, 43];
 
-export async function acceptRestaurantMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo) {
+export type CinemaPrefixOptions = { courtRecording?: "cinema-on-site" };
+
+export async function acceptRestaurantMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, cinema: CinemaPrefixOptions = {}) {
   const attach = async (name: string, body: string | Buffer, contentType = "application/json") => {
     const path = testInfo.outputPath(`${name}.${contentType === "image/png" ? "png" : contentType === "text/plain" ? "txt" : "json"}`);
     await writeFile(path, body);
@@ -55,6 +57,9 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
     expect(start).toBeGreaterThanOrEqual(0);
     const lines = next.lines.slice(start, next.lines.findIndex((line) => line.id === next.id));
     expect(lines[0].text.trim().toUpperCase()).toContain(command.toUpperCase());
+    // Native input can advance before React projects this turn. Settle its
+    // echo before any caller counts blocks or hands off to another helper.
+    await expect(blocks.nth(count)).toHaveText(`> ${command.trim().toUpperCase()}`);
     turns.push({ command, previousInput: previous, nextInput: next.id!, status: await status.innerText(), lines });
     return count;
   };
@@ -73,7 +78,10 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
   expect(match).not.toBeNull();
   const answer = OUTER[(2 * COLORS.indexOf(match[1]) + INNER.indexOf(Number(match[2]))) % OUTER.length];
   await send(String(answer), controls === "classic" ? undefined : () => page.locator(".security-decoder").getByRole("button", { name: `コード ${answer} を送信` }).click());
-  for (const cmd of ["LOOK", "RECORD", "WAIT", "RECORD OFF", "RECORD", "SW", "NW", "LOOK", "SE", "NE", "RECORD OFF"]) {
+  const courtWindow = cinema.courtRecording === "cinema-on-site"
+    ? ["SW", "NW", "RECORD", "LOOK", "RECORD OFF", "SE", "NE"]
+    : ["RECORD", "SW", "NW", "LOOK", "SE", "NE", "RECORD OFF"];
+  for (const cmd of ["LOOK", "RECORD", "WAIT", "RECORD OFF", ...courtWindow]) {
     const count = await send(cmd);
     if (cmd === "LOOK" && turns.length > 10) {
       await expect(status).toContainText(/Location:\s*Courthouse/i);
@@ -125,7 +133,7 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
   await send("RECORD");
   await expect(status).toContainText("(recording)");
   const warning = presentation.getByText("WARNING: Record buffer is now half-full.", { exact: true });
-  await expect(warning).toHaveAttribute("lang", "en");
+  if (!cinema.courtRecording) await expect(warning).toHaveAttribute("lang", "en");
   const beforeMeal = await status.innerText();
   const countBeforeDraft = await blocks.count();
   const mealInput = (await snapshot()).id;
@@ -141,10 +149,11 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
   if (controls !== "classic") await attach("restaurant-meal-ui-accessibility", await mealSection.ariaSnapshot(), "text/plain");
   const mealStart = await send("BUY MEAL", controls === "actions" ? () => mealSection.getByRole("button", { name: "食事を注文する", exact: true }).click() : controls === "guided" ? () => page.getByRole("button", { name: /^送信/ }).click() : undefined);
   const mealTurn = turns.at(-1)!;
-  expect(mealTurn.lines.map((line) => line.text.trim())).toEqual([">BUY MEAL", MEAL_EN, ""]);
+  if (cinema.courtRecording) await expect(warning).toHaveAttribute("lang", "en");
+  expect(mealTurn.lines.map((line) => line.text.trim())).toEqual([">BUY MEAL", MEAL_EN, "", ...(cinema.courtRecording ? ["WARNING: Record buffer is now half-full.", ""] : [])]);
   await expect(blocks.nth(mealStart + 1)).toHaveText(MEAL_JA);
   await expect(blocks.nth(mealStart + 2)).toHaveClass("story-presentation-spacer");
-  await expect(blocks).toHaveCount(mealStart + 3);
+  await expect(blocks).toHaveCount(mealStart + (cinema.courtRecording ? 5 : 3));
   await expect(status).toContainText("(recording)");
   const minutes = (text: string) => { const m = text.match(/Time:\s*(\d+):(\d+)(am|pm)/i); return m ? Number(m[1]) % 12 * 60 + Number(m[2]) + (m[3].toLowerCase() === "pm" ? 720 : 0) : null; };
   const beforeMinutes = minutes(beforeMeal), afterMinutes = minutes(mealTurn.status);
@@ -239,6 +248,6 @@ export async function acceptRestaurantMilestone(page: Page, controls: "classic" 
   await expect(input).toBeInViewport({ ratio: 1 });
   await expect(page.getByRole("button", { name: /^送信/ })).toBeEnabled();
   await attach("restaurant-return", await page.screenshot(), "image/png");
-  await attach("restaurant-turns", JSON.stringify({ controls, viewport: page.viewportSize(), turns, newspaperTurns, beforeMeal, mealTurn, currentInput: (await snapshot()).id }));
+  await attach("restaurant-turns", JSON.stringify({ controls, viewport: page.viewportSize(), routeCandidate: cinema.courtRecording ?? "historical recorded round trip", courtWindow, turns, newspaperTurns, beforeMeal, mealTurn, currentInput: (await snapshot()).id }));
   return { frame, presentation, canonical, input, status, blocks, send, snapshot, locale, turns, newspaperTurns, attach };
 }

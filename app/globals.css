@@ -3778,7 +3778,8 @@ summary:focus-visible {
   font-weight: 500;
 }
 
-.scene-meal .scene-actions-heading small {
+.scene-meal .scene-actions-heading small,
+.scene-cinema .scene-actions-heading small {
   color: #a2b3a9;
   font-size: 11px;
   line-height: 1.45;
@@ -4720,14 +4721,16 @@ summary:focus-visible {
     display: none;
   }
 
-  .scene-meal .scene-actions-heading {
+  .scene-meal .scene-actions-heading,
+  .scene-cinema .scene-actions-heading {
     flex-direction: column;
     align-items: flex-start;
     gap: 4px;
     padding-block: 4px;
   }
 
-  .scene-meal .scene-actions-heading small {
+  .scene-meal .scene-actions-heading small,
+  .scene-cinema .scene-actions-heading small {
     display: block;
   }
 

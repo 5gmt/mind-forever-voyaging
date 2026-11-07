@@ -5,7 +5,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
 import { classifyPaths, detectScope, assertGate } from "../../scripts/ci-scope.mjs";
-import { assertPartition, filtersForGroup, groupForFile } from "../../scripts/ci-e2e.mjs";
+import { assertPartition, filtersForGroup, groupForFile, groups } from "../../scripts/ci-e2e.mjs";
 
 test("historical documentation PRs are light; runtime contracts and fixtures remain full", () => {
   assert.equal(classifyPaths(["AGENTS.md", "PROJECT_STATUS.md", "docs/plans/2041-cinema-fieldwork.md"]), "docs"); // #111
@@ -68,9 +68,17 @@ test("gate rejects failures, cancellation, missing results and unexpected skips"
 });
 
 test("partition covers each test once and includes newly added specs", () => {
+  assert.deepEqual(groups, ["church", "power", "remaining", "cinema-desktop", "cinema-narrow"]);
   assert.equal(groupForFile("church-fieldwork.spec.ts"), "church");
   assert.equal(groupForFile("power-station-fieldwork.spec.ts"), "power");
+  assert.equal(groupForFile("cinema-fieldwork.spec.ts"), "cinema-desktop");
+  assert.equal(groupForFile("cinema-narrow.spec.ts"), "cinema-narrow");
   assert.equal(groupForFile("new-cinema.spec.ts"), "remaining");
+  const files = ["church-fieldwork.spec.ts", "power-station-fieldwork.spec.ts", "cinema-fieldwork.spec.ts", "cinema-narrow.spec.ts", "restaurant-projection.spec.ts", "nested/new.spec.ts"];
+  for (const file of files) {
+    const owners = groups.filter(group => filtersForGroup(files, group).some(filter => new RegExp(filter).test(`/checkout/tests/e2e/${file}`)));
+    assert.deepEqual(owners, [groupForFile(file)], file);
+  }
   const filters = filtersForGroup(["church-fieldwork.spec.ts", "power-station-fieldwork.spec.ts", "nested/new.spec.ts"], "remaining");
   assert.ok(new RegExp(filters[0]).test("/checkout/tests/e2e/nested/new.spec.ts"));
   assert.ok(!new RegExp(filters[0]).test("/checkout/tests/e2e/nested/newXspec.ts"));

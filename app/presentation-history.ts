@@ -9,6 +9,7 @@ export type PresentationHistoryEntry = {
   cityHall2041?: string;
   powerStation2041?: string;
   church2041?: string;
+  cinema2041?: string;
 };
 
 export type PresentationHistory = PresentationHistoryEntry[];
@@ -43,7 +44,7 @@ const isSafeObservation = (presentation: BridgePresentation | null): presentatio
 export const reconcilePresentationHistory = (
   previous: PresentationHistory,
   presentation: BridgePresentation | null,
-  scope: { cityHall2041?: string; powerStation2041?: string; church2041?: string } = {},
+  scope: { cityHall2041?: string; powerStation2041?: string; church2041?: string; cinema2041?: string } = {},
 ): PresentationReconciliation => {
   if (!isSafeObservation(presentation)) return { history: previous, representable: false };
   const localized = storyPresentation(presentation, "ja");
@@ -69,7 +70,7 @@ export const reconcilePresentationHistory = (
   const restoreBoundary = fallback?.[0]?.kind === "command"
     && /^RESTORE$/i.test(fallback[0].canonicalText ?? fallback[0].text);
   return {
-    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}), ...(scope.powerStation2041 ? { powerStation2041: scope.powerStation2041 } : {}), ...(scope.church2041 ? { church2041: scope.church2041 } : {}) }],
+    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}), ...(scope.powerStation2041 ? { powerStation2041: scope.powerStation2041 } : {}), ...(scope.church2041 ? { church2041: scope.church2041 } : {}), ...(scope.cinema2041 ? { cinema2041: scope.cinema2041 } : {}) }],
     representable: true,
   };
 };
@@ -142,6 +143,22 @@ const CHURCH_COPY_ROOMS: Record<string, string> = {
   "part1.simulation.church.return": "MAIN-AND-KENNEDY",
 };
 
+const CINEMA_COPY_ROOMS: Record<string, string> = {
+  "part1.simulation.cinema.museum.heading": "MUSEUM-ENTRANCE",
+  "part1.simulation.cinema.lobby.heading": "CINEMA",
+  "part1.simulation.cinema.theatre.heading": "CINEMA",
+  "part1.simulation.cinema.museum.description": "MUSEUM-ENTRANCE",
+  "part1.simulation.cinema.lobby.description": "CINEMA",
+  "part1.simulation.cinema.purchase": "CINEMA",
+  "part1.simulation.cinema.entry": "CINEMA",
+  "part1.simulation.cinema.movie": "CINEMA",
+  "part1.simulation.cinema.no-ticket": "CINEMA",
+  "part1.simulation.cinema.main-kennedy.heading": "MAIN-AND-KENNEDY",
+  "part1.simulation.cinema.centre-kennedy.heading": "CENTRE-AND-KENNEDY",
+  "part1.simulation.cinema.square-heading": "BODANSKI-SQUARE",
+  "part1.simulation.cinema.square-dispenser": "BODANSKI-SQUARE",
+};
+
 export const projectPresentationHistory = (
   history: PresentationHistory,
   locale: Locale,
@@ -158,5 +175,8 @@ export const projectPresentationHistory = (
         : block.contentId?.startsWith("part1.simulation.church.")
           && entry.church2041 !== CHURCH_COPY_ROOMS[block.contentId]
           ? { ...block, text: block.canonicalText ?? block.text }
-          : block),
+          : block.contentId?.startsWith("part1.simulation.cinema.")
+            && entry.cinema2041 !== CINEMA_COPY_ROOMS[block.contentId]
+            ? { ...block, text: block.canonicalText ?? block.text }
+            : block),
 })).filter((entry) => entry.blocks.length > 0);

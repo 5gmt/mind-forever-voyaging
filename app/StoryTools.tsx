@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
 import { FormEvent, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { churchTalkHelp, cityHallTalkHelp, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
+import { cinemaActionUiText, churchTalkHelp, cityHallTalkHelp, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -172,6 +172,17 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
       <div className="scene-actions-heading"><span>{mealActionUiText(locale, "heading")}</span><small>{mealActionUiText(locale, guided ? "guidedInstruction" : "actionsInstruction")}</small></div>
       {guided ? <div className="scene-word-list"><button type="button" onClick={() => draftCommand("BUY MEAL")} disabled={disabled}><span>{localizeSceneObjectName(locale, roomId, "MEAL", "Meal")}</span>{" "}<small>{localizeSceneActionLabel(locale, roomId, "MEAL", "buy", "Order")}</small></button></div>
         : <div className="scene-object-grid"><article className="scene-object"><strong>{localizeSceneObjectName(locale, roomId, "MEAL", "Meal")}</strong><div><button type="button" onClick={() => sendCommand("BUY MEAL")} disabled={disabled}>{mealActionUiText(locale, "orderMeal")}</button></div></article></div>}
+    </section>;
+  }
+  if (initial2041 && lineInput && roomId === "CINEMA") {
+    const guided = level === "guided";
+    return <section className={`scene-actions scene-cinema ${guided ? "scene-words" : ""}`} lang={locale} aria-label={cinemaActionUiText(locale, "landmark")}>
+      <div className="scene-actions-heading"><span>{cinemaActionUiText(locale, "heading")}</span><small>{cinemaActionUiText(locale, guided ? "guidedInstruction" : "actionsInstruction")}</small></div>
+      <div className={guided ? "scene-word-list" : "scene-object-grid"}>{([
+        ["BUY TICKET", "ticket", "buy", "buyTicket"], ["IN", "theatre", "enter", "enterTheatre"],
+      ] as const).map(([command, target, action, label]) => guided
+        ? <button key={command} type="button" onClick={() => draftCommand(command)} disabled={disabled}><span>{cinemaActionUiText(locale, target)}</span>{" "}<small>{cinemaActionUiText(locale, action)}</small></button>
+        : <article className="scene-object" key={command}><strong>{cinemaActionUiText(locale, target)}</strong><div><button type="button" onClick={() => sendCommand(command)} disabled={disabled}>{cinemaActionUiText(locale, label)}</button></div></article>)}</div>
     </section>;
   }
   if (!usableObjects.length) return null;

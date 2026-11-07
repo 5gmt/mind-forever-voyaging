@@ -99,7 +99,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        group: [church, power, remaining]
+        group: [church, power, remaining, cinema-desktop, cinema-narrow]
 
     steps:
       - name: Checkout

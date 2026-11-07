@@ -517,6 +517,12 @@ const MEAL_ACTION_UI = {
 } as const;
 export const mealActionUiText = (locale: Locale, key: keyof typeof MEAL_ACTION_UI.en) => MEAL_ACTION_UI[locale][key];
 
+const CINEMA_ACTION_UI = {
+  en: { landmark: "Cinema visit", heading: "Ticket purchase and theatre entry", guidedInstruction: "Choose an action to draft a command you can edit before sending.", actionsInstruction: "Choose an action to send its command once.", ticket: "Ticket", buy: "Buy", theatre: "Theatre", enter: "Enter", buyTicket: "Buy ticket", enterTheatre: "Enter theatre" },
+  ja: { landmark: "映画館での体験", heading: "入場券の購入と上映室への入場", guidedInstruction: "操作を選ぶと英語のコマンドを入力欄に用意します。編集してから送信できます。", actionsInstruction: "操作を選ぶと、そのコマンドを1回送信します。", ticket: "入場券", buy: "購入する", theatre: "上映室", enter: "入る", buyTicket: "入場券を購入する", enterTheatre: "上映室に入る" },
+} as const;
+export const cinemaActionUiText = (locale: Locale, key: keyof typeof CINEMA_ACTION_UI.en) => CINEMA_ACTION_UI[locale][key];
+
 const CITY_HALL_TALK_HELP = {
   en: { guided: "Draft a command to talk to the government official. You can edit it before sending.", actions: "Choose Talk to send the command once." },
   ja: { guided: "政府職員と話すコマンドを下書きします。編集してから送信できます。", actions: "「話す」を押すと、コマンドを1回送信します。" },
@@ -604,6 +610,8 @@ export const localizeOutletLabel = (locale: Locale, code: string, canonicalLabel
 
 const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
+    "Museum Entrance": "博物館入口",
+    Cinema: "映画館",
     "Main & River": "メイン通りとリバー通り",
     "Main & Church": "メイン通りとチャーチ通り",
     "Church Entrance": "教会入口",
@@ -642,6 +650,7 @@ const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, stri
     official: "市役所",
     power: "発電所",
     church: "聖ミカエル教会",
+    movie: "映画館",
     infotech: "インフォテック・ビル",
     kennedy: "ケネディ公園",
     court: "裁判所",
@@ -740,6 +749,19 @@ export type StoryContentId =
   | "part1.simulation.church.presence"
   | "part1.simulation.church.conversation"
   | "part1.simulation.church.return"
+  | "part1.simulation.cinema.museum.heading"
+  | "part1.simulation.cinema.lobby.heading"
+  | "part1.simulation.cinema.theatre.heading"
+  | "part1.simulation.cinema.museum.description"
+  | "part1.simulation.cinema.lobby.description"
+  | "part1.simulation.cinema.purchase"
+  | "part1.simulation.cinema.entry"
+  | "part1.simulation.cinema.movie"
+  | "part1.simulation.cinema.no-ticket"
+  | "part1.simulation.cinema.main-kennedy.heading"
+  | "part1.simulation.cinema.centre-kennedy.heading"
+  | "part1.simulation.cinema.square-heading"
+  | "part1.simulation.cinema.square-dispenser"
   | "part1.simulation.record-activated"
   | "part1.simulation.record-deactivated";
 
@@ -1195,6 +1217,27 @@ const OBSERVED_STORY_CATALOG: Partial<Record<Locale, ReadonlyArray<ObservedStory
     {"canonicalCommand": "CHURCH ELDER, HELLO", "canonicalLeaf": "You have a brief chat with the church elder, who smiles and comments on how happy he is about the recent increase in church attendance, which he attributes to an improving national moral climate. Suddenly he glances at his watch, mumbles a polite parting message, and hurries away.", "translation": {"contentId": "part1.simulation.church.conversation", "text": "教会の長老と短い会話を交わす。長老は笑みを浮かべ、最近は礼拝への出席者が増えたことをとても喜んでいると話し、その増加は国全体の道徳的な風潮がよくなっているためだという。突然、時計にちらりと目をやり、丁寧な別れの言葉をぼそぼそと口にすると、足早に去っていく。"}},
     {"canonicalCommand": "W", "canonicalLeaf": "Main & Kennedy", "translation": {"contentId": "part1.simulation.church.return", "text": "メイン通りとケネディ通り", "kind": "title"}},
     {"canonicalCommand": "WEST", "canonicalLeaf": "Main & Kennedy", "translation": {"contentId": "part1.simulation.church.return", "text": "メイン通りとケネディ通り", "kind": "title"}},
+    ...([["NORTH", "Centre & Kennedy", "センター通りとケネディ通り"], ["SOUTH", "Main & Kennedy", "メイン通りとケネディ通り"]] as const).map(([canonicalCommand, canonicalLeaf, text]) => ({ canonicalCommand, canonicalLeaf, translation: { contentId: (canonicalLeaf === "Main & Kennedy" ? "part1.simulation.cinema.main-kennedy.heading" as const : "part1.simulation.cinema.centre-kennedy.heading" as const), text, kind: "title" as const } })),
+    // F2-approved cinema copy; exact leaves and finite canonical commands.
+    {"canonicalCommand": "E", "canonicalLeaf": "Museum Entrance", "translation": {"contentId": "part1.simulation.cinema.museum.heading", "text": "博物館入口", "kind": "title"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "Museum Entrance", "translation": {"contentId": "part1.simulation.cinema.museum.heading", "text": "博物館入口", "kind": "title"}},
+    {"canonicalCommand": "SE", "canonicalLeaf": "Museum Entrance", "translation": {"contentId": "part1.simulation.cinema.museum.heading", "text": "博物館入口", "kind": "title"}},
+    {"canonicalCommand": "NW", "canonicalLeaf": "Cinema", "translation": {"contentId": "part1.simulation.cinema.lobby.heading", "text": "映画館", "kind": "title"}},
+    {"canonicalCommand": "LOOK", "canonicalLeaf": "Cinema", "translation": {"contentId": "part1.simulation.cinema.lobby.heading", "text": "映画館", "kind": "title"}},
+    {"canonicalCommand": "IN", "canonicalLeaf": "Movie Theatre", "translation": {"contentId": "part1.simulation.cinema.theatre.heading", "text": "上映室", "kind": "title"}},
+    {"canonicalCommand": "E", "canonicalLeaf": "Standing on the south side of Bodanski Boulevard is the Railroad Museum. The street runs east toward the park and west toward the square. North of here is a car lot and to the northwest is a huge cinema complex.", "translation": {"contentId": "part1.simulation.cinema.museum.description", "text": "ボダンスキー大通りの南側に、鉄道博物館が建っている。通りは東へは公園のほうに、西へは広場のほうに続いている。北には駐車場があり、北西には巨大な複合映画館がある。"}},
+    {"canonicalCommand": "EAST", "canonicalLeaf": "Standing on the south side of Bodanski Boulevard is the Railroad Museum. The street runs east toward the park and west toward the square. North of here is a car lot and to the northwest is a huge cinema complex.", "translation": {"contentId": "part1.simulation.cinema.museum.description", "text": "ボダンスキー大通りの南側に、鉄道博物館が建っている。通りは東へは公園のほうに、西へは広場のほうに続いている。北には駐車場があり、北西には巨大な複合映画館がある。"}},
+    {"canonicalCommand": "NW", "canonicalLeaf": "The Downtown Cinema Quad is a modern, four-theatre movie complex with all the latest holographic and personalized stereo technology. A marquee above the ticket \"window\" announces the current features. A hallway leads in to the theatres, and there are exits north and east to car lots, and southeast to the street.", "translation": {"contentId": "part1.simulation.cinema.lobby.description", "text": "ダウンタウン・シネマ・クアッドは、上映室が4つある近代的な複合映画館だ。最新のホログラフィー技術と、一人ひとりに合わせたステレオ音響を備えている。券売「窓口」の上の看板には、現在の上映作品が掲げられている。廊下は奥の上映室へ続き、北と東には駐車場へ、南東には通りへ出る出口がある。"}},
+    {"canonicalCommand": "LOOK", "canonicalLeaf": "The Downtown Cinema Quad is a modern, four-theatre movie complex with all the latest holographic and personalized stereo technology. A marquee above the ticket \"window\" announces the current features. A hallway leads in to the theatres, and there are exits north and east to car lots, and southeast to the street.", "translation": {"contentId": "part1.simulation.cinema.lobby.description", "text": "ダウンタウン・シネマ・クアッドは、上映室が4つある近代的な複合映画館だ。最新のホログラフィー技術と、一人ひとりに合わせたステレオ音響を備えている。券売「窓口」の上の看板には、現在の上映作品が掲げられている。廊下は奥の上映室へ続き、北と東には駐車場へ、南東には通りへ出る出口がある。"}},
+    {"canonicalCommand": "BUY TICKET", "canonicalLeaf": "You insert your card into the ticket seller. A readout flashes \"NEW BALANCE: $554\" and a ticket pops out into your hands.", "translation": {"contentId": "part1.simulation.cinema.purchase", "text": "券売機にカードを差し込む。表示部に「NEW BALANCE: $554」の文字が光り、入場券が手元へ飛び出してくる。"}},
+    {"canonicalCommand": "IN", "canonicalLeaf": "The usher takes your ticket and you step into the darkened theatre and find an empty seat.", "translation": {"contentId": "part1.simulation.cinema.entry", "text": "案内係が入場券を受け取る。暗い上映室に足を踏み入れ、空席を見つける。"}},
+    {"canonicalCommand": "IN", "canonicalLeaf": "You begin watching \"Upbeat Patrol II,\" which is funny and fast-moving like the prequel, but seems to lack some of the originality and freshness. The soundtrack, locations, and special effects are all top notch. After about fifteen minutes, you decide you've seen enough, and head out to the lobby.", "translation": {"contentId": "part1.simulation.cinema.movie", "text": "『アップビート・パトロールII』を見始める。前作と同じく笑えてテンポもよいが、独創性や新鮮さはいくらか欠けているように思える。サウンドトラック、ロケ地、特殊効果はいずれも一流だ。15分ほど見たところで、もう十分だと思い、ロビーへ戻る。"}},
+    {"canonicalCommand": "IN", "canonicalLeaf": "You don't have a ticket.", "translation": {"contentId": "part1.simulation.cinema.no-ticket", "text": "入場券を持っていない。"}},
+    {"canonicalCommand": "W", "canonicalLeaf": "Bodanski Square", "translation": {"contentId": "part1.simulation.cinema.square-heading", "text": "ボダンスキー広場", "kind": "title"}},
+    {"canonicalCommand": "WEST", "canonicalLeaf": "Bodanski Square", "translation": {"contentId": "part1.simulation.cinema.square-heading", "text": "ボダンスキー広場", "kind": "title"}},
+    {"canonicalCommand": "W", "canonicalLeaf": "There is a newspaper dispenser chained to a lamp post on the corner.", "translation": {"contentId": "part1.simulation.cinema.square-dispenser", "text": "角の街灯には新聞販売機が鎖でつながれている。"}},
+    {"canonicalCommand": "WEST", "canonicalLeaf": "There is a newspaper dispenser chained to a lamp post on the corner.", "translation": {"contentId": "part1.simulation.cinema.square-dispenser", "text": "角の街灯には新聞販売機が鎖でつながれている。"}},
+
 
   ],
 };
