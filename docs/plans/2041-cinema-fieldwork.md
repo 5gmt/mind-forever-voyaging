@@ -7,7 +7,7 @@
 **Architecture:** 既存 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と限定 SceneActions を使う。先に映画の一ターン内の出力構造と録画容量を実測し、copy approval 後に本文と購入 / 入場操作を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** 計画 PR #111、旧失敗証拠 PR #112、候補A設計 PR #113 は merge 済み。候補Aは [PR #114 の独立 Sol review](https://github.com/5gmt/mind-forever-voyaging/pull/114#pullrequestreview-5802952413)で成功採択され、merge `22945dc75b1fbc45b8d9b5e72248870e7dda495f` により F1 は完了した。F2 は [copy packet](../cinema-copy-packet.md) を独立承認候補として提出する段階。F2 の Sol copy approval / merge までは F3 を開始しない。旧失敗証拠と既存回帰、CI保守 #115 / #116 の運用を保持する。
+**Status:** F1 は PR #114 の独立 Sol 成功採択と merge により完了。F2 は [PR #117 の独立 copy 承認](https://github.com/5gmt/mind-forever-voyaging/pull/117#pullrequestreview-5810087796)と merge `0ae47106ea4182d4df1db350742205c4988f725d` により完了し、F3 は開始可能となった。本変更で F3 の日本語統合と受入テストを実装する。[統合検証](../cinema-fieldwork-acceptance.md)に証拠を集約し、Sol 通常レビューと Work/Astra の最終受入は未了として区別する。旧失敗証拠と既存回帰、CI保守 #115 / #116 の運用を保持する。
 **Baseline:** 教会 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) の merge `06e6633ff2a3572959955d320ef1e9d8477a5de4`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-01 JST の owner の次期 milestone 設計 / タスク作成依頼に対する提案。
 
@@ -165,7 +165,7 @@ Work は最終 head の手動証拠実行（`save_evidence=true`）で生成し�
 明示 OFF / LOOK / 帰着へ進まず、Work に経路設計を戻した。
 Work の候補Aは設計同期 PR #113 の独立 review / merge 後に追加実測し、2 fresh sessionsで全96送信と映画録画、明示 OFF / LOOK、公園帰着を確認した。
 [候補Aの実測](../cinema-recording-a-evidence.md)は PR #114 で独立 Sol が成功採択 / merge し、上記の失敗証拠と区別して保持する。
-F2 の開始条件は満たした。F3 は F2 の独立承認 / merge を待つ。
+F2 は PR #117 の独立承認 / merge を完了し、F3 の開始条件を満たした。
 
 **Files:** 更新 `scripts/capture-cinema-runtime.mjs`（明示 `--candidate-a`）、`tests/rendered-html.test.mjs`、本書、`PROJECT_STATUS.md`。新規 `tests/fixtures/parchment-cinema-recording-a-observed.json`、`docs/cinema-recording-a-evidence.md`。失敗時は別 `tests/fixtures/parchment-cinema-recording-a-failure.json` に経過を残す。Flagなしの旧候補と #112 の failure fixture / evidence / regression、以前の capture / fixture を保持する。Production code は変更しない。
 **Interfaces:** 既存教会 capture の81送信に候補Aの7送信置換を適用する。全送信、decoder交換、起動char、各 input ID / echo / next input、raw status、bridge-v3 presentation、地点照合、warnings、実 UI alias / 表示条件、stable / dynamic / optional leaf 台帳、別の券なし probe を F2 / F3 に渡す。新 fixture は既存形式に合わせ、成功 session と failure / probe を区別する。
@@ -181,7 +181,8 @@ F2 の開始条件は満たした。F3 は F2 の独立承認 / merge を待つ�
 
 [Copy packet](../cinema-copy-packet.md) に成功本文8 leaf、別 fresh 券なし拒否1 leaf、既承認7 leaf の再利用、役割別の地名と限定 BUY TICKET / IN の英日 copy をまとめた。
 原文の正本は候補Aの成功 fixture とし、新規 UI 案と実測 UI を区別する。
-本書の候補作成を独立 copy approval とせず、Sol の承認 / merge を F3 の開始条件に保つ。
+独立 Sol が PR #117 で copy を承認し、merge を完了した。
+本 F3 はその承認済み packet を消費する。
 
 **Files:** 新規 `docs/cinema-copy-packet.md`。更新本書、`PROJECT_STATUS.md`。Catalog / production code は変更しない。
 **Interfaces:** F1 の採択 fixture / UI台帳を消費する。Exact English leaf、command alias、観測時 room、適用条件、再利用か新規か、EN / JA copy、fallback、visible / accessible name、送信 command の対応を F3 に渡す。
@@ -190,19 +191,19 @@ F2 の開始条件は満たした。F3 は F2 の独立承認 / merge を待つ�
 - [x] 必須の本文、Museum Entrance / Cinema、映画名、購入 / 鑑賞操作の copy を作る。既存の地名、課題訳、録画、route文は再利用する。
 - [x] `Movie Theatre` の本文内 identity と CINEMA の current placeを区別し、金額 / raw statusを創作しない。映画評の続編との比較と、15分で鑑賞を切り上げる内容を保持する。
 - [x] 券なし拒否等を翻訳対象に含める場合は F1 の exact observed leaf に結び付ける。未観測の資金不足、券の印字、marqueeは承認しない。
-- [ ] 原文との照合、リンクとdiffを確認し、Sol の copy approval / merge を受ける。
+- [x] 原文との照合、リンクとdiffを確認し、PR #117 で Sol の copy approval / merge を受けた。
 
 ### F3: 映画鑑賞を日本語化して全体受入する
 
-**Files:** 更新 `app/localization.ts`、`app/PrismEdition.tsx`、`app/StoryTools.tsx`、必要な観測時scopeの `app/presentation-history.ts`、`tests/rendered-html.test.mjs`。新規 `tests/e2e/cinema-acceptance.ts`、`tests/e2e/cinema-fieldwork.spec.ts`、`docs/cinema-fieldwork-acceptance.md`。必要な最小変更のみ `tests/e2e/restaurant-acceptance.ts`、`tests/e2e/city-hall-acceptance.ts`、`tests/e2e/power-station-acceptance.ts`、`tests/e2e/church-acceptance.ts`、既存 Cinema fallback を使う spec、`.github/workflows/ci.yml`。本書と `PROJECT_STATUS.md` を同期する。
-**Interfaces:** F1 の観測契約と F2 の承認 copy を消費する。`acceptChurchMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true)` を先行81送信の入口として再利用する。Church → Power Station → City Hall → Restaurant に映画専用の現地録画選択を渡す最小拡張を許可し、既定の旧往復録画と負例フラグを維持する。各 prefix 比較と添付には経路選択を明記する。現在は戻り値がないため、既存 `frame` / `input` / `status` / `send` / `snapshot` / `rawTrace` / 最終input ID等を返す最小拡張を許可する。既存経路の assertion / 録画窓 / 添付を削らず、候補Aでも LOOK と全課題の成立を検証する。残る未送信 draft は送信せず消去する。`acceptCinemaMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordMovie = true)` を新しい受入入口とする。
+**Files:** 更新 `app/localization.ts`、`app/PrismEdition.tsx`、`app/StoryTools.tsx`、操作説明の既存CSS、必要な観測時scopeの `app/presentation-history.ts`、`tests/rendered-html.test.mjs`。新規 `app/cinema-recording.ts` は映画の補助チェックだけを観測する。新規 `tests/e2e/cinema-acceptance.ts`、`tests/e2e/cinema-fieldwork.spec.ts`、`docs/cinema-fieldwork-acceptance.md`。必要な最小変更のみ `tests/e2e/restaurant-acceptance.ts`、`tests/e2e/city-hall-acceptance.ts`、`tests/e2e/power-station-acceptance.ts`、`tests/e2e/church-acceptance.ts`、既存 Cinema fallback を使う spec、`.github/workflows/ci.yml`。本書と `PROJECT_STATUS.md` を同期する。
+**Interfaces:** F1 の観測契約と F2 の承認 copy を消費する。`acceptChurchMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordConversation = true)` を先行81送信の入口として再利用する。Church → Power Station → City Hall → Restaurant に映画専用の現地録画選択を渡す最小拡張を許可し、既定の旧往復録画と負例フラグを維持する。各 prefix 比較と添付には経路選択を明記する。着手時点では戻り値がないため、既存 `frame` / `input` / `status` / `send` / `snapshot` / `rawTrace` / 最終input ID等を返す最小拡張を許可する。既存経路の assertion / 録画窓 / 添付を削らず、候補Aでも LOOK と全課題の成立を検証する。残る未送信 draft は送信せず消去する。`acceptCinemaMilestone(page: Page, controls: "classic" | "guided" | "actions", testInfo: TestInfo, recordMovie = true)` を新しい受入入口とする。
 
-- [ ] 未登録 copy、本文内見出し / 現在地、限定操作と非録画判定に対する RED を保存する。
-- [ ] 承認 catalog / 地名 / map と `BUY TICKET` / `IN` の限定操作を統合し、GREENを確認する。既存 generic guard は維持する。
-- [ ] 6自然経路と別fresh非録画負例を完走し、actual English commands、recording status、帰着、補助7/9または6/9を確認する。
-- [ ] Review Focus と受入境界の controlled / unit regressionを固定し、自然な canonical evidence と分けて保存する。
-- [ ] 同時点の reading / input / accessibility / PNG と390pxのdrawer証拠を保存し、local実体を照合する。
-- [ ] 全検証、CI所要時間、artifact情報、受入条件への対応を受入記録に集約する。実装時点で未了の独立 review / merge / close は先取りしない。
+- [x] 未登録 copy、本文内見出し / 現在地、限定操作と非録画判定に対する RED を保存する。
+- [x] 承認 catalog / 地名 / map と `BUY TICKET` / `IN` の限定操作を統合し、GREENを確認する。既存 generic guard は維持する。
+- [x] 6自然経路と別fresh非録画負例を完走し、actual English commands、recording status、帰着、補助7/9または6/9を確認する。
+- [x] Review Focus と受入境界の controlled / unit regressionを固定し、自然な canonical evidence と分けて保存する。
+- [x] 同時点の reading / input / accessibility / PNG と390pxのdrawer証拠を保存し、local実体を照合する。
+- [x] 全検証、CI所要時間、artifact情報、受入条件への対応を受入記録に集約する。実装時点で未了の独立 review / merge / close は先取りしない。
 - [ ] Sol通常レビュー後、同じ最終 head の Work全体受入と ZIP監査、merge、#29報告、F3 closeで milestoneを完了する。
 
 ## 検証と引継ぎ
@@ -217,7 +218,9 @@ Baselineの #107最終CIは47 unit /62 browser、1 worker、retry / skipなし�
 新規の長い経路で各群の現行上限に近づく場合は、正常な実行時間と起動待ち / failureを分けて測定する。
 必要最小限のtimeout変更は、根拠と新上限をF3の同じPRでSol / Workに渡す。
 映画計画とは別の2026-11-07 CI保守で、変更分類と3群分散、通常artifactの保存停止を導入した。
-各群は1 worker、retryなし、job上限35分とし、テストの内容と添付生成を維持する。
+各群は1 worker、retryなしで、テストの内容と添付生成を維持する。
+F3 の CI #212 は remaining が35分上限で52/53件成功時に打ち切られたため、remaining だけ40分にする。
+Church / power は35分を維持し、分配、件数、retry、添付生成を変えない。
 最新の実行方法は[CI運用](../ci-operation.md)を参照し、F3では全群の実測時間を記録する。
 同じheadのfull suiteが成功し、artifactに必要な実体がそろうまで最終受入しない。
 

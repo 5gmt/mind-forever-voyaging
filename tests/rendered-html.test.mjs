@@ -1120,7 +1120,7 @@ test("projects the approved Power Station packet only for its observed room and 
     assert.equal(localizeSimulationPlace("ja", `${en} annex`), `${en} annex`);
   }
   assert.equal(localizeSimulationMapLabel("ja", "power", "Power Station"), "発電所");
-  assert.equal(localizeSimulationMapLabel("ja", "movie", "Cinema"), "Cinema");
+  assert.equal(localizeSimulationMapLabel("ja", "movie", "Cinema"), "映画館");
   assert.equal(localizeSceneObjectName("ja", "POWER-STATION", "POWER-STATION-OBJECT", "power station"), "power station");
   for (const session of fixture.sessions) for (const turn of session.observations.slice(49)) {
     const scope = roomFor[turn.status.location];
@@ -1987,7 +1987,7 @@ test("limits church names and Talk copy to the approved identities", async () =>
   }
   assert.equal(localizeSimulationPlace("ja", "Vacant Lot"), "Vacant Lot");
   assert.equal(localizeSimulationMapLabel("ja", "church", "St. Michael's Church"), "聖ミカエル教会");
-  assert.equal(localizeSimulationMapLabel("ja", "movie", "Cinema"), "Cinema");
+  assert.equal(localizeSimulationMapLabel("ja", "movie", "Cinema"), "映画館");
   assert.equal(localizeSceneObjectName("ja", "ST-MICHAELS", "CHURCH-OFFICIAL", "church elder"), "教会の長老");
   assert.equal(localizeSceneActionLabel("ja", "ST-MICHAELS", "CHURCH-OFFICIAL", "talk", "Talk"), "話す");
   for (const room of ["FIRST-METHODIST-CHURCH", "UNKNOWN", undefined]) {
@@ -2382,4 +2382,98 @@ test("retains two complete cinema candidate A sessions with on-site courthouse r
   assert.equal(refusal.status.location, "Cinema");
   assert.equal(refusal.status.mode, "Simulation Mode");
   assert.doesNotMatch(refusal.presentation.lines.map(({ text }) => text).join("\n"), /Movie Theatre|You begin watching|usher takes/);
+});
+
+test("projects approved cinema leaves with observation-time room scope and exact qualifiers", async () => {
+  const f = JSON.parse(await readFile(new URL("./fixtures/parchment-cinema-recording-a-observed.json", import.meta.url), "utf8"));
+  const packet = await readFile(new URL("../docs/cinema-copy-packet.md", import.meta.url), "utf8");
+  const approved = new Map(packet.split("\n").filter(line => /^\| [HDNR]\d;/.test(line)).map(line => {
+    const cells = line.split("|"); return [cells[2].trim().slice(1, -1), { text: cells[3].trim().slice(1, -1), fresh: !cells[1].trim().startsWith("R"), title: cells[1].includes("title") }];
+  }));
+  assert.equal(approved.size, 16);
+  for (const turn of [...f.sessions.flatMap(s => s.observations.slice(80)), f.noTicketProbe.observations[11]]) {
+    const raw = turn.presentation.lines.slice(1, -1);
+    const history = reconcilePresentationHistory([], turn.presentation, { cinema2041: turn.roomId }).history;
+    const blocks = projectPresentationHistory(history, "ja")[0].blocks.slice(1);
+    assert.deepEqual(blocks.map(b => b.text), raw.map(l => approved.get(l.text)?.text ?? l.text.trim()), turn.command);
+    assert.deepEqual(blocks.map(b => b.sourceLines), raw.map((_, i) => [i + 1]));
+    for (const [i, line] of raw.entries()) {
+      if (approved.get(line.text)?.fresh) {
+        assert.equal(blocks[i].kind, approved.get(line.text).title ? "title" : "prose");
+        assert.equal(observedStoryLeafTranslation(line.text, "ja", "UNAPPROVED"), undefined);
+        assert.equal(observedStoryLeafTranslation(`${line.text} Unknown variant.`, "ja", turn.command), undefined);
+        for (const room of [undefined, "UNKNOWN", "MOVIE-THEATRE", turn.roomId === "CINEMA" ? "MUSEUM-ENTRANCE" : "CINEMA"]) {
+          const unknown = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation, { cinema2041: room }).history, "ja")[0].blocks;
+          assert.equal(unknown.find(b => b.canonicalText === line.text)?.text, line.text);
+        }
+      }
+    }
+  }
+  const movie = f.sessions[0].observations[87].presentation;
+  const accepted = reconcilePresentationHistory([], movie, { cinema2041: "CINEMA" }).history;
+  const later = structuredClone(movie); later.lines.at(-1).id = "movie-unknown-year";
+  const both = reconcilePresentationHistory(accepted, later).history;
+  const ja = projectPresentationHistory(both, "ja");
+  assert.equal(ja[0].blocks.find(b => b.canonicalText === "Movie Theatre").text, "上映室");
+  assert.equal(ja[1].blocks.find(b => b.canonicalText === "Movie Theatre").text, "Movie Theatre");
+  assert.match(projectPresentationHistory(both, "en")[0].blocks.map(b => b.text).join("\n"), /Movie Theatre/);
+  assert.deepEqual(projectPresentationHistory(both, "ja"), ja);
+  const restored = structuredClone(later); restored.lines[0].text = ">RESTORE"; restored.lines.at(-1).id = "movie-restore";
+  assert.equal(reconcilePresentationHistory(both, restored).history.length, 1);
+  assert.equal(reconcilePresentationHistory(both, f.sessions[0].startup.before.presentation).history.length, 1);
+  const purchase = f.sessions[0].observations[85].presentation.lines[1].text;
+  assert.equal(observedStoryLeafTranslation(purchase.replace("$554", "$539"), "ja", "BUY TICKET"), undefined);
+  assert.equal(localizeSimulationPlace("ja", "Cinema"), "映画館");
+  assert.equal(localizeSimulationPlace("ja", "Museum Entrance"), "博物館入口");
+  assert.equal(localizeSimulationPlace("ja", "Movie Theatre"), "Movie Theatre");
+  assert.equal(localizeSimulationMapLabel("ja", "movie", "Cinema"), "映画館");
+  assert.equal(localizeSimulationMapLabel("ja", "railroad", "Railroad Museum"), "Railroad Museum");
+});
+
+test("counts only the current complete cinema turn recorded before and after watching", async () => {
+  const { createCinemaRecordingState, observeCinemaRecording } = await import("../app/cinema-recording.ts");
+  const f = JSON.parse(await readFile(new URL("./fixtures/parchment-cinema-recording-a-observed.json", import.meta.url), "utf8"));
+  const turn = (i, changes = {}) => ({ eligible: true, roomId: "CINEMA", hasStatus: true, recording: i === 86 || i === 87, acceptsInput: true, presentation: f.sessions[0].observations[i].presentation, ...changes });
+  let s = createCinemaRecordingState();
+  s = observeCinemaRecording(s, turn(85)); assert.equal(s.complete, false);
+  s = observeCinemaRecording(s, turn(86)); assert.equal(s.complete, false);
+  s = observeCinemaRecording(s, turn(87)); assert.equal(s.complete, true);
+  s = observeCinemaRecording(s, turn(89)); assert.equal(s.complete, true);
+  for (const change of [{ recording: false }, { eligible: false }, { roomId: "MOVIE-THEATRE" }, { hasStatus: false }, { acceptsInput: false }]) {
+    let negative = observeCinemaRecording(createCinemaRecordingState(), turn(86));
+    negative = observeCinemaRecording(negative, turn(87, change)); assert.equal(negative.complete, false, JSON.stringify(change));
+  }
+  let unrecorded = observeCinemaRecording(createCinemaRecordingState(), turn(87, { recording: false }));
+  unrecorded = observeCinemaRecording(unrecorded, turn(86));
+  unrecorded = observeCinemaRecording(unrecorded, turn(87)); assert.equal(unrecorded.complete, false, "late RECORD and repeated old movie cannot count");
+  let heading = observeCinemaRecording(createCinemaRecordingState(), turn(86));
+  heading = observeCinemaRecording(heading, turn(89, { recording: true })); assert.equal(heading.complete, false);
+  const quoted = structuredClone(f.sessions[0].observations[87].presentation);
+  quoted.lines[4].text = `Someone quotes: ${quoted.lines[4].text}`;
+  heading = observeCinemaRecording(heading, turn(87, { presentation: quoted })); assert.equal(heading.complete, false);
+  for (const alter of [
+    p => { p.lines[4].text = "WARNING: Deactivating record feature."; },
+    p => { p.lines[3].text = "Movie Theatre Annex"; },
+    p => { p.activeInput.kind = "char"; },
+    p => { p.terminalLine--; },
+    p => { delete p.lines[0].id; },
+  ]) {
+    const malformed = structuredClone(f.sessions[0].observations[87].presentation); alter(malformed);
+    const before = observeCinemaRecording(createCinemaRecordingState(), turn(86));
+    assert.equal(observeCinemaRecording(before, turn(87, { presentation: malformed })).complete, false);
+  }
+
+});
+
+test("keeps newly approved cinema return aliases scoped to their observed rooms", async () => {
+  const f = JSON.parse(await readFile(new URL("./fixtures/parchment-cinema-recording-a-observed.json", import.meta.url), "utf8"));
+  for (const i of [81, 91, 93]) {
+    const turn = f.sessions[1].observations[i];
+    const known = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation, { cinema2041: turn.roomId }).history, "ja")[0].blocks;
+    const unknown = projectPresentationHistory(reconcilePresentationHistory([], turn.presentation, { cinema2041: "UNKNOWN" }).history, "ja")[0].blocks;
+    for (const line of turn.presentation.lines.slice(1, -1).filter(l => l.text.trim())) {
+      assert.notEqual(known.find(b => b.canonicalText === line.text)?.text, line.text);
+      assert.equal(unknown.find(b => b.canonicalText === line.text)?.text, line.text);
+    }
+  }
 });
