@@ -72,6 +72,15 @@ export function assertGate(scope, results, mode = "full") {
   }
 }
 
+export function gateSummary(scope, mode, event) {
+  if (mode === "fast" && scope === "full") {
+    return event === "push"
+      ? "Target-branch fast checks passed. Full acceptance must be verified before merge; no post-merge Full is scheduled."
+      : "Fast checks passed. FULL CI REQUIRED: reviewer must dispatch CI for the final head/base before merge.";
+  }
+  return `CI ${mode} checks passed: ${scope}`;
+}
+
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   if (process.argv[2] === "gate") {
     assertGate(process.env.CI_SCOPE, {
@@ -79,10 +88,7 @@ if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) 
       verify: process.env.VERIFY_RESULT,
       "browser-e2e": process.env.E2E_RESULT,
     }, process.env.CI_MODE ?? "full");
-    const pending = process.env.CI_MODE === "fast" && process.env.CI_SCOPE === "full";
-    const summary = pending
-      ? "Fast checks passed. FULL CI REQUIRED: reviewer must dispatch CI for the final head/base before merge."
-      : `CI ${process.env.CI_MODE ?? "full"} checks passed: ${process.env.CI_SCOPE}`;
+    const summary = gateSummary(process.env.CI_SCOPE, process.env.CI_MODE ?? "full", process.env.GITHUB_EVENT_NAME);
     console.log(summary);
     if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, `${summary}\n`);
   } else {

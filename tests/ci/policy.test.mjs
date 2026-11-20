@@ -4,7 +4,7 @@ import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { execFileSync } from "node:child_process";
-import { classifyPaths, detectScope, assertGate } from "../../scripts/ci-scope.mjs";
+import { classifyPaths, detectScope, assertGate, gateSummary } from "../../scripts/ci-scope.mjs";
 import { assertPartition, filtersForGroup, groupForFile, groups } from "../../scripts/ci-e2e.mjs";
 
 test("new explanatory Markdown is light; executable documents and unknown paths remain full", () => {
@@ -78,6 +78,9 @@ test("fast checks can finish without browsers but cannot satisfy the Full gate",
     assert.throws(() => assertGate("full", { ...results, [job]: bad }, "fast"));
   }
   assert.throws(() => assertGate("full", results, "unknown"));
+  assert.match(gateSummary("full", "fast", "pull_request"), /FULL CI REQUIRED/);
+  assert.doesNotMatch(gateSummary("full", "fast", "push"), /FULL CI REQUIRED/);
+  assert.match(gateSummary("full", "fast", "push"), /no post-merge Full/);
 });
 
 test("partition covers each test once and includes newly added specs", () => {
