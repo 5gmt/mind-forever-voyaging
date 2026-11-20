@@ -7,12 +7,15 @@ import { execFileSync } from "node:child_process";
 import { classifyPaths, detectScope, assertGate } from "../../scripts/ci-scope.mjs";
 import { assertPartition, filtersForGroup, groupForFile, groups } from "../../scripts/ci-e2e.mjs";
 
-test("historical documentation PRs are light; runtime contracts and fixtures remain full", () => {
+test("new explanatory Markdown is light; executable documents and unknown paths remain full", () => {
   assert.equal(classifyPaths(["AGENTS.md", "PROJECT_STATUS.md", "docs/plans/2041-cinema-fieldwork.md"]), "docs"); // #111
   assert.equal(classifyPaths(["docs/cinema-recording-a-design.md", "docs/plans/2041-cinema-fieldwork.md", "PROJECT_STATUS.md"]), "docs"); // #113
   assert.equal(classifyPaths(["scripts/capture-cinema-runtime.mjs", "tests/fixtures/parchment-cinema-runtime-observed.json", "tests/rendered-html.test.mjs"]), "full"); // #112
   assert.equal(classifyPaths(["app/localization.ts", "tests/e2e/church-fieldwork.spec.ts", "docs/church-copy-packet.md"]), "full"); // #107
-  for (const path of ["docs/church-copy-packet.md", "docs/power-station-copy-packet.md", "docs/new-contract.md", ".github/workflows/ci.yml", "playwright.config.ts", "package-lock.json", "scripts/ci-scope.mjs"]) {
+  for (const path of ["docs/new-contract.md", "docs/cinema-fieldwork-acceptance.md", "docs/plans/new-milestone.md"]) {
+    assert.equal(classifyPaths([path]), "docs", path);
+  }
+  for (const path of ["docs/church-copy-packet.md", "docs/power-station-copy-packet.md", "docs/future-copy-packet.md", "docs/nested/future-copy-packet.md", "docs/test-inputs/example.md", "docs/data.json", "new-root.md", "app/help.md", ".github/workflows/ci.yml", "playwright.config.ts", "package-lock.json", "scripts/ci-scope.mjs"]) {
     assert.equal(classifyPaths(["README.md", path]), "full", path);
   }
   assert.equal(classifyPaths(["README.md", "tests/rendered-html.test.mjs", "scripts/capture-cinema-runtime.mjs"]), "verify");
@@ -65,6 +68,16 @@ test("gate rejects failures, cancellation, missing results and unexpected skips"
     }
   }
   assert.throws(() => assertGate("", {}));
+});
+
+test("fast checks can finish without browsers but cannot satisfy the Full gate", () => {
+  const results = { changes: "success", verify: "success", "browser-e2e": "skipped" };
+  assert.doesNotThrow(() => assertGate("full", results, "fast"));
+  assert.throws(() => assertGate("full", results));
+  for (const job of ["changes", "verify"]) for (const bad of ["failure", "cancelled", "skipped", undefined]) {
+    assert.throws(() => assertGate("full", { ...results, [job]: bad }, "fast"));
+  }
+  assert.throws(() => assertGate("full", results, "unknown"));
 });
 
 test("partition covers each test once and includes newly added specs", () => {

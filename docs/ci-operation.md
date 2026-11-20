@@ -1,20 +1,74 @@
 # CIの実行と証拠保存
 
-CIは変更内容に応じて必要な検証を選ぶ。
-最初の `changes` はworkflow構文とCI制御を検査し、PRではmerge-baseからheadまで、pushではbeforeからafterまでの差分を判定する。
-削除と改名前後のパスも判定し、差分を取得できなければFullを選ぶ。
+## 変更分類と実行時期
 
-| Scope | 対象 | 実行する検証 |
-| --- | --- | --- |
-| Docs | `scripts/ci-scope.mjs` に列挙した、実行時に読み込まれない説明文書だけ | workflow検査、CI制御テスト |
-| Verify | captureスクリプト、`tests/rendered-html.test.mjs`、上記文書の組合せ | Docsに加え、checksum、lint、型検査、build、unit、browser一覧照合 |
-| Full | アプリ、共有fixture、copy packet、依存関係、CI実行ロジック、未分類パス | Verifyに加え、全browser tests |
+`CI fast`（`ci-fast.yml`）はPR更新とtarget branchへのpushで自動実行する。
+`CI`（`ci.yml`）はレビューアが最終head /baseを指定して起動するFull専用であり、PR更新やmergeだけでは起動しない。
+最初の `changes` はworkflow構文とCI制御を検査し、PRではmerge-baseからheadまで、pushではbeforeからafterまでの全差分を判定する。
+削除と改名前後のパスも判定し、差分が取得できない場合はFullを要求する。
 
-新しい文書も、allowlistに追加するまではFullになる。
-文書をコードから読み込む変更を加えた場合は、その文書をallowlistから外す。
-`.github/workflows/**` を一律に軽量扱いにはしない。
-説明文書だけのworkflowも起動し、最後の `ci-gate` が必要なjobの成功と意図したskipを確認する。
-Branch protectionに必須チェックを設定する場合は、個々のmatrix名ではなく `ci-gate` を使う。
+| Scope | 対象 | 自動CI | merge前のFull |
+| --- | --- | --- | --- |
+| Docs | `docs/**/*.md` と既知のroot文書。下記の実行入力を除く | workflow検査、CI制御テスト | 原則不要 |
+| Verify | captureスクリプト、`tests/rendered-html.test.mjs`、説明文書の組合せ | Docsに加えchecksum、lint、型、build、unit、browser一覧照合 | 原則不要 |
+| Full | アプリ、fixture、copy packet、依存関係、CIロジック、未分類パス | Verifyと同じ短い検証 | レビューアが手動実行 |
+
+実行入力の例外は `docs/**/*copy-packet.md` と `docs/test-inputs/**` で管理し、説明文書のファイル名を一件ずつ登録しない。
+Markdown以外の資料と、文書領域外の未知ファイルはFullのままである。
+文書をコードから読み始める変更では、同じPRで実行入力の場所か分類を更新する。
+CI制御テストは、現在unit /E2Eが直接読む文書がFullに分類されることも検査する。
+これは全ての動的依存を解析する仕組みではなく、新しい読み込み機構はレビュー対象になる。
+
+## 開発者とレビューアの分担
+
+開発者はlint /型 /unitと、短い回帰・影響する既存経路を確認してDraft PRを提出する。
+通常の提出前にローカルFull E2Eを一律には要求しない。広範囲の変更や未解決の失敗がある場合は必要に応じて実行する。
+レビューアは差分と対象検証を確認し、修正が落ち着いた最終headでFullを起動する。
+マイルストーンのZIP監査が必要なら、そのFullで証拠も保存し、通常Fullと証拠用Fullを重ねない。
+手動起動はwrite権限のある担当者が行う運用であり、共有GitHub資格情報の間に技術的な役割分離を追加するものではない。
+
+`ci-fast-gate` の成功は短い検証の成功を表す。
+Full対象ではsummaryに **FULL CI REQUIRED** を表示し、Full成功やmerge承認とは扱わない。
+GitHubのチェック一覧が緑でも、レビューアは次の受入確認を行う。
+
+```sh
+# matching repository checkout、Node >=22.13。必要ならread権限のGH_TOKENを使用。
+node scripts/ci-readiness.mjs --pr NUMBER
+# Docs /VerifyでもレビューアがFullを要求する場合
+node scripts/ci-readiness.mjs --pr NUMBER --full
+```
+
+このコマンドはGitHub APIと全PR差分を使い、最新head /base、baseの包含、最新実行・attempt、全jobの期待結果を確認する。
+Full未実行、古いhead /base、失敗 /cancel /skip、欠落 /重複 /別attemptの混在は `ready: false` またはエラーで非zero終了する。
+最新実行が失敗している場合に古い成功へ戻らない。
+検査後にPRを再取得し、途中でhead /baseが変わった場合も拒否する。
+チェックとmergeの間に更新があれば再確認し、mergeには確認したhead SHAを指定する。
+CLIが使えないレビュー環境では、同じhead /baseの全差分分類、対応workflow /event /run名、最新run /attemptの全job、最新base包含とmergeabilityをAPIで照合する。
+この結果はCIだけの判定であり、独立レビューと必要なZIP監査は別途完了させる。
+
+本変更はbranch protectionの設定を変更しない。
+`ci-fast-gate` を全PRの必須チェックにできるが、それだけではFullを強制できない。
+`ci-gate` を無条件の必須チェックにすると、Docs /VerifyにもFullが必要になる。
+現行運用ではレビューアが上記の条件付き受入確認を担当する。
+
+## 最終Fullの起動
+
+1. PRの最新head SHAとtarget branchの最新base SHAを確認し、headがbaseを含むことを確認する。
+2. Actionsの `CI` → `Run workflow` でPRのbranchを選び、40桁の `head_sha` /`base_sha` を入力する。
+3. 証拠が必要なときは容量と監査日程を確認して `save_evidence=true` を指定する。通常はfalse。
+4. `Full CI <head> / <base>` というrun名、全5群と `ci-gate` の成功を確認し、受入確認コマンドを実行する。
+
+```sh
+gh workflow run ci.yml --ref PR_BRANCH \
+  -f head_sha=HEAD_SHA -f base_sha=BASE_SHA -F save_evidence=false
+```
+
+Fullは開始時と終了時にcheckout、PR branchの現行head、target branchの現行base、baseの包含を照合する。
+選択branchを間違えた場合や、実行中にhead /baseが進んだ場合は受入成功にならない。
+Full中は証拠に関係するcommitを追加せず、結果の追記はPR本文・レビューコメントで行う。
+更新が必要ならそのheadを再レビューしてFullを起動する。
+同一branchの手動実行は古い手動実行をcancelする。通常CIと手動Fullは互いをcancelしない。
+ForkのPRはfast検証まで行えるが、手動Fullはbase repository内のレビュー用branchへ取り込んでから行う。
 
 ## ブラウザー検証の分配
 
@@ -48,22 +102,29 @@ node scripts/ci-e2e.mjs church
 
 ## 受入証拠が必要な実行
 
-通常のPRとpushは、成功時も失敗時もartifactをアップロードしない。
-テストは引き続きPNG、accessibility、JSON、失敗traceを生成するが、runner終了後は取得できない。
-まずjobログで失敗を調べ、ファイルが必要な場合は対象headで証拠実行を行う。
-通常のCI成功だけでは、マイルストーンの独立ZIP監査を満たさない。
+通常のPR /pushではbrowserを実行せず、artifactも保存しない。
+手動Fullでは従来のPNG、accessibility、JSON、失敗traceを生成する。
+`save_evidence=false` の場合はrunner終了後に取得できないので、必要な監査証拠は起動時に指定する。
 
-1. 保存容量を確認し、監査担当者が1日以内に確認できる時点を選ぶ。他リポジトリとPackagesも同じartifact枠を使う。
-2. GitHub Actionsの `CI` → `Run workflow` で対象ブランチを選ぶ。初回導入PRの検証はPRイベントで行い、手動起動の利用はworkflowがdefault branchに入ってからとする。
-3. `save_evidence` を有効にする。手動実行は変更分類にかかわらずFullになる。
-4. 同一run /attemptの5群すべてを取得する。名前は `playwright-<group>-<runId>-<runAttempt>` で、groupは church、power、remaining、cinema-desktop、cinema-narrowである。
-5. 各ZIPの `ci-provenance.json` の `commit` /`runId` /`runAttempt` /`group` を、レビュー対象head、選んだ成功run /attempt、artifact名と照合する。[F3受入記録](cinema-fieldwork-acceptance.md)の群別対応表から各testの出力ディレクトリを特定し、JSON /PNG /TXTとpath添付の実体を検査する。全群の成功と件数も確認する。
-6. 実際のexpiryを引継ぎに記録する。期限内に監査できなければ先に退避するか、対象headで再実行する。
+1. 保存容量を確認し、監査担当者が1日以内に確認できる時点を選ぶ。他リポジトリとPackagesもartifact枠を使う。
+2. 上記の最終Fullを `save_evidence=true` で起動する。
+3. 同一成功run /attemptの5群すべてを取得する。名前は `playwright-<group>-<runId>-<runAttempt>`。
+4. 各ZIPの `ci-provenance.json` の `commit` /`base` /`runId` /`runAttempt` /`group` をレビュー対象とartifact名に照合する。
+5. 受入記録の群別対応表からJSON /PNG /TXTとpath添付の実体を監査し、実expiryを記録する。期限内に監査できなければ先に退避する。
 
-保存期間は1日で、証拠実行が失敗した場合も生成済みファイルを保存する。
-同じrunの群を別々のattemptから寄せ集めず、再実行した場合は必要な全群がそろうattemptを用いる。
-大きなblob reportやHTML reportを通常CIで追加保存しない。
-Branchを更新しても、手動証拠実行は通常のPR /pushとは別のconcurrency groupを使う。
+保存期間は1日で、証拠実行が失敗した場合も生成済みファイルを保存する。失敗runを受入証拠にはしない。
+群を別々のattemptから寄せ集めない。必要な場合は全jobを再実行して同一attemptへそろえる。
+証拠の重複除去と過去artifactの追加削除は、この実行条件変更には含めない。
+
+## 導入の確認
+
+既存 `ci.yml` の手動起動を維持し、自動イベントを新しい `ci-fast.yml` へ移す。
+本変更のPRでもFastが実行され、workflow構文 /policy /分配とbuild /unitを検証する。
+最終のCI保守レビュー後に、このPR branchで新しいhead /base入力を指定したFullを一度実行する。
+merge前にはFastだけで完了とせず、全5群と最終guardを含む実行結果を確認する。
+merge後は自動Fastだけを確認し、同じ変更でFullを再起動しない。
+Docs単独のfast実行とFull未実行時の受入拒否も確認し、実測をPRに残す。
+変更中の短い試行にFullを挟まない。
 
 ## 2026-11-07の既存artifact整理
 
