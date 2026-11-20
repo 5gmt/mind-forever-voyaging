@@ -177,14 +177,15 @@ Controlled 3件、遅延回帰、影響するCity Hall Classic /Cinema Actions 3
 
 ## 独立レビューと証拠保存
 
-Sol 通常レビューと Work/Astra 最終受入は未了である。
+PR #118は独立Sol通常レビュー後、[Work/Astra最終受入と全5 ZIPの独立監査](https://github.com/5gmt/mind-forever-voyaging/pull/118#pullrequestreview-5815595635)を完了し、merge `7e32503146a9e7454c573f6ee236448663601b8f` で統合済みである。
+監査対象はhead `8ee48a69f0c33c0630a9ad7e332778c9f0348190`、[保存run 42423334707 /attempt 1](https://github.com/5gmt/mind-forever-voyaging/actions/runs/42423334707)。ここでは当時の担当者の監査を引用し、再監査したとは扱わない。
 通常の PR / push CI は artifact を保存しない。
-F3 の明示証拠実行と独立 ZIP 監査は、Sol 通常レビュー後の最終 head で行う未了項目である。
-Work の ZIP 監査には、レビュー対象の最終 head で `save_evidence=true` の Full CI を明示実行し、同一 run / attempt の5群すべてを使用する。
+以下は再受入が必要になった場合の手順であり、完了済みの監査を再実施する指示ではない。
+Work の ZIP 監査には、レビュー対象の最終head /baseを指定して `save_evidence=true` のFull CIを明示実行し、同一 run / attempt の5群すべてを使用する。
 [CI 運用](ci-operation.md)に従い、容量と1日以内の監査予定を確認してから保存する。
 各 `ci-provenance.json` のhead /run /attempt /group、前掲の証拠パス、実expiryを確認し、過去の #114 / #117 CI を F3 の代わりにしない。
 
-レビュー回数、差し戻し理由、引継ぎから最終受入までの経過時間は、実際のレビュー後に PR / Issue で追記する。
+レビュー回数、差し戻し理由、引継ぎから最終受入までの経過時間は、PR /Issueの完了記録を正本とする。
 実装者の自己点検や実装チーム内の差分レビューを独立 Sol / Work レビューとして数えない。
 
 実 saved-game RESTORE、screen reader 音声、原作の正式 assignment 評価、後続年の自然完走、本番配備は未検証である。

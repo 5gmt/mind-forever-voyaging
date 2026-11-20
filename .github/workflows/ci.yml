@@ -1,14 +1,17 @@
 name: CI
+run-name: Full CI ${{ inputs.head_sha }} / ${{ inputs.base_sha }}
 
 on:
-  pull_request:
-    branches:
-      - codex/modern-amfv
-  push:
-    branches:
-      - codex/modern-amfv
   workflow_dispatch:
     inputs:
+      head_sha:
+        description: 'Reviewed PR head: full 40-character SHA (select that PR branch above)'
+        type: string
+        required: true
+      base_sha:
+        description: 'Reviewed target branch: full 40-character SHA, already included in head'
+        type: string
+        required: true
       save_evidence:
         description: 'Upload complete acceptance evidence for 1 day (check storage and arrange audit first)'
         type: boolean
@@ -18,8 +21,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.event_name }}-${{ github.event.pull_request.number || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+
+env:
+  REVIEWED_HEAD: ${{ inputs.head_sha }}
+  REVIEWED_BASE: ${{ inputs.base_sha }}
 
 jobs:
   changes:
@@ -39,6 +46,9 @@ jobs:
         with:
           node-version: '22'
           package-manager-cache: false
+
+      - name: Validate reviewed head and current base
+        run: node scripts/ci-reviewed-ref.mjs
 
       - name: Validate workflows
         run: bash scripts/lint-workflows.sh
@@ -138,6 +148,7 @@ jobs:
           import { execFileSync } from 'node:child_process';
           const evidence = {
             commit: execFileSync('git', ['rev-parse', 'HEAD'], {encoding: 'utf8'}).trim(),
+            base: process.env.REVIEWED_BASE,
             runId: process.env.GITHUB_RUN_ID,
             runAttempt: process.env.GITHUB_RUN_ATTEMPT,
             group: process.env.E2E_GROUP,
@@ -164,7 +175,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          fetch-depth: 0
           persist-credentials: false
+
+      - name: Recheck reviewed head and base
+        run: node scripts/ci-reviewed-ref.mjs
 
       - name: Check required results
         env:

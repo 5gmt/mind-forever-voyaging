@@ -7,7 +7,7 @@
 **Architecture:** 既存 2a+2b presentation、exact observed-leaf catalog、観測時 room scope、地名 lookup と限定 SceneActions を使う。先に映画の一ターン内の出力構造と録画容量を実測し、copy approval 後に本文と購入 / 入場操作を統合する。
 **Tech Stack:** Next.js / React / TypeScript、canonical Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定と設計判断」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md) と [AGENTS.md](../../AGENTS.md) の保証を保持する。
-**Status:** F1 は PR #114 の独立 Sol 成功採択と merge により完了。F2 は [PR #117 の独立 copy 承認](https://github.com/5gmt/mind-forever-voyaging/pull/117#pullrequestreview-5810087796)と merge `0ae47106ea4182d4df1db350742205c4988f725d` により完了し、F3 は開始可能となった。本変更で F3 の日本語統合と受入テストを実装する。[統合検証](../cinema-fieldwork-acceptance.md)に証拠を集約し、Sol 通常レビューと Work/Astra の最終受入は未了として区別する。旧失敗証拠と既存回帰、CI保守 #115 / #116 の運用を保持する。
+**Status:** F1 /F2 /F3は完了。F3はPR #118の独立Sol通常レビュー、[Work/Astra最終受入と5 ZIP監査](https://github.com/5gmt/mind-forever-voyaging/pull/118#pullrequestreview-5815595635)を経て、merge `7e32503146a9e7454c573f6ee236448663601b8f` で統合済み。以下は採択計画と実装時の検証記録であり、現在のCI手順は[CI運用](../ci-operation.md)を参照する。
 **Baseline:** 教会 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) の merge `06e6633ff2a3572959955d320ef1e9d8477a5de4`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-01 JST の owner の次期 milestone 設計 / タスク作成依頼に対する提案。
 
@@ -209,8 +209,8 @@ F2 は PR #117 の独立承認 / merge を完了し、F3 の開始条件を満�
 
 ## 検証と引継ぎ
 
-F1 / F3は必要に応じ `bash scripts/bootstrap-npm.sh`、続いて `npm ci`、`npm run lint`、`npx tsc --noEmit`、`npm test`、full `npm run test:e2e`、canonical checksum、`git diff --check` を実行する。
-Full E2Eは最終 head の CI実行を根拠にでき、同じ head で成功済みならローカルで重複実行することを必須にしない。
+F1 / F3は必要に応じ `bash scripts/bootstrap-npm.sh`、続いて `npm ci`、`npm run lint`、`npx tsc --noEmit`、`npm test`、対象browser回帰、canonical checksum、`git diff --check` を実行する。
+Full E2Eはレビューアが最終head /baseを指定した手動CIで確認し、提出前の一律ローカルFullは要求しない。必要なZIP保存もその実行にまとめる。
 対象確認は `npx playwright test tests/e2e/cinema-fieldwork.spec.ts tests/e2e/cinema-narrow.spec.ts` とし、対象成功をfull成功の代用にしない。
 Controlled 3件と `tests/e2e/restaurant-projection.spec.ts` の描画遅延回帰を先行させ、その後に影響する既存経路と390px経路を確認する。
 各実行で別の出力先を使い、再接続時は既存session /processとportの終了を確認してから起動する。
