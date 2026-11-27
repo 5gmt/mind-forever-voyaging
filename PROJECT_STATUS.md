@@ -85,43 +85,37 @@ PR更新とmerge後のpushは `CI fast` の短い検証を行い、Fullが必要
 
 - [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) / [Issue #104](https://github.com/5gmt/mind-forever-voyaging/issues/104): 先行五課題に教会の会話録画と公園帰着を追加。6自然経路、非録画負例、限定人物guard、観測時room scopeを受け入れ、C1–C3 / 教会milestoneを完了。Reading証拠の不一致は修正後の実測 / PNG / accessibility と新CI ZIPで再受入した。
 
+- [PR #118](https://github.com/5gmt/mind-forever-voyaging/pull/118) / [Issue #110](https://github.com/5gmt/mind-forever-voyaging/issues/110): 映画候補Aの先行六課題から入場券購入・15分鑑賞録画・明示OFF / LOOK・公園帰着まで、6自然正例と非録画負例を受入。F1–F3を完了し、補助7/9を正式評価と区別した。[Work最終受入と全5 ZIP監査](https://github.com/5gmt/mind-forever-voyaging/pull/118#pullrequestreview-5815595635)、[#29完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6714598772)を正本とする。
+
+- [PR #119](https://github.com/5gmt/mind-forever-voyaging/pull/119): 説明文書の軽量分類、自動Fast / reviewer起動Full、最新head/baseのreadinessを導入。手動Fullの全5群とmerge後Fastを確認し、CI保守を完了。[最終受入](https://github.com/5gmt/mind-forever-voyaging/pull/119#pullrequestreview-5999340151)と[完了記録](https://github.com/5gmt/mind-forever-voyaging/pull/119#issuecomment-7056484992)を参照。
+
 ## 現在の frontier
 
-初回 Simulation / recording loopから教会までの六課題は完了した。
-C1 #102 / PR #105、C2 #103 / PR #106、C3 #104 / PR #107は独立レビューと各merge gateを通過した。
-最終head `9e09e4f125f473b23d32c7d84730445e882464cd` のCIは47 unit /62 browser成功、retry /skipなし。
-Workはpassing ZIPの実体、自然7session、reading56checkpoint、controlled証拠を確認し、merge、#29報告、#104closeを完了した。
-390pxで未出力の時計、実saved-game RESTORE、実screen reader音声、原作の正式評価は検証済みとは扱わない。
+映画F1 #108 / PR #114、F2 #109 / PR #117、F3 #110 / PR #118は独立レビュー・merge・close済み。
+同じ初回2041年sessionのCourthouse → Newspaper → Restaurant → City Hall → Power Station → Church → Cinemaと公園帰着までが日本語の受入済み範囲である。
+映画は[裁判所を現地録画する候補A](./docs/cinema-recording-a-design.md)の96送信を採択した。[旧経路の容量不足](./docs/cinema-runtime-evidence.md)と[候補Aの成功実測](./docs/cinema-recording-a-evidence.md)を保持する。
+PR #119のCI保守もmerge `505e226bbe818a1dd4a4b1f15b199a3f5a76ae9c` で完了した。
 
-直近に完了した milestone は、同じ初回2041年sessionの六課題に続く **映画館での入場券購入、鑑賞録画、公園帰着** である。
-[映画計画](./docs/plans/2041-cinema-fieldwork.md)に候補96送信、録画容量と一ターン内の見出し / 現在地の実測gate、限定操作、F1–F3をまとめる。
-[計画 PR #111](https://github.com/5gmt/mind-forever-voyaging/pull/111) は独立 Sol review を経て merge 済み。
-F1 #108 の2 fresh attempts は先行81送信を保持したが、89送信目の映画 `IN` で原作の record buffer full / auto-deactivation を観測して停止した。
-[失敗実測](./docs/cinema-runtime-evidence.md) に証拠と別 fresh 券なし probe を保存した。
-#112 は失敗証拠として merge 済みで、この時点では96送信の成功採択に至らなかった。
-Work は [裁判所を現地録画する候補A](./docs/cinema-recording-a-design.md)を追加実測方針として選定した。
-候補Aは12–18番目の RECORD / OFF の位置だけを変更し、先行六課題と全96送信を維持する。
-[設計同期 PR #113](https://github.com/5gmt/mind-forever-voyaging/pull/113) は独立 Sol review を経て merge `f527d07084e0055d13d35dd64148fa00e57c866e` 済み。
-[候補Aの実測](./docs/cinema-recording-a-evidence.md)では2 fresh sessionsで全96送信、六課題の成立と録画、映画15分の録画継続、明示 OFF / LOOK、公園帰着を確認した。
-[PR #114 の独立 Sol review](https://github.com/5gmt/mind-forever-voyaging/pull/114#pullrequestreview-5802952413)で候補Aを採択し、merge `22945dc75b1fbc45b8d9b5e72248870e7dda495f` 済み。
-F1 は完了し、[F2 copy packet](./docs/cinema-copy-packet.md) は [PR #117 の独立 Sol copy 承認](https://github.com/5gmt/mind-forever-voyaging/pull/117#pullrequestreview-5810087796)と merge `0ae47106ea4182d4df1db350742205c4988f725d` を完了した。
-F3はPR #118で本文と限定操作、候補Aの6自然経路、非録画負例、境界回帰を受入済みである。
-[統合検証](./docs/cinema-fieldwork-acceptance.md)とPRの最終受入記録を完了基準とし、現在はCI実行の重複削減を進める。次のゲーム内milestoneは別途設計する。
+次期提案は **自宅の居間を訪れて録画し、Kennedy Parkへ戻る** milestone。
+[Home計画](./docs/plans/2041-home-fieldwork.md)とH1–H3を作成し、計画PRの独立Solレビューを待つ。
+Source / map上の候補は、映画候補Aの96送信を保持し、鍵による二つの開扉、入室後の RECORD / LOOK / RECORD OFF、帰着を加えた111送信。
+**新経路のruntime成功やcopy承認を確認したものではない。** H1の2 fresh full sessionsと別locked-door probeで、録画容量、実入室、家族の可変出力、操作契約を確定する。
+Mapの建物入口への到着と居間の録画を区別し、目標の補助8/9も原作正式評価とは扱わない。
 
 ## 基本的な作業順
 
-1. 映画計画 PR #111、失敗証拠 PR #112、候補Aの設計同期 PR #113 は独立 Sol review / merge 済み。
-2. [F1 #108](https://github.com/5gmt/mind-forever-voyaging/issues/108): 候補Aの2 fresh sessions と操作契約を PR #114 で独立 Sol が採択 / merge 済み。旧経路 / 証拠 / 回帰は保持する。
-3. [F2 #109](https://github.com/5gmt/mind-forever-voyaging/issues/109): 成功 fixture と別 fresh 券なし probe に基づく copy packet は PR #117 で独立 Sol の copy approval / merge 済み。
-4. [F3 #110](https://github.com/5gmt/mind-forever-voyaging/issues/110): PR #118の独立Sol通常レビュー、Work最終受入とZIP監査、mergeを完了。
-5. CI保守: 説明文書の分類を見直し、自動Fastとレビューア起動Full、提出前の対象検証へ責任を分ける。
+1. Home計画PRを独立Solがレビューし、Docs-only Fastと最新base / readinessを確認してmergeする。
+2. [H1 #120](https://github.com/5gmt/mind-forever-voyaging/issues/120): 2 fresh full sessions、二つの閉扉拒否、raw fixture / 操作台帳。Solが成功経路を採択・mergeする。失敗証拠だけのmergeでは後続を開始しない。
+3. [H2 #121](https://github.com/5gmt/mind-forever-voyaging/issues/121): H1に基づく本文・地名・map・限定鍵操作のcopy packet。Solがcopy approval・mergeする。
+4. [H3 #122](https://github.com/5gmt/mind-forever-voyaging/issues/122): 日本語統合と補助実績、6自然正例・非録画 / 入口のみ録画の負例、境界・reading受入。Sol通常レビュー → 最終手動Full → Work全体受入 / ZIP監査 → merge / #29報告 / close。
 
-F1–F3の依存関係と停止条件の正本は映画計画と各Issueとする。
-候補Aが成立しない場合は設計判断に戻り、許可した裁判所区間以外の先行経路、録画窓、完了条件を暗黙に変更しない。
-[レストランA案](./docs/restaurant-recording-a-evidence.md)、[#82の容量不足の証拠](./docs/restaurant-runtime-evidence.md)、教会のharness failureを含む既存fixtureと回帰を保持する。
-自宅、公共交通、原作の正式な九課題評価と帰還、再入場 / 後続年、他Communications outletは後続候補である。
-映画券の印字 /乱数、marquee、未承認の検査操作、対象経路外のtimed events、新renderer、日本語parser、runtime machine translationは今回の範囲に含めない。
+Codex Cloud実装、通常PRは独立Chat Sol、最終統合だけWorkの分担を継続する。
+H3では新しい長い自然経路を `home-desktop` / `home-narrow` へ分配する計画であり、CI / readiness / 監査対象を同じPRで5群から7群へ同期する。現時点の実装は5群のままである。
+既存73 browser testsの経路・assertion・添付、レストラン / 映画の旧容量不足fixtureと採択録画窓を維持する。
+先行課題や録画窓の変更、帰還 / buffer消去、新projectionが必要ならWorkへ設計判断を戻す。
+公共交通、原作の正式九課題評価と帰還、別室 / 家族との会話、再入場 / 後続年、他Communications outletは後続候補とする。
 Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallbackを保持する。
+実saved-game RESTORE、実screen reader音声、本番配備、390pxで原作が出力しない時計は検証済みと扱わない。
 [#44](https://github.com/5gmt/mind-forever-voyaging/issues/44)は独立して扱う。
 
 ## 現在の開発・配備状況
@@ -131,8 +125,10 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
 - CIは説明文書 /Verify /Fullの必要性を分類する。新しい説明Markdownは原則軽量とし、copy packetと `docs/test-inputs/**` を実行入力として管理する。自動 `CI fast` は短い検証だけを行い、レビューアが最終head /baseの手動Fullを起動する。merge後の自動Fullと提出前の一律ローカルFullは廃止する。`ci-fast-gate` の成功とFull受入を区別し、`scripts/ci-readiness.mjs` で現行head /baseと全jobを確認する。
-- #114 merge後の49 unit /62 browser testsを維持し、本F3で3 unit /10 browserの回帰を追加した。さらに[CI保守の修正依頼](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に対応し、共有Restaurant helperの描画遅延回帰1件を追加した。アプリの検証対象は52 unit /73 browserである。CI制御テストは分類、起動条件、参照先と受入判定を継続的に検証する。Browserはchurch 10件 /power 9件 /remaining 44件 /cinema-desktop 7件 /cinema-narrow 3件で、各1 worker、retryなし、job上限は各35分。新規specはremainingに入り、実際のPlaywright一覧照合で欠落と重複を検出する。既存72件の経路、assertion、添付を保持する。
-- 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終head /baseの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの5 ZIPを1日以内に監査する。各ZIPのhead /run /attempt /groupと受入記録の証拠パスを照合する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
+- #114 merge後の49 unit /62 browser testsを維持し、映画F3で3 unit /10 browserの回帰を追加した。さらに[CI保守の修正依頼](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に対応し、共有Restaurant helperの描画遅延回帰1件を追加した。アプリの検証対象は52 unit /73 browserである。CI制御テストは分類、起動条件、参照先と受入判定を継続的に検証する。Browserはchurch 10件 /power 9件 /remaining 44件 /cinema-desktop 7件 /cinema-narrow 3件で、各1 worker、retryなし、job上限は各35分。新規specはremainingに入り、実際のPlaywright一覧照合で欠落と重複を検出する。現在の73件の経路、assertion、添付を保持する。
+- 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終head /baseの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの5 ZIPを1日以内に監査する。各ZIPのhead /base /run /attempt /groupと受入記録の証拠パスを照合する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
+- [PR #119の最終手動Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/44807419513)は52 unit /73 browser /15 CI制御テストが全成功。Merge後の[Fast](https://github.com/5gmt/mind-forever-voyaging/actions/runs/44816683069)は約2分22秒で成功、artifact 0件、Fullの重複起動なし。条件付きFullは運用上のmerge gateであり、branch protectionの強制は追加していない。
+- #119で未実施だったDocs-only FastはHome計画PRで確認する。保存時provenanceのbaseはH3の最終証拠保存で確認する予定であり、未実施のものを確認済みとは扱わない。
 - [PR #107最終CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は全件成功し、browser step38分21秒 /job39分50秒だった。初回full runのjob45分15秒を根拠として旧35分上限を50分に変更した。
 - Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries。2026-11-07の整理に先立ち、ZIPをActions外へ退避し、元のdigestとの一致とCRCを確認した。
 - 2026-11-07のCI保守で、映画実装とは別に実行分類と3群分散を導入した。自然経路、assertion、添付の生成、canonical artifactは保持する。[CI保守 PR #115](https://github.com/5gmt/mind-forever-voyaging/pull/115)は全49 unit /62 browser成功と独立差分レビュー後にmerge済み。CI全体は直前の49分3秒から18分7秒となった。レビュー済みの旧artifact 36件を削除し、PR #114の証拠1件 /396,203,446 bytesを保持している。実測値と未検証事項は[CI運用](./docs/ci-operation.md)に記録した。
