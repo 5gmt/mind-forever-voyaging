@@ -49,6 +49,14 @@ const drawer = (page: Page) => page.locator(".fieldwork-drawer");
 const sendButton = (page: Page) => page.getByRole("button", { name: /^(送信|SEND)/ });
 const quickAction = (page: Page, name: string) => page.locator(".quick-actions").getByRole("button", { name, exact: true });
 
+async function readLivePlace(page: Page, place: string, lang: "en" | "ja", year: number) {
+  const announcement = page.locator('.screen-reader-status[aria-live="polite"][aria-hidden="false"]');
+  await expect(announcement).toHaveText(`Simulation Mode. ${place} ${year}`);
+  await expect(announcement.locator(":scope > span")).toHaveAttribute("lang", "en");
+  await expect(announcement.getByText(place, { exact: true })).toHaveAttribute("lang", lang);
+  return announcement.evaluate(element => element.outerHTML);
+}
+
 async function openCompanion(page: Page, explore: boolean) {
   await page.getByTitle(/Toggle companion|ガイドの表示を切り替える/).click();
   if (explore) await page.getByRole("tab", { name: /^(探索|Explore)$/ }).click();
@@ -467,13 +475,21 @@ export async function probeUnrecordedLivingRoom(page: Page, testInfo: TestInfo) 
   }
   const expectedLiving = fixture.sessions[0].observations[103].presentation.lines.slice(1, 5).map(line => line.text);
   expect(turns.at(-1)!.presentation.lines.slice(1, 5).map(line => line.text)).toEqual(expectedLiving);
+  const liveAnnouncements = [await readLivePlace(page, "居間", "ja", 2041)];
+  for (const [language, place, lang] of [["English", "Living Room", "en"], ["日本語", "居間", "ja"]] as const) {
+    await settingsButton(page).click();
+    await page.locator(".access-panel").getByRole("button", { name: language, exact: true }).click();
+    await settingsButton(page).click();
+    liveAnnouncements.push(await readLivePlace(page, place, lang, 2041));
+    expect(rawLocation((await snapshotProbe(frame)).status)).toBe("Living Room");
+  }
   const commands = await requests();
   expect(commands).toEqual([" ", ...turns.map(turn => turn.command)]);
   for (const [i, turn] of turns.entries()) if (i > 0) expect(turn.previousInputId).toBe(turns[i - 1].inputId);
   await expect(mapButton(page).locator("small")).toHaveText("0/9 録画");
   await mapButton(page).click();
   await assertBrief(page, 0, false);
-  await attachEvidence(testInfo, "home-entry-hall-only", JSON.stringify({ provenance: "fresh canonical Release 79, short negative with two actual closed-door refusals", commands, turns }));
+  await attachEvidence(testInfo, "home-entry-hall-only", JSON.stringify({ provenance: "fresh canonical Release 79, short negative with two actual closed-door refusals", commands, turns, liveAnnouncements }));
   await attachEvidence(testInfo, "home-entry-hall-only-accessibility", await drawer(page).ariaSnapshot(), "text/plain");
   await attachEvidence(testInfo, "home-entry-hall-only", await page.screenshot(), "image/png");
   await drawer(page).locator(".fieldwork-close").click();
@@ -501,6 +517,7 @@ export async function probeHomeBoundary(page: Page, testInfo: TestInfo, scenario
   const rawBody = look.lines[2].text, jaBody = copy.get(rawBody)!;
   let sequence = 0;
   const reports: unknown[] = [];
+  const liveAnnouncements: string[] = [];
   const unique = (p: BridgePresentation) => {
     const observation = structuredClone(p); sequence++;
     observation.lines.forEach((line, index) => { line.id = `home-probe-${sequence}-${index}`; });
@@ -566,6 +583,7 @@ export async function probeHomeBoundary(page: Page, testInfo: TestInfo, scenario
     await expect(host.getByText(rawBody, { exact: false })).toHaveAttribute("lang", "en");
     await report(look, { year: 2051 });
     await expect(qualifiedProse()).toHaveCount(1);
+    liveAnnouncements.push(await readLivePlace(page, "Living Room", "en", 2051));
     const surface = host.locator(".story-presentation-scroll");
     const tail = unique(park);
     tail.lines.splice(1, 0, ...Array.from({ length: 90 }, (_, i) => ({ ...tail.lines[1], id: `rolling-${i}`, text: "Time passes..." })));
@@ -581,6 +599,7 @@ export async function probeHomeBoundary(page: Page, testInfo: TestInfo, scenario
     await report(look);
     await expect(qualifiedProse()).toHaveCount(0);
     await expect(host.getByText(rawBody, { exact: false })).toHaveAttribute("lang", "en");
+    liveAnnouncements.push(await readLivePlace(page, "Living Room", "en", 2041));
     await fresh(); await report(entry); await expect(qualifiedProse()).toHaveCount(1);
     await report(look, { prefix: "* PART II *\n" }); await expect(qualifiedProse()).toHaveCount(1);
   } else if (scenario === "guards") {
@@ -634,7 +653,7 @@ export async function probeHomeBoundary(page: Page, testInfo: TestInfo, scenario
     await fresh(); await report(look); await progress(0);
     await expect(input).toBeEnabled();
   }
-  await attachEvidence(testInfo, `home-controlled-${scenario}`, JSON.stringify({ provenance: "controlled bridge reports, synthetic, separate from fresh natural sessions", scenario, reports }));
+  await attachEvidence(testInfo, `home-controlled-${scenario}`, JSON.stringify({ provenance: "controlled bridge reports, synthetic, separate from fresh natural sessions", scenario, reports, ...(liveAnnouncements.length ? { liveAnnouncements } : {}) }));
   await attachEvidence(testInfo, `home-controlled-${scenario}-accessibility`, await page.locator("body").ariaSnapshot(), "text/plain");
   await attachEvidence(testInfo, `home-controlled-${scenario}`, await page.screenshot(), "image/png");
 }

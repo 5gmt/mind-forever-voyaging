@@ -1481,7 +1481,15 @@ export default function PrismEdition() {
 
       <PackageOverlay item={packageItem} locale={locale} home2041={initial2041Presentation} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
 
-      <div className="screen-reader-status" aria-live="polite" aria-hidden={introOpen || qaWarningOpen}>{openingOrCommunications ? <span lang={locale}>{mode === "Communications Mode" ? uiText(locale, "communicationsAnnouncement") : uiText(locale, "storyOpeningAnnouncement")} {currentPlace || ""}</span> : <span lang="en">{mode}. {currentPlace || ""} {displayYear || ""}</span>}</div>
+      <div className="screen-reader-status" aria-live="polite" aria-hidden={introOpen || qaWarningOpen}>
+        {openingOrCommunications ? (
+          <span lang={locale}>{mode === "Communications Mode" ? uiText(locale, "communicationsAnnouncement") : uiText(locale, "storyOpeningAnnouncement")} {currentPlace || ""}</span>
+        ) : (
+          <span lang="en">
+            {mode}. {currentPlace && <span lang={hasLocalizedCurrentPlace ? locale : "en"}>{currentPlace}</span>} {displayYear || ""}
+          </span>
+        )}
+      </div>
       <div className="era-index" aria-hidden="true" style={{ "--era-index": Math.max(0, eraIndex) } as React.CSSProperties} />
     </main>
   );
