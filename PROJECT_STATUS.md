@@ -11,7 +11,7 @@
 
 ## 現在の到達点
 
-日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室の deterministic inspection、初回 Simulation Mode 移行、Kennedy Park の録画開始、Courthouse、新聞購入と読書、Roy’s Pagoda の食事、City Hall の会話録画、発電所の録画見学、聖ミカエル教会の長老との会話録画と公園帰着まで到達した。
+日本語化は、canonical Release 79 を変更しない presentation-only localization として、opening、最初の line-input tableau、直後の `LOOK`、最初の `PEOF` Dr. Perelman office scene、同室の deterministic inspection、初回 Simulation Mode 移行、Kennedy Park の録画開始、Courthouse、新聞購入と読書、Roy’s Pagoda の食事、City Hall の会話録画、発電所の録画見学、聖ミカエル教会の長老との会話録画、映画の鑑賞録画、自宅の居間録画と公園帰着まで到達した。
 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) を merge `06e6633ff2a3572959955d320ef1e9d8477a5de4` で統合し、同じ fresh session の六課題を Classic / Guided / Actions × desktop / narrow の6経路で受け入れた。
 [教会受入記録](./docs/church-fieldwork-acceptance.md)、[Sol差分レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/107#pullrequestreview-5726523333)、[Work全体受入](https://github.com/5gmt/mind-forever-voyaging/pull/107#pullrequestreview-5726308616)、[#29完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-6553674912)に証拠と限界を記録している。
 Reading checkpoint の P2 は修正と新ZIPの独立監査を完了し、C1–C3はすべてclose済みである。
@@ -19,13 +19,14 @@ Reading checkpoint の P2 は修正と新ZIPの独立監査を完了し、C1–C
 PR #118では、先行六課題に続く映画館の購入、鑑賞録画、明示 OFF / LOOK、公園帰着の日本語本文と限定操作を追加した。
 独立Sol通常レビュー後、[Work/Astra最終受入](https://github.com/5gmt/mind-forever-voyaging/pull/118#pullrequestreview-5815595635)と全5 ZIPの監査を完了し、merge `7e32503146a9e7454c573f6ee236448663601b8f` で統合済みである。これは既存レビュー記録の反映であり、今回のCI保守による再監査ではない。
 [映画館の統合検証](./docs/cinema-fieldwork-acceptance.md)に証拠と検証状況を集約し、補助7/9を原作の正式評価と区別する。
+[PR #126](https://github.com/5gmt/mind-forever-voyaging/pull/126)では同じsessionに自宅の鍵操作、居間の録画中LOOK、明示OFF、公園帰着を追加した。[独立Solレビュー](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6088099756)、[Work最終受入と全7 ZIP監査](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6091596637)を経て、merge `76f2c438e69a81d13dfba6c8fa2ab42b5598f4b9` で統合済み。H1–H3は完了し、補助8/9の残りは公共交通である。正式九課題評価は未受入。
 
 現在到達済みの opening、Communications Mode、最初の PEOF を取り囲む wrapper UI についても、承認済みの範囲を日本語化している。これには core header、reading/play settings、introduction overlay、companion shell、PEOF SceneActions、original-package overlay、identity rail、shared story shell、visible label、accessible name が含まれる。
 
 | 層 | 現在の日本語 coverage | 意図的に未対応の境界 |
 | --- | --- | --- |
-| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復、Main & Kennedy / Centre & Kennedy / Bodanski Square 経由の新聞購入・四段落の読書・帰着、Elm & University / Elm Underpass / Roy’s Pagoda の来店・食事・支払・公園帰着、Rockvil Centre / City Hall の到着・政府職員との会話・退場・LOOK・帰着、Elm & River / Southway & River / Bend / Wicker & River 経由の発電所到着・録画中 LOOK・明示 OFF・帰着、Main & River / Main & Church / Church Entrance 経由の聖ミカエル教会到着、長老との会話録画、退場後 LOOK、公園帰着、Museum Entrance / Cinema の購入と15分鑑賞と帰着（PR #118受入済み） | 他 fieldwork、正式 assignment completion、後続の Simulation story output |
-| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、初回2041年の Simulation 入場 CTA / assisted security decoder / 基本操作 / fieldwork launcher・drawer・九課題、地図の共通操作・採用経路・新聞対象操作、初回2041年 Roy’s Pagoda 限定 meal の英日 draft / 一回送信、初回2041年 City Hall の在室が確認された政府職員に限る英日 Talk・説明・draft / 一回送信、発電所往復7地点と map `power` の英日表示、教会経路4地点と map `church`、現在の在室証拠がある長老に限る main / companion の Talk と説明、初回2041年 CINEMA の入場券購入と上映室への入場（PR #118受入済み） | later mode / later phase 固有 UI、未承認の地名・対象・動詞、QA/debug |
+| Story presentation | opening、initial tableau、`LOOK`、PEOF arrival、7-command inspection packet、4回の `WAIT` と simulation-ready brief、security prompt、Kennedy Park entry / `LOOK`、最初の recording loop、Elm & Park 経由の 2041 Courthouse recording 往復、Main & Kennedy / Centre & Kennedy / Bodanski Square 経由の新聞購入・四段落の読書・帰着、Elm & University / Elm Underpass / Roy’s Pagoda の来店・食事・支払・公園帰着、Rockvil Centre / City Hall の到着・政府職員との会話・退場・LOOK・帰着、Elm & River / Southway & River / Bend / Wicker & River 経由の発電所到着・録画中 LOOK・明示 OFF・帰着、Main & River / Main & Church / Church Entrance 経由の聖ミカエル教会到着、長老との会話録画、退場後 LOOK、公園帰着、Museum Entrance / Cinema の購入と15分鑑賞と帰着、Southway & Park / Parkview Apartments / Hall Near Your Apartment / Living Room の開扉・居間LOOK録画・明示OFF・帰着（PR #126受入済み） | 他 fieldwork、正式 assignment completion、後続の Simulation story output |
+| Wrapper UI | core header、reading/play settings、introduction、opening / Communications / PEOF companion、PEOF SceneActions、package overlay、identity rail、shared shell、初回2041年の Simulation 入場 CTA / assisted security decoder / 基本操作 / fieldwork launcher・drawer・九課題、地図の共通操作・採用経路・新聞対象操作、初回2041年 Roy’s Pagoda 限定 meal の英日 draft / 一回送信、初回2041年 City Hall の在室が確認された政府職員に限る英日 Talk・説明・draft / 一回送信、発電所往復7地点と map `power` の英日表示、教会経路4地点と map `church`、現在の在室証拠がある長老に限る main / companion の Talk と説明、初回2041年 CINEMA の入場券購入と上映室への入場、自宅経路の地名・入口map・二つの扉に限定した鍵操作・session内の居間録画推定とlive statusの言語境界（PR #126受入済み） | later mode / later phase 固有 UI、未承認の地名・対象・動詞、QA/debug |
 | Input and actions | Guided / Action-menu の日本語表示、canonical command に解決される支援操作 | 日本語 parser input |
 | Fallback | 対応済み leaf / surface の日本語表示と EN → JA → EN recovery | 未観測または未承認の内容は canonical English |
 
@@ -89,36 +90,30 @@ PR更新とmerge後のpushは `CI fast` の短い検証を行い、Fullが必要
 
 - [PR #119](https://github.com/5gmt/mind-forever-voyaging/pull/119): 説明文書の軽量分類、自動Fast / reviewer起動Full、最新head/baseのreadinessを導入。手動Fullの全5群とmerge後Fastを確認し、CI保守を完了。[最終受入](https://github.com/5gmt/mind-forever-voyaging/pull/119#pullrequestreview-5999340151)と[完了記録](https://github.com/5gmt/mind-forever-voyaging/pull/119#issuecomment-7056484992)を参照。
 
+- [PR #126](https://github.com/5gmt/mind-forever-voyaging/pull/126) / [Issue #122](https://github.com/5gmt/mind-forever-voyaging/issues/122): 同一初回2041年sessionの先行七課題から自宅の鍵操作・居間録画・明示OFF・公園帰着まで、6自然正例と2自然負例、境界回帰を受入。H1–H3完了。[Work最終受入](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6091596637)と[#29完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-7224587039)を正本とする。
+
 ## 現在の frontier
 
-映画F1 #108 / PR #114、F2 #109 / PR #117、F3 #110 / PR #118は独立レビュー・merge・close済み。
-同じ初回2041年sessionのCourthouse → Newspaper → Restaurant → City Hall → Power Station → Church → Cinemaと公園帰着までが日本語の受入済み範囲である。
-映画は[裁判所を現地録画する候補A](./docs/cinema-recording-a-design.md)の96送信を採択した。[旧経路の容量不足](./docs/cinema-runtime-evidence.md)と[候補Aの成功実測](./docs/cinema-recording-a-evidence.md)を保持する。
-PR #119のCI保守もmerge `505e226bbe818a1dd4a4b1f15b199a3f5a76ae9c` で完了した。
+同じ初回2041年sessionのCourthouse → Newspaper → Restaurant → City Hall → Power Station → Church → Cinema → Home → Kennedy Parkまでが日本語の受入済み範囲で、補助8/9。映画候補Aの96送信とHomeの15送信、計111 line submissionsを保持する。
+[Home実測](./docs/home-runtime-evidence.md)、[承認copy](./docs/home-copy-packet.md)、[受入記録](./docs/home-fieldwork-acceptance.md)、[最終レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6091596637)に証拠と限界を集約している。
+映画の[旧経路の容量不足](./docs/cinema-runtime-evidence.md)と[候補Aの成功実測](./docs/cinema-recording-a-evidence.md)も保持する。
 
-次のmilestoneは **自宅の居間を訪れて録画し、Kennedy Parkへ戻る** こと。
-[Home計画](./docs/plans/2041-home-fieldwork.md)は独立Solのレビューを経て[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。
-H1では映画候補Aの96送信を保持し、鍵による二つの開扉、居間での RECORD / LOOK / RECORD OFF、公園帰着を含む111送信を本番ビルドの新規セッション2件で実測した。
-[実測記録](./docs/home-runtime-evidence.md)に別の新規セッションでの閉扉拒否、家族の可変出力、操作台帳を収録した。
-地図は建物入口への到着を表示し、居間の録画成立はrawの本文と録画状態で確認した。
-独立Solが経路と操作契約を採択し、[手動Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/45969606988)とreadinessの確認後、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)をマージした。
-H2の[英日copy packet](./docs/home-copy-packet.md)は[独立Solの承認](https://github.com/5gmt/mind-forever-voyaging/pull/125#pullrequestreview-6086347389)を経て[PR #125](https://github.com/5gmt/mind-forever-voyaging/pull/125)でマージ済み。
+次のmilestoneは **公共交通に実乗車して録画し、降車後Kennedy Parkへ戻る** こと。[Transit計画](./docs/plans/2041-transit-fieldwork.md)は独立Solの計画レビュー待ち。
+候補はElm & UniversityからBrownlineに乗り、Skybus Terminal側の次駅で降車する一駅の経路。Source / 現行コードに基づく候補で、実乗車・有限の短時間待機・録画容量・同名駅/車両の識別をT1で実測して採択する。
+公共交通の日本語copyと補助9/9は未実装・未受入。原作の正式評価とSimulationからの帰還は別の後続milestone候補とする。
 
 ## 基本的な作業順
 
-1. Home計画PRは独立Solレビュー、Docs-only Fastを経てmerge済み。
-2. [H1 #120](https://github.com/5gmt/mind-forever-voyaging/issues/120)は、完走2件と閉扉probeを採択して完了した。
-3. [H2 #121](https://github.com/5gmt/mind-forever-voyaging/issues/121)は文言の承認、手動Full、readiness、マージを経て完了した。
-4. [H3 #122](https://github.com/5gmt/mind-forever-voyaging/issues/122)は自宅訪問の日本語表示、鍵操作、居間の録画と明示停止に基づく補助実績を統合した。[受入記録](./docs/home-fieldwork-acceptance.md)を添えて提出し、独立Solの通常レビュー、最終手動Full、Workの全体受入とZIP監査、マージと#29への報告を待つ。
+1. Transit計画PRを独立Solがレビューし、Docs-only Fast / readinessを経てmergeする。
+2. [T1 #127](https://github.com/5gmt/mind-forever-voyaging/issues/127): 111送信の先行八課題を保持した2 fresh full sessionsと別probesを採取し、乗降・短時間待機・限定観測の契約をSolが採択する。
+3. [T2 #128](https://github.com/5gmt/mind-forever-voyaging/issues/128): T1採択後、本文・駅/車両・map入口・専用操作・最終補助9/9表示の英日copy packetをSolが承認する。
+4. [T3 #129](https://github.com/5gmt/mind-forever-voyaging/issues/129): T1/T2後、限定観測adapter、presentation、操作と交通の補助実績を統合。Sol通常レビュー、最終Full、Work全体受入と全ZIP監査、merge・#29報告まで行う。
 
 Codex Cloud実装、通常PRは独立Chat Sol、最終統合だけWorkの分担を継続する。
-H3では自然経路を `home-desktop` / `home-narrow` に分配し、CIとreadiness、監査対象を7群にそろえた。
-既存73 browser testsの経路・assertion・添付、レストラン / 映画の旧容量不足fixtureと採択録画窓を維持する。
-先行課題や録画窓の変更、帰還 / buffer消去、新projectionが必要ならWorkへ設計判断を戻す。
-公共交通、原作の正式九課題評価と帰還、別室 / 家族との会話、再入場 / 後続年、他Communications outletは後続候補とする。
-Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallbackを保持する。
-実saved-game RESTORE、実screen reader音声、本番配備、390pxで原作が出力しない時計は検証済みと扱わない。
-[#44](https://github.com/5gmt/mind-forever-voyaging/issues/44)は独立して扱う。
+現CIは7群。T3で長い自然経路用にtransit-desktop / transit-narrowを追加し9群とする計画で、現時点では追加していない。
+既存84 browser cases、先行八課題と録画窓、成功/失敗fixtureを保持する。容量不足、先行経路変更、別路線、新projectionが必要ならWorkへ設計判断を戻す。
+正式九課題評価と帰還、別室 / 家族との会話、再入場 / 後続年、他Communications outletは後続候補。
+Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallbackを保持し、実saved-game RESTORE、実screen reader音声、本番配備、390pxで原作が出力しない時計を検証済みと扱わない。[#44](https://github.com/5gmt/mind-forever-voyaging/issues/44)は独立して扱う。
 
 ## 現在の開発・配備状況
 
@@ -130,7 +125,8 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - #114 merge後の49 unit /62 browser testsを維持し、映画F3で3 unit /10 browserの回帰を追加した。さらに[CI保守の修正依頼](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に対応し、共有Restaurant helperの描画遅延回帰1件を追加した。H1でunit回帰を1件、H3でunit回帰を2件とbrowserテストを11件追加し、アプリの検証対象は55 unit /84 browserとなった。CI制御テストは分類、起動条件、参照先と受入判定を継続的に検証する。Browserはchurch 10件 /power 9件 /remaining 44件 /cinema-desktop 7件 /cinema-narrow 3件 /home-desktop 8件 /home-narrow 3件で、各1 worker、retryなし、job上限は各35分。新規specはremainingに入り、実際のPlaywright一覧照合で欠落と重複を検出する。既存73件の経路、assertion、添付を保持する。
 - 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終head /baseの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの7 ZIPを1日以内に監査する。各ZIPのhead /base /run /attempt /groupと受入記録の証拠パスを照合する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
 - [PR #119の最終手動Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/44807419513)は52 unit /73 browser /15 CI制御テストが全成功。Merge後の[Fast](https://github.com/5gmt/mind-forever-voyaging/actions/runs/44816683069)は約2分22秒で成功、artifact 0件、Fullの重複起動なし。条件付きFullは運用上のmerge gateであり、branch protectionの強制は追加していない。
-- #119で未実施だったDocs-only FastはHome計画PRの[実run](https://github.com/5gmt/mind-forever-voyaging/actions/runs/45940995335)で確認済み。保存時provenanceのbaseはH3の最終証拠保存で確認する。
+- H3の[最終Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/46000628519)は55 unit /84 browser /15 CI制御テストが全成功、全7 ZIP（991,929,960 bytes）を監査済み。Merge後の[Fast](https://github.com/5gmt/mind-forever-voyaging/actions/runs/46042700136)も成功し、artifactは0件、Fullの重複起動なし。これは既存受入結果の反映であり、この計画変更での再実行・再監査ではない。
+- #119で未実施だったDocs-only FastはHome計画PRの[実run](https://github.com/5gmt/mind-forever-voyaging/actions/runs/45940995335)で確認済み。保存時provenanceのbaseもH3の[全7 ZIP独立監査](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6091596637)で確認済み。
 - [PR #107最終CI](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902)は全件成功し、browser step38分21秒 /job39分50秒だった。初回full runのjob45分15秒を根拠として旧35分上限を50分に変更した。
 - Workが監査した[artifact #13068194532](https://github.com/5gmt/mind-forever-voyaging/actions/runs/41267285902/artifacts/13068194532)は397,434,042 bytes /3,592 entries。2026-11-07の整理に先立ち、ZIPをActions外へ退避し、元のdigestとの一致とCRCを確認した。
 - 2026-11-07のCI保守で、映画実装とは別に実行分類と3群分散を導入した。自然経路、assertion、添付の生成、canonical artifactは保持する。[CI保守 PR #115](https://github.com/5gmt/mind-forever-voyaging/pull/115)は全49 unit /62 browser成功と独立差分レビュー後にmerge済み。CI全体は直前の49分3秒から18分7秒となった。レビュー済みの旧artifact 36件を削除し、PR #114の証拠1件 /396,203,446 bytesを保持している。実測値と未検証事項は[CI運用](./docs/ci-operation.md)に記録した。
