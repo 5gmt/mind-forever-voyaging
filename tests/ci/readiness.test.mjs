@@ -16,7 +16,7 @@ const run = {
   run_attempt: 2, html_url: "https://github.com/5gmt/mind-forever-voyaging/actions/runs/1",
 };
 const jobs = ["changes", "verify", "browser-e2e (church)", "browser-e2e (power)", "browser-e2e (remaining)",
-  "browser-e2e (cinema-desktop)", "browser-e2e (cinema-narrow)", "ci-gate"]
+  "browser-e2e (cinema-desktop)", "browser-e2e (cinema-narrow)", "browser-e2e (home-desktop)", "browser-e2e (home-narrow)", "ci-gate"]
   .map(name => ({ name, conclusion: "success", run_attempt: 2 }));
 
 test("Full acceptance requires the current head/base, dispatch and entire successful attempt", () => {
@@ -29,6 +29,10 @@ test("Full acceptance requires the current head/base, dispatch and entire succes
     { conclusion: "cancelled" }, { conclusion: "failure" }, { conclusion: "skipped" }, { run_attempt: 3 },
   ]) assert.equal(evaluateRun({ ...run, ...change }, jobs, options).ready, false, JSON.stringify(change));
   assert.equal(evaluateRun(run, jobs.slice(1), options).ready, false);
+  assert.equal(evaluateRun(run, jobs.filter(j => !j.name.includes("(home-")), options).ready, false);
+  for (const group of ["home-desktop", "home-narrow"]) {
+    assert.equal(evaluateRun(run, jobs.filter(j => j.name !== `browser-e2e (${group})`), options).ready, false);
+  }
   assert.equal(evaluateRun(run, [...jobs, jobs[0]], options).ready, false);
   assert.equal(evaluateRun(run, jobs.map((j, i) => i === 1 ? jobs[0] : j), options).ready, false);
   for (let i = 0; i < jobs.length; i++) for (const conclusion of ["failure", "cancelled", "skipped", undefined]) {

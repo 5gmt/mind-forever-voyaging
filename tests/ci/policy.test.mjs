@@ -84,13 +84,15 @@ test("fast checks can finish without browsers but cannot satisfy the Full gate",
 });
 
 test("partition covers each test once and includes newly added specs", () => {
-  assert.deepEqual(groups, ["church", "power", "remaining", "cinema-desktop", "cinema-narrow"]);
+  assert.deepEqual(groups, ["church", "power", "remaining", "cinema-desktop", "cinema-narrow", "home-desktop", "home-narrow"]);
   assert.equal(groupForFile("church-fieldwork.spec.ts"), "church");
   assert.equal(groupForFile("power-station-fieldwork.spec.ts"), "power");
   assert.equal(groupForFile("cinema-fieldwork.spec.ts"), "cinema-desktop");
   assert.equal(groupForFile("cinema-narrow.spec.ts"), "cinema-narrow");
+  assert.equal(groupForFile("home-fieldwork.spec.ts"), "home-desktop");
+  assert.equal(groupForFile("home-narrow.spec.ts"), "home-narrow");
   assert.equal(groupForFile("new-cinema.spec.ts"), "remaining");
-  const files = ["church-fieldwork.spec.ts", "power-station-fieldwork.spec.ts", "cinema-fieldwork.spec.ts", "cinema-narrow.spec.ts", "restaurant-projection.spec.ts", "nested/new.spec.ts"];
+  const files = ["church-fieldwork.spec.ts", "power-station-fieldwork.spec.ts", "cinema-fieldwork.spec.ts", "cinema-narrow.spec.ts", "home-fieldwork.spec.ts", "home-narrow.spec.ts", "restaurant-projection.spec.ts", "nested/new.spec.ts"];
   for (const file of files) {
     const owners = groups.filter(group => filtersForGroup(files, group).some(filter => new RegExp(filter).test(`/checkout/tests/e2e/${file}`)));
     assert.deepEqual(owners, [groupForFile(file)], file);

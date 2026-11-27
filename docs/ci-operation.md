@@ -56,7 +56,7 @@ CLIが使えないレビュー環境では、同じhead /baseの全差分分類�
 1. PRの最新head SHAとtarget branchの最新base SHAを確認し、headがbaseを含むことを確認する。
 2. Actionsの `CI` → `Run workflow` でPRのbranchを選び、40桁の `head_sha` /`base_sha` を入力する。
 3. 証拠が必要なときは容量と監査日程を確認して `save_evidence=true` を指定する。通常はfalse。
-4. `Full CI <head> / <base>` というrun名、全5群と `ci-gate` の成功を確認し、受入確認コマンドを実行する。
+4. `Full CI <head> / <base>` というrun名、全7群と `ci-gate` の成功を確認し、受入確認コマンドを実行する。
 
 ```sh
 gh workflow run ci.yml --ref PR_BRANCH \
@@ -72,31 +72,33 @@ ForkのPRはfast検証まで行えるが、手動Fullはbase repository内のレ
 
 ## ブラウザー検証の分配
 
-完全検証は `verify` の成功後、独立した5 runnerで実行する。
+完全検証は `verify` の成功後、独立した7 runnerで実行する。
 各runnerの `workers: 1`、`fullyParallel: false`、`retries: 0` は従来どおりである。
 同じ自然セッションの途中を分割したり、既存assertionを省略したりしない。
 
-| 群 | 内容 | 件数 | CI #214から再配置した時間の目安 |
+| 群 | 内容 | 件数 | 既存群の再配置時の目安 |
 | --- | --- | ---: | ---: |
 | church | `church-fieldwork.spec.ts` | 10 | 約14分 |
 | power | `power-station-fieldwork.spec.ts` | 9 | 約12分 |
 | remaining | その他すべて。新規specと描画遅延回帰1件も含む | 44 | 既存43件は約13分。追加回帰は別途実測 |
 | cinema-desktop | `cinema-fieldwork.spec.ts`。Desktop正例3件、非録画負例1件、controlled 3件 | 7 | 約14分 |
 | cinema-narrow | `cinema-narrow.spec.ts`。390px正例3件 | 3 | 約8分 |
+| home-desktop | `home-fieldwork.spec.ts`。正例3件、自然負例2件、controlled 3件 | 8 | H3の最終手動Fullで記録 |
+| home-narrow | `home-narrow.spec.ts`。390px正例3件 | 3 | H3の最終手動Fullで記録 |
 
-時間は分散前のログから求めた参考値であり、新構成の実測値ではない。
-既存72件に描画遅延回帰1件を追加した全73件と各群のテストIDを照合し、欠落と重複があれば `verify` を失敗させる。
+既存5群の時間は分散前のログから求めた参考値である。
+既存73件とHomeの11件を合わせた84件のテストIDを各群と照合し、欠落と重複があれば `verify` を失敗させる。
 ブラウザーjobの上限は全群35分である。
 Matrix の `fail-fast` は無効にして他群の診断結果も得る。
 映画館の自然経路は96送信または94送信の全体を一群に所属させ、途中分割や保存状態からの再開をしない。
-5群化後の件数、browser step /job /全体時間、retry /skip、通常artifact数の実測は [PR #118](https://github.com/5gmt/mind-forever-voyaging/pull/118) の最終head検証欄を正本とする。
+映画の5群化後の件数、browser step /job /全体時間、retry /skip、通常artifact数の実測は [PR #118](https://github.com/5gmt/mind-forever-voyaging/pull/118) の最終head検証欄を正本とする。
 
 ```sh
 node --test tests/ci/*.test.mjs
 bash scripts/lint-workflows.sh
 node scripts/ci-e2e.mjs --check
 node scripts/ci-e2e.mjs church
-# power / remaining / cinema-desktop / cinema-narrow も同じ形式。
+# power / remaining / cinema-desktop / cinema-narrow / home-desktop / home-narrow も同じ形式。
 # 従来の npm run test:e2e は全件を実行する。
 ```
 
@@ -108,7 +110,7 @@ node scripts/ci-e2e.mjs church
 
 1. 保存容量を確認し、監査担当者が1日以内に確認できる時点を選ぶ。他リポジトリとPackagesもartifact枠を使う。
 2. 上記の最終Fullを `save_evidence=true` で起動する。
-3. 同一成功run /attemptの5群すべてを取得する。名前は `playwright-<group>-<runId>-<runAttempt>`。
+3. 同一成功run /attemptの7群すべてを取得する。名前は `playwright-<group>-<runId>-<runAttempt>`。
 4. 各ZIPの `ci-provenance.json` の `commit` /`base` /`runId` /`runAttempt` /`group` をレビュー対象とartifact名に照合する。
 5. 受入記録の群別対応表からJSON /PNG /TXTとpath添付の実体を監査し、実expiryを記録する。期限内に監査できなければ先に退避する。
 
@@ -116,7 +118,7 @@ node scripts/ci-e2e.mjs church
 群を別々のattemptから寄せ集めない。必要な場合は全jobを再実行して同一attemptへそろえる。
 証拠の重複除去と過去artifactの追加削除は、この実行条件変更には含めない。
 
-## 導入の確認
+## 自動Fast導入時の確認（PR #119）
 
 既存 `ci.yml` の手動起動を維持し、自動イベントを新しい `ci-fast.yml` へ移す。
 本変更のPRでもFastが実行され、workflow構文 /policy /分配とbuild /unitを検証する。
@@ -168,7 +170,7 @@ PR #114の証拠を引き続き残す必要がなくなれば別の明示的な�
 処理後のAPI一覧でも、保護したPR #114のartifact `13512501098` だけが残り、1件 /396,203,446 bytesであることを確認した。
 
 アカウント全体の課金使用量やPackagesの保存量は未確認であり、この数値は当リポジトリのartifact実容量である。
-次の証拠保存前には残した#114の証拠も必要に応じて退避、整理し、新しい5 ZIPを保存できる容量を確保する。
+次の証拠保存前には残した#114の証拠も必要に応じて退避、整理し、次の監査に必要なZIPを保存できる容量を確保する。
 明示的な手動証拠保存の実アップロードとexpiryは、今回の導入検証では未実施である。
 
 次の容量改善候補として、退避した#107 ZIPの3,592ファイルをSHA-256で比較すると、同一内容の余分なコピーが2,465件、圧縮後合計215,875,088 bytesあった。

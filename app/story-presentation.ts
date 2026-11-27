@@ -1,4 +1,4 @@
-import { localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedStoryLeafTranslation, type Locale, type StoryContentId } from "./localization.ts";
+import { localizeStoryContent, localizeStoryLeaves, localizeStoryTranscript, observedHomeLeafTranslation, observedStoryLeafTranslation, type Locale, type StoryContentId } from "./localization.ts";
 
 export type BridgePresentationLine = {
   id?: string;
@@ -240,7 +240,7 @@ export const securityPromptPresentation = (presentation: BridgePresentation | nu
 // order/boundaries and semantic classes. Catalog membership supplies identity;
 // no command or passage-specific recognizer is involved. The whole turn fails
 // closed to the canonical fallback unless at least one observed leaf translates.
-export const observedOrdinaryTurnPresentation = (presentation: BridgePresentation | null, locale: Locale): StoryPresentationBlock[] | null => {
+export const observedOrdinaryTurnPresentation = (presentation: BridgePresentation | null, locale: Locale, home2041?: string): StoryPresentationBlock[] | null => {
   if (locale === "en" || !presentation || presentation.version !== 3 || presentation.activeInput?.kind !== "line") return null;
   const end = presentation.activeInput.line;
   if (end === null || end !== presentation.terminalLine || end !== presentation.lines.length - 1) return null;
@@ -258,7 +258,8 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
   const response = presentation.lines.slice(commandIndex + 1, end);
   const responseText = response.map((line) => clean(line.text)).join("\n");
   if (responseText.includes("list of things to record:") || responseText.includes("Security Code corresponding to:")) return null;
-  const translations = response.map((line) => observedStoryLeafTranslation(clean(line.text), locale, command));
+  const translations = response.map((line) => observedHomeLeafTranslation(line.text, locale, command, home2041)
+    ?? observedStoryLeafTranslation(clean(line.text), locale, command));
   if (!translations.some(Boolean)) return null;
 
   const blocks: StoryPresentationBlock[] = [{
@@ -283,8 +284,8 @@ export const observedOrdinaryTurnPresentation = (presentation: BridgePresentatio
 
 // Preserve the richer, evidence-backed passage projections first. The generic
 // prototype is deliberately last so catalog leaf matches cannot supersede them.
-export const storyPresentation = (presentation: BridgePresentation | null, locale: Locale) => openingPresentation(presentation, locale)
+export const storyPresentation = (presentation: BridgePresentation | null, locale: Locale, home2041?: string) => openingPresentation(presentation, locale)
   ?? initialLineTurnPresentation(presentation, locale)
   ?? assignmentBriefPresentation(presentation, locale)
   ?? securityPromptPresentation(presentation, locale)
-  ?? observedOrdinaryTurnPresentation(presentation, locale);
+  ?? observedOrdinaryTurnPresentation(presentation, locale, home2041);

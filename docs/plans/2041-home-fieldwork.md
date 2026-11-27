@@ -7,7 +7,7 @@
 **Architecture:** 既存2a+2b、exact observed-leaf catalog、観測時room scope、地名lookup、限定操作を使う。扉を開けるcommandはcanonical parserに任せ、住居内での新しい録画観測だけを補助checklistの根拠とする。
 **Tech Stack:** Next.js / React / TypeScript、Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定」「採択経路」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md)、[AGENTS.md](../../AGENTS.md)、[CI運用](../ci-operation.md)を保持する。
-**Status:** 計画は[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。H1の[111送信の完走2件と別の閉扉probe](../home-runtime-evidence.md)は[独立Solが採択](https://github.com/5gmt/mind-forever-voyaging/pull/124#pullrequestreview-6084630653)し、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)をマージした。H2は[英日copy packet](../home-copy-packet.md)の独立Sol承認とマージを待つ。H3はH2のマージ後に開始する。
+**Status:** 計画は[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。H1の[111送信の完走2件と別の閉扉probe](../home-runtime-evidence.md)は[独立Solが採択](https://github.com/5gmt/mind-forever-voyaging/pull/124#pullrequestreview-6084630653)し、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)をマージした。H2の[英日copy packet](../home-copy-packet.md)は[独立Solの承認](https://github.com/5gmt/mind-forever-voyaging/pull/125#pullrequestreview-6086347389)を経て[PR #125](https://github.com/5gmt/mind-forever-voyaging/pull/125)でマージ済み。H3の統合と提出時点の検証は[自宅訪問の受入記録](../home-fieldwork-acceptance.md)を参照。
 **Baseline:** 映画PR #118とCI保守PR #119を含むdefault branch `codex/modern-amfv`、merge `505e226bbe818a1dd4a4b1f15b199a3f5a76ae9c`。実行時には最新target branchを含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-27 JSTのownerによる次期milestone設計・タスク作成依頼に基づく。
 
@@ -115,23 +115,23 @@ Full / auto-deactivation、開扉失敗、必要本文欠落、通常入力未�
 - [x] [英日copy packet](../home-copy-packet.md)に、室内の必須描写、観測済みの家族の可変文、閉扉拒否、経路と地名を収録した。地図は建物入口を示し、鍵操作は場所に応じた扉に対応する。
 - [x] H1のraw fixtureと全引用を照合した。鍵操作の実送信は `OPEN DOOR WITH KEY`。現行の `open door` とは別の操作として扱う。
 - [x] `git diff --check`、リンクと引用の対応を確認し、独立Solにcopy approvalを求める。
-- [ ] 独立Solのcopy approval後、レビューアが修正確定後のhead/baseで手動Fullを起動し、readinessを確認してマージする。`*copy-packet.md` を含むため分類はFull。
+- [x] 独立Solのcopy approval後、[手動Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/45977971404)とreadinessを確認してマージした。`*copy-packet.md` を含むため分類はFull。
 
 ### H3: presentation・操作・補助実績と受入
 
 **Files:** Modify `app/localization.ts`, `app/story-presentation.ts`, `app/presentation-history.ts`, `app/PrismEdition.tsx`, `app/StoryTools.tsx`, `tests/rendered-html.test.mjs`。Create `app/home-recording.ts`, `tests/e2e/home-acceptance.ts`, `tests/e2e/home-fieldwork.spec.ts`, `tests/e2e/home-narrow.spec.ts`, `docs/home-fieldwork-acceptance.md`。CI関連変更は次節に限定する。
 **Consumes:** H1 fixtureとH2 packet、`acceptCinemaMilestone(page, controls, testInfo, true)` の既採択prefix。**Produces:** 初回2041年Home copy / key action、観測時 `home2041?: string` scope、補助住居録画、6自然正例・2自然負例・境界回帰と証拠索引。
 
-- [ ] 新scopeとapproved catalogのunit回帰を先に追加し、未実装の対象caseが失敗することを確認する。Homeのroom / commandを持たない共通leafと別phaseはEnglishのままにする。
-- [ ] `home2041?: string` を既存のpresentation / history scope経路に追加し、観測時のraw roomを一度だけ保存する。`part1.simulation.home.*` のcatalog identityと対応room表を限定的に接続する。
-- [ ] `HomeRecordingState = { complete: boolean; recording: boolean; seenTurns: string[] }`、`createHomeRecordingState(): HomeRecordingState`、`observeHomeRecording(previous, observation): HomeRecordingState` を `app/home-recording.ts` に実装する。Observationは既存cinemaと同形の `{ eligible, roomId?, hasStatus, recording, acceptsInput, presentation }`。新しい安定line-input turnの居間LOOKとH1で特定した本文、前後のraw recording、full / auto-deactivation等の録画失敗がないことを条件にする。Half-full warningは保持し、録画停止と混同しない。完了はsession内で保持し、parser flagとは扱わない。
-- [ ] Unit回帰で居間の正常録画、入口 / 廊下、非録画 / 後付け録画、見出しだけ、異room / year、重複turn、warning、missing status / input、rolling window、RESTORE / 新sessionを検証する。補助課題index 8をこの観測へ接続し、他課題の推定は再設計しない。RECORDだけで達成しないことを明示する。
-- [ ] Room-qualifiedなkey actionとcopyをmain / companionへ接続する。両doorを名前で合成せずID / roomで区別し、既存の引数なしOpenを鍵操作として誤表示しない。Guided draftとActions単発送信、busy / char / unknown / Classicの境界をテストする。
-- [ ] `acceptHomeMilestone(page, controls, testInfo, recordHome = true)` を追加し、既存cinema helperを明示的に呼ぶ。現在の `acceptCinemaMilestone` は返り値がないため、全assertionと添付の完了後にその `prior` contextを返す最小変更を行う。Homeは `frame / presentation / canonical / input / blocks / send / locale / snapshot / rawTrace` を再利用する。6正例は各111送信候補、非録画負例は109送信候補。既存helperの既定経路 / assertion / 添付を変更しない。入口のみ録画の短い別fresh probeも追加する。
-- [ ] `home-fieldwork.spec.ts` にdesktopの3正例、非録画・入口のみ録画の2負例、controlled `history / guards / recording` の3回帰を置く。`home-narrow.spec.ts` に390pxの3正例を置く。Baseline 73件を保持し、少なくとも合計84 browser casesになる。各自然sessionを途中で分割しない。
-- [ ] 受入境界のreading / focus / locale / drawerを同一checkpointのJSON / PNG / accessibilityとして添付する。Controlled JSONを必ずファイルへ残し、自然runtime証拠と混同しない。
-- [ ] 短いunit / controlled → 影響する自然経路の順で検証し、lint / tsc / unit / checksum / CI制御 / partitionを確認する。修正確定後の手動Fullで全件検証と証拠保存を兼ねる。
-- [ ] 受入記録に実counts、群別時間、head / base / run / attempt / artifact path・expiry、失敗・再実行・未実施、受入条件と証拠の対応を記録する。Sol通常レビュー後、Workの監査を受けてmergeし、#29へ完了報告してH3をcloseする。
+- [x] 新scopeとapproved catalogのunit回帰を先に追加し、未実装の対象caseが失敗することを確認する。Homeのroom / commandを持たない共通leafと別phaseはEnglishのままにする。
+- [x] `home2041?: string` を既存のpresentation / history scope経路に追加し、観測時のraw roomを一度だけ保存する。`part1.simulation.home.*` のcatalog identityと対応room表を限定的に接続する。
+- [x] `HomeRecordingState = { complete: boolean; recording: boolean; seenTurns: string[] }`、`createHomeRecordingState(): HomeRecordingState`、`observeHomeRecording(previous, observation): HomeRecordingState` を `app/home-recording.ts` に実装する。Observationは既存cinemaと同形の `{ eligible, roomId?, hasStatus, recording, acceptsInput, presentation }`。新しい安定line-input turnの居間LOOKとH1で特定した本文、前後のraw recording、full / auto-deactivation等の録画失敗がないことを条件にする。Half-full warningは保持する。居間のLOOKを観測した録画窓は、居間で明示的なRECORD OFFの成功応答を確認した時点で補助実績に反映する。完了はsession内で保持する。
+- [x] Unit回帰で居間の正常録画、入口 / 廊下、非録画 / 後付け録画、見出しだけ、異room / year、重複turn、warning、missing status / input、rolling window、RESTORE / 新sessionを検証する。補助課題index 8をこの観測へ接続し、他課題の推定は再設計しない。RECORDだけで達成しないことを明示する。
+- [x] Room-qualifiedなkey actionとcopyをmain / companionへ接続する。両doorを名前で合成せずID / roomで区別し、既存の引数なしOpenを鍵操作として誤表示しない。Guided draftとActions単発送信、busy / char / unknown / Classicの境界をテストする。
+- [x] `acceptHomeMilestone(page, controls, testInfo, recordHome = true)` を追加し、既存cinema helperを明示的に呼ぶ。現在の `acceptCinemaMilestone` は返り値がないため、全assertionと添付の完了後にその `prior` contextを返す最小変更を行う。Homeは `frame / presentation / canonical / input / blocks / send / locale / snapshot / rawTrace` を再利用する。6正例は各111送信候補、非録画負例は109送信候補。既存helperの既定経路 / assertion / 添付を変更しない。入口のみ録画の短い別fresh probeも追加する。
+- [x] `home-fieldwork.spec.ts` にdesktopの3正例、非録画・入口のみ録画の2負例、controlled `history / guards / recording` の3回帰を置く。`home-narrow.spec.ts` に390pxの3正例を置く。Baseline 73件を保持し、少なくとも合計84 browser casesになる。各自然sessionを途中で分割しない。
+- [x] 受入境界のreading / focus / locale / drawerを同一checkpointのJSON / PNG / accessibilityとして添付する。Controlled JSONを必ずファイルへ残し、自然runtime証拠と混同しない。
+- [x] 短いunit / controlled → 影響する自然経路の順で検証し、lint / tsc / unit / checksum / CI制御 / partitionを確認した。受入記録にローカルの件数と実測時間、失敗・再実行・未実施、受入条件と証拠の対応を記録した。
+- [ ] Sol通常レビューと修正の確定後、手動Fullで全件検証と証拠保存を兼ねる。最終head / base / run / attempt / 群別時間 / artifact path・expiryを受入記録へ追記する。Workの監査を受けてmergeし、#29へ完了報告してH3をcloseする。
 
 ## CIとレビューの費用を制御する
 
@@ -139,11 +139,11 @@ PR #119の運用を継承する。自動はFast、Full-scope PRは修正とレ�
 
 H1着手時のbaselineは52 unit /73 browser /15 CI制御テスト、5群（church 10 / power 9 / remaining 44 / cinema-desktop 7 / cinema-narrow 3）。H1でunit回帰を1件追加した。#119の手動Fullではremainingとcinema-desktopのbrowser stepがそれぞれ17.3分・17.5分だった。新たな111送信の自然経路をremainingへ集中させない。
 
-**H3で `home-desktop` / `home-narrow` の2群を追加し、計7群にすることを本計画の承認対象とする。** 既存5群の所有specは変更しない。群追加は長い自然sessionを丸ごと割り当てるためで、test削減やrunner-minutes削減の主張ではない。
+H3で `home-desktop` / `home-narrow` の2群を追加し、計7群とする。 既存5群の所有specは変更しない。群追加は長い自然sessionを丸ごと割り当てるためで、test削減やrunner-minutes削減の主張ではない。
 
 - `scripts/ci-e2e.mjs` の `groups` と `groupForFile`、`.github/workflows/ci.yml` のmatrix、`tests/ci/policy.test.mjs` / `tests/ci/readiness.test.mjs` を同じPRで同期する。`home-fieldwork.spec.ts` → `home-desktop`、`home-narrow.spec.ts` → `home-narrow`。未知specはremaining、列挙による欠落 / 重複拒否を維持する。
 - Readinessが新7群すべてを同じrun / attemptで要求し、Home欠落・失敗・skipや過去5群だけの成功を拒否する回帰を追加する。開始 / 終了head-base guard、各35分、各1 worker、retry 0、Fastのみ自動の条件は保持する。
-- `AGENTS.md`、`docs/ci-operation.md`、`PROJECT_STATUS.md`、本計画、Home受入記録の現行群数と監査対象を7群へ同期する。過去の「#118は5 ZIP監査済み」という史実は書き換えない。この計画PRでは実CI matrixはまだ5群のまま。
+- `AGENTS.md`、`docs/ci-operation.md`、`PROJECT_STATUS.md`、本計画、Home受入記録の現行群数と監査対象を7群へ同期する。過去の「#118は5 ZIP監査済み」という記録を保持する。
 - H3最終Fullは `save_evidence=true`。容量と1日以内の監査予定を事前確認し、同一成功run / attemptの **全7 ZIP** のcommit / base / runId / runAttempt / group、証拠索引と実ファイルをWorkが独立監査する。通常Fullは保存なし。既存の保護artifactを無断で削除しない。
 - 保存時provenanceのbaseを実体で確認する機会をH3に含める。#119で未確認だったDocs-only Fastは[計画PRの実run](https://github.com/5gmt/mind-forever-voyaging/actions/runs/45940995335)で確認済み。確認のためだけに別Fullを重複起動しない。
 - 35分を超える見込みや保存容量不足が分かったら、対象実測を添えて配分 / 保存方法をレビューする。Timeout延長・retry・テスト省略・添付削減で隠さない。

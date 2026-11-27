@@ -10,6 +10,7 @@ import { companionHeaderLanguage, localizeOutletLabel, localizeSimulationMapLabe
 import { projectPresentationHistory, reconcilePresentationHistory, type PresentationHistory } from "./presentation-history";
 import { churchEchoId, createChurchElderState, observeChurchElder } from "./church-elder";
 import { createCinemaRecordingState, observeCinemaRecording } from "./cinema-recording";
+import { createHomeRecordingState, hasStableHomeInput, observeHomeRecording } from "./home-recording";
 
 const BRIDGE_CHANNEL = "amfv:bridge";
 const MODES = ["Communications Mode", "Library Mode", "Interface Mode", "Simulation Mode", "Sleep Mode"] as const;
@@ -342,7 +343,7 @@ const recordedPassages = (transcript: string) => {
   return passages.join("\n");
 };
 
-// These are the exact moments that set RECORDING-TABLE slots 0..16 in Release 79.
+// The first seven auxiliary estimates retain their transcript rules.
 const FIELD_RECORDING_RULES = [
   { tableIndex: 0, pattern: /you order a bowl of hot and sour soup|decide to splurge and buy a beef burger|the waiter places/i },
   { tableIndex: 2, pattern: /cheerily comments on how well things in the city are running|grumpily complains that most of his department has been laid off/i },
@@ -351,8 +352,6 @@ const FIELD_RECORDING_RULES = [
   { tableIndex: 8, pattern: /tubecar glides into a station/i },
   { tableIndex: 10, pattern: /^Courthouse\s*$/im },
   { tableIndex: 12, pattern: /comments on how happy he is about the recent increase in church attendance|complains about the growth of the church of god's word/i },
-  { tableIndex: 14, pattern: /you begin watching/i },
-  { tableIndex: 16, pattern: /^(?:Living Room|Kitchen|Bedroom|Bathroom)\s*$/im },
 ] as const;
 
 export default function PrismEdition() {
@@ -376,6 +375,7 @@ export default function PrismEdition() {
   const initialSimulationRef = useRef<InitialSimulationState>("unknown");
   const churchElderRef = useRef(createChurchElderState());
   const cinemaRecordingRef = useRef(createCinemaRecordingState());
+  const homeRecordingRef = useRef(createHomeRecordingState());
   const cityHallOfficialRef = useRef<CityHallOfficialPresence>("unknown");
   // The canonical interpreter stays live across QA visits. Its mode history
   // must survive wrapper resets and must never be updated by the QA story.
@@ -438,6 +438,8 @@ export default function PrismEdition() {
   const [initialSimulationState, setInitialSimulationState] = useState<InitialSimulationState>("unknown");
   const [churchElder, setChurchElder] = useState(createChurchElderState);
   const [cinemaRecorded, setCinemaRecorded] = useState(false);
+  const [homeRecorded, setHomeRecorded] = useState(false);
+  const [homeControlsRoom, setHomeControlsRoom] = useState<string>();
   const [cinemaLineInput, setCinemaLineInput] = useState(false);
   const [cityHallOfficial, setCityHallOfficial] = useState<CityHallOfficialPresence>("unknown");
 
@@ -534,8 +536,8 @@ export default function PrismEdition() {
   }, [describedDirections, displayYear, mapRoutePreview?.nextCommand, roomExits]);
   const fieldProgress = useMemo(() => {
     const passages = recordedPassages(transcript);
-    return FIELD_RECORDING_RULES.map(({ pattern }, index) => index === 7 ? cinemaRecorded : pattern.test(passages));
-  }, [transcript, cinemaRecorded]);
+    return [...FIELD_RECORDING_RULES.map(({ pattern }) => pattern.test(passages)), cinemaRecorded, homeRecorded];
+  }, [transcript, cinemaRecorded, homeRecorded]);
   const fieldworkRecordedCount = fieldProgress.filter(Boolean).length;
   const initialFieldworkActive = discovery.simulationEntered && !discovery.partTwo;
   const initial2041Presentation = mode === "Simulation Mode" && initialFieldworkActive && displayYear === 2041 && initialSimulationState === "active" && !qaEnabled;
@@ -555,9 +557,9 @@ export default function PrismEdition() {
   }, [churchElder.present, cityHallOfficial, contextualObjects, initial2041Presentation, inputKind, room?.id]);
   const navigationLocale = initial2041Presentation ? locale : "en";
   const navigationText = (key: Parameters<typeof navigationUiText>[1]) => navigationUiText(navigationLocale, key);
-  const navigationPlace = (name: string) => localizeSimulationPlace(navigationLocale, name);
+  const navigationPlace = (name: string) => localizeSimulationPlace(navigationLocale, name, initial2041Presentation);
   const navigationPlaceLanguage = (name: string) => navigationPlace(name) !== name ? navigationLocale : "en";
-  const navigationDestination = mapRoutePreview ? localizeSimulationMapLabel(navigationLocale, mapRoutePreview.destination.id, mapRoutePreview.destination.label) : "";
+  const navigationDestination = mapRoutePreview ? localizeSimulationMapLabel(navigationLocale, mapRoutePreview.destination.id, mapRoutePreview.destination.label, initial2041Presentation) : "";
   const initialInvitationPresentation = !discovery.simulationEntered && !discovery.partTwo;
   const initialSecurityPresentation = !discovery.simulationEntered && !discovery.partTwo;
   const guide = mode === "Communications Mode"
@@ -567,7 +569,8 @@ export default function PrismEdition() {
       : mode
         ? { ...MODE_COPY[mode], localized: false }
         : { label: uiText(locale, "openingGuideHeading"), copy: uiText(locale, "openingGuideCopy"), localized: true };
-  const currentFieldworkLandmark = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment !== undefined && landmark.targetId === room?.id);
+  const currentFieldworkLandmark = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment !== undefined
+    && (initial2041Presentation && landmark.id === "home" ? homeControlsRoom === "LIVING-ROOM" : landmark.targetId === room?.id));
   const currentFieldworkIndex = currentFieldworkLandmark?.assignment;
   const currentFieldworkAssignment = currentFieldworkIndex === undefined ? null : FIELD_ASSIGNMENTS[currentFieldworkIndex];
   const currentFieldworkComplete = currentFieldworkIndex === undefined ? false : fieldProgress[currentFieldworkIndex];
@@ -584,7 +587,7 @@ export default function PrismEdition() {
         : "commandHistoryHelp";
   const commandHelp = aliasNotice
     ? uiText(locale, aliasNotice.key).replace(aliasNotice.key === "understoodAs" ? "{command}" : "{destination}", aliasNotice.key === "routeDrafted" && aliasNotice.destinationId
-      ? localizeSimulationMapLabel(navigationLocale, aliasNotice.destinationId, aliasNotice.value ?? "") : aliasNotice.value ?? "")
+      ? localizeSimulationMapLabel(navigationLocale, aliasNotice.destinationId, aliasNotice.value ?? "", initial2041Presentation) : aliasNotice.value ?? "")
     : uiText(locale, parserCoachKey);
   const libraryDiscovered = knownModes.includes("Library Mode") || /\blibrary mode\b/i.test(transcript);
   const interfaceDiscovered = knownModes.includes("Interface Mode") || /\binterface mode\b/i.test(transcript);
@@ -653,6 +656,9 @@ export default function PrismEdition() {
           setChurchElder(churchElderRef.current);
           cinemaRecordingRef.current = createCinemaRecordingState();
           setCinemaRecorded(false);
+          homeRecordingRef.current = createHomeRecordingState();
+          setHomeRecorded(false);
+          setHomeControlsRoom(undefined);
         }
         if (/^(?:record|ron)$/i.test(entered)) setRecording(true);
         if (/^(?:record off|roff)$/i.test(entered)) setRecording(false);
@@ -688,7 +694,11 @@ export default function PrismEdition() {
       const locationMatch = status.match(/Location:\s*([\s\S]*?)(?:Date:|$)/i);
       const nextStatusLocation = locationMatch?.[1].replace(/\s+/g, " ").trim();
       const priorRoom = roomRef.current;
-      const nextRoom = nextMode === "Simulation Mode" ? detectRoom(status, priorRoom, lastCommandRef.current, nextRecent) : null;
+      const first2041LivingRoom = !qaEnabled && nextYear === 2041 && initialSimulationRef.current === "active"
+        && nextStatusLocation?.toLowerCase() === "living room";
+      const nextRoom = nextMode === "Simulation Mode"
+        ? first2041LivingRoom ? ROOMS_BY_ID.get("LIVING-ROOM")! : detectRoom(status, priorRoom, lastCommandRef.current, nextRecent)
+        : null;
       const displayedStatusLocation = nextStatusLocation && nextStatusLocation.toLowerCase() !== "(undefined)"
         ? displayLocationName(nextStatusLocation)
         : null;
@@ -717,6 +727,9 @@ export default function PrismEdition() {
         setChurchElder(churchElderRef.current);
         cinemaRecordingRef.current = createCinemaRecordingState();
         setCinemaRecorded(false);
+        homeRecordingRef.current = createHomeRecordingState();
+        setHomeRecorded(false);
+        setHomeControlsRoom(undefined);
         setSceneText("");
         try {
           for (const key of ["amfv:designation", "amfv:modes", "amfv:years", "amfv:rooms", "amfv:discoveries", "amfv:notes", "amfv:history"]) localStorage.removeItem(key);
@@ -821,6 +834,15 @@ export default function PrismEdition() {
       });
       setCinemaRecorded(cinemaRecordingRef.current.complete);
       setCinemaLineInput(event.data.inputKind === "line" && nextStatusLocation?.toLowerCase() === "cinema");
+      const homeRoom = initial2041Scope && /Mode:\s*Simulation Mode\b/i.test(status) && nextRoom
+        && nextStatusLocation?.toLowerCase() === nextRoom.name.toLowerCase() ? nextRoom.id : undefined;
+      const homeLine = event.data.inputKind === "line" && hasStableHomeInput(nextPresentation);
+      homeRecordingRef.current = observeHomeRecording(homeRecordingRef.current, {
+        eligible: initial2041Scope && event.data.inputKind === "line", roomId: homeRoom, hasStatus: Boolean(homeRoom),
+        recording: /\(recording\)/i.test(status), acceptsInput: event.data.acceptsInput === true, presentation: nextPresentation,
+      });
+      setHomeRecorded(homeRecordingRef.current.complete);
+      setHomeControlsRoom(homeLine ? homeRoom : undefined);
       // Ignore transient reports while the interpreter is processing. A
       // stable active input can be projected or can deliberately request
       // canonical recovery (for example an unsupported character prompt).
@@ -832,6 +854,7 @@ export default function PrismEdition() {
             powerStation2041: initial2041Scope ? nextRoom?.id : undefined,
             church2041: initial2041Scope ? nextRoom?.id : undefined,
             cinema2041: initial2041Scope && event.data.inputKind === "line" && Boolean(nextStatusLocation) ? nextRoom?.id : undefined,
+            home2041: homeLine ? homeRoom : undefined,
           });
           return { history: reconciliation.history, recovering: !reconciliation.representable };
         });
@@ -905,7 +928,7 @@ export default function PrismEdition() {
     } catch { /* optional */ }
   }, [fontScale, readingMode, interactionLevel, highContrast, reduceMotion, playerReady, qaEnabled]);
 
-  const postCommand = (value: string, raw = false) => {
+  const postCommand = (value: string, raw = false, focus: "command" | "preserve" = "command") => {
     const activeFrame = qaEnabled ? qaIframeRef.current : canonicalIframeRef.current;
     if (!activeFrame?.contentWindow) return;
     const normalized = raw ? value : normalizeCommand(value);
@@ -923,13 +946,16 @@ export default function PrismEdition() {
       setChurchElder(churchElderRef.current);
       cinemaRecordingRef.current = createCinemaRecordingState();
       setCinemaRecorded(false);
+      homeRecordingRef.current = createHomeRecordingState();
+      setHomeRecorded(false);
+      setHomeControlsRoom(undefined);
     }
     setAcceptsInput(false);
     activeFrame.contentWindow.postMessage({ channel: BRIDGE_CHANNEL, type: "command", command: normalized }, window.location.origin);
-    setTimeout(() => commandRef.current?.focus(), 120);
+    if (focus === "command") setTimeout(() => commandRef.current?.focus(), 120);
   };
 
-  const sendCommand = (raw: string) => {
+  const sendCommand = (raw: string, focus: "command" | "preserve" = "command") => {
     if (!raw.trim()) return;
     const normalized = normalizeCommand(raw);
     setAliasNotice(normalized.toLowerCase() !== raw.trim().toLowerCase() ? { key: "understoodAs", value: normalized } : null);
@@ -939,7 +965,7 @@ export default function PrismEdition() {
       activeOutletRef.current = normalized.toUpperCase();
       setActiveOutletCode(normalized.toUpperCase());
     }
-    postCommand(normalized);
+    postCommand(normalized, false, focus);
     setCommand("");
     setHistoryIndex(-1);
   };
@@ -1008,7 +1034,7 @@ export default function PrismEdition() {
       setFieldworkOpen(false);
       window.setTimeout(() => commandRef.current?.focus(), 40);
     } else {
-      sendCommand(mapRoutePreview.nextCommand);
+      sendCommand(mapRoutePreview.nextCommand, "preserve");
     }
     setPackageItem(null);
   };
@@ -1122,6 +1148,9 @@ export default function PrismEdition() {
     setChurchElder(churchElderRef.current);
     cinemaRecordingRef.current = createCinemaRecordingState();
     setCinemaRecorded(false);
+    homeRecordingRef.current = createHomeRecordingState();
+    setHomeRecorded(false);
+    setHomeControlsRoom(undefined);
     setSceneText("");
     setGridText("");
     setPresentationState({ history: [], recovering: true });
@@ -1222,7 +1251,7 @@ export default function PrismEdition() {
   const systemActivity = uiText(locale, acceptsInput ? (inputKind === "char" ? "keyRequested" : "awaitingInput") : (playerReady ? "processing" : "initializing"));
   const currentRoomName = displayLocationName(statusLocation) || room?.name || null;
   const currentPlace = mode === "Simulation Mode" && currentRoomName
-    ? localizeSimulationPlace(navigationLocale, currentRoomName)
+    ? navigationPlace(currentRoomName)
     : mode === "Communications Mode" && activeOutlet ? localizeOutletLabel(locale, activeOutlet.code, activeOutlet.name) : null;
   const hasLocalizedCurrentPlace = locale !== "en" && currentPlace !== currentRoomName;
   const openingOrCommunications = !mode || mode === "Communications Mode";
@@ -1391,7 +1420,7 @@ export default function PrismEdition() {
               <div className="command-meta" id="command-help"><span>{commandHelp}</span><span className={recording ? "recording-live" : ""}>{recording ? "● RECORDING" : ""}</span></div>
             </form>
             {assisted && <div className="quick-actions" lang={locale} aria-label={uiText(locale, "commonActions")}>{baseActions.map(([label, value]) => <button type="button" key={`${mode}-${label}`} onClick={() => sendCommand(value)} disabled={!acceptsInput} lang={mode === "Simulation Mode" ? initial2041Presentation ? locale : "en" : ["look", "display outlets", "enter library mode", "enter interface mode"].includes(value) ? locale : "en"}>{label}</button>)}</div>}
-            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={sceneActionObjects} roomId={mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line" && (room?.id !== "CINEMA" || cinemaLineInput)} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
+            {mode !== "Library Mode" && mode !== "Interface Mode" && mode !== "Sleep Mode" && (mode !== "Communications Mode" || activeOutlet) && <SceneActions objects={sceneActionObjects} roomId={mode === "Communications Mode" && activeOutletCode ? OUTLET_SOURCE_ROOMS[activeOutletCode] : room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line" && (room?.id !== "CINEMA" || cinemaLineInput)} homeControlsRoom={homeControlsRoom} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} />}
           </>)}
         </section>
       </section>
@@ -1407,7 +1436,7 @@ export default function PrismEdition() {
 
           {activePanel === "context" && mode === "Interface Mode" && <section className="companion-section systems-section" lang="en"><span className="section-kicker">Interface Mode</span><h2>Active ports</h2><p>Status requests are read-only. Settings and schedules take effect immediately.</p><button className="context-primary" type="button" onClick={() => sendCommand("read list of active ports")} disabled={!acceptsInput}>Refresh active ports</button><InterfaceWorkbench portIds={interfacePortIds} sendCommand={sendCommand} disabled={!acceptsInput} /></section>}
 
-          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section" lang={navigationLocale}><span className="section-kicker">Rockvil</span><h2 lang={currentRoomName ? navigationPlaceLanguage(currentRoomName) : navigationLocale}>{currentRoomName ? navigationPlace(currentRoomName) : navigationText("directions")}</h2><p>{room ? navigationText("contextHelp") : describedDirections.length ? navigationText("contextFallback") : navigationText("contextEmpty")}</p><button className="context-primary" type="button" onClick={() => openFieldwork("map")}>{navigationText("openPlanner")}</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong lang={navigationPlaceLanguage(roomNameForYear(exit.targetId, displayYear) || exit.target)}>{navigationPlace(roomNameForYear(exit.targetId, displayYear) || exit.target)}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>{navigationLocale === "ja" ? `${direction}へ進む` : `Go ${direction}`}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>{navigationText("emptyExits")}</p></div>}<SceneActions objects={sceneActionObjects} roomId={room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line" && (room?.id !== "CINEMA" || cinemaLineInput)} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
+          {activePanel === "context" && mode === "Simulation Mode" && <section className="companion-section map-section" lang={navigationLocale}><span className="section-kicker">Rockvil</span><h2 lang={currentRoomName ? navigationPlaceLanguage(currentRoomName) : navigationLocale}>{currentRoomName ? navigationPlace(currentRoomName) : navigationText("directions")}</h2><p>{room ? navigationText("contextHelp") : describedDirections.length ? navigationText("contextFallback") : navigationText("contextEmpty")}</p><button className="context-primary" type="button" onClick={() => openFieldwork("map")}>{navigationText("openPlanner")}</button>{roomExits.length > 0 ? <div className="exit-list">{roomExits.map(([direction, exit]) => <button type="button" key={direction} onClick={() => sendCommand(exit.command)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction] || direction}</span><strong lang={navigationPlaceLanguage(roomNameForYear(exit.targetId, displayYear) || exit.target)}>{navigationPlace(roomNameForYear(exit.targetId, displayYear) || exit.target)}</strong><small>{exit.command}</small></button>)}</div> : describedDirections.length > 0 ? <div className="exit-list described-exits">{describedDirections.map((direction) => <button type="button" key={direction} onClick={() => sendCommand(direction)} disabled={!acceptsInput}><span>{DIRECTION_LABELS[direction.toUpperCase()] || direction.toUpperCase()}</span><strong>{navigationLocale === "ja" ? `${direction}へ進む` : `Go ${direction}`}</strong></button>)}</div> : <div className="empty-map"><span>⌁</span><p>{navigationText("emptyExits")}</p></div>}<SceneActions objects={sceneActionObjects} roomId={room?.id} level={interactionLevel} locale={locale} initial2041={initial2041Presentation} lineInput={inputKind === "line" && (room?.id !== "CINEMA" || cinemaLineInput)} homeControlsRoom={homeControlsRoom} sendCommand={sendCommand} draftCommand={draftSceneCommand} disabled={!acceptsInput} /></section>}
 
           {activePanel === "context" && (!mode || mode === "Sleep Mode") && <section className="companion-section" lang={mode === "Sleep Mode" ? "en" : locale}><span className="section-kicker">{mode === "Sleep Mode" ? "Sleep Mode" : uiText(locale, "incoming")}</span><h2>{mode === "Sleep Mode" ? "Background processing" : uiText(locale, "openingTransmission")}</h2><p>{mode === "Sleep Mode" ? "Time is passing. Return to Communications Mode when you are ready." : uiText(locale, "openingContextCopy")}</p></section>}
 
@@ -1423,11 +1452,11 @@ export default function PrismEdition() {
 
       {fieldworkOpen && <div className="fieldwork-drawer-backdrop">
         <section className={`fieldwork-drawer ${initialFieldworkActive ? "with-brief" : "map-only"}`} lang={initial2041Presentation ? locale : "en"} role="dialog" aria-modal="true" aria-labelledby="fieldwork-title" data-fieldwork-view={fieldworkView}>
-          <header className="fieldwork-drawer-header"><div><span className="section-kicker">{initialFieldworkActive ? initial2041Presentation ? uiText(locale, "fieldworkConsole") : "Perelman’s fieldwork console" : "Rockvil navigation"}</span><h2 id="fieldwork-title">{initialFieldworkActive ? initial2041Presentation ? uiText(locale, "mapRecordingBrief") : "Map & recording brief" : "Rockvil map"}</h2><p>{currentRoomName ? <><span lang={initial2041Presentation && localizeSimulationPlace(locale, currentRoomName) !== currentRoomName ? locale : "en"}>{initial2041Presentation ? localizeSimulationPlace(locale, currentRoomName) : currentRoomName}</span>{displayYear ? ` · ${displayYear}` : ""}</> : initialFieldworkActive && initial2041Presentation ? uiText(locale, "chooseDestinationOriginalMap") : "Choose a destination on the original map."}</p></div><div className="fieldwork-drawer-status">{initialFieldworkActive && <span>{recordedProgress(initial2041Presentation ? locale : "en", fieldworkRecordedCount)}</span>}{recording && <strong>● RECORDING</strong>}{interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && !recording && <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>{initial2041Presentation ? uiText(locale, "startRecord") : "Start RECORD"}</button>}<button ref={fieldworkCloseRef} className="fieldwork-close" type="button" onClick={closeFieldwork} aria-label={initialFieldworkActive ? initial2041Presentation ? uiText(locale, "closeFieldwork") : "Close map and fieldwork brief" : "Close Rockvil map"}>×</button></div></header>
+          <header className="fieldwork-drawer-header"><div><span className="section-kicker">{initialFieldworkActive ? initial2041Presentation ? uiText(locale, "fieldworkConsole") : "Perelman’s fieldwork console" : "Rockvil navigation"}</span><h2 id="fieldwork-title">{initialFieldworkActive ? initial2041Presentation ? uiText(locale, "mapRecordingBrief") : "Map & recording brief" : "Rockvil map"}</h2><p>{currentRoomName ? <><span lang={navigationPlaceLanguage(currentRoomName)}>{navigationPlace(currentRoomName)}</span>{displayYear ? ` · ${displayYear}` : ""}</> : initialFieldworkActive && initial2041Presentation ? uiText(locale, "chooseDestinationOriginalMap") : "Choose a destination on the original map."}</p></div><div className="fieldwork-drawer-status">{initialFieldworkActive && <span>{recordedProgress(initial2041Presentation ? locale : "en", fieldworkRecordedCount)}</span>}{recording && <strong>● RECORDING</strong>}{interactionLevel === "actions" && initialFieldworkActive && currentFieldworkAssignment && !currentFieldworkComplete && !recording && <button type="button" onClick={() => sendCommand("record")} disabled={!acceptsInput}>{initial2041Presentation ? uiText(locale, "startRecord") : "Start RECORD"}</button>}<button ref={fieldworkCloseRef} className="fieldwork-close" type="button" onClick={closeFieldwork} aria-label={initialFieldworkActive ? initial2041Presentation ? uiText(locale, "closeFieldwork") : "Close map and fieldwork brief" : "Close Rockvil map"}>×</button></div></header>
           {initialFieldworkActive && <div className="fieldwork-drawer-tabs" role="tablist" aria-label={initial2041Presentation ? uiText(locale, "fieldworkViews") : "Fieldwork views"}><button type="button" role="tab" aria-selected={fieldworkView === "map"} onClick={() => setFieldworkView("map")}>{initial2041Presentation ? uiText(locale, "mapRoute") : "Map & route"}</button><button type="button" role="tab" aria-selected={fieldworkView === "brief"} onClick={() => setFieldworkView("brief")}>{initial2041Presentation ? uiText(locale, "brief") : "Brief"} <span>{fieldworkRecordedCount}/{FIELD_ASSIGNMENTS.length}</span></button></div>}
           <div className={`fieldwork-drawer-body ${initialFieldworkActive ? "with-brief" : "map-only"}`}>
-            <RockvilNavigator currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} onSelect={selectMapLandmark} onStep={useMapRouteStep} onClear={() => setMapDestinationId(null)} stepLabel={navigationText(interactionLevel === "guided" ? "draftStep" : "takeStep")} disabled={!acceptsInput} lang={navigationLocale} />
-            {initialFieldworkActive && <section className="fieldwork-checklist" aria-label={initial2041Presentation ? uiText(locale, "fieldworkChecklist") : "Fieldwork checklist"}><div className="checklist-heading"><div><span>{initial2041Presentation ? uiText(locale, "perelmanBrief") : "Perelman’s brief"}</span><strong>{recordedProgress(initial2041Presentation ? locale : "en", fieldworkRecordedCount)}</strong></div><small>{initial2041Presentation ? uiText(locale, "checklistEstimate") : "RECORD must be active during the experience. Checks follow the same Release 79 triggers as the game."}</small></div><ol>{FIELD_ASSIGNMENTS.map((assignment, index) => { const displayedAssignment = simulationAssignment(initial2041Presentation ? locale : "en", index); const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment === index); const complete = fieldProgress[index]; const current = currentFieldworkIndex === index; return <li key={assignment} className={`${complete ? "complete" : ""} ${current ? "current" : ""}`}><span aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>{displayedAssignment}</strong>{destination && <small><span lang={localizeSimulationMapLabel(navigationLocale, destination.id, destination.label) !== destination.label ? navigationLocale : "en"}>{localizeSimulationMapLabel(navigationLocale, destination.id, destination.label)}</span>{current && <> · {initial2041Presentation ? uiText(locale, "youAreHere") : "you are here"}</>}</small>}</div>{destination && <button type="button" onClick={() => plotFieldworkAssignment(destination)} aria-label={plotAssignmentLabel(initial2041Presentation ? locale : "en", displayedAssignment)}>{initial2041Presentation ? uiText(locale, mapDestinationId === destination.id ? "routePlotted" : "showOnMap") : mapDestinationId === destination.id ? "Route plotted" : "Show on map"}</button>}</li>; })}</ol></section>}
+            <RockvilNavigator currentRoomId={room?.id ?? null} routePreview={mapRoutePreview} onSelect={selectMapLandmark} onStep={useMapRouteStep} onClear={() => setMapDestinationId(null)} stepLabel={navigationText(interactionLevel === "guided" ? "draftStep" : "takeStep")} disabled={!acceptsInput} lang={navigationLocale} home2041={initial2041Presentation} />
+            {initialFieldworkActive && <section className="fieldwork-checklist" aria-label={initial2041Presentation ? uiText(locale, "fieldworkChecklist") : "Fieldwork checklist"}><div className="checklist-heading"><div><span>{initial2041Presentation ? uiText(locale, "perelmanBrief") : "Perelman’s brief"}</span><strong>{recordedProgress(initial2041Presentation ? locale : "en", fieldworkRecordedCount)}</strong></div><small>{initial2041Presentation ? uiText(locale, "checklistEstimate") : "RECORD must be active during the experience. Checks follow the same Release 79 triggers as the game."}</small></div><ol>{FIELD_ASSIGNMENTS.map((assignment, index) => { const displayedAssignment = simulationAssignment(initial2041Presentation ? locale : "en", index); const destination = ROCKVIL_LANDMARKS.find((landmark) => landmark.assignment === index); const complete = fieldProgress[index]; const current = currentFieldworkIndex === index; return <li key={assignment} className={`${complete ? "complete" : ""} ${current ? "current" : ""}`}><span aria-hidden="true">{complete ? "✓" : String(index + 1).padStart(2, "0")}</span><div><strong>{displayedAssignment}</strong>{destination && <small><span lang={localizeSimulationMapLabel(navigationLocale, destination.id, destination.label, initial2041Presentation) !== destination.label ? navigationLocale : "en"}>{localizeSimulationMapLabel(navigationLocale, destination.id, destination.label, initial2041Presentation)}</span>{current && destination.targetId === room?.id && <> · {initial2041Presentation ? uiText(locale, "youAreHere") : "you are here"}</>}</small>}</div>{destination && <button type="button" onClick={() => plotFieldworkAssignment(destination)} aria-label={plotAssignmentLabel(initial2041Presentation ? locale : "en", displayedAssignment)}>{initial2041Presentation ? uiText(locale, mapDestinationId === destination.id ? "routePlotted" : "showOnMap") : mapDestinationId === destination.id ? "Route plotted" : "Show on map"}</button>}</li>; })}</ol></section>}
           </div>
         </section>
       </div>}
@@ -1450,7 +1479,7 @@ export default function PrismEdition() {
 
       {qaWarningOpen && <section className="qa-warning-overlay" role="dialog" aria-modal="true" aria-labelledby="qa-warning-title"><div className="qa-warning-card"><span className="section-kicker">Explicit consent required</span><h2 id="qa-warning-title">This reveals the whole structure.</h2><p>Debug mode names future years, later acts, and the ending. It opens a separate noncanonical interpreter with the original developers’ dormant shortcuts restored. QA autosave is disabled; your live Release 79 session waits in memory until you return.</p><div><button type="button" onClick={enableQa}>Enable spoilers & load QA build</button><button type="button" onClick={() => setQaWarningOpen(false)}>Cancel</button></div></div></section>}
 
-      <PackageOverlay item={packageItem} locale={locale} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
+      <PackageOverlay item={packageItem} locale={locale} home2041={initial2041Presentation} onSelect={setPackageItem} onClose={() => setPackageItem(null)} />
 
       <div className="screen-reader-status" aria-live="polite" aria-hidden={introOpen || qaWarningOpen}>{openingOrCommunications ? <span lang={locale}>{mode === "Communications Mode" ? uiText(locale, "communicationsAnnouncement") : uiText(locale, "storyOpeningAnnouncement")} {currentPlace || ""}</span> : <span lang="en">{mode}. {currentPlace || ""} {displayYear || ""}</span>}</div>
       <div className="era-index" aria-hidden="true" style={{ "--era-index": Math.max(0, eraIndex) } as React.CSSProperties} />

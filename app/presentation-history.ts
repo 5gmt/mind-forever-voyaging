@@ -10,6 +10,7 @@ export type PresentationHistoryEntry = {
   powerStation2041?: string;
   church2041?: string;
   cinema2041?: string;
+  home2041?: string;
 };
 
 export type PresentationHistory = PresentationHistoryEntry[];
@@ -44,10 +45,10 @@ const isSafeObservation = (presentation: BridgePresentation | null): presentatio
 export const reconcilePresentationHistory = (
   previous: PresentationHistory,
   presentation: BridgePresentation | null,
-  scope: { cityHall2041?: string; powerStation2041?: string; church2041?: string; cinema2041?: string } = {},
+  scope: Omit<PresentationHistoryEntry, "id" | "presentation"> = {},
 ): PresentationReconciliation => {
   if (!isSafeObservation(presentation)) return { history: previous, representable: false };
-  const localized = storyPresentation(presentation, "ja");
+  const localized = storyPresentation(presentation, "ja", scope.home2041);
   const fallback = fallbackTurnPresentation(presentation);
   if (!localized && !fallback) return { history: previous, representable: false };
 
@@ -70,7 +71,7 @@ export const reconcilePresentationHistory = (
   const restoreBoundary = fallback?.[0]?.kind === "command"
     && /^RESTORE$/i.test(fallback[0].canonicalText ?? fallback[0].text);
   return {
-    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}), ...(scope.powerStation2041 ? { powerStation2041: scope.powerStation2041 } : {}), ...(scope.church2041 ? { church2041: scope.church2041 } : {}), ...(scope.cinema2041 ? { cinema2041: scope.cinema2041 } : {}) }],
+    history: [...(pristineOpening || restoreBoundary ? [] : previous), { id, presentation, ...(scope.cityHall2041 ? { cityHall2041: scope.cityHall2041 } : {}), ...(scope.powerStation2041 ? { powerStation2041: scope.powerStation2041 } : {}), ...(scope.church2041 ? { church2041: scope.church2041 } : {}), ...(scope.cinema2041 ? { cinema2041: scope.cinema2041 } : {}), ...(scope.home2041 ? { home2041: scope.home2041 } : {}) }],
     representable: true,
   };
 };
@@ -164,7 +165,7 @@ export const projectPresentationHistory = (
   locale: Locale,
 ): Array<{ entryId: string; blocks: StoryPresentationBlock[] }> => history.map((entry) => ({
   entryId: entry.id,
-  blocks: (storyPresentation(entry.presentation, locale)
+  blocks: (storyPresentation(entry.presentation, locale, entry.home2041)
     ?? fallbackTurnPresentation(entry.presentation)
     ?? []).map((block) => block.contentId?.startsWith("part1.simulation.city-hall.")
       && entry.cityHall2041 !== CITY_HALL_COPY_ROOMS[block.contentId]

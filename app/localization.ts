@@ -1,3 +1,5 @@
+import { HOME_FURNISHINGS, HOME_LIVING_ROOM } from "./home-recording.ts";
+
 export type Locale = "en" | "ja";
 
 const UI = {
@@ -210,7 +212,7 @@ const UI = {
     brief: "Brief",
     fieldworkChecklist: "Fieldwork checklist",
     perelmanBrief: "Perelman’s brief",
-    checklistEstimate: "RECORD must be active during the experience. Checks follow the same Release 79 triggers as the game.",
+    checklistEstimate: "RECORD must be active during the experience. Checkmarks are estimates based on Release 79 responses.",
     youAreHere: "you are here",
     showOnMap: "Show on map",
     routePlotted: "Route plotted",
@@ -523,6 +525,18 @@ const CINEMA_ACTION_UI = {
 } as const;
 export const cinemaActionUiText = (locale: Locale, key: keyof typeof CINEMA_ACTION_UI.en) => CINEMA_ACTION_UI[locale][key];
 
+const HOME_ACTION_UI = {
+  en: { landmark: "Home doors", building: "Open the building entrance door with a key", apartment: "Open the apartment door with a key" },
+  ja: { landmark: "自宅への扉", building: "建物入口の扉を鍵で開ける", apartment: "住居の扉を鍵で開ける" },
+} as const;
+export const homeActionUiText = (locale: Locale, key: keyof typeof HOME_ACTION_UI.en) => HOME_ACTION_UI[locale][key];
+
+const HOME_MAP_UI = {
+  en: { entrance: "Parkview Apartments entrance", arrived: "You have arrived at the building entrance." },
+  ja: { entrance: "パークビュー・アパートの入口", arrived: "建物の入口に着きました。" },
+} as const;
+export const homeMapArrivalText = (locale: Locale) => HOME_MAP_UI[locale].arrived;
+
 const CITY_HALL_TALK_HELP = {
   en: { guided: "Draft a command to talk to the government official. You can edit it before sending.", actions: "Choose Talk to send the command once." },
   ja: { guided: "政府職員と話すコマンドを下書きします。編集してから送信できます。", actions: "「話す」を押すと、コマンドを1回送信します。" },
@@ -639,8 +653,16 @@ const SIMULATION_PLACE_LABELS: Partial<Record<Locale, Readonly<Record<string, st
 
 // Wrapper-owned location copy uses the exact accepted canonical room identity.
 // The raw GridWindow status remains English, and unknown rooms fail closed.
-export const localizeSimulationPlace = (locale: Locale, canonicalPlace: string) =>
-  SIMULATION_PLACE_LABELS[locale]?.[canonicalPlace] ?? canonicalPlace;
+const HOME_PLACE_LABELS: Readonly<Record<string, string>> = {
+  "Southway & Park": "サウスウェイ通りとパーク通り",
+  "Parkview Apartments": "パークビュー・アパート",
+  "Hall Near Your Apartment": "自宅前の廊下",
+  "Living Room": "居間",
+};
+
+export const localizeSimulationPlace = (locale: Locale, canonicalPlace: string, home2041 = false) =>
+  (locale === "ja" && home2041 ? HOME_PLACE_LABELS[canonicalPlace] : undefined)
+  ?? SIMULATION_PLACE_LABELS[locale]?.[canonicalPlace] ?? canonicalPlace;
 
 const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, string>>>> = {
   ja: {
@@ -660,8 +682,39 @@ const SIMULATION_MAP_LABELS: Partial<Record<Locale, Readonly<Record<string, stri
 // Map labels are keyed by their UI identity rather than target room. This keeps
 // landmarks, fieldwork destinations, and room names distinct even when they
 // point at the same canonical world-data ID. Unknown identities fail closed.
-export const localizeSimulationMapLabel = (locale: Locale, identity: string, canonicalLabel: string) =>
-  SIMULATION_MAP_LABELS[locale]?.[identity] ?? canonicalLabel;
+export const localizeSimulationMapLabel = (locale: Locale, identity: string, canonicalLabel: string, home2041 = false) =>
+  identity === "home" && home2041 ? HOME_MAP_UI[locale].entrance : SIMULATION_MAP_LABELS[locale]?.[identity] ?? canonicalLabel;
+
+// H2-approved Home leaves include two identical door responses with different room identities.
+const HOME_OBSERVED_STORY_CATALOG = [
+  ["southway-heading", "SOUTHWAY-AND-PARK", ["S", "SOUTH", "E", "EAST"], "Southway & Park", HOME_PLACE_LABELS["Southway & Park"], "title"],
+  ["building-heading", "PARKVIEW-APARTMENTS", ["W", "WEST", "E", "EAST"], "Parkview Apartments", HOME_PLACE_LABELS["Parkview Apartments"], "title"],
+  ["hall-heading", "PARKVIEW-HALL", ["IN", "S", "SOUTH"], "Hall Near Your Apartment", HOME_PLACE_LABELS["Hall Near Your Apartment"], "title"],
+  ["living-room-heading", "LIVING-ROOM", ["N", "NORTH", "LOOK"], "Living Room", HOME_PLACE_LABELS["Living Room"], "title"],
+  ["southway-busy", "SOUTHWAY-AND-PARK", ["S", "SOUTH"], "Southway bends sharply at this intersection, leading east and southwest. Park Street begins here and heads north. There are new buildings on the northeast and western corners, and older-looking buildings to the northwest and southeast. A grocery store, its brightly lit window heaped with food, spans the southern side of the street. The sidewalks and street are crowded with people.", "ここでサウスウェイ通りは大きく折れ、東と南西に延びている。パーク通りはこの交差点から北へ延びる。北東と西の角には新しい建物があり、北西と南東の角には古めかしい建物がある。通りの南側いっぱいに食料品店があり、明るく照らされたショーウィンドウには食べ物が山積みになっている。歩道も車道も人で混み合っている。", "prose"],
+  ["southway-quiet", "SOUTHWAY-AND-PARK", ["S", "SOUTH"], "Southway bends sharply at this intersection, leading east and southwest. Park Street begins here and heads north. There are new buildings on the northeast and western corners, and older-looking buildings to the northwest and southeast. A grocery store, its brightly lit window heaped with food, spans the southern side of the street. The midday crowds have almost completely dispersed; the street is much less busy now.", "ここでサウスウェイ通りは大きく折れ、東と南西に延びている。パーク通りはこの交差点から北へ延びる。北東と西の角には新しい建物があり、北西と南東の角には古めかしい建物がある。通りの南側いっぱいに食料品店があり、明るく照らされたショーウィンドウには食べ物が山積みになっている。昼どきの人混みはほとんど散り、通りはずっと空いている。", "prose"],
+  ["southway-probe", "SOUTHWAY-AND-PARK", ["S", "SOUTH"], "Southway bends sharply at this intersection, leading east and southwest. Park Street begins here and heads north. There are new buildings on the northeast and western corners, and older-looking buildings to the northwest and southeast. A grocery store, its brightly lit window heaped with food, spans the southern side of the street.", "ここでサウスウェイ通りは大きく折れ、東と南西に延びている。パーク通りはこの交差点から北へ延びる。北東と西の角には新しい建物があり、北西と南東の角には古めかしい建物がある。通りの南側いっぱいに食料品店があり、明るく照らされたショーウィンドウには食べ物が山積みになっている。", "prose"],
+  ["vestibule", "PARKVIEW-APARTMENTS", ["W", "WEST"], "You are in the vestibule of a typical high-rise city apartment building. A wide expanse of labelled buzzers and tiny mailboxes fills one wall. Glass doors lie closed to the west. Next to this inner door is a picturephone. The street lies to the east.", "よくある都市の高層アパートの風除室にいる。壁の一面には、名札の付いた呼び鈴と小さな郵便受けがずらりと並ぶ。西側のガラス扉は閉まっている。その扉のそばにはテレビ電話がある。東に出ると通りだ。", "prose"],
+  ["building-door-opens", "PARKVIEW-APARTMENTS", ["OPEN DOOR WITH KEY"], "The door opens.", "扉が開く。", "prose"],
+  ["building-door-locked", "PARKVIEW-APARTMENTS", ["IN"], "The door to the inner lobby is locked.", "内側のロビーへ通じる扉には鍵がかかっている。", "prose"],
+  ["elevator-to-hall", "PARKVIEW-HALL", ["IN"], "You enter the inner lobby and take the elevator up to your floor.", "内側のロビーに入り、エレベーターで自宅のある階へ上がる。", "prose"],
+  ["hall", "PARKVIEW-HALL", ["IN"], "You are standing in the hall at the door to your apartment, which lies closed to the north. The stairs and elevators to the street are off to the east.", "自宅の扉の前の廊下にいる。扉は北にあり、閉まっている。通りへ下りる階段とエレベーターは東にある。", "prose"],
+  ["apartment-door-opens", "PARKVIEW-HALL", ["OPEN DOOR WITH KEY"], "The door opens.", "扉が開く。", "prose"],
+  ["apartment-door-closed", "PARKVIEW-HALL", ["N", "NORTH"], "The door is closed.", "扉は閉まっている。", "prose"],
+  ["living-room", "LIVING-ROOM", ["N", "NORTH", "LOOK"], HOME_LIVING_ROOM, "ここは自宅の広々とした居間だ。北に寝室、東に台所がある。南の壁際にはソファがあり、その隣の玄関扉は開いている。西には大きな窓があり、外の景色を一望できる。", "prose"],
+  ["easel-and-word-processor", "LIVING-ROOM", ["N", "NORTH", "LOOK"], HOME_FURNISHINGS, "窓辺の明るく気持ちのよい一角に、ジルのイーゼルが置かれている。いま描いている絵がそこに載っている。部屋の一角には、執筆に使っている古いワープロがある。", "prose"],
+  ["romance-novel", "LIVING-ROOM", ["N", "NORTH", "LOOK"], "There is a romance novel here.", "恋愛小説が一冊ある。", "prose"],
+  ["jill-painting", "LIVING-ROOM", ["N", "NORTH", "LOOK"], "Jill is standing at the easel, working on her current painting.", "ジルがイーゼルの前に立ち、絵を描いている。", "prose"],
+  ["jill-painting-greeting", "LIVING-ROOM", ["N", "NORTH"], "Jill looks up from her painting. \"Hi, hon. Any news from your agent today?\"", "ジルが描きかけの絵から顔を上げる。「ねえ、あなた。今日、エージェントから何か連絡はあった？」", "prose"],
+  ["jill-tidying", "LIVING-ROOM", ["N", "NORTH", "LOOK"], "Jill is walking around, neatening and cleaning the living room.", "ジルが居間を歩き回りながら、片づけや掃除をしている。", "prose"],
+  ["jill-tidying-greeting", "LIVING-ROOM", ["N", "NORTH"], "Jill stops working for a moment and smiles at you. \"Hi, hon. Any news from your agent today?\"", "ジルが手を休めて、こちらにほほえむ。「ねえ、あなた。今日、エージェントから何か連絡はあった？」", "prose"],
+  ["jill-reading", "LIVING-ROOM", ["LOOK"], "Jill picks up a book and sits down on the couch to read it.", "ジルが本を手に取り、ソファに腰を下ろして読み始める。", "prose"],
+  ["back-to-vestibule", "PARKVIEW-APARTMENTS", ["E", "EAST"], "You descend to the first floor and head for the lobby...", "1階に下り、ロビーへ向かう……", "prose"],
+  ["elm-park-return", "ELM-AND-PARK", ["N", "NORTH"], "Elm & Park", SIMULATION_PLACE_LABELS.ja!["Elm & Park"], "title"],
+] as const;
+
+type HomeStoryContentId = `part1.simulation.home.${typeof HOME_OBSERVED_STORY_CATALOG[number][0]}`;
+
 
 // Intentionally tiny and exact: this PoC only presents deterministic translations
 // of the canonical opening. Anything not listed remains verbatim English.
@@ -681,6 +734,7 @@ export const localizeStoryTranscript = (rawEnglish: string, locale: Locale) => {
 };
 
 export type StoryContentId =
+  | HomeStoryContentId
   | "part1.initial.incoming-message"
   | "part1.initial.release"
   | "part1.initial.communications"
@@ -1270,3 +1324,13 @@ export const observedStoryLeafTranslation = (canonicalLeaf: string, locale: Loca
   return index?.get(`${canonicalCommand?.toUpperCase() ?? "*"}\u0000${canonicalLeaf}`)
     ?? index?.get(`*\u0000${canonicalLeaf}`);
 };
+
+const HOME_OBSERVED_STORY_INDEX = new Map<string, ObservedStoryTranslation>();
+for (const [id, room, commands, leaf, text, kind] of HOME_OBSERVED_STORY_CATALOG) {
+  for (const command of commands) {
+    HOME_OBSERVED_STORY_INDEX.set(`${room}\u0000${command}\u0000${leaf}`, { contentId: `part1.simulation.home.${id}`, text, kind: kind === "title" ? "title" : undefined });
+  }
+}
+
+export const observedHomeLeafTranslation = (leaf: string, locale: Locale, command: string, room?: string) =>
+  locale === "ja" && room ? HOME_OBSERVED_STORY_INDEX.get(`${room}\u0000${command.toUpperCase()}\u0000${leaf}`) : undefined;
