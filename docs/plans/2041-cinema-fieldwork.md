@@ -11,6 +11,8 @@
 **Baseline:** 教会 [PR #107](https://github.com/5gmt/mind-forever-voyaging/pull/107) の merge `06e6633ff2a3572959955d320ef1e9d8477a5de4`。実行時には最新 `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-01 JST の owner の次期 milestone 設計 / タスク作成依頼に対する提案。
 
+**Next:** 2026-11-27のowner依頼に基づく次期提案は[自宅訪問と居間の録画](2041-home-fieldwork.md)。H1が本計画の採択済み候補A・96送信を継承し、追加経路を実測する。映画の受入済み範囲や既存回帰は変更しない。
+
 ## Global Constraints
 
 - Canonical `public/amfv-r79-s851122.z4` の SHA-256 は `14e2fd1872c9487e2ca51a7975590358f5ca42a4b439abc39c60b6653511216d` を維持する。Historical `source/`、非 canonical QA story、production dependencies、deployment は変更しない。
