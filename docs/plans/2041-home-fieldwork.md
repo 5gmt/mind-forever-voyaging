@@ -6,8 +6,8 @@
 **Goal:** 同じ初回2041年canonical sessionで先行七課題を保持し、自宅の居間を訪れて室内の様子を録画し、Kennedy Parkの通常入力へ戻れる日本語体験を提供する。
 **Architecture:** 既存2a+2b、exact observed-leaf catalog、観測時room scope、地名lookup、限定操作を使う。扉を開けるcommandはcanonical parserに任せ、住居内での新しい録画観測だけを補助checklistの根拠とする。
 **Tech Stack:** Next.js / React / TypeScript、Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
-**Spec:** 本書の「選定」「経路候補」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md)、[AGENTS.md](../../AGENTS.md)、[CI運用](../ci-operation.md)を保持する。
-**Status:** 計画は独立Solレビューを経て[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。H1は[111送信の完走2件と別の閉扉probe](../home-runtime-evidence.md)を提出し、独立Solの成功採択とマージを待つ。H2 / H3は開始前。
+**Spec:** 本書の「選定」「採択経路」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md)、[AGENTS.md](../../AGENTS.md)、[CI運用](../ci-operation.md)を保持する。
+**Status:** 計画は[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。H1の[111送信の完走2件と別の閉扉probe](../home-runtime-evidence.md)は[独立Solが採択](https://github.com/5gmt/mind-forever-voyaging/pull/124#pullrequestreview-6084630653)し、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)をマージした。H2は[英日copy packet](../home-copy-packet.md)の独立Sol承認とマージを待つ。H3はH2のマージ後に開始する。
 **Baseline:** 映画PR #118とCI保守PR #119を含むdefault branch `codex/modern-amfv`、merge `505e226bbe818a1dd4a4b1f15b199a3f5a76ae9c`。実行時には最新target branchを含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-27 JSTのownerによる次期milestone設計・タスク作成依頼に基づく。
 
@@ -34,7 +34,7 @@
 ## 選定
 
 映画の次は **自宅の居間を訪ねて録画する** milestoneを選ぶ。Sourceと現在の地図では公園から建物入口まで片道3手で、鍵による二つの開扉と短い室内録画に限定できる。
-以下はcurrent code / map / historical sourceに基づく計画上の比較であり、新候補をruntimeで成功させたとの主張ではない。成功経路の採択はH1が担当する。
+次の比較は計画時のcode、map、historical sourceに基づく。採択された経路の根拠は[H1のruntime実測](../home-runtime-evidence.md)である。
 
 | 候補 | プレイヤーに加わる体験と判断 | 扱い |
 | --- | --- | --- |
@@ -43,11 +43,11 @@
 | Simulation帰還・正式評価 | 九課題の正式評価、録画buffer消去、再入場。 | 公共交通も含めた別設計。補助8/9から完了を推測しない。 |
 | CIの追加最適化 | Artifact重複削減、条件付きmerge gateの強制等。 | ゲーム内進行とは別件。今回はHome追加に必要な群分配だけH3に含める。 |
 
-## 実測した経路と採択条件
+## 採択経路
 
 [映画候補Aの実測](../cinema-recording-a-evidence.md)と [cinema acceptance helper](../../tests/e2e/cinema-acceptance.ts)を先行経路の正本とする。裁判所は現地録画で、他の既存録画窓は維持する。
 
-| 実送信番号 | Command候補 | 意味 |
+| 実送信番号 | Command | 意味 |
 | --- | --- | --- |
 | 1–96 | 映画候補Aの既採択経路 | 七課題を実際に行い、Kennedy Parkへ非録画で帰着。起動char、実decoder回答、direction aliasを区別して照合する。 |
 | 97–99 | `SW / S / W` | Elm & Park → Southway & Park → Parkview Apartments。建物入口までで、居間ではない。 |
@@ -55,7 +55,7 @@
 | 104–106 | `RECORD / LOOK / RECORD OFF` | 室内の新しいLOOK本文と前後のrecordingを観測し、明示停止する。 |
 | 107–111 | `S / E / E / N / NE` | 廊下 → 建物入口 → Southway & Park → Elm & Park → Kennedy Park。非録画・通常入力で終える。 |
 
-追加15、計111 line submissionsを本番ビルドの新規セッション2件で実測した。Map操作とdraft編集は送信数に含めない。独立Solの採択前は経路候補として扱う。
+追加15、計111 line submissionsを本番ビルドの新規セッション2件で実測し、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)で採択した。Map操作とdraft編集は送信数に含めない。
 [source/prism.zil](../../source/prism.zil)の初回2041年初期化はKEYをPLAYERへ置き、[source/apartment.zil](../../source/apartment.zil)の `PARKVIEW-DOOR-F` / `APARTMENT-DOOR-F` は鍵を伴うOPENで扉を開く。両者は同じ名の別objectであり、引数なしのgeneric Openと同一視しない。
 同sourceの `INNER-LOBBY-ENTER-F` は実際には廊下へ移動する。説明中のinner lobbyやelevatorを架空のroomや追加移動にしない。
 `LIVING-ROOM-F` は入室時にJillの時刻依存状態を設定する。家族が同じ場所・同じ動作であることを成功条件にしない。必須室内本文、観測済み可変文、未観測のEnglish fallbackを分ける。
@@ -105,16 +105,17 @@ Full / auto-deactivation、開扉失敗、必要本文欠落、通常入力未�
 - [x] Production buildで2 full sessionsと別probeを採取する。Canonicalを操作し、VM変更・save復元・複数sessionの課題合成はしない。失敗を消して成功fixtureへ混ぜない。
 - [x] Unit test `retains two complete home sessions after the adopted cinema route` を追加する。111送信候補、prefix96、全input対応、開扉と居間LOOK、録画継続 / OFF、帰着、locked probeの拒否を実fixtureで検証する。Runtimeで候補と異なる場合は成功assertionを弱めず停止する。
 - [x] `node --test --test-name-pattern='home sessions' tests/rendered-html.test.mjs` と適用checksを実行する。[実測記録](../home-runtime-evidence.md)に実時刻、家族の可変文、出力形状、現行UI、未検証範囲を残す。
-- [ ] 独立Solが成功経路と操作契約を採択し、最終head/baseの手動Fullとreadinessを確認してマージする。
+- [x] 独立Solが成功経路と操作契約を採択し、[最終head/baseの手動Fullとreadiness](https://github.com/5gmt/mind-forever-voyaging/pull/124#issuecomment-7214632929)を確認してマージした。
 
 ### H2: 本文・地名・限定開扉copy
 
 **Files:** Create `docs/home-copy-packet.md`。Modify本計画と `PROJECT_STATUS.md`。
 **Consumes:** 採択済みH1のexact leaf / session / observation位置と操作台帳。**Produces:** 原文、日本語、identity、command / room / phase scope、必須 / optional / fallback、visible label / accessible nameの対応表。Runtime contentとwrapper-owned copyを区別する。
 
-- [ ] 室内の必須描写、実測済みの家族の可変文、閉扉拒否、経路、地名、鍵開扉を監査する。二つの同名doorと入口 / 居間を区別し、原作にない歓迎・所持品・完了を補わない。
-- [ ] H1のraw fixtureと全引用を照合する。未観測文は翻訳対象へ追加しない。送信commandは `OPEN DOOR WITH KEY` のまま、意味を変えるgeneric Openへ置き換えない。
-- [ ] `git diff --check`、リンク / 引用対応を確認して独立Solへcopy approvalを求める。`*copy-packet.md` は機械入力なので現在の分類はFull。レビューアが修正確定後に一度手動Fullを起動し、readinessを確認してmergeする。ローカルFullの重複実行は通常不要。
+- [x] [英日copy packet](../home-copy-packet.md)に、室内の必須描写、観測済みの家族の可変文、閉扉拒否、経路と地名を収録した。地図は建物入口を示し、鍵操作は場所に応じた扉に対応する。
+- [x] H1のraw fixtureと全引用を照合した。鍵操作の実送信は `OPEN DOOR WITH KEY`。現行の `open door` とは別の操作として扱う。
+- [x] `git diff --check`、リンクと引用の対応を確認し、独立Solにcopy approvalを求める。
+- [ ] 独立Solのcopy approval後、レビューアが修正確定後のhead/baseで手動Fullを起動し、readinessを確認してマージする。`*copy-packet.md` を含むため分類はFull。
 
 ### H3: presentation・操作・補助実績と受入
 
