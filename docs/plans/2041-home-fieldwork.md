@@ -7,7 +7,7 @@
 **Architecture:** 既存2a+2b、exact observed-leaf catalog、観測時room scope、地名lookup、限定操作を使う。扉を開けるcommandはcanonical parserに任せ、住居内での新しい録画観測だけを補助checklistの根拠とする。
 **Tech Stack:** Next.js / React / TypeScript、Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定」「採択経路」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md)、[AGENTS.md](../../AGENTS.md)、[CI運用](../ci-operation.md)を保持する。
-**Status:** 計画は[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。H1の[111送信の完走2件と別の閉扉probe](../home-runtime-evidence.md)は[独立Solが採択](https://github.com/5gmt/mind-forever-voyaging/pull/124#pullrequestreview-6084630653)し、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)をマージした。H2の[英日copy packet](../home-copy-packet.md)は[独立Solの承認](https://github.com/5gmt/mind-forever-voyaging/pull/125#pullrequestreview-6086347389)を経て[PR #125](https://github.com/5gmt/mind-forever-voyaging/pull/125)でマージ済み。H3の統合と提出時点の検証は[自宅訪問の受入記録](../home-fieldwork-acceptance.md)を参照。
+**Status:** 計画は[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。H1の[111送信の完走2件と別の閉扉probe](../home-runtime-evidence.md)は[独立Solが採択](https://github.com/5gmt/mind-forever-voyaging/pull/124#pullrequestreview-6084630653)し、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)をマージした。H2の[英日copy packet](../home-copy-packet.md)は[独立Solの承認](https://github.com/5gmt/mind-forever-voyaging/pull/125#pullrequestreview-6086347389)を経て[PR #125](https://github.com/5gmt/mind-forever-voyaging/pull/125)でマージ済み。H3は[PR #126](https://github.com/5gmt/mind-forever-voyaging/pull/126)でmerge済み（`76f2c438e69a81d13dfba6c8fa2ab42b5598f4b9`）。独立Solレビュー後、[Work最終受入と全7 ZIP監査](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6091596637)、merge後Fast、[#29完了報告](https://github.com/5gmt/mind-forever-voyaging/issues/29#issuecomment-7224587039)を完了し、H1–H3はclose済み。[自宅訪問の受入記録](../home-fieldwork-acceptance.md)と最終レビューを証拠の正本とする。次の[Transit計画](./2041-transit-fieldwork.md)は独立Solの計画レビュー待ち。
 **Baseline:** 映画PR #118とCI保守PR #119を含むdefault branch `codex/modern-amfv`、merge `505e226bbe818a1dd4a4b1f15b199a3f5a76ae9c`。実行時には最新target branchを含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-27 JSTのownerによる次期milestone設計・タスク作成依頼に基づく。
 
@@ -131,7 +131,7 @@ Full / auto-deactivation、開扉失敗、必要本文欠落、通常入力未�
 - [x] `home-fieldwork.spec.ts` にdesktopの3正例、非録画・入口のみ録画の2負例、controlled `history / guards / recording` の3回帰を置く。`home-narrow.spec.ts` に390pxの3正例を置く。Baseline 73件を保持し、少なくとも合計84 browser casesになる。各自然sessionを途中で分割しない。
 - [x] 受入境界のreading / focus / locale / drawerを同一checkpointのJSON / PNG / accessibilityとして添付する。Controlled JSONを必ずファイルへ残し、自然runtime証拠と混同しない。
 - [x] 短いunit / controlled → 影響する自然経路の順で検証し、lint / tsc / unit / checksum / CI制御 / partitionを確認した。受入記録にローカルの件数と実測時間、失敗・再実行・未実施、受入条件と証拠の対応を記録した。
-- [ ] Sol通常レビューと修正の確定後、手動Fullで全件検証と証拠保存を兼ねる。最終head / base / run / attempt / 群別時間 / artifact path・expiryを受入記録へ追記する。Workの監査を受けてmergeし、#29へ完了報告してH3をcloseする。
+- [x] 独立Sol通常レビュー、[最終Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/46000628519)、Workの全7 ZIP監査とmilestone受入、merge後Fast、#29完了報告、H3 closeを完了した。最終head / base / run / attempt / 群別時間 / artifact / expiryは[最終レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6091596637)を正本とし、自己参照commitを追加しない。
 
 ## CIとレビューの費用を制御する
 
@@ -151,3 +151,7 @@ H3で `home-desktop` / `home-narrow` の2群を追加し、計7群とする。 �
 実装者はlocal証拠ファイルを照合し、Solは通常PRを独立レビューする。WorkはH3だけmilestone全体と最終ZIPを受け入れる。Head/base変更時は影響範囲を再検証し、同一headの確認済み証拠を理由なく再監査しない。最終review / merge / closeの記録はPRとIssueを正本とし、SHA自己参照のためだけの追加commitは要求しない。
 
 実saved-game RESTORE、実screen reader音声、原作の正式九課題評価、公共交通、別室 / 家族との会話、後続年の自然完走、本番配備は、実施していなければ未検証と明記する。[#44](https://github.com/5gmt/mind-forever-voyaging/issues/44)のprovenance規約整備は別件として維持する。
+
+## 次のmilestoneへの引継ぎ
+
+Homeの111送信と八課題の録画窓を[Transit計画](./2041-transit-fieldwork.md)のprefixとして保持する。T1の実測・採択、T2のcopy approval、T3の統合・最終受入に分ける。計画時点では公共交通の成功を未確認とし、原作の正式評価・Simulation帰還はさらに別の後続設計とする。
