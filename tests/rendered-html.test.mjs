@@ -2384,6 +2384,143 @@ test("retains two complete cinema candidate A sessions with on-site courthouse r
   assert.doesNotMatch(refusal.presentation.lines.map(({ text }) => text).join("\n"), /Movie Theatre|You begin watching|usher takes/);
 });
 
+test("retains two complete home sessions after the adopted cinema route", async () => {
+  const readFixture = async (name) => JSON.parse(await readFile(new URL(`./fixtures/${name}.json`, import.meta.url), "utf8"));
+  const [home, cinema] = await Promise.all([
+    readFixture("parchment-home-runtime-observed"), readFixture("parchment-cinema-recording-a-observed"),
+  ]);
+  const aliases = { east: "E", west: "W", north: "N", south: "S", northeast: "NE", northwest: "NW", southeast: "SE", southwest: "SW" };
+  const normalize = (commands) => commands.map((command, index) => index === 6 ? "<decoder>" : aliases[command.toLowerCase()] ?? command.toUpperCase());
+  const roomPath = ["ELM-AND-PARK", "SOUTHWAY-AND-PARK", "PARKVIEW-APARTMENTS", "PARKVIEW-APARTMENTS", "PARKVIEW-HALL", "PARKVIEW-HALL", "LIVING-ROOM", "LIVING-ROOM", "LIVING-ROOM", "LIVING-ROOM", "PARKVIEW-HALL", "PARKVIEW-APARTMENTS", "SOUTHWAY-AND-PARK", "ELM-AND-PARK", "KENNEDY-PARK"];
+  const homePath = ["SW", "S", "W", "OPEN DOOR WITH KEY", "IN", "OPEN DOOR WITH KEY", "N", "RECORD", "LOOK", "RECORD OFF", "S", "E", "E", "N", "NE"];
+  const probePath = ["SW", "S", "W", "IN", "OPEN DOOR WITH KEY", "IN", "N"];
+  const taskTurns = [13, 22, 23, 33, 43, 57, 72, 85, 87, 89];
+  const body = (turn) => turn.presentation.lines.slice(1, -1).map(({ text }) => text.trim());
+  const state = ({ status }) => [status.location, status.mode];
+
+  assert.equal(home.outcome, "adoption-pending");
+  assert.equal(home.canonicalSha256, cinema.canonicalSha256);
+  assert.ok(home.sessions.length >= 2);
+  assert.ok(home.sessions.some((session) => session.submissions.every(({ method }) => method === "form")));
+  assert.ok(home.sessions.some((session) => session.submissions.some(({ method }) => method === "form")
+    && session.submissions.slice(96).some(({ method }) => method === "guided-map-form")
+    && session.submissions.slice(96).some(({ method }) => method === "quick-action")));
+  const sessions = [...home.sessions, home.lockedDoorProbe];
+  assert.equal(new Set(sessions.map(({ id }) => id)).size, sessions.length);
+  for (const session of sessions) {
+    assert.equal(session.failure, undefined);
+    assert.equal(session.startup.before.presentation.activeInput.kind, "char");
+    assert.equal(session.startup.after.presentation.activeInput.kind, "line");
+    assert.equal(session.startup.nextInputId, session.submissions[0].submittedInputId);
+    assert.deepEqual(session.bridgeCommands, [" ", ...session.submittedCommands]);
+    assert.equal(session.observations.length, session.submissions.length - 1);
+    assert.equal(new Set(session.submissions.map(({ submittedInputId }) => submittedInputId)).size, session.submissions.length);
+    for (const [i, submission] of session.submissions.entries()) {
+      const { command, echo, inputKind, submittedInputId, nextInputId } = submission;
+      assert.equal(command, session.submittedCommands[i]);
+      assert.equal(inputKind, "line");
+      assert.equal(echo.id, submittedInputId);
+      assert.notEqual(nextInputId, submittedInputId);
+      if (i) assert.equal(submittedInputId, session.submissions[i - 1].nextInputId);
+      if (i === 6) {
+        assert.match(command, /^\d+$/);
+        assert.ok(echo.runs.some(({ classes, text }) => classes.includes("Style_input") && text === command));
+        assert.equal(session.securityPrompt.presentation.lines.at(-1).id, submittedInputId);
+        assert.equal(session.observations[5].presentation.lines.find(({ id }) => id === submittedInputId).text, echo.text);
+      } else {
+        assert.equal(echo.text.toUpperCase(), `>${command.toUpperCase()}`);
+        const turn = session.observations[i > 6 ? i - 1 : i];
+        assert.deepEqual(turn.presentation.lines[0], echo);
+        assert.equal(turn.nextInputId, i === 5 ? session.submissions[6].nextInputId : nextInputId);
+      }
+    }
+    for (const turn of session.observations) {
+      const p = turn.presentation;
+      assert.equal(p.version, 3);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.activeInput.line, p.terminalLine);
+      assert.equal(p.terminalLine, p.lines.length - 1);
+      assert.equal(p.lines[0].id, turn.submittedInputId);
+      assert.equal(p.lines.at(-1).id, turn.nextInputId);
+      const rawStatus = turn.statusText.match(/Mode:\s+(.+?)\s+Time:\s+(.+?)\s+Location:\s+(.+?)\s+Date:\s+([^\n]+?)\s*$/s);
+      assert.deepEqual(rawStatus?.slice(1), [turn.status.mode, turn.status.time, turn.status.location, turn.status.date]);
+      assert.doesNotMatch(body(turn).join("\n"), /record buffer (?:is )?full|auto-deactivation|not currently active/i);
+      for (const line of p.lines) assert.equal(line.runs.map(({ text }) => text).join(""), line.text);
+    }
+    assert.deepEqual(session.warnings, session.observations.flatMap((turn) => body(turn).filter((text) => /^WARNING:/i.test(text))
+      .map((text) => ({ turnId: turn.turnId, command: turn.command, status: turn.status, text }))));
+  }
+
+  for (const session of home.sessions) {
+    assert.equal(session.submissions.length, 111);
+    assert.deepEqual(normalize(session.submittedCommands), [...normalize(cinema.sessions[0].submittedCommands), ...homePath]);
+    assert.deepEqual(session.observations.slice(0, 95).map(state), cinema.sessions[0].observations.map(state));
+    for (const i of taskTurns) {
+      const stable = body(cinema.sessions[0].observations[i]).filter((text) => text && !text.startsWith("WARNING:") && body(cinema.sessions[1].observations[i]).includes(text));
+      assert.ok(stable.length);
+      assert.deepEqual(body(session.observations[i]).filter((text) => stable.includes(text)), stable, `required cinema-prefix prose at observation ${i}`);
+    }
+    for (const turn of session.observations) {
+      const command = turn.command.toUpperCase();
+      if (command === "RECORD") assert.ok(body(turn).includes("Record feature activated."));
+      if (command === "RECORD OFF") assert.ok(body(turn).includes("Record feature deactivated."));
+    }
+    const turns = session.observations.slice(95);
+    assert.deepEqual(turns.map(({ roomId }) => roomId), roomPath);
+    assert.deepEqual(turns.map(({ status }) => status.mode), turns.map((_, i) => [7, 8].includes(i) ? "Simulation Mode (recording)" : "Simulation Mode"));
+    assert.ok(turns.every(({ status, presentation }) => status.date.endsWith("/2041") && presentation.lines.at(-1).text === ">"));
+    for (const i of [3, 5]) assert.ok(body(turns[i]).includes("The door opens."));
+    assert.ok(body(turns[4]).includes("You enter the inner lobby and take the elevator up to your floor."));
+    for (const i of [6, 8]) {
+      assert.ok(body(turns[i]).includes("Living Room"));
+      assert.ok(body(turns[i]).includes("This is the large living area of your apartment, with a bedroom to the north and a kitchen to the east. The front door of the apartment, next to the couch on the south wall, is open. A huge window provides a panoramic view to the west."));
+      assert.ok(body(turns[i]).includes("Jill's easel occupies a beautiful, well-lit spot near the window. Her current painting is on the easel. In one corner is the old word processor where you do your writing."));
+    }
+    assert.equal(turns.at(-1).status.location, "Kennedy Park");
+    for (const turn of turns) {
+      const reconciled = reconcilePresentationHistory([], turn.presentation);
+      assert.equal(reconciled.representable, true);
+      const blocks = projectPresentationHistory(reconciled.history, "en")[0].blocks;
+      assert.equal(blocks.slice(1).map(({ text }) => text).join("\n"), body(turn).filter(Boolean).join("\n"));
+      // Exercise the existing projector with an approved anchor on a clone.
+      const probe = structuredClone(turn.presentation);
+      probe.lines.splice(-1, 0, { id: "controlled-approved-anchor", text: "Kennedy Park", classes: ["BufferLine"], runs: [{ text: "Kennedy Park", classes: ["Style_normal"], tag: "span" }] });
+      probe.terminalLine++;
+      probe.activeInput.line++;
+      const projected = observedOrdinaryTurnPresentation(probe, "ja");
+      assert.ok(projected);
+      assert.deepEqual(projected.slice(1, -1).map(({ canonicalText, text }) => canonicalText ?? text), body(turn));
+      assert.deepEqual(projected.slice(1, -1).map(({ sourceLines }) => sourceLines), body(turn).map((_, i) => [i + 1]));
+      assert.deepEqual(projected.slice(1, -1).filter(({ kind }) => kind === "spacer").map(({ sourceLines }) => sourceLines), body(turn).flatMap((text, i) => text ? [] : [[i + 1]]));
+    }
+    assert.deepEqual(session.surfaceAudit.map(({ afterSubmission }) => afterSubmission), [99, 101, 103, 105, 111]);
+    for (const audit of session.surfaceAudit) {
+      assert.equal(audit.inputBefore, session.submissions[audit.afterSubmission - 1].nextInputId);
+      assert.equal(audit.inputBefore, audit.inputAfter);
+    }
+    if (session.guidedDraft) {
+      const draft = session.guidedDraft;
+      assert.equal(draft.command, session.submissions[96].command);
+      assert.equal(draft.inputBefore, session.submissions[96].submittedInputId);
+      assert.equal(draft.inputAfter, draft.inputBefore);
+      const entrance = session.surfaceAudit[0];
+      assert.equal(entrance.map.landmark, "Your apartment, fieldwork destination, current location");
+      assert.match(entrance.map.route, /You have arrived\./);
+      assert.match(entrance.compass, /7\/9 recorded/);
+    }
+  }
+
+  const probe = home.lockedDoorProbe;
+  assert.equal(probe.kind, "locked-door-probe");
+  assert.deepEqual(normalize(probe.submittedCommands), [...normalize(cinema.sessions[0].submittedCommands.slice(0, 7)), ...probePath]);
+  const turns = probe.observations.slice(6);
+  assert.deepEqual(turns.map(({ roomId }) => roomId), [...roomPath.slice(0, 3), "PARKVIEW-APARTMENTS", "PARKVIEW-APARTMENTS", "PARKVIEW-HALL", "PARKVIEW-HALL"]);
+  assert.ok(body(turns[3]).includes("The door to the inner lobby is locked."));
+  assert.ok(body(turns[4]).includes("The door opens."));
+  assert.ok(body(turns[6]).includes("The door is closed."));
+  assert.ok(turns.every(({ status, presentation }) => status.mode === "Simulation Mode" && presentation.lines.at(-1).text === ">"));
+});
+
 test("projects approved cinema leaves with observation-time room scope and exact qualifiers", async () => {
   const f = JSON.parse(await readFile(new URL("./fixtures/parchment-cinema-recording-a-observed.json", import.meta.url), "utf8"));
   const packet = await readFile(new URL("../docs/cinema-copy-packet.md", import.meta.url), "utf8");

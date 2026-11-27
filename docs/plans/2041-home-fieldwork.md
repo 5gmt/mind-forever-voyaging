@@ -7,7 +7,7 @@
 **Architecture:** 既存2a+2b、exact observed-leaf catalog、観測時room scope、地名lookup、限定操作を使う。扉を開けるcommandはcanonical parserに任せ、住居内での新しい録画観測だけを補助checklistの根拠とする。
 **Tech Stack:** Next.js / React / TypeScript、Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定」「経路候補」「受入境界」。[PROJECT_CHARTER.md](../../PROJECT_CHARTER.md)、[AGENTS.md](../../AGENTS.md)、[CI運用](../ci-operation.md)を保持する。
-**Status:** 計画提案。独立Solレビュー待ち。Homeの新規runtime capture、copy approval、実装、受入は未実施。
+**Status:** 計画は独立Solレビューを経て[PR #123](https://github.com/5gmt/mind-forever-voyaging/pull/123)でマージ済み。H1は[111送信の完走2件と別の閉扉probe](../home-runtime-evidence.md)を提出し、独立Solの成功採択とマージを待つ。H2 / H3は開始前。
 **Baseline:** 映画PR #118とCI保守PR #119を含むdefault branch `codex/modern-amfv`、merge `505e226bbe818a1dd4a4b1f15b199a3f5a76ae9c`。実行時には最新target branchを含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-27 JSTのownerによる次期milestone設計・タスク作成依頼に基づく。
 
@@ -43,7 +43,7 @@
 | Simulation帰還・正式評価 | 九課題の正式評価、録画buffer消去、再入場。 | 公共交通も含めた別設計。補助8/9から完了を推測しない。 |
 | CIの追加最適化 | Artifact重複削減、条件付きmerge gateの強制等。 | ゲーム内進行とは別件。今回はHome追加に必要な群分配だけH3に含める。 |
 
-## 経路候補と実測gate
+## 実測した経路と採択条件
 
 [映画候補Aの実測](../cinema-recording-a-evidence.md)と [cinema acceptance helper](../../tests/e2e/cinema-acceptance.ts)を先行経路の正本とする。裁判所は現地録画で、他の既存録画窓は維持する。
 
@@ -55,7 +55,7 @@
 | 104–106 | `RECORD / LOOK / RECORD OFF` | 室内の新しいLOOK本文と前後のrecordingを観測し、明示停止する。 |
 | 107–111 | `S / E / E / N / NE` | 廊下 → 建物入口 → Southway & Park → Elm & Park → Kennedy Park。非録画・通常入力で終える。 |
 
-追加15、計111 line submissionsは未実測の候補。Mapやlocale操作、draft編集は送信数に含めない。
+追加15、計111 line submissionsを本番ビルドの新規セッション2件で実測した。Map操作とdraft編集は送信数に含めない。独立Solの採択前は経路候補として扱う。
 [source/prism.zil](../../source/prism.zil)の初回2041年初期化はKEYをPLAYERへ置き、[source/apartment.zil](../../source/apartment.zil)の `PARKVIEW-DOOR-F` / `APARTMENT-DOOR-F` は鍵を伴うOPENで扉を開く。両者は同じ名の別objectであり、引数なしのgeneric Openと同一視しない。
 同sourceの `INNER-LOBBY-ENTER-F` は実際には廊下へ移動する。説明中のinner lobbyやelevatorを架空のroomや追加移動にしない。
 `LIVING-ROOM-F` は入室時にJillの時刻依存状態を設定する。家族が同じ場所・同じ動作であることを成功条件にしない。必須室内本文、観測済み可変文、未観測のEnglish fallbackを分ける。
@@ -101,10 +101,11 @@ Full / auto-deactivation、開扉失敗、必要本文欠落、通常入力未�
 **Files:** Create `scripts/capture-home-runtime.mjs`, `tests/fixtures/parchment-home-runtime-observed.json`, `docs/home-runtime-evidence.md`。失敗した場合は別の `tests/fixtures/parchment-home-runtime-failure.json`。Modify `tests/rendered-html.test.mjs`、本計画、`PROJECT_STATUS.md`。
 **Consumes:** 映画候補Aの既存fixtureとcapture手順。**Produces:** `sessions`（2以上）と別 `lockedDoorProbe`、全submissions、raw bridge lines/runs / status / input、実UI method / alias、room identity、warnings、成功 / 失敗の区別とsource照合表。既存fixtureと同じ形を優先し、採取に伴う追加metadataは文書化する。
 
-- [ ] Captureを作り、`--base-url URL --output PATH --failure-output PATH` を受け付ける。起動はlive windowportとrequest-stateへ同期し、途中状態を別partialへ保存する。出力rootは実行ごとに新規にする。
-- [ ] Production buildで2 full sessionsと別probeを採取する。Canonicalを操作し、VM変更・save復元・複数sessionの課題合成はしない。失敗を消して成功fixtureへ混ぜない。
-- [ ] Unit test `retains two complete home sessions after the adopted cinema route` を追加する。111送信候補、prefix96、全input対応、開扉と居間LOOK、録画継続 / OFF、帰着、locked probeの拒否を実fixtureで検証する。Runtimeで候補と異なる場合は成功assertionを弱めず停止する。
-- [ ] `node --test --test-name-pattern='home sessions' tests/rendered-html.test.mjs` と適用checksを実行する。Evidence文書に実時刻、family文の変動、出力形状、UI不足、未検証範囲を残す。成功採択は独立Solへ引き継ぐ。
+- [x] Captureを作り、`--base-url URL --output PATH --failure-output PATH` を受け付ける。起動はlive windowportとrequest-stateへ同期し、途中状態を別partialへ保存する。出力rootは実行ごとに新規にする。
+- [x] Production buildで2 full sessionsと別probeを採取する。Canonicalを操作し、VM変更・save復元・複数sessionの課題合成はしない。失敗を消して成功fixtureへ混ぜない。
+- [x] Unit test `retains two complete home sessions after the adopted cinema route` を追加する。111送信候補、prefix96、全input対応、開扉と居間LOOK、録画継続 / OFF、帰着、locked probeの拒否を実fixtureで検証する。Runtimeで候補と異なる場合は成功assertionを弱めず停止する。
+- [x] `node --test --test-name-pattern='home sessions' tests/rendered-html.test.mjs` と適用checksを実行する。[実測記録](../home-runtime-evidence.md)に実時刻、家族の可変文、出力形状、現行UI、未検証範囲を残す。
+- [ ] 独立Solが成功経路と操作契約を採択し、最終head/baseの手動Fullとreadinessを確認してマージする。
 
 ### H2: 本文・地名・限定開扉copy
 
@@ -135,7 +136,7 @@ Full / auto-deactivation、開扉失敗、必要本文欠落、通常入力未�
 
 PR #119の運用を継承する。自動はFast、Full-scope PRは修正とレビューが固まったhead/baseでレビューアが手動Fullを一度実行する。開発者は短い回帰・対象経路を優先し、一律ローカルFullを提出条件にしない。計画PRは説明文書のみでDocs分類となるためFastで足りる。H1のfixtureとH2 copy packetはFull分類を維持する。
 
-現baselineは52 unit /73 browser /15 CI制御テスト、5群（church 10 / power 9 / remaining 44 / cinema-desktop 7 / cinema-narrow 3）。#119の手動Fullではremainingとcinema-desktopのbrowser stepがそれぞれ17.3分・17.5分だった。新たな111送信の自然経路をremainingへ集中させない。
+H1着手時のbaselineは52 unit /73 browser /15 CI制御テスト、5群（church 10 / power 9 / remaining 44 / cinema-desktop 7 / cinema-narrow 3）。H1でunit回帰を1件追加した。#119の手動Fullではremainingとcinema-desktopのbrowser stepがそれぞれ17.3分・17.5分だった。新たな111送信の自然経路をremainingへ集中させない。
 
 **H3で `home-desktop` / `home-narrow` の2群を追加し、計7群にすることを本計画の承認対象とする。** 既存5群の所有specは変更しない。群追加は長い自然sessionを丸ごと割り当てるためで、test削減やrunner-minutes削減の主張ではない。
 
@@ -143,7 +144,7 @@ PR #119の運用を継承する。自動はFast、Full-scope PRは修正とレ�
 - Readinessが新7群すべてを同じrun / attemptで要求し、Home欠落・失敗・skipや過去5群だけの成功を拒否する回帰を追加する。開始 / 終了head-base guard、各35分、各1 worker、retry 0、Fastのみ自動の条件は保持する。
 - `AGENTS.md`、`docs/ci-operation.md`、`PROJECT_STATUS.md`、本計画、Home受入記録の現行群数と監査対象を7群へ同期する。過去の「#118は5 ZIP監査済み」という史実は書き換えない。この計画PRでは実CI matrixはまだ5群のまま。
 - H3最終Fullは `save_evidence=true`。容量と1日以内の監査予定を事前確認し、同一成功run / attemptの **全7 ZIP** のcommit / base / runId / runAttempt / group、証拠索引と実ファイルをWorkが独立監査する。通常Fullは保存なし。既存の保護artifactを無断で削除しない。
-- 保存時provenanceのbaseを実体で確認する機会をH3に含める。計画PRのDocs-only Fastも実runで確認し、#119の非blocking未検証事項を該当する最初の作業で閉じる。確認のためだけに別Fullを重複起動しない。
+- 保存時provenanceのbaseを実体で確認する機会をH3に含める。#119で未確認だったDocs-only Fastは[計画PRの実run](https://github.com/5gmt/mind-forever-voyaging/actions/runs/45940995335)で確認済み。確認のためだけに別Fullを重複起動しない。
 - 35分を超える見込みや保存容量不足が分かったら、対象実測を添えて配分 / 保存方法をレビューする。Timeout延長・retry・テスト省略・添付削減で隠さない。
 
 実装者はlocal証拠ファイルを照合し、Solは通常PRを独立レビューする。WorkはH3だけmilestone全体と最終ZIPを受け入れる。Head/base変更時は影響範囲を再検証し、同一headの確認済み証拠を理由なく再監査しない。最終review / merge / closeの記録はPRとIssueを正本とし、SHA自己参照のためだけの追加commitは要求しない。
