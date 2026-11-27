@@ -101,13 +101,14 @@ PR #119のCI保守もmerge `505e226bbe818a1dd4a4b1f15b199a3f5a76ae9c` で完了�
 H1では映画候補Aの96送信を保持し、鍵による二つの開扉、居間での RECORD / LOOK / RECORD OFF、公園帰着を含む111送信を本番ビルドの新規セッション2件で実測した。
 [実測記録](./docs/home-runtime-evidence.md)に別の新規セッションでの閉扉拒否、家族の可変出力、操作台帳を収録した。
 地図は建物入口への到着を表示し、居間の録画成立はrawの本文と録画状態で確認した。
-経路の採択は独立Solのレビューとマージを待つ。
+独立Solが経路と操作契約を採択し、[手動Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/45969606988)とreadinessの確認後、[PR #124](https://github.com/5gmt/mind-forever-voyaging/pull/124)をマージした。
+H2の[英日copy packet](./docs/home-copy-packet.md)は、初回2041年の観測済み本文、建物入口を示す地図、場所に応じた鍵操作の文言を収録し、独立Solの承認とマージを待つ。
 
 ## 基本的な作業順
 
 1. Home計画PRは独立Solレビュー、Docs-only Fastを経てmerge済み。
-2. [H1 #120](https://github.com/5gmt/mind-forever-voyaging/issues/120): 完走2件と閉扉probeを提出。独立Solが経路と操作契約を採択し、最終head/baseの手動Fullとreadinessを確認してmergeする。
-3. [H2 #121](https://github.com/5gmt/mind-forever-voyaging/issues/121): H1に基づく本文・地名・map・限定鍵操作のcopy packet。Solがcopy approval・mergeする。
+2. [H1 #120](https://github.com/5gmt/mind-forever-voyaging/issues/120)は、完走2件と閉扉probeを採択して完了した。
+3. [H2 #121](https://github.com/5gmt/mind-forever-voyaging/issues/121)のcopy packetは提出済み。独立Solの承認、手動Full、readiness、マージを経てH3を開始する。
 4. [H3 #122](https://github.com/5gmt/mind-forever-voyaging/issues/122): 日本語統合と補助実績、6自然正例・非録画 / 入口のみ録画の負例、境界・reading受入。Sol通常レビュー → 最終手動Full → Work全体受入 / ZIP監査 → merge / #29報告 / close。
 
 Codex Cloud実装、通常PRは独立Chat Sol、最終統合だけWorkの分担を継続する。
