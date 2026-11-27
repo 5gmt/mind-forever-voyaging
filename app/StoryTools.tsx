@@ -3,7 +3,7 @@
 /* eslint-disable @next/next/no-img-element -- the viewer presents archival scans at their natural proportions */
 
 import { FormEvent, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { cinemaActionUiText, churchTalkHelp, cityHallTalkHelp, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
+import { cinemaActionUiText, homeActionUiText, homeMapArrivalText, churchTalkHelp, cityHallTalkHelp, localizeSceneActionLabel, localizeSceneObjectName, localizeSimulationMapLabel, localizeSimulationPlace, mealActionUiText, navigationSteps, navigationUiText, packageInteractiveLocale, sceneActionsLocale, sceneActionUiText, uiText, type Locale } from "./localization";
 import type { WorldObject } from "./world-data";
 
 export type PackageItem = "map" | "decoder" | "manual";
@@ -155,7 +155,7 @@ const actionCommand = (object: WorldObject, action: SceneAction) => action.comma
 
 const PEOF_SCENE_NOUNS = new Set(["perelman", "desk", "decoder", "map", "pen", "magazine article"]);
 
-export function SceneActions({ objects, roomId, level, locale, initial2041 = false, lineInput = false, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; locale: Locale; initial2041?: boolean; lineInput?: boolean; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
+export function SceneActions({ objects, roomId, level, locale, initial2041 = false, lineInput = false, homeControlsRoom, sendCommand, draftCommand, disabled }: { objects: WorldObject[]; roomId?: string | null; level: InteractionLevel; locale: Locale; initial2041?: boolean; lineInput?: boolean; homeControlsRoom?: string; sendCommand: (command: string) => void; draftCommand: (command: string) => void; disabled: boolean }) {
   const usableObjects = useMemo(() => objects.filter((object) =>
     hasUsefulSceneAction(object, roomId)
       && (object.id !== "GOVERNMENT-OFFICIAL" || (initial2041 && lineInput && roomId === "CITY-HALL"))
@@ -185,7 +185,15 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
         : <article className="scene-object" key={command}><strong>{cinemaActionUiText(locale, target)}</strong><div><button type="button" onClick={() => sendCommand(command)} disabled={disabled}>{cinemaActionUiText(locale, label)}</button></div></article>)}</div>
     </section>;
   }
-  if (!usableObjects.length) return null;
+  const homeDoor = initial2041 && lineInput && homeControlsRoom === roomId
+    ? roomId === "PARKVIEW-APARTMENTS" ? "building" : roomId === "PARKVIEW-HALL" ? "apartment" : null
+    : null;
+  const guided = level === "guided";
+  const homeAction = homeDoor && <section className="scene-actions scene-home" lang={locale} aria-label={homeActionUiText(locale, "landmark")}>
+    <div className="scene-actions-heading"><span>{homeActionUiText(locale, "landmark")}</span><small>{cinemaActionUiText(locale, guided ? "guidedInstruction" : "actionsInstruction")}</small></div>
+    <div className="scene-word-list"><button type="button" onClick={() => (guided ? draftCommand : sendCommand)("OPEN DOOR WITH KEY")} disabled={disabled}>{homeActionUiText(locale, homeDoor)}</button></div>
+  </section>;
+  if (!usableObjects.length) return homeAction;
   const displayLocale = sceneActionsLocale(locale, roomId, initial2041);
   const objectName = (object: WorldObject) => {
     const name = localizeSceneObjectName(displayLocale, roomId, object.id, object.name);
@@ -196,15 +204,15 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
     return <span lang={label !== action.label ? displayLocale : "en"}>{label}</span>;
   };
 
-  if (level === "guided") return <section className="scene-actions scene-words" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "guidedLandmark")}>
+  if (guided) return <>{homeAction}<section className="scene-actions scene-words" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "guidedLandmark")}>
     <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "guidedHeading")}</span><small>{sceneActionUiText(displayLocale, "guidedInstruction")}</small></div>
     {usableObjects.some((object) => object.id === "GOVERNMENT-OFFICIAL") && <p className="scene-official-help">{cityHallTalkHelp(displayLocale, "guided")}</p>}
     {usableObjects.some((object) => object.id === "CHURCH-OFFICIAL") && <p className="scene-official-help">{churchTalkHelp(displayLocale, "guided")}</p>}
     <div className="scene-word-list">{usableObjects.slice(0, 6).map((object) => { const action = guidedActionFor(object, roomId); return <button type="button" key={object.id} onClick={() => draftCommand(actionCommand(object, action))} disabled={disabled}>{objectName(object)}<small>{actionLabel(object, action)}</small></button>; })}</div>
-  </section>;
+  </section></>;
 
   return (
-    <section className="scene-actions" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "actionsLandmark")}>
+    <>{homeAction}<section className="scene-actions" lang={displayLocale} aria-label={sceneActionUiText(displayLocale, "actionsLandmark")}>
       <div className="scene-actions-heading"><span>{sceneActionUiText(displayLocale, "actionsHeading")}</span><small>{sceneActionUiText(displayLocale, "actionsInstruction")}</small></div>
       <div className="scene-object-grid">
         {usableObjects.map((object) => {
@@ -216,22 +224,22 @@ export function SceneActions({ objects, roomId, level, locale, initial2041 = fal
           </article>;
         })}
       </div>
-    </section>
+    </section></>
   );
 }
 
-export function RockvilNavigator({ currentRoomId, routePreview, onSelect, onStep, onClear, stepLabel, disabled, lang = "en" }: { currentRoomId: string | null; routePreview: MapRoutePreview | null; onSelect: (landmark: RockvilLandmark) => void; onStep: () => void; onClear?: () => void; stepLabel?: string; disabled: boolean; lang?: Locale }) {
+export function RockvilNavigator({ currentRoomId, routePreview, onSelect, onStep, onClear, stepLabel, disabled, lang = "en", home2041 = false }: { currentRoomId: string | null; routePreview: MapRoutePreview | null; onSelect: (landmark: RockvilLandmark) => void; onStep: () => void; onClear?: () => void; stepLabel?: string; disabled: boolean; lang?: Locale; home2041?: boolean }) {
   const text = (key: Parameters<typeof navigationUiText>[1]) => navigationUiText(lang, key);
-  const label = (landmark: RockvilLandmark) => localizeSimulationMapLabel(lang, landmark.id, landmark.label);
+  const label = (landmark: RockvilLandmark) => localizeSimulationMapLabel(lang, landmark.id, landmark.label, home2041);
   const labelLanguage = (landmark: RockvilLandmark) => label(landmark) !== landmark.label ? lang : "en";
   const nextPlace = routePreview?.nextPlace;
-  const displayedNextPlace = nextPlace ? localizeSimulationPlace(lang, nextPlace) : null;
+  const displayedNextPlace = nextPlace ? localizeSimulationPlace(lang, nextPlace, home2041) : null;
   return <section className="rockvil-navigator" aria-label={text("landmark")} lang={lang}>
     <div className="navigator-heading"><div><span>{text("heading")}</span><strong>{text("chooseDestination")}</strong></div><small>{text("headingNote")}</small></div>
     <div className="navigator-map-scroll"><div className="navigator-map-stage"><img src="/package/rockvil-map-back.jpg" alt={text("mapAlt")} />
       <div className="map-hotspots navigator-hotspots" aria-label={text("destinations")}>{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelect(landmark)} lang={labelLanguage(landmark)} aria-label={`${label(landmark)}${landmark.kind === "fieldwork" ? navigationUiText(labelLanguage(landmark), "fieldworkSuffix") : ""}${currentRoomId === landmark.targetId ? navigationUiText(labelLanguage(landmark), "currentSuffix") : ""}`}><span lang={labelLanguage(landmark)}>{label(landmark)}</span></button>)}</div>
     </div></div>
-    {routePreview ? <div className="navigator-route"><div><span>{text("routeTo")}</span><strong lang={labelLanguage(routePreview.destination)}>{label(routePreview.destination)}</strong>{routePreview.arrived ? <small>{text("arrived")}</small> : routePreview.nextCommand ? <small>{navigationSteps(lang, routePreview.steps, routePreview.nextCommand)}{nextPlace && <>{lang === "ja" ? "（" : " toward "}<span lang={displayedNextPlace !== nextPlace ? lang : "en"}>{displayedNextPlace}</span>{lang === "ja" ? "方面）" : ""}</>}</small> : <small>{text("noStart")}</small>}</div><div className="navigator-route-actions">{routePreview.nextCommand && !routePreview.arrived && <button type="button" onClick={onStep} disabled={disabled}>{stepLabel ?? text("takeStep")}</button>}{onClear && <button className="route-clear" type="button" onClick={onClear}>{text("clear")}</button>}</div></div> : <p className="navigator-empty">{text("empty")}</p>}
+    {routePreview ? <div className="navigator-route"><div><span>{text("routeTo")}</span><strong lang={labelLanguage(routePreview.destination)}>{label(routePreview.destination)}</strong>{routePreview.arrived ? <small>{home2041 && routePreview.destination.id === "home" ? homeMapArrivalText(lang) : text("arrived")}</small> : routePreview.nextCommand ? <small>{navigationSteps(lang, routePreview.steps, routePreview.nextCommand)}{nextPlace && <>{lang === "ja" ? "（" : " toward "}<span lang={displayedNextPlace !== nextPlace ? lang : "en"}>{displayedNextPlace}</span>{lang === "ja" ? "方面）" : ""}</>}</small> : <small>{text("noStart")}</small>}</div><div className="navigator-route-actions">{routePreview.nextCommand && !routePreview.arrived && <button type="button" onClick={onStep} disabled={disabled}>{stepLabel ?? text("takeStep")}</button>}{onClear && <button className="route-clear" type="button" onClick={onClear}>{text("clear")}</button>}</div></div> : <p className="navigator-empty">{text("empty")}</p>}
   </section>;
 }
 
@@ -292,9 +300,12 @@ export function InterfaceWorkbench({ portIds, sendCommand, disabled }: { portIds
   </div>;
 }
 
-export function PackageOverlay({ item, locale, onSelect, onClose, interactiveMap = false, currentRoomId = null, routePreview = null, routeStepDisabled = false, routeStepLabel = "Use next step", onSelectLandmark, onRouteStep }: { item: PackageItem | null; locale: Locale; onSelect: (item: PackageItem) => void; onClose: () => void; interactiveMap?: boolean; currentRoomId?: string | null; routePreview?: MapRoutePreview | null; routeStepDisabled?: boolean; routeStepLabel?: string; onSelectLandmark?: (landmark: RockvilLandmark) => void; onRouteStep?: () => void }) {
+export function PackageOverlay({ item, locale, onSelect, onClose, interactiveMap = false, home2041 = false, currentRoomId = null, routePreview = null, routeStepDisabled = false, routeStepLabel = "Use next step", onSelectLandmark, onRouteStep }: { item: PackageItem | null; locale: Locale; onSelect: (item: PackageItem) => void; onClose: () => void; interactiveMap?: boolean; home2041?: boolean; currentRoomId?: string | null; routePreview?: MapRoutePreview | null; routeStepDisabled?: boolean; routeStepLabel?: string; onSelectLandmark?: (landmark: RockvilLandmark) => void; onRouteStep?: () => void }) {
   const returnFocusRef = useRef<HTMLElement | null>(null);
   const interactiveLocale = packageInteractiveLocale(locale, interactiveMap);
+  const packageMapLanguage = (landmark: RockvilLandmark) => home2041 && landmark.id === "home" ? locale : interactiveLocale;
+  const packageMapLabel = (landmark: RockvilLandmark) => home2041 && landmark.id === "home"
+    ? localizeSimulationMapLabel(locale, landmark.id, landmark.label, true) : landmark.label;
   useEffect(() => {
     if (!item) return;
     returnFocusRef.current ??= document.activeElement instanceof HTMLElement ? document.activeElement : null;
@@ -314,7 +325,7 @@ export function PackageOverlay({ item, locale, onSelect, onClose, interactiveMap
     <div className="package-viewer">
       <header><div><span className="section-kicker">{uiText(locale, "packageDialogKicker")}</span><h2 id="package-title">{uiText(locale, "packageDialogTitle")}</h2></div><button type="button" onClick={onClose} aria-label={uiText(locale, "closePackageMaterials")}>×</button></header>
       <nav aria-label={uiText(locale, "packageMaterials")}><button type="button" aria-current={item === "map"} onClick={() => onSelect("map")}>{uiText(locale, "rockvilMap")}</button><button type="button" aria-current={item === "decoder"} onClick={() => onSelect("decoder")}>{uiText(locale, "securityDecoder")}</button><button type="button" aria-current={item === "manual"} onClick={() => onSelect("manual")}>{uiText(locale, "magazineManual")}</button></nav>
-      {item === "map" && <figure><div className={`package-image-scroll ${interactiveMap ? "interactive-rockvil-map" : ""}`}><div className="rockvil-map-stage"><img src="/package/rockvil-map-back.jpg" alt={uiText(locale, "packageMapAlt")} />{interactiveMap && <div className="map-hotspots" lang={interactiveLocale} aria-label="Rockvil landmarks">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelectLandmark?.(landmark)} aria-label={`${landmark.label}${landmark.kind === "fieldwork" ? ", fieldwork destination" : ""}${currentRoomId === landmark.targetId ? ", current location" : ""}`}><span>{landmark.label}</span></button>)}</div>}</div></div><figcaption>{interactiveMap ? <span lang={interactiveLocale}>Choose a destination on the original map to plot a walking route. Square markers correspond to Perelman’s field brief.</span> : uiText(locale, "packageMapCaption")} <a href="/package/rockvil-map-back.jpg" target="_blank">{uiText(locale, "openFullSize")}</a></figcaption>{interactiveMap && routePreview && <div className="map-route-card" lang={interactiveLocale}><span>Route</span><strong>{routePreview.destination.label}</strong>{routePreview.arrived ? <p>You have reached the destination.</p> : routePreview.nextCommand ? <><p>{routePreview.steps} {routePreview.steps === 1 ? "step" : "steps"} away. Next: <b>{routePreview.nextCommand.toUpperCase()}</b>{routePreview.nextPlace ? ` toward ${routePreview.nextPlace}` : ""}.</p><button type="button" onClick={onRouteStep} disabled={routeStepDisabled}>{routeStepLabel}</button></> : <p>No reliable walking route starts from the current location. Move to a named street and try again.</p>}</div>}</figure>}
+      {item === "map" && <figure><div className={`package-image-scroll ${interactiveMap ? "interactive-rockvil-map" : ""}`}><div className="rockvil-map-stage"><img src="/package/rockvil-map-back.jpg" alt={uiText(locale, "packageMapAlt")} />{interactiveMap && <div className="map-hotspots" lang={interactiveLocale} aria-label="Rockvil landmarks">{ROCKVIL_LANDMARKS.map((landmark) => <button type="button" key={landmark.id} className={`${landmark.kind === "fieldwork" ? "fieldwork" : "landmark"} ${currentRoomId === landmark.targetId ? "current" : ""} ${routePreview?.destination.id === landmark.id ? "selected" : ""}`} style={{ "--map-x": `${landmark.x}%`, "--map-y": `${landmark.y}%` } as CSSProperties} onClick={() => onSelectLandmark?.(landmark)} lang={packageMapLanguage(landmark)} aria-label={`${packageMapLabel(landmark)}${landmark.kind === "fieldwork" ? navigationUiText(packageMapLanguage(landmark), "fieldworkSuffix") : ""}${currentRoomId === landmark.targetId ? navigationUiText(packageMapLanguage(landmark), "currentSuffix") : ""}`}><span>{packageMapLabel(landmark)}</span></button>)}</div>}</div></div><figcaption>{interactiveMap ? <span lang={interactiveLocale}>Choose a destination on the original map to plot a walking route. Square markers correspond to Perelman’s field brief.</span> : uiText(locale, "packageMapCaption")} <a href="/package/rockvil-map-back.jpg" target="_blank">{uiText(locale, "openFullSize")}</a></figcaption>{interactiveMap && routePreview && <div className="map-route-card" lang={interactiveLocale}><span>Route</span><strong lang={packageMapLanguage(routePreview.destination)}>{packageMapLabel(routePreview.destination)}</strong>{routePreview.arrived ? <p lang={packageMapLanguage(routePreview.destination)}>{home2041 && routePreview.destination.id === "home" ? homeMapArrivalText(locale) : "You have reached the destination."}</p> : routePreview.nextCommand ? <><p>{routePreview.steps} {routePreview.steps === 1 ? "step" : "steps"} away. Next: <b>{routePreview.nextCommand.toUpperCase()}</b>{routePreview.nextPlace ? ` toward ${routePreview.nextPlace}` : ""}.</p><button type="button" onClick={onRouteStep} disabled={routeStepDisabled}>{routeStepLabel}</button></> : <p>No reliable walking route starts from the current location. Move to a named street and try again.</p>}</div>}</figure>}
       {item === "decoder" && <figure><div className="package-image-scroll decoder-image"><img src="/package/security-decoder.jpg" alt={uiText(locale, "packageDecoderAlt")} /></div><figcaption>{uiText(locale, "packageDecoderCaption")}</figcaption></figure>}
       {item === "manual" && <div className="manual-card"><span aria-hidden="true">D/O</span><div><h3>{uiText(locale, "packageManualHeading")}</h3><p>{uiText(locale, "packageManualDescription")}</p><a href="/package/amfv-manual.pdf" target="_blank">{uiText(locale, "readOriginalPdf")}</a></div></div>}
       <footer>{uiText(locale, "packageAttributionPrefix")} <a href="https://gallery.guetech.org/amfv/amfv.html" target="_blank" rel="noreferrer">The Infocom Gallery</a> {uiText(locale, "packageAttributionAnd")} <a href="https://www.mocagh.org/loadpage.php?getgame=amfv" target="_blank" rel="noreferrer">Museum of Computer Adventure Game History</a>{uiText(locale, "packageAttributionSuffix")}</footer>

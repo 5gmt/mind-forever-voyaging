@@ -222,6 +222,7 @@ export async function acceptCinemaMilestone(page: Page, controls: "classic" | "g
   const warnings = trace.inputs.filter(({ presentation: p }) => p.lines.some(line => line.text === "WARNING: Record buffer is now half-full.")); expect(warnings).toHaveLength(1);
   await attach("cinema-runtime-observations", JSON.stringify({ provenance: "fresh canonical Release 79; live bridge-v3 output and actual parent-to-player requests; no VM edits, injected route reports or RESTORE", routeCandidate: "A / cinema-on-site courthouse", startedAt, finishedAt: new Date().toISOString(), controls, viewport: page.viewportSize(), recordMovie, trace, cinemaTurns: turns, audits, warnings, elapsedMinutes, clockLimitation: page.viewportSize()!.width < 500 ? "canonical narrow status emits no clock/date; no time synthesized" : null, checklist: controls === "classic" ? "not displayed" : `${recordMovie ? 7 : 6}/9 auxiliary inference, not original assignment evaluation`, finalInputId: await inputId() }));
   await attach("cinema-return", returnPNG, "image/png");
+  return prior;
 }
 
 // Controlled wrapper reports; these never stand in for a natural VM session.

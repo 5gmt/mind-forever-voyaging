@@ -145,7 +145,8 @@ test("preserves the historical source and derives modern context from it", async
   assert.match(shell, /RockvilNavigator/);
   assert.match(shell, /Perelman’s brief/);
   assert.match(shell, /FIELD_RECORDING_RULES/);
-  for (const tableIndex of [0, 2, 4, 6, 8, 10, 12, 14, 16]) assert.match(shell, new RegExp(`tableIndex: ${tableIndex}`));
+  for (const tableIndex of [0, 2, 4, 6, 8, 10, 12]) assert.match(shell, new RegExp(`tableIndex: ${tableIndex}`));
+  assert.match(shell, /pattern\.test\(passages\)\), cinemaRecorded, homeRecorded\]/);
   assert.match(shell, /WARNING: Deactivating record feature/);
   assert.match(shell, /\\\(recording\\\)/);
   assert.match(shell, /uiText\(locale, "mapRecordingBrief"\)/);
@@ -197,7 +198,8 @@ test("ships the physical package materials beside the story", async () => {
   assert.match(tools, /object\.initialLocation === "LOCAL-GLOBALS" && \["enter", "leave"\]\.includes\(definition\.action\.id\)/);
   assert.match(tools, /refusalOnlyVerbs/);
   assert.match(tools, /RockvilNavigator/);
-  assert.match(tools, /fieldwork destination/);
+  assert.match(tools, /navigationUiText\(packageMapLanguage\(landmark\), "fieldworkSuffix"\)/);
+  assert.match(localization, /fieldworkSuffix: ", fieldwork destination"/);
   assert.equal(packageInteractiveLocale("ja", true), "en");
   assert.equal(packageInteractiveLocale("ja", false), "ja");
   assert.match(tools, /className="map-hotspots" lang=\{interactiveLocale\} aria-label="Rockvil landmarks"/);
@@ -275,7 +277,9 @@ test("limits the Simulation UI packet to the first 2041 entry and preserves Engl
   assert.match(shell, /mode === "Simulation Mode" && initial2041Presentation \? \[\[uiText\(locale, "simulationLook"\)/);
   assert.match(shell, /<RockvilNavigator[\s\S]{0,1000}lang=\{navigationLocale\}/);
   assert.match(shell, /className="decoder-seal" lang="en"/);
-  assert.match(shell, /localizeSimulationPlace\(locale, currentRoomName\) !== currentRoomName \? locale : "en"/);
+  assert.match(shell, /localizeSimulationPlace\(navigationLocale, name, initial2041Presentation\)/);
+  assert.match(shell, /navigationPlace\(name\) !== name \? navigationLocale : "en"/);
+  assert.match(shell, /lang=\{navigationPlaceLanguage\(currentRoomName\)\}/);
 });
 
 test("localizes the approved opening and Communications companion copy", () => {
@@ -330,7 +334,7 @@ test("keeps accessible Japanese names and excluded later-mode English in their o
   }
   assert.match(shell, /className="debug-entry" lang="en"/);
   assert.match(shell, /className="mode-subreadout" lang=\{guide\.localized \? locale : "en"\}/);
-  assert.match(shell, /openingOrCommunications \? <span lang=\{locale\}>[\s\S]*: <span lang="en">\{mode\}/);
+  assert.match(shell, /openingOrCommunications\s*\?\s*\(\s*<span lang=\{locale\}>[\s\S]*?<\/span>\s*\)\s*:\s*\(\s*<span lang="en">\s*\{mode\}/);
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "signal"), "ja");
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "comparative"), "en");
   assert.equal(companionHeaderLanguage("ja", "Communications Mode", "comparative", true), "ja");
@@ -2613,4 +2617,98 @@ test("keeps newly approved cinema return aliases scoped to their observed rooms"
       assert.equal(unknown.find(b => b.canonicalText === line.text)?.text, line.text);
     }
   }
+});
+
+test("projects approved home leaves by exact command and stored observation room", async () => {
+  const data = JSON.parse(await readFile(new URL("./fixtures/parchment-home-runtime-observed.json", import.meta.url), "utf8"));
+  const packet = await readFile(new URL("../docs/home-copy-packet.md", import.meta.url), "utf8");
+  const section = packet.split("## 初回2041年の原作本文")[1].split("## 既承認")[0];
+  const sessions = { S1: data.sessions[0], S2: data.sessions[1], P: data.lockedDoorProbe };
+  const codes = (cell) => [...cell.matchAll(/\x60([^\x60]+)\x60/g)].map((match) => match[1]);
+  const render = (turn, room = turn.roomId) => projectPresentationHistory(
+    reconcilePresentationHistory([], turn.presentation, room ? { home2041: room } : {}).history, "ja",
+  )[0].blocks;
+
+  let verified = 0;
+  for (const row of section.split("\n").filter((line) => /^\| \x60/.test(line))) {
+    const [, id, refs, english, japanese, room, commands] = row.split("|").map(codes);
+    for (const reference of refs) {
+      const [session, i, line] = reference.split(":");
+      const turn = sessions[session].observations[i];
+      assert.equal(turn.roomId, room[0]);
+      assert.equal(turn.presentation.lines[line].text, english[0]);
+      assert.ok(commands.includes(turn.command.toUpperCase()));
+      const block = render(turn).find(({ sourceLines }) => sourceLines.length === 1 && sourceLines[0] === Number(line));
+      assert.equal(block?.text, japanese[0], reference);
+      assert.equal(block?.contentId, "part1.simulation.home." + id[0]);
+      const unscoped = render(turn, "UNKNOWN");
+      assert.ok(unscoped.some(({ text }) => text.includes(english[0])), reference);
+      verified++;
+    }
+  }
+  assert.equal(verified, 59);
+
+  const target = data.sessions[0].observations[98];
+  const apartment = data.sessions[0].observations[100];
+  const history = reconcilePresentationHistory([], target.presentation, { home2041: target.roomId }).history;
+  const repeated = reconcilePresentationHistory(history, target.presentation, { home2041: apartment.roomId }).history;
+  assert.equal(projectPresentationHistory(repeated, "ja")[0].blocks[1].contentId, "part1.simulation.home.building-door-opens");
+  assert.equal(render(apartment)[1].contentId, "part1.simulation.home.apartment-door-opens");
+  const generic = structuredClone(target);
+  generic.presentation.lines[0].text = ">OPEN DOOR";
+  assert.ok(render(generic).some(({ text }) => text === "The door opens."));
+  assert.equal(localizeSimulationPlace("ja", "Living Room"), "Living Room");
+  assert.equal(localizeSimulationPlace("ja", "Living Room", true), "居間");
+});
+
+test("credits home recording only after a fresh recorded living-room LOOK and confirmed OFF", async () => {
+  const { createHomeRecordingState, observeHomeRecording } = await import("../app/home-recording.ts");
+  const { sessions: [session] } = JSON.parse(await readFile(new URL("./fixtures/parchment-home-runtime-observed.json", import.meta.url), "utf8"));
+  const [entry, on, look, off, returned] = session.observations.slice(101, 106);
+  const observe = (state, turn, changes = {}) => observeHomeRecording(state, {
+    eligible: true, roomId: turn.roomId, hasStatus: true, acceptsInput: true,
+    recording: turn.status.mode.includes("(recording)"), presentation: turn.presentation, ...changes,
+  });
+  const initial = createHomeRecordingState();
+  const started = observe(initial, on);
+  const looked = observe(started, look);
+  assert.equal(looked.complete, false);
+  const complete = observe(looked, off);
+  assert.equal(complete.complete, true);
+  assert.equal(observe(complete, returned).complete, true);
+  assert.equal(observe(complete, returned, { eligible: false }).complete, true);
+  assert.equal(createHomeRecordingState().complete, false);
+
+  const strip = (turn, predicate) => {
+    const result = structuredClone(turn);
+    const p = result.presentation;
+    p.lines = p.lines.filter(predicate);
+    p.terminalLine = p.activeInput.line = p.lines.length - 1;
+    return result;
+  };
+  const headingOnly = strip(look, (_line, i, lines) => i < 2 || i === lines.length - 1);
+  const warning = (text) => {
+    const result = structuredClone(look), p = result.presentation;
+    p.lines.splice(-1, 0, { ...p.lines[2], id: "warning", text });
+    p.terminalLine = ++p.activeInput.line;
+    return result;
+  };
+  for (const [turn, changes] of [
+    [entry, { recording: true }], [headingOnly, {}], [look, { recording: false }],
+    [look, { roomId: "PARKVIEW-APARTMENTS" }], [look, { roomId: "PARKVIEW-HALL" }],
+    [look, { eligible: false }], [look, { hasStatus: false }], [look, { acceptsInput: false }],
+    [look, { presentation: null }], [warning("WARNING: Record buffer full."), {}],
+    [warning("Auto-deactivation of record feature."), {}], [warning("WARNING: Deactivating record feature."), {}],
+  ]) {
+    assert.equal(observe(observe(started, turn, changes), off).complete, false, JSON.stringify(changes));
+  }
+  assert.equal(observe(observe(started, warning("WARNING: Record buffer is now half-full.")), off).complete, true);
+  const old = observe(initial, look, { recording: false });
+  assert.equal(observe(observe(observe(old, on), look), off).complete, false);
+  assert.equal(observe(observe(observe(initial, look), on), off).complete, false);
+  assert.equal(observe(observe(initial, on, { roomId: "PARKVIEW-HALL" }), look).complete, false);
+  assert.equal(observe(looked, off, { recording: true }).complete, false);
+  assert.equal(observe(looked, off, { roomId: "PARKVIEW-HALL" }).complete, false);
+  assert.equal(observe(looked, strip(off, (_line, i) => i !== 1)).complete, false);
+  assert.deepEqual(observe(looked, look), looked);
 });
