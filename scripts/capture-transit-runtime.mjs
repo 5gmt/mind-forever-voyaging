@@ -77,6 +77,7 @@ const evidence = {
   runId: randomUUID(),
   startedAt: new Date().toISOString(),
   canonicalSha256,
+  candidate: "A: delayed in-car recording",
   outcome: "incomplete",
   sessions: [],
   probes: [],
@@ -127,7 +128,7 @@ async function captureSession(browser, session) {
   }, playerSelector);
   const readLiveWindow = () => player.evaluate(() => {
     const p = window.AMFVPresentationBridge.extract(document, getComputedStyle);
-    const statusText = [...document.querySelectorAll("#windowport .GridWindow")].map((grid) => grid.textContent ?? "").join("\n");
+    const statusText = [...document.querySelectorAll("#windowport .GridWindow .GridLine")].map((line) => line.textContent ?? "").join("\n");
     return { id: p.lines[p.activeInput?.line]?.id, statusText };
   });
   const liveInputId = async () => (await readLiveWindow()).id;
@@ -219,6 +220,16 @@ async function captureSession(browser, session) {
     assert.ok(condition(turn), `No required observation within ${limit} one-minute waits (${counter}).`);
     return turn;
   };
+  const beforeArrival = (turn) => {
+    assert.ok(!has(turn, arrival) && !has(turn, open), `Unexpected arrival on ${turn.command} before the recorded wait.`);
+    return turn;
+  };
+  const onboardMinute = async (turn, phase) => {
+    assert.ok(session.onboardWaits < onboardLimit, `Exceeded ${onboardLimit} one-minute waits onboard.`);
+    session.onboardWaits++;
+    session[phase]++;
+    return minute(turn);
+  };
   const mark = (name, turn) => { session.checkpoints[name] = turn.submittedInputId; };
   const snapshots = async (name, extra) => {
     const inputBefore = await liveInputId();
@@ -280,9 +291,11 @@ async function captureSession(browser, session) {
         if (!mixed) await selectClassic();
         turn = await submit(answer, mixed ? "decoder" : "form");
       } else if (mixed && accepted.submissions[index].method === "guided-map-form") {
-        const { route } = await selectLandmark(/^Your apartment, fieldwork destination/i);
+        const { route, landmark } = await selectLandmark(/^Parkview Apartments entrance, fieldwork destination/i);
         await route.getByRole("button", { name: /Draft next step/i }).click();
-        assert.equal(await liveInputId(), currentInputId, "Draft advanced canonical input.");
+        const inputAfterDraft = await liveInputId();
+        assert.equal(inputAfterDraft, currentInputId, "Draft advanced canonical input.");
+        session.guidedDraft = { landmark, inputId: inputAfterDraft, command: await form.inputValue() };
         turn = await submit(command, "guided-map-form");
       } else {
         turn = await submit(command, accepted.submissions[index].method);
@@ -329,13 +342,24 @@ async function captureSession(browser, session) {
       assert.ok(body(board).some((line) => /^This is a typical tubecar, clean and free of graffiti\. The doors of the car are (?:open|closed)\.$/.test(line)), "Missing 2041 carriage description.");
       mark("board", board);
       if (full) {
-        const started = requireState(await formOrAction("RECORD"), "Tubecar", recording);
+        session.onboardWaits = 0;
+        session.departureWaits = 0;
+        session.postDepartureWaits = 0;
+        session.arrivalWaits = 0;
+        let turn = beforeArrival(board);
+        while (!departs(turn)) {
+          turn = beforeArrival(await onboardMinute(turn, "departureWaits"));
+        }
+        mark("onboardDeparture", turn);
+        assert.ok(session.onboardWaits + 3 <= onboardLimit, "Not enough waits remain to test candidate A.");
+        // The departure turn is separate from the two unrecorded waits.
+        turn = beforeArrival(await onboardMinute(turn, "postDepartureWaits"));
+        beforeArrival(await onboardMinute(turn, "postDepartureWaits"));
+
+        const started = beforeArrival(requireState(await formOrAction("RECORD"), "Tubecar", recording));
         mark("record", started);
         await snapshots("record");
-        // Stop at the first new onboard arrival. A different sign is a
-        // failed candidate and cannot authorize waiting for a later station.
-        const arrived = await waitUntil(started, (turn) => has(turn, arrival), onboardLimit, "onboardWaits");
-        assert.notEqual(arrived, started, "Arrival must follow a turn already in recording mode.");
+        const arrived = await onboardMinute(started, "arrivalWaits");
         requireLeaves(arrived, [arrival, ...junctionSign, open]);
         mark("onboardArrival", arrived);
         await snapshots("onboardArrival");
@@ -343,14 +367,14 @@ async function captureSession(browser, session) {
         requireLeaves(out, ["Tube Station", ...junctionSign]);
         assert.ok(body(out).some((line) => line.startsWith("You are on a central platform between four sets of tracks.")));
         mark("junctionPlatform", out);
-        await snapshots("junctionPlatform");
         mark("off", requireState(await formOrAction("RECORD OFF"), "Tube Station"));
+        await snapshots("off");
         mark("terminal", requireState(await submit("UP"), "Skybus Terminal"));
         requireState(await submit("SE"), "Main & Kennedy");
         mark("return", requireState(await submit("SW"), "Kennedy Park"));
         await snapshots("return");
       } else {
-        const departure = await waitUntil(board, departs, onboardLimit, "onboardWaits");
+        const departure = await waitUntil(board, (turn) => departs(beforeArrival(turn)), onboardLimit, "onboardWaits");
         mark("onboardDeparture", departure);
         const refused = requireState(await submit("OUT"), "Tubecar");
         requireLeaves(refused, [exitRefusal]);
