@@ -98,16 +98,16 @@ PR更新とmerge後のpushは `CI fast` の短い検証を行い、Fullが必要
 [Home実測](./docs/home-runtime-evidence.md)、[承認copy](./docs/home-copy-packet.md)、[受入記録](./docs/home-fieldwork-acceptance.md)、[最終レビュー](https://github.com/5gmt/mind-forever-voyaging/pull/126#pullrequestreview-6091596637)に証拠と限界を集約している。
 映画の[旧経路の容量不足](./docs/cinema-runtime-evidence.md)と[候補Aの成功実測](./docs/cinema-recording-a-evidence.md)も保持する。
 
-次のmilestoneは **公共交通に実乗車して録画し、降車後Kennedy Parkへ戻る** こと。[Transit計画](./docs/plans/2041-transit-fieldwork.md)は独立Solの計画レビュー待ち。
-候補はElm & UniversityからBrownlineに乗り、Skybus Terminal側の次駅で降車する一駅の経路。Source / 現行コードに基づく候補で、実乗車・有限の短時間待機・録画容量・同名駅/車両の識別をT1で実測して採択する。
+次のmilestoneは **公共交通に実乗車して録画し、降車後Kennedy Parkへ戻る** こと。[Transit計画 PR #130](https://github.com/5gmt/mind-forever-voyaging/pull/130) は独立Solの採択後にマージ済み。[Transit計画](./docs/plans/2041-transit-fieldwork.md)
+T1 の最初のフォーム試行で、Home の111入力を保持し、Elm & University から Brownline に乗車して録画した。Skybus Terminal 側の Junction 到着と同じ入力で録画バッファが満杯になり、自動停止した。[失敗実測](./docs/transit-runtime-evidence.md)
+Workは[交通候補A（発車後録画）](./docs/transit-recording-window-decision.md)を再実測候補として承認した。先行111入力と録画窓を保持し、車内の発車確認後に1分待機を2回行ってから録画する。到着・録画中の降車・明示OFFを引き続き要求し、成功と残容量はまだ実測されていない。T1の成功採択、T2/T3の開始条件は未達。
 公共交通の日本語copyと補助9/9は未実装・未受入。原作の正式評価とSimulationからの帰還は別の後続milestone候補とする。
 
 ## 基本的な作業順
 
-1. Transit計画PRを独立Solがレビューし、Docs-only Fast / readinessを経てmergeする。
-2. [T1 #127](https://github.com/5gmt/mind-forever-voyaging/issues/127): 111送信の先行八課題を保持した2 fresh full sessionsと別probesを採取し、乗降・短時間待機・限定観測の契約をSolが採択する。
-3. [T2 #128](https://github.com/5gmt/mind-forever-voyaging/issues/128): T1採択後、本文・駅/車両・map入口・専用操作・最終補助9/9表示の英日copy packetをSolが承認する。
-4. [T3 #129](https://github.com/5gmt/mind-forever-voyaging/issues/129): T1/T2後、限定観測adapter、presentation、操作と交通の補助実績を統合。Sol通常レビュー、最終Full、Work全体受入と全ZIP監査、merge・#29報告まで行う。
+1. [PR #131](https://github.com/5gmt/mind-forever-voyaging/pull/131) の失敗証拠とWork判断文書を、Solの文書差分レビュー、最新head/baseの7群Full・readiness後にmergeする。続く別の[T1 #127](https://github.com/5gmt/mind-forever-voyaging/issues/127)成功実測PRでcaptureを候補Aへ更新し、111入力の先行八課題を保った2件の新規完走、別probes、看板構造を確認する。Solの成功採択・mergeまでT1はopenのまま。
+2. [T2 #128](https://github.com/5gmt/mind-forever-voyaging/issues/128): T1採択後、本文・駅/車両・map入口・専用操作・最終補助9/9表示の英日copy packetをSolが承認する。
+3. [T3 #129](https://github.com/5gmt/mind-forever-voyaging/issues/129): T1/T2後、限定観測adapter、presentation、操作と交通の補助実績を統合。Sol通常レビュー、最終Full、Work全体受入と全ZIP監査、merge・#29報告まで行う。
 
 Codex Cloud実装、通常PRは独立Chat Sol、最終統合だけWorkの分担を継続する。
 現CIは7群。T3で長い自然経路用にtransit-desktop / transit-narrowを追加し9群とする計画で、現時点では追加していない。
@@ -122,7 +122,7 @@ Unknown output、optional interrupt、RESTORE後の不明状態のEnglish fallba
 - [PR #3](https://github.com/5gmt/mind-forever-voyaging/pull/3) の ChatGPT Sites adapter は、owner-only preview のための draft experiment であり、現在の baseline には含まれない。
 - Repository は Node.js/npm の version boundary、committed lockfile、`npm ci`、7-day `min-release-age` を採用している。
 - CIは説明文書 /Verify /Fullの必要性を分類する。新しい説明Markdownは原則軽量とし、copy packetと `docs/test-inputs/**` を実行入力として管理する。自動 `CI fast` は短い検証だけを行い、レビューアが最終head /baseの手動Fullを起動する。merge後の自動Fullと提出前の一律ローカルFullは廃止する。`ci-fast-gate` の成功とFull受入を区別し、`scripts/ci-readiness.mjs` で現行head /baseと全jobを確認する。
-- #114 merge後の49 unit /62 browser testsを維持し、映画F3で3 unit /10 browserの回帰を追加した。さらに[CI保守の修正依頼](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に対応し、共有Restaurant helperの描画遅延回帰1件を追加した。H1でunit回帰を1件、H3でunit回帰を2件とbrowserテストを11件追加し、アプリの検証対象は55 unit /84 browserとなった。CI制御テストは分類、起動条件、参照先と受入判定を継続的に検証する。Browserはchurch 10件 /power 9件 /remaining 44件 /cinema-desktop 7件 /cinema-narrow 3件 /home-desktop 8件 /home-narrow 3件で、各1 worker、retryなし、job上限は各35分。新規specはremainingに入り、実際のPlaywright一覧照合で欠落と重複を検出する。既存73件の経路、assertion、添付を保持する。
+- #114 merge後の49 unit /62 browser testsを維持し、映画F3で3 unit /10 browserの回帰を追加した。さらに[CI保守の修正依頼](https://github.com/5gmt/mind-forever-voyaging/pull/118#issuecomment-6707223666)に対応し、共有Restaurant helperの描画遅延回帰1件を追加した。H1でunit回帰を1件、H3でunit回帰を2件とbrowserテストを11件追加し、アプリの検証対象は55 unit /84 browserとなった。T1 の失敗 fixture の回帰を加え、現在は56 unit /84 browser。CI制御テストは分類、起動条件、参照先と受入判定を継続的に検証する。Browserはchurch 10件 /power 9件 /remaining 44件 /cinema-desktop 7件 /cinema-narrow 3件 /home-desktop 8件 /home-narrow 3件で、各1 worker、retryなし、job上限は各35分。新規specはremainingに入り、実際のPlaywright一覧照合で欠落と重複を検出する。既存73件の経路、assertion、添付を保持する。
 - 通常のPR /pushは成功時も失敗時もartifactを保存しない。独立受入は最終head /baseの手動Full実行で `save_evidence=true` を指定し、同一run /attemptの7 ZIPを1日以内に監査する。各ZIPのhead /base /run /attempt /groupと受入記録の証拠パスを照合する。[CI運用](./docs/ci-operation.md)に分類基準と実行手順を記録した。
 - [PR #119の最終手動Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/44807419513)は52 unit /73 browser /15 CI制御テストが全成功。Merge後の[Fast](https://github.com/5gmt/mind-forever-voyaging/actions/runs/44816683069)は約2分22秒で成功、artifact 0件、Fullの重複起動なし。条件付きFullは運用上のmerge gateであり、branch protectionの強制は追加していない。
 - H3の[最終Full](https://github.com/5gmt/mind-forever-voyaging/actions/runs/46000628519)は55 unit /84 browser /15 CI制御テストが全成功、全7 ZIP（991,929,960 bytes）を監査済み。Merge後の[Fast](https://github.com/5gmt/mind-forever-voyaging/actions/runs/46042700136)も成功し、artifactは0件、Fullの重複起動なし。これは既存受入結果の反映であり、この計画変更での再実行・再監査ではない。

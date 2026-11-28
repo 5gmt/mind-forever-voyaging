@@ -7,7 +7,7 @@
 **Architecture:** 既存2a+2bとexact observed-leaf catalogを使う。同名の駅・車両についてだけ、新しいraw turnと直前の確実な観測を使う限定adapterを追加し、観測時scopeをhistoryに保存する。運行時計や車両位置を独自にシミュレートしない。
 **Tech Stack:** Next.js / React / TypeScript、Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定」「候補経路と採択gate」「観測と操作の契約」「受入境界」。[憲章](../../PROJECT_CHARTER.md)、[AGENTS.md](../../AGENTS.md)、[CI運用](../ci-operation.md)を保持する。
-**Status:** 計画レビュー待ち。下記経路はhistorical source / 現行コードに基づく候補であり、公共交通のruntime成功・copy approval・補助9/9を確認済みとは扱わない。
+**Status:** [計画 PR #130](https://github.com/5gmt/mind-forever-voyaging/pull/130) はマージ済み。T1の初回試行はJunction到着と同じ入力で満杯警告・自動停止となった。Workは[発車後に録画を始める交通候補A](../transit-recording-window-decision.md)を次の実測候補として承認した。PR #131の失敗証拠・判断文書をSolの差分レビューと最終Full後にmergeし、別のT1成功実測PRで再開する。候補Aのruntime成功、T1の成功採択、T2、T3は未完了。
 **Baseline:** Homeの[PR #126](https://github.com/5gmt/mind-forever-voyaging/pull/126)、merge `76f2c438e69a81d13dfba6c8fa2ab42b5598f4b9`。実行時には最新target branch `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-28 JSTのownerによる次期milestone設計・タスク作成依頼に基づく。
 
@@ -51,12 +51,16 @@
 | 1–111 | Homeの採択済みprefix | 八課題後、公園へ非録画・通常入力で帰着。 |
 | 地上移動・入駅 | `SW / W / DOWN` | Elm & Park → Elm & University → TUBE-AT-UNIVERSITY。DOWNは現行generated mapにない条件付きexit。 |
 | 車両待ち | 必要な回数だけ `WAIT FOR 1 MINUTE` | 新しいraw出力でBrown車両の到着・停車を確認する。上限40送信。駅では録画しない。 |
-| 乗車・録画 | `IN / RECORD` | University側終点からBROWN-TUBECARへ実乗車し、録画開始を確認。乗車したturnに発車する可能性も記録する。 |
-| 一駅移動 | 必要な回数だけ `WAIT FOR 1 MINUTE` | 車内でTUBE-JUNCTION / Skybus Terminalの看板と到着・開扉を新たに観測する。上限8送信。 |
+| 非録画で乗車・発車確認 | `IN`、必要な回数だけ `WAIT FOR 1 MINUTE` | Brown車内への実乗車と新しい発車文を確認。INのturnに発車した場合もその観測を使う。 |
+| 発車後の非録画待機 | `WAIT FOR 1 MINUTE`を別々に2回 | 発車を生じさせた入力は含めない。各turnの所在・通常入力・未到着を確認する。 |
+| 録画開始 | `RECORD` | 成功応答と車内のrecording status、通常入力を確認。同turnに到着していたら停止する。 |
+| 一駅移動の終わり | `WAIT FOR 1 MINUTE`を1回 | 新しい録画中のJunction到着・Skybus Terminal看板・開扉を要求。到着しなければ追加待機で救済しない。車内待機の診断上限8には非録画中の全待機も含む。 |
 | 降車・明示停止 | `OUT / RECORD OFF` | 停車中に先に降車し、駅で明示OFF成功を確認する。車内でOFFして停車時間を消費する順序にはしない。 |
 | 地上へ・帰着 | `UP / SE / SW` | Skybus Terminal → Main & Kennedy → Kennedy Park。非録画・通常入力で終える。 |
 
 これは **111 + 10 + 待機回数** の候補で、固定の総送信数をまだ合否条件にしない。上限は無限待機を防ぐcapture / testの診断境界であり、production UIが自動待機する契約ではない。T1が実際の全commands、待機数、開始・到着時刻、途中の割込み、input遷移を保存し、Solが有限の観測条件と許容待機数を採択する。上限の増加、乗り過ごして別駅へ行く復旧経路の追加は無断で行わない。
+
+上表は[Workの設計判断](../transit-recording-window-decision.md)による交通候補A。旧`IN / RECORD`は到着時に満杯となった失敗経路として保存する。先行分86分＋交通3分＝89分という見込みはraw時刻とsourceからの計算で、残容量や成功の実測ではない。録画開始からOUT / OFFまで追加のcanonical commandを挟まない。絶対時刻や内部timerで到着・開扉を推測しない。
 
 選択理由とsource上の根拠:
 
@@ -95,7 +99,7 @@ T1は本番buildで2つの独立fresh canonical sessionをprefixから最後ま�
 
 `FIELD_RECORDING_RULES` の交通項目だけをsession-scoped観測へ置換する。既存八課題の検出は再設計しない。
 
-T3の交通達成条件は、実Brown車内でのRECORD成功 → 同じ録画窓で新たに観測したJunction到着・看板・開扉（直前と到着後に録画が継続）→ 実降車 → 明示RECORD OFF成功、とする。Sourceの最低条件より保守的な、今回の一駅体験の補助指標である。駅の発車文、乗車headingだけ、録画開始だけ、古い到着に後からRECORDを添えたものは達成にしない。
+T3の交通達成条件は、実Brown車内でのRECORD成功 → 同じ録画窓で新たに観測したJunction到着・看板・開扉（直前と到着後に録画が継続）→ 録画中の実降車 → 明示RECORD OFF成功、とする。発車はRECORDより前でもよい。Sourceの最低条件より保守的な、今回の一駅体験の補助指標である。駅の発車文、乗車headingだけ、録画開始だけ、古い到着に後からRECORDを添えたもの、RECORDと同turnの到着は達成にしない。
 
 Full / auto-deactivation、途中OFF、missing status / 不安定input、未知の乗換・車両・駅でpendingを破棄する。Half-full warningは保存し、それだけで既存達成を消さない。完了済みの交通推定は同一session内で保持するが、既存RESTORE / restart / 新session境界で破棄する。画面の9/9、最終項目や全項目完了文言は引き続き補助推定と明示する。
 
@@ -112,19 +116,25 @@ Full / auto-deactivation、途中OFF、missing status / 不安定input、未知�
 
 | Task | Issue | 開始条件 | 完了・引継ぎ |
 | --- | --- | --- | --- |
-| T1 実測と乗降契約採択 | [T1 #127](https://github.com/5gmt/mind-forever-voyaging/issues/127) | 計画PRのSol review / merge | 2 full sessions・別probes・操作/identity台帳をSolが採択しmerge。 |
+| T1 実測と乗降契約採択 | [T1 #127](https://github.com/5gmt/mind-forever-voyaging/issues/127) | 再試行はPR #131の失敗証拠・Work判断のreview / merge後 | 候補Aの2 full sessions・別probes・操作/identity台帳をSolが採択しmerge。 |
 | T2 本文・交通UI copy approval | [T2 #128](https://github.com/5gmt/mind-forever-voyaging/issues/128) | T1成功採択 / merge | exact leafと全surfaceの英日packetをSolが承認しmerge。 |
 | T3 統合とmilestone受入 | [T3 #129](https://github.com/5gmt/mind-forever-voyaging/issues/129) | T1 / T2完了 | Sol通常レビュー、最終Full、Work全体受入・全ZIP監査、merge・#29報告・close。 |
 
 ### T1: runtimeと限定観測の契約
 
+初回フォーム試行は131送信目で停止した。先行111送信、実乗車、録画開始、Junction 到着と開扉までは [失敗 fixture](../../tests/fixtures/parchment-transit-runtime-failure.json) に残した。到着後の録画継続を満たさないため、第二試行、別 probes、降車・帰着、成功 fixture と成功回帰は保留した。
+
+次は[交通候補A](../transit-recording-window-decision.md)を別の成功実測PRで検証する。現capture scriptは旧経路のままなので、再試行前に明示的な発車観測と遅い録画開始へ変更する。失敗fixtureは上書きしない。Localized hostの看板の字下げも成功採択前の確認事項とし、新projectionが必要ならWorkへ戻す。
+
 **Files:** Create `scripts/capture-transit-runtime.mjs`, `tests/fixtures/parchment-transit-runtime-observed.json`, `docs/transit-runtime-evidence.md`。失敗は別 `tests/fixtures/parchment-transit-runtime-failure.json`。Modify `tests/rendered-html.test.mjs`、本計画、`PROJECT_STATUS.md`。
 **Consumes:** Homeの採択fixture / capture手順と本書の候補。**Produces:** 2以上の `sessions` と別 `probes`、全submittedCommands、stable bridge lines/runs/status/input、実UI method、roomの根拠、録画窓、時刻とwait回数、成功/失敗区分。既存fixture形式を再利用し、交通特有のidentity evidenceを文書化する。
 
-- [ ] Captureに `--base-url URL --output PATH --failure-output PATH`、fresh output root、起動 / input同期、partial保存を設ける。
+- [x] Captureに `--base-url URL --output PATH --failure-output PATH`、fresh output root、起動 / input同期、partial保存を設ける。
+- [ ] 交通候補Aの発車観測、非録画wait 2回、RECORD、到着wait 1回と停止条件へcaptureを更新する。
 - [ ] 本番buildで2 full sessionsと別probesを採取する。待機ループは上限とraw条件を持ち、未到着のまま「成功」として次へ進めない。
 - [ ] Unit `retains two complete transit sessions after the accepted home prefix` を実fixtureで固定する。111 prefix、実command/input対応、停車と車内到着の別、録画ON/OFF、return、容量、負例をassertする。待機回数は実測した契約に従い、決め打ち総数のために観測を削らない。
 - [ ] `node --test --test-name-pattern='transit sessions' tests/rendered-html.test.mjs`、適用checks、checksumを実行。必須/可変leaf、3 roomの同定根拠、DOWN/IN/OUT/UPの既存UI不足、copy候補、未検証境界を台帳へ残す。
+- [x] 失敗の実測と停止後の入力を `retains the transit capacity failure after the accepted home prefix` に固定し、[失敗実測](../transit-runtime-evidence.md) に記録する。
 - [ ] 独立Solが成功経路・有限待機・観測/操作契約を採択する。境界変更が必要ならWorkへ戻す。最新head/baseのFull / readinessを経てmergeし、T2を解除する。
 
 ### T2: 本文・駅・乗降支援copy
@@ -133,6 +143,7 @@ Full / auto-deactivation、途中OFF、missing status / 不安定input、未知�
 **Consumes:** 採択済みT1のexact leaf / observation ID / command / raw status。**Produces:** 原文、日本語、必須/optional/fallback、command / room / phase scope、visible label / accessible name / lang、map到着先と動的値の対応表。
 
 - [ ] 3 roomの本文・駅看板・移動イベント・拒否、Skybus地上出口、短時間wait、録画表示を原文に照合する。同文でもcommand / 観測時roomの境界を明示する。
+- [ ] T1成功採択後、発車確認後の2回の1分待機と録画開始を静的な英日案内へ含める。普通のWAITと区別し、自動待機・カウントダウン・残容量推定を追加しない。
 - [ ] 課題文とmap `transit`、駅と車両、入口到着と実乗車を区別する。専用5操作、main / companion、navigator / compass、live status、drawerの最終9/9説明まで監査する。既存共通copyは再利用し、変更が必要なら影響を明記する。
 - [ ] `git diff --check`、fixtureと全引用の対応、リンクを確認し、独立Solのcopy approval、Full / readinessを経てmergeする。Packetは実行入力としてFull分類を維持する。
 

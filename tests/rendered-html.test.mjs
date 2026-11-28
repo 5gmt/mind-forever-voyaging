@@ -2525,6 +2525,156 @@ test("retains two complete home sessions after the adopted cinema route", async 
   assert.ok(turns.every(({ status, presentation }) => status.mode === "Simulation Mode" && presentation.lines.at(-1).text === ">"));
 });
 
+test("retains the transit capacity failure after the accepted home prefix", async () => {
+  const [transit, home] = await Promise.all(["transit-runtime-failure", "home-runtime-observed"].map(async (fixture) =>
+    JSON.parse(await readFile(new URL(`./fixtures/parchment-${fixture}.json`, import.meta.url), "utf8"))));
+  const normal = "Simulation Mode";
+  const recording = "Simulation Mode (recording)";
+  const wait = "WAIT FOR 1 MINUTE";
+  const body = (turn) => turn.presentation.lines.slice(1, -1).map(({ text }) => text.trim());
+  const state = ({ status }) => [status.location, status.mode];
+  const commands = (submissions) => submissions.map((command, index) => index === 6 ? "<decoder>" : command.toUpperCase());
+  const taskTurns = [13, 22, 23, 33, 43, 57, 72, 85, 87, 89, 102, 103, 104];
+  const expectedPrefix = commands(home.sessions[0].submittedCommands);
+  assert.equal(expectedPrefix.length, 111);
+  assert.equal(transit.outcome, "incomplete");
+  assert.equal(transit.canonicalSha256, home.canonicalSha256);
+  assert.equal(transit.sessions.length, 1);
+  assert.deepEqual(transit.probes, []);
+  assert.deepEqual(transit.harnessAttempts.map(({ sessions }) => sessions[0].submissions.length), [1, 105]);
+  assert.match(transit.harnessAttempts[0].failure.message, /Unrecognized live status/);
+  assert.match(transit.harnessAttempts[1].failure.message, /romance novel/);
+  assert.equal(new Set([transit, ...transit.harnessAttempts].map(({ sessions }) => sessions[0].id)).size, 3);
+  const [session] = transit.sessions;
+  assert.equal(session.controls, "form");
+  assert.ok(session.submissions.every(({ method }) => method === "form"));
+  assert.match(session.failure.message, /Record buffer full/);
+  const { startup, submissions, observations } = session;
+  assert.equal(startup.before.presentation.activeInput.kind, "char");
+  assert.equal(startup.after.presentation.activeInput.kind, "line");
+  assert.deepEqual(session.bridgeCommands, [" ", ...session.submittedCommands]);
+  assert.equal(submissions.length, observations.length);
+  assert.deepEqual(submissions.map(({ command }) => command), session.submittedCommands);
+  assert.equal(new Set(submissions.map(({ submittedInputId }) => submittedInputId)).size, submissions.length);
+  for (const [i, turn] of observations.entries()) {
+    const { command, echo, submittedInputId, nextInputId } = submissions[i];
+    assert.equal(submittedInputId, i ? submissions[i - 1].nextInputId : startup.nextInputId);
+    assert.equal(turn.submittedInputId, submittedInputId);
+    assert.equal(turn.nextInputId, nextInputId);
+    assert.notEqual(submittedInputId, nextInputId);
+    const p = turn.presentation;
+    assert.equal(p.version, 3);
+    assert.deepEqual(p.lines[0], echo);
+    assert.equal(echo.id, submittedInputId);
+    if (i === 6) {
+      assert.match(command, /^\d+$/);
+      assert.ok(echo.runs.some(({ classes, text }) => classes.includes("Style_input") && text === command));
+    } else {
+      assert.equal(echo.text.toUpperCase(), `>${command.toUpperCase()}`);
+    }
+    assert.equal(turn.acceptsInput, true);
+    assert.equal(p.activeInput.kind, "line");
+    assert.equal(p.activeInput.line, p.terminalLine);
+    assert.equal(p.terminalLine, p.lines.length - 1);
+    assert.equal(p.lines.at(-1).id, nextInputId);
+    if (i !== 5) assert.equal(p.lines.at(-1).text, ">");
+    assert.deepEqual(turn.statusText.match(/Mode:\s+(.+?)\s+Time:\s+(.+?)\s+Location:\s+(.+?)\s+Date:\s+([^\n]+?)\s*$/s)?.slice(1),
+      [turn.status.mode, turn.status.time, turn.status.location, turn.status.date]);
+    if (i < observations.length - 1) assert.doesNotMatch(body(turn).join("\n"), /record buffer (?:is )?full|auto-deactivation|not currently active/i);
+    assert.match(turn.bridgeStatusText, /MODE:.*TIME:.*LOCATION:.*DATE:/is);
+    for (const line of p.lines) {
+      const runText = line.runs.map(({ text }) => text).join("");
+      if (i === 5 && line.id === nextInputId) assert.equal(runText.replace(/\s+/g, " "), line.text.replace(/\s+/g, " "));
+      else assert.equal(runText, line.text);
+    }
+  }
+  assert.deepEqual(session.warnings, observations.flatMap((turn) => body(turn).filter((text) => text.startsWith("WARNING:"))
+    .map((text) => ({ turnId: turn.submittedInputId, text }))));
+
+  assert.deepEqual(commands(session.submittedCommands.slice(0, 111)), expectedPrefix);
+  // Home combined the decoder question and numeric answer into one observation.
+  assert.deepEqual(observations.slice(0, 111).filter((_, i) => i !== 5).map(state), home.sessions[0].observations.map(state));
+  for (const index of taskTurns) {
+    const [first, second] = home.sessions.map((accepted) => body(accepted.observations[index]));
+    const shared = first.filter((text) => text && !text.startsWith("WARNING:") && text !== "There is a romance novel here." && second.includes(text));
+    assert.ok(shared.length);
+    assert.deepEqual(body(observations[index < 5 ? index : index + 1]).filter((text) => shared.includes(text)), shared);
+  }
+  const turns = observations.slice(111);
+  const { stationWaits, onboardWaits } = session;
+  assert.equal(stationWaits, 11);
+  assert.equal(onboardWaits, 4);
+  assert.deepEqual(turns.map(({ command }) => command), [
+    "SW", "W", "DOWN", ...Array(stationWaits).fill(wait),
+    "IN", "RECORD", ...Array(onboardWaits).fill(wait),
+  ]);
+  const station = turns[2];
+  const available = turns[2 + stationWaits];
+  const board = turns[3 + stationWaits];
+  const record = turns[4 + stationWaits];
+  const arrive = turns.at(-1);
+  assert.deepEqual(state(turns[1]), ["Elm & University", normal]);
+  assert.deepEqual(state(station), ["Tube Station", normal]);
+  assert.deepEqual(station.presentation.lines.slice(3, 6).map(({ text }) => text), [
+    "  Elm Street and University Avenue", "            (Rockvil U)", "     (Brown Tubeline Terminus)",
+  ]);
+  assert.deepEqual(state(available), ["Tube Station", normal]);
+  assert.ok(body(available).includes('A brown tubecar, marked "University" whooshes into the station on the southeast set of tracks. As the sign changes to "Airport," the doors open and people begin boarding and debarking.'));
+  assert.equal(available.nextInputId, board.submittedInputId);
+  assert.deepEqual(state(board), ["Tubecar", normal]);
+  assert.ok(body(board).includes("This is a typical tubecar, clean and free of graffiti. The doors of the car are open."));
+  assert.deepEqual(state(record), ["Tubecar", recording]);
+  assert.deepEqual(body(record).filter(Boolean), [
+    "Record feature activated.",
+    "The doors of the brown tubecar slide shut, and it glides out of the station in the same direction that it came from.",
+  ]);
+  assert.ok(turns.slice(3, 3 + stationWaits).every((turn) => turn.status.mode === normal && body(turn).includes("Time passes...")));
+  assert.deepEqual(turns.slice(-4).map(({ status }) => status.time), ["7:41pm", "7:42pm", "7:43pm", "7:44pm"]);
+  for (const turn of turns.slice(-4, -1)) assert.deepEqual(state(turn), ["Tubecar", recording]);
+  assert.deepEqual(state(arrive), ["Tubecar", normal]);
+  assert.deepEqual(arrive.presentation.lines.slice(4, 6).map(({ text }) => text), [
+    "          Skybus Terminal", "  (Transfer Between Brown and Red)",
+  ]);
+  assert.deepEqual(body(arrive).filter(Boolean), [
+    "Time passes...",
+    "The tubecar glides into a station, and you can make out a sign reading:",
+    "Skybus Terminal",
+    "(Transfer Between Brown and Red)",
+    "The car comes to a stop and the doors slide open.",
+    "WARNING: Record buffer full. Auto-deactivation of record feature.",
+  ]);
+  assert.deepEqual(session.warnings.map(({ text }) => text), [
+    "WARNING: Record buffer is now half-full.",
+    "WARNING: Record buffer full. Auto-deactivation of record feature.",
+  ]);
+  assert.equal(session.warnings.at(-1).turnId, arrive.submittedInputId);
+  assert.equal(session.failureReport.presentation.lines.at(-1).id, arrive.nextInputId);
+  assert.deepEqual(session.surfaceAudit.map(({ name }) => name), ["universityStreet", "universityPlatform", "record"]);
+  for (const { name, inputBefore, inputAfter } of session.surfaceAudit) {
+    assert.equal(inputAfter, inputBefore);
+    assert.equal(inputBefore, turns.find((turn) => turn.submittedInputId === session.checkpoints[name]).nextInputId);
+  }
+  for (const turn of [station, arrive]) {
+    const reconciled = reconcilePresentationHistory([], turn.presentation);
+    assert.equal(reconciled.representable, true);
+    assert.deepEqual(reconciled.history[0].presentation, turn.presentation);
+    const fallback = projectPresentationHistory(reconciled.history, "en")[0].blocks;
+    assert.equal(fallback[1].text, body(turn).filter(Boolean).join("\n"));
+    // Exercise the ordinary Japanese projector without adding Transit copy.
+    const controlled = structuredClone(turn.presentation);
+    const end = controlled.terminalLine;
+    controlled.lines.splice(end, 0, {
+      id: "controlled-approved-anchor", text: "Kennedy Park", classes: ["BufferLine"],
+      runs: [{ text: "Kennedy Park", classes: ["Style_normal"], tag: "span" }],
+    });
+    controlled.terminalLine++;
+    controlled.activeInput.line++;
+    const blocks = observedOrdinaryTurnPresentation(controlled, "ja");
+    assert.deepEqual(blocks.slice(1, -1).map(({ sourceLines }) => sourceLines), body(turn).map((_, index) => [index + 1]));
+    assert.deepEqual(blocks.slice(1, -1).map(({ canonicalText, text }) => canonicalText ?? text), body(turn));
+  }
+});
+
 test("projects approved cinema leaves with observation-time room scope and exact qualifiers", async () => {
   const f = JSON.parse(await readFile(new URL("./fixtures/parchment-cinema-recording-a-observed.json", import.meta.url), "utf8"));
   const packet = await readFile(new URL("../docs/cinema-copy-packet.md", import.meta.url), "utf8");
