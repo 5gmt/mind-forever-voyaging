@@ -7,6 +7,8 @@
 明示 OFF、降車、地上への復帰、公園帰着、UI併用の完走試行、別セッションの三つの拒否確認は未実施である。
 この失敗証拠のマージで T2 #128 と T3 #129 の開始条件は解除されない。
 
+**設計判断追記（2026-11-28 JST）:** Workは[交通候補A（発車後録画）](transit-recording-window-decision.md)を次の再試行候補として承認した。本文とfixtureは旧経路の失敗記録を保持する。ここに示す採取コマンドもまだ旧経路を実行するため、新候補の再試行には後続T1 PRでcaptureの更新が必要。候補Aの成功は未実測であり、T1完了とは扱わない。
+
 ## 採取と再現
 
 [計画 PR #130](https://github.com/5gmt/mind-forever-voyaging/pull/130) を含む `codex/modern-amfv` の `c960cb0cb3b72ba8ff0ce072eb3123efb28956e7` から本番静的書き出しを作った。

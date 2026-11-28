@@ -100,12 +100,12 @@ PR更新とmerge後のpushは `CI fast` の短い検証を行い、Fullが必要
 
 次のmilestoneは **公共交通に実乗車して録画し、降車後Kennedy Parkへ戻る** こと。[Transit計画 PR #130](https://github.com/5gmt/mind-forever-voyaging/pull/130) は独立Solの採択後にマージ済み。[Transit計画](./docs/plans/2041-transit-fieldwork.md)
 T1 の最初のフォーム試行で、Home の111入力を保持し、Elm & University から Brownline に乗車して録画した。Skybus Terminal 側の Junction 到着と同じ入力で録画バッファが満杯になり、自動停止した。[失敗実測](./docs/transit-runtime-evidence.md)
-T1 の成功採択は保留とし、経路と録画容量の設計判断を Work に戻す。
+Workは[交通候補A（発車後録画）](./docs/transit-recording-window-decision.md)を再実測候補として承認した。先行111入力と録画窓を保持し、車内の発車確認後に1分待機を2回行ってから録画する。到着・録画中の降車・明示OFFを引き続き要求し、成功と残容量はまだ実測されていない。T1の成功採択、T2/T3の開始条件は未達。
 公共交通の日本語copyと補助9/9は未実装・未受入。原作の正式評価とSimulationからの帰還は別の後続milestone候補とする。
 
 ## 基本的な作業順
 
-1. [T1 #127](https://github.com/5gmt/mind-forever-voyaging/issues/127) の失敗証拠をレビューし、Work が候補経路を再判断する。T1 の完了には111送信の先行八課題を保持した2件の新規完走、別 probes、Sol による乗降と観測の契約採択が必要。
+1. [PR #131](https://github.com/5gmt/mind-forever-voyaging/pull/131) の失敗証拠とWork判断文書を、Solの文書差分レビュー、最新head/baseの7群Full・readiness後にmergeする。続く別の[T1 #127](https://github.com/5gmt/mind-forever-voyaging/issues/127)成功実測PRでcaptureを候補Aへ更新し、111入力の先行八課題を保った2件の新規完走、別probes、看板構造を確認する。Solの成功採択・mergeまでT1はopenのまま。
 2. [T2 #128](https://github.com/5gmt/mind-forever-voyaging/issues/128): T1採択後、本文・駅/車両・map入口・専用操作・最終補助9/9表示の英日copy packetをSolが承認する。
 3. [T3 #129](https://github.com/5gmt/mind-forever-voyaging/issues/129): T1/T2後、限定観測adapter、presentation、操作と交通の補助実績を統合。Sol通常レビュー、最終Full、Work全体受入と全ZIP監査、merge・#29報告まで行う。
 
