@@ -2675,6 +2675,187 @@ test("retains the transit capacity failure after the accepted home prefix", asyn
   }
 });
 
+test("retains two complete transit sessions after the accepted home prefix", async () => {
+  const [transit, home] = await Promise.all(["transit", "home"].map(async (milestone) =>
+    JSON.parse(await readFile(new URL(`./fixtures/parchment-${milestone}-runtime-observed.json`, import.meta.url), "utf8"))));
+  const normal = "Simulation Mode";
+  const recording = "Simulation Mode (recording)";
+  const wait = "WAIT FOR 1 MINUTE";
+  const arrival = "The tubecar glides into a station, and you can make out a sign reading:";
+  const doorsOpen = "The car comes to a stop and the doors slide open.";
+  const depart = /^The doors of the brown tubecar slide shut, and it glides out of the station\b/;
+  const universitySign = ["  Elm Street and University Avenue", "            (Rockvil U)", "     (Brown Tubeline Terminus)"];
+  const junctionSign = ["          Skybus Terminal", "  (Transfer Between Brown and Red)"];
+  const rawBody = (turn) => turn.presentation.lines.slice(1, -1).map(({ text }) => text);
+  const body = (turn) => rawBody(turn).map((text) => text.trim());
+  const state = ({ status }) => [status.location, status.mode];
+  const matches = (turn, pattern) => body(turn).some((text) => pattern.test(text));
+  const normalize = (commands) => commands.map((command, i) => i === 6 ? "<decoder>" : command.toUpperCase());
+  const expectedPrefix = normalize(home.sessions[0].submittedCommands);
+  const clockMinutes = ({ status }) => {
+    const [, hour, minute, suffix] = status.time.match(/^(\d+):(\d+)(am|pm)$/);
+    return Number(hour) % 12 * 60 + Number(minute) + (suffix === "pm" ? 720 : 0);
+  };
+
+  assert.equal(transit.outcome, "adoption-pending");
+  assert.equal(transit.candidate, "A: delayed in-car recording");
+  assert.equal(transit.canonicalSha256, home.canonicalSha256);
+  assert.ok(transit.sessions.length >= 2);
+  assert.ok(transit.sessions.some((session) => session.controls === "form" && session.submissions.every(({ method }) => method === "form")));
+  assert.ok(transit.sessions.some((session) => session.controls === "mixed"
+    && ["form", "quick-action"].every((method) => session.submissions.slice(111).some((entry) => entry.method === method))));
+  assert.equal(expectedPrefix.length, 111);
+  const sessions = [...transit.sessions, ...transit.probes];
+  assert.equal(new Set(sessions.map(({ id }) => id)).size, sessions.length);
+  for (const session of sessions) {
+    const { startup, submissions, observations } = session;
+    assert.equal(session.failure, undefined);
+    assert.equal(startup.before.presentation.activeInput.kind, "char");
+    assert.equal(startup.after.presentation.activeInput.kind, "line");
+    assert.deepEqual(session.bridgeCommands, [" ", ...session.submittedCommands]);
+    assert.equal(submissions.length, observations.length);
+    assert.deepEqual(submissions.map(({ command }) => command), session.submittedCommands);
+    assert.equal(new Set(submissions.map(({ submittedInputId }) => submittedInputId)).size, submissions.length);
+    for (const [i, turn] of observations.entries()) {
+      const { command, echo, submittedInputId, nextInputId } = submissions[i];
+      assert.equal(submittedInputId, i ? submissions[i - 1].nextInputId : startup.nextInputId);
+      assert.equal(turn.submittedInputId, submittedInputId);
+      assert.equal(turn.nextInputId, nextInputId);
+      assert.notEqual(submittedInputId, nextInputId);
+      const p = turn.presentation;
+      assert.equal(p.version, 3);
+      assert.deepEqual(p.lines[0], echo);
+      assert.equal(echo.id, submittedInputId);
+      if (i === 6) {
+        assert.match(command, /^\d+$/);
+        assert.ok(echo.runs.some(({ classes, text }) => classes.includes("Style_input") && text === command));
+      } else {
+        assert.equal(echo.text.toUpperCase(), `>${command.toUpperCase()}`);
+      }
+      assert.equal(turn.acceptsInput, true);
+      assert.equal(p.activeInput.kind, "line");
+      assert.equal(p.activeInput.line, p.terminalLine);
+      assert.equal(p.terminalLine, p.lines.length - 1);
+      assert.equal(p.lines.at(-1).id, nextInputId);
+      if (i !== 5) assert.equal(p.lines.at(-1).text, ">");
+      assert.match(turn.statusText, /^\s*Mode:/);
+      assert.deepEqual(turn.statusText.match(/Mode:\s+(.+?)\s+Time:\s+(.+?)\s+Location:\s+(.+?)\s+Date:\s+([^\n]+?)\s*$/s)?.slice(1),
+        [turn.status.mode, turn.status.time, turn.status.location, turn.status.date]);
+      assert.match(turn.bridgeStatusText, /MODE:.*TIME:.*LOCATION:.*DATE:/is);
+      assert.doesNotMatch(body(turn).join("\n"), /record buffer (?:is )?full|auto-deactivation|not currently active/i);
+      for (const line of p.lines) {
+        const runText = line.runs.map(({ text }) => text).join("");
+        if (i === 5 && line.id === nextInputId) assert.equal(runText.replace(/\s+/g, " "), line.text.replace(/\s+/g, " "));
+        else assert.equal(runText, line.text);
+      }
+      if (command === wait) {
+        assert.ok(body(turn).includes("Time passes..."));
+        assert.equal((clockMinutes(turn) - clockMinutes(observations[i - 1]) + 1440) % 1440, 1);
+      }
+    }
+    assert.deepEqual(session.warnings, observations.flatMap((turn) => body(turn).filter((text) => text.startsWith("WARNING:"))
+      .map((text) => ({ turnId: turn.submittedInputId, text }))));
+  }
+
+  for (const session of transit.sessions) {
+    const { observations, stationWaits, departureWaits, postDepartureWaits, arrivalWaits, onboardWaits } = session;
+    assert.deepEqual(normalize(session.submittedCommands.slice(0, 111)), expectedPrefix);
+    assert.deepEqual(observations.slice(0, 111).filter((_, i) => i !== 5).map(state), home.sessions[0].observations.map(state));
+    for (const index of [13, 22, 23, 33, 43, 57, 72, 85, 87, 89, 102, 103, 104]) {
+      const [first, second] = home.sessions.map((accepted) => body(accepted.observations[index]));
+      const required = first.filter((text) => text && !text.startsWith("WARNING:")
+        && text !== "There is a romance novel here." && second.includes(text));
+      assert.ok(required.length);
+      assert.deepEqual(body(observations[index + 1]).filter((text) => required.includes(text)), required);
+    }
+    assert.deepEqual(session.warnings, [{ turnId: observations[34].submittedInputId, text: "WARNING: Record buffer is now half-full." }]);
+    assert.ok(Number.isInteger(stationWaits) && stationWaits >= 0 && stationWaits <= 40);
+    assert.ok(Number.isInteger(departureWaits) && departureWaits >= 0);
+    assert.equal(postDepartureWaits, 2);
+    assert.equal(arrivalWaits, 1);
+    assert.equal(onboardWaits, departureWaits + postDepartureWaits + arrivalWaits);
+    assert.ok(onboardWaits <= 8);
+    const turns = observations.slice(111);
+    assert.deepEqual(turns.map(({ command }) => command.toUpperCase()), [
+      "SW", "W", "DOWN", ...Array(stationWaits).fill(wait), "IN", ...Array(departureWaits + postDepartureWaits).fill(wait),
+      "RECORD", wait, "OUT", "RECORD OFF", "UP", "SE", "SW",
+    ]);
+    const station = turns[2];
+    const available = turns[2 + stationWaits];
+    const board = turns[3 + stationWaits];
+    const departure = turns[3 + stationWaits + departureWaits];
+    const [record, arrive, out, off, up, southeast, park] = turns.slice(-7);
+    assert.deepEqual([state(turns[1]), state(station), state(available)], [
+      ["Elm & University", normal], ["Tube Station", normal], ["Tube Station", normal],
+    ]);
+    assert.deepEqual(rawBody(station).filter((line) => universitySign.includes(line)), universitySign);
+    assert.ok(matches(available, /^A (?:tubecar, its doors open, is waiting on the tracks to the southeast\.|brown tubecar, marked "University".*the doors open)/));
+    assert.ok(!matches(available, depart));
+    assert.deepEqual(state(board), ["Tubecar", normal]);
+    assert.ok(matches(board, /^This is a typical tubecar, clean and free of graffiti\. The doors of the car are (?:open|closed)\.$/));
+    assert.ok(matches(departure, depart));
+    assert.ok(turns.slice(turns.indexOf(board), turns.indexOf(record)).every((turn) =>
+      turn.status.location === "Tubecar" && turn.status.mode === normal && !body(turn).includes(arrival)));
+    assert.deepEqual(state(record), ["Tubecar", recording]);
+    assert.ok(body(record).includes("Record feature activated."));
+    assert.ok(!body(record).includes(arrival));
+    assert.deepEqual(state(arrive), ["Tubecar", recording]);
+    assert.deepEqual(body(arrive).filter((text) => [arrival, ...junctionSign.map((line) => line.trim()), doorsOpen].includes(text)),
+      [arrival, ...junctionSign.map((line) => line.trim()), doorsOpen]);
+    assert.deepEqual(rawBody(arrive).filter((line) => junctionSign.includes(line)), junctionSign);
+    assert.deepEqual(state(out), ["Tube Station", recording]);
+    assert.ok(matches(out, /^You are on a central platform between four sets of tracks\./));
+    assert.deepEqual(rawBody(out).filter((line) => junctionSign.includes(line)), junctionSign);
+    assert.deepEqual(state(off), ["Tube Station", normal]);
+    assert.ok(body(off).includes("Record feature deactivated."));
+    assert.deepEqual([up, southeast, park].map(state), [["Skybus Terminal", normal], ["Main & Kennedy", normal], ["Kennedy Park", normal]]);
+    for (const [name, turn] of Object.entries({ carAvailable: available, board, onboardDeparture: departure, record, onboardArrival: arrive, junctionPlatform: out, off, return: park })) {
+      assert.equal(session.checkpoints[name], turn.submittedInputId);
+    }
+    assert.deepEqual(session.surfaceAudit.map(({ name }) => name), ["universityStreet", "universityPlatform", "record", "onboardArrival", "off", "return"]);
+    if (session.controls === "mixed") {
+      const draft = session.submissions[96];
+      assert.equal(draft.method, "guided-map-form");
+      assert.deepEqual(session.guidedDraft, {
+        landmark: "Parkview Apartments entrance, fieldwork destination",
+        inputId: draft.submittedInputId,
+        command: draft.command,
+      });
+      for (const turn of [record, off]) {
+        assert.equal(session.submissions.find(({ submittedInputId }) => submittedInputId === turn.submittedInputId).method, "quick-action");
+      }
+    }
+    for (const { name, inputBefore, inputAfter } of session.surfaceAudit) {
+      assert.equal(inputBefore, inputAfter);
+      assert.equal(inputAfter, turns.find((turn) => turn.submittedInputId === session.checkpoints[name]).nextInputId);
+    }
+    assert.ok(turns.every(({ status }) => status.date.endsWith("/2041")));
+  }
+
+  const [platform, refused] = ["station-only", "in-transit-exit"].map((kind) => transit.probes.find((session) => session.kind === kind));
+  assert.ok(platform && refused);
+  for (const session of [platform, refused]) {
+    assert.deepEqual(normalize(session.submittedCommands.slice(0, 7)), expectedPrefix.slice(0, 7));
+  }
+  const probeTurn = (session, name) => session.observations.find(({ submittedInputId }) => submittedInputId === session.checkpoints[name]);
+  const noTrain = probeTurn(platform, "noTrain");
+  assert.equal(noTrain.command, "IN");
+  assert.deepEqual(state(noTrain), ["Tube Station", normal]);
+  assert.ok(body(noTrain).includes("There's no train here at the moment."));
+  const platformDeparture = probeTurn(platform, "platformDeparture");
+  assert.deepEqual(state(platformDeparture), ["Tube Station", recording]);
+  assert.ok(matches(platformDeparture, depart));
+  assert.ok(platform.observations.every(({ status }) => status.location !== "Tubecar"));
+  assert.ok(body(platform.observations.at(-1)).includes("Record feature deactivated."));
+  const onboardDeparture = probeTurn(refused, "onboardDeparture");
+  const exit = refused.observations.at(-1);
+  assert.ok(matches(onboardDeparture, depart));
+  assert.equal(onboardDeparture.nextInputId, exit.submittedInputId);
+  assert.equal(exit.command, "OUT");
+  assert.deepEqual(state(exit), ["Tubecar", normal]);
+  assert.ok(body(exit).includes("You can't leave the tubecar between stations!"));
+});
+
 test("projects approved cinema leaves with observation-time room scope and exact qualifiers", async () => {
   const f = JSON.parse(await readFile(new URL("./fixtures/parchment-cinema-recording-a-observed.json", import.meta.url), "utf8"));
   const packet = await readFile(new URL("../docs/cinema-copy-packet.md", import.meta.url), "utf8");

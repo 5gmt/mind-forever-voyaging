@@ -7,7 +7,7 @@
 **Architecture:** 既存2a+2bとexact observed-leaf catalogを使う。同名の駅・車両についてだけ、新しいraw turnと直前の確実な観測を使う限定adapterを追加し、観測時scopeをhistoryに保存する。運行時計や車両位置を独自にシミュレートしない。
 **Tech Stack:** Next.js / React / TypeScript、Release 79 / Parchment、bridge-v3、Node test runner、Playwright / Chromium。
 **Spec:** 本書の「選定」「候補経路と採択gate」「観測と操作の契約」「受入境界」。[憲章](../../PROJECT_CHARTER.md)、[AGENTS.md](../../AGENTS.md)、[CI運用](../ci-operation.md)を保持する。
-**Status:** [計画 PR #130](https://github.com/5gmt/mind-forever-voyaging/pull/130) はマージ済み。T1の初回試行はJunction到着と同じ入力で満杯警告・自動停止となった。Workは[発車後に録画を始める交通候補A](../transit-recording-window-decision.md)を次の実測候補として承認した。PR #131の失敗証拠・判断文書をSolの差分レビューと最終Full後にmergeし、別のT1成功実測PRで再開する。候補Aのruntime成功、T1の成功採択、T2、T3は未完了。
+**Status:** #131 は失敗証拠と Work の設計判断を収録してマージ済み。[交通候補Aの再実測](../transit-runtime-evidence.md#候補-a-の実測)で111入力を保持した新規2セッションが、録画中のJunction到着・降車、明示OFF、公園帰着まで完走した。別probesと看板構造の実測を提出し、独立Solの成功採択と最終Fullを待つ。T2とT3は保留。
 **Baseline:** Homeの[PR #126](https://github.com/5gmt/mind-forever-voyaging/pull/126)、merge `76f2c438e69a81d13dfba6c8fa2ab42b5598f4b9`。実行時には最新target branch `codex/modern-amfv` を含める。
 **Execution root:** [#29](https://github.com/5gmt/mind-forever-voyaging/issues/29)。2026-11-28 JSTのownerによる次期milestone設計・タスク作成依頼に基づく。
 
@@ -124,16 +124,16 @@ Full / auto-deactivation、途中OFF、missing status / 不安定input、未知�
 
 初回フォーム試行は131送信目で停止した。先行111送信、実乗車、録画開始、Junction 到着と開扉までは [失敗 fixture](../../tests/fixtures/parchment-transit-runtime-failure.json) に残した。到着後の録画継続を満たさないため、第二試行、別 probes、降車・帰着、成功 fixture と成功回帰は保留した。
 
-次は[交通候補A](../transit-recording-window-decision.md)を別の成功実測PRで検証する。現capture scriptは旧経路のままなので、再試行前に明示的な発車観測と遅い録画開始へ変更する。失敗fixtureは上書きしない。Localized hostの看板の字下げも成功採択前の確認事項とし、新projectionが必要ならWorkへ戻す。
+[交通候補A](../transit-recording-window-decision.md) のフォームと現行UI併用が各136入力で完走した。発車確認後の2回、録画後の1回を、それぞれ別の入力として観測した。旧失敗fixtureは保持した。採取側で旧地図ラベルを待って止まった最初の試行も別fixtureに保存した。Localized hostではカタログの試験値で看板の行順と字下げを確認した。合否条件・操作契約の採択はSolのレビューを待つ。
 
-**Files:** Create `scripts/capture-transit-runtime.mjs`, `tests/fixtures/parchment-transit-runtime-observed.json`, `docs/transit-runtime-evidence.md`。失敗は別 `tests/fixtures/parchment-transit-runtime-failure.json`。Modify `tests/rendered-html.test.mjs`、本計画、`PROJECT_STATUS.md`。
+**Files:** Create `scripts/capture-transit-runtime.mjs`, `tests/fixtures/parchment-transit-runtime-observed.json`, `docs/transit-runtime-evidence.md`。旧試行の失敗は `tests/fixtures/parchment-transit-runtime-failure.json` に保持し、候補Aの途中記録は別ファイルに保存する。Modify `tests/rendered-html.test.mjs`、本計画、`PROJECT_STATUS.md`。
 **Consumes:** Homeの採択fixture / capture手順と本書の候補。**Produces:** 2以上の `sessions` と別 `probes`、全submittedCommands、stable bridge lines/runs/status/input、実UI method、roomの根拠、録画窓、時刻とwait回数、成功/失敗区分。既存fixture形式を再利用し、交通特有のidentity evidenceを文書化する。
 
 - [x] Captureに `--base-url URL --output PATH --failure-output PATH`、fresh output root、起動 / input同期、partial保存を設ける。
-- [ ] 交通候補Aの発車観測、非録画wait 2回、RECORD、到着wait 1回と停止条件へcaptureを更新する。
-- [ ] 本番buildで2 full sessionsと別probesを採取する。待機ループは上限とraw条件を持ち、未到着のまま「成功」として次へ進めない。
-- [ ] Unit `retains two complete transit sessions after the accepted home prefix` を実fixtureで固定する。111 prefix、実command/input対応、停車と車内到着の別、録画ON/OFF、return、容量、負例をassertする。待機回数は実測した契約に従い、決め打ち総数のために観測を削らない。
-- [ ] `node --test --test-name-pattern='transit sessions' tests/rendered-html.test.mjs`、適用checks、checksumを実行。必須/可変leaf、3 roomの同定根拠、DOWN/IN/OUT/UPの既存UI不足、copy候補、未検証境界を台帳へ残す。
+- [x] 交通候補Aの発車観測、非録画wait 2回、RECORD、到着wait 1回と停止条件へcaptureを更新する。
+- [x] 本番buildで2 full sessionsと別probesを採取する。待機ループは上限とraw条件を持ち、未到着のまま「成功」として次へ進めない。
+- [x] Unit `retains two complete transit sessions after the accepted home prefix` を実fixtureで固定する。111 prefix、実command/input対応、停車と車内到着の別、録画ON/OFF、return、容量、負例をassertする。待機回数は実測した契約に従い、決め打ち総数のために観測を削らない。
+- [x] `node --test --test-name-pattern='transit sessions' tests/rendered-html.test.mjs`、適用checks、checksumを実行。必須/可変leaf、3 roomの同定根拠、DOWN/IN/OUT/UPの既存UI不足、copy候補、未検証境界を台帳へ残す。
 - [x] 失敗の実測と停止後の入力を `retains the transit capacity failure after the accepted home prefix` に固定し、[失敗実測](../transit-runtime-evidence.md) に記録する。
 - [ ] 独立Solが成功経路・有限待機・観測/操作契約を採択する。境界変更が必要ならWorkへ戻す。最新head/baseのFull / readinessを経てmergeし、T2を解除する。
 
